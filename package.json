@@ -2,16 +2,18 @@
   "name": "ambrosus-node-extended",
   "version": "0.0.1",
   "author": "Ambrosus",
+  "repository": "git@github.com:ambrosus/ambrosus-node-extended.git",
+  "private": true,
   "description": "Extended query api for the Ambrosus Hermes node",
   "license": "MPL-2.0-no-copyleft-exception",
   "main": "./build/index.js",
   "scripts": {
-    "build-ts": "tsc",
-    "start": "source ./.env.dev && npm run serve",
-    "serve": "nodemon ./build/index.js",
-    "watch-node": "nodemon dist/index.js",
-    "test": "mocha **/*.spec.ts",
-    "lint": "tslint -c tslint.json --project tsconfig.json 'src/**/*.ts'"
+    "build": "tsc",
+    "start:server": "node build/index.js",
+    "dev:clean": "rimraf ./build",
+    "dev:start": "source ./.env.dev && nodemon ./build/index.js",
+    "dev:test": "mocha **/*.spec.ts",
+    "dev:lint": "tslint -c tslint.json --project tsconfig.json 'src/**/*.ts'"
   },
   "files": [
     "src"
@@ -20,7 +22,6 @@
     "base64url": "^3.0.0",
     "chai": "^4.2.0",
     "cors": "^2.8.4",
-    "deepmerge": "^2.2.1",
     "dotenv": "^6.1.0",
     "express": "^4.16.3",
     "graphql": "^14.0.2",
@@ -29,7 +30,6 @@
     "helmet": "^3.13.0",
     "inversify": "^4.13.0",
     "inversify-express-utils": "^6.1.0",
-    "inversify-logger-middleware": "^3.1.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
     "mongo-cursor-pagination": "^7.1.0",
@@ -37,7 +37,7 @@
     "morgan": "^1.9.1",
     "reflect-metadata": "^0.1.12",
     "ts-node": "^7.0.1",
-    "web3": "^1.0.0-beta.36",
+    "web3": "^1.0.0-beta.34",
     "winston": "^3.1.0"
   },
   "devDependencies": {
@@ -56,6 +56,7 @@
     "@types/web3": "^1.0.10",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.4",
+    "rimraf": "^2.6.2",
     "tslint": "^5.11.0",
     "tslint-config-airbnb": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
