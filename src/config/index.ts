@@ -5,9 +5,9 @@ export const config: any = {
   db: {
     hosts: process.env.MONGO_HOSTS || 'localhost:27017',
     dbName: process.env.MONGO_DB_NAME || 'hermes',
-    resplicaset: process.env.MONGO_REPLICASET || '',
+    resplicaset: process.env.MONGO_REPLICA_SET || '',
     user: process.env.MONGO_USER || '',
-    pass: process.env.MONGO_PASS || '',
+    pass: process.env.MONGO_PASSWORD || '',
   },
   web3: {
     rpc: process.env.WEB3_RPC || 'http://10.60.148.63:8545',
