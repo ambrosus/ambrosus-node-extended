@@ -1,9 +1,10 @@
 {
     "compilerOptions": {
-        "outDir": "build/compiled",
+        "outDir": "./build",
         "module": "commonjs",
-        "target": "es5",
+        "target": "es6",
         "lib": [
+            "esnext.asynciterable",
             "es6",
             "dom"
         ],
