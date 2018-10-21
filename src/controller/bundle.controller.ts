@@ -4,11 +4,22 @@ import { BaseHttpController, controller, httpGet, requestParam } from 'inversify
 import { TYPES } from '../constant/types';
 import { IAnalytics } from '../interface/analytics.interface';
 import { BundleService } from '../service/bundle.service';
+import { Bundle, APIResult } from '../model';
 
 @controller('/bundle', TYPES.AuthorizeMiddleWare)
 export class BundleController extends BaseHttpController implements IAnalytics {
   constructor(@inject(TYPES.BundleService) private bundleService: BundleService) {
     super();
+  }
+
+  @httpGet('/')
+  public getEvents(): Promise<APIResult> {
+    return this.bundleService.getBundles();
+  }
+
+  @httpGet('/:bundleId')
+  public get(@requestParam('bundleId') bundleId: string): Promise<Bundle> {
+    return this.bundleService.getBundle(bundleId);
   }
 
   @httpGet('/count')

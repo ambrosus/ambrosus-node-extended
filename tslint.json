@@ -65,7 +65,7 @@
     "no-empty": true,
     "no-eval": true,
     "no-internal-module": true,
-    "no-string-literal": true,
+    "no-string-literal": false,
     "no-trailing-whitespace": true,
     "no-unused-expression": true,
     "no-var-keyword": true,

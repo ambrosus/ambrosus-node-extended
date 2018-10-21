@@ -35,58 +35,58 @@ import { LoggerService } from './service/logger.service';
 import { Web3Service } from './service/web3.service';
 import { MongoDBClient } from './util/mongodb/client';
 
-export const container: Container = new Container();
+export const iocContainer: Container = new Container();
 
 // db
-container
+iocContainer
   .bind<MongoDBClient>(TYPES.MongoDBClient)
   .to(MongoDBClient)
   .inSingletonScope();
 
 // controllers
-container.bind<RootController>(TYPES.RootController).to(RootController);
-container
+iocContainer.bind<RootController>(TYPES.RootController).to(RootController);
+iocContainer
   .bind<GraphQLController>(TYPES.GraphQLController)
   .to(GraphQLController);
-container
+iocContainer
   .bind<AccountController>(TYPES.AccountController)
   .to(AccountController);
-container.bind<AssetController>(TYPES.AssetController).to(AssetController);
-container.bind<EventController>(TYPES.EventController).to(EventController);
-container.bind<BundleController>(TYPES.BundleController).to(BundleController);
+iocContainer.bind<AssetController>(TYPES.AssetController).to(AssetController);
+iocContainer.bind<EventController>(TYPES.EventController).to(EventController);
+iocContainer.bind<BundleController>(TYPES.BundleController).to(BundleController);
 
 // services
-container
+iocContainer
   .bind<AuthService>(TYPES.AuthService)
   .to(AuthService)
   .inSingletonScope();
-container
+iocContainer
   .bind<Web3Service>(TYPES.Web3Service)
   .to(Web3Service)
   .inSingletonScope();
-container
+iocContainer
   .bind<LoggerService>(TYPES.LoggerService)
   .to(LoggerService)
   .inSingletonScope();
-container
+iocContainer
   .bind<AccountService>(TYPES.AccountService)
   .to(AccountService)
   .inSingletonScope();
-container
+iocContainer
   .bind<AssetService>(TYPES.AssetService)
   .to(AssetService)
   .inSingletonScope();
-container
+iocContainer
   .bind<EventService>(TYPES.EventService)
   .to(EventService)
   .inSingletonScope();
-container
+iocContainer
   .bind<BundleService>(TYPES.BundleService)
   .to(BundleService)
   .inSingletonScope();
 
 // middleware
-container
+iocContainer
   .bind<RequestHandler>(TYPES.AuthorizeMiddleWare)
   .toDynamicValue((context: interfaces.Context) => {
     const authService: AuthService = context.container.get(TYPES.AuthService);
@@ -97,14 +97,14 @@ container
   });
 
 // gql schema
-container.bind<IGraphQLSchema>(TYPES.GraphQLSchema).to(GraphQLSchema);
+iocContainer.bind<IGraphQLSchema>(TYPES.GraphQLSchema).to(GraphQLSchema);
 
 // gql types
-container.bind<IGraphQLType>(TYPES.GraphQLType).to(AccountType);
-container.bind<IGraphQLType>(TYPES.GraphQLType).to(AssetType);
-container.bind<IGraphQLType>(TYPES.GraphQLType).to(EventType);
-container.bind<IGraphQLType>(TYPES.GraphQLType).to(BundleType);
-container.bind<IGraphQLType>(TYPES.GraphQLType).to(QueryType);
+iocContainer.bind<IGraphQLType>(TYPES.GraphQLType).to(AccountType);
+iocContainer.bind<IGraphQLType>(TYPES.GraphQLType).to(AssetType);
+iocContainer.bind<IGraphQLType>(TYPES.GraphQLType).to(EventType);
+iocContainer.bind<IGraphQLType>(TYPES.GraphQLType).to(BundleType);
+iocContainer.bind<IGraphQLType>(TYPES.GraphQLType).to(QueryType);
 
 // gql resolvers
-container.bind<IGraphQLResolver>(TYPES.GraphQLResolver).to(AccountResolver);
+iocContainer.bind<IGraphQLResolver>(TYPES.GraphQLResolver).to(AccountResolver);

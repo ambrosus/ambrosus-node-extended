@@ -8,13 +8,13 @@ import * as morgan from 'morgan';
 import { config } from './config';
 import { TYPES } from './constant/types';
 import { GraphQLController } from './controller/graphql.controller';
-import { container } from './inversify.config';
+import { iocContainer } from './inversify.config';
 import { LoggerService } from './service/logger.service';
 
-const server = new InversifyExpressServer(container);
+const server = new InversifyExpressServer(iocContainer);
 
 server.setConfig(app => {
-  container.get<GraphQLController>(TYPES.GraphQLController).setup(app);
+  iocContainer.get<GraphQLController>(TYPES.GraphQLController).setup(app);
   app.set('json spaces', 2);
   app.use(
     bodyParser.urlencoded({
@@ -34,7 +34,7 @@ server.setConfig(app => {
 const app_server = server.build();
 app_server.listen(config.port);
 
-container
+iocContainer
   .get<LoggerService>(TYPES.LoggerService)
   .info(`${process.env.NODE_ENV} Hermes++ is running on ${config.port} :)`);
 
