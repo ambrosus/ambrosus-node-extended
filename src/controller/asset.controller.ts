@@ -11,12 +11,17 @@ import {
 import { TYPES } from '../constant/types';
 import { IAnalytics } from '../interface/analytics.interface';
 import { AssetService } from '../service/asset.service';
-import { Asset , APIQuery, APIResult} from '../model';
+import { Asset, APIQuery, APIResult } from '../model';
 
 @controller('/asset', TYPES.AuthorizeMiddleWare)
 export class AssetController extends BaseHttpController implements IAnalytics {
   constructor(@inject(TYPES.AssetService) private assetService: AssetService) {
     super();
+  }
+
+  @httpGet('/')
+  public getAssets(): Promise<APIResult> {
+    return this.assetService.getAssets();
   }
 
   @httpGet('/:assetId')

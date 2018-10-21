@@ -15,7 +15,21 @@ export class AccountService extends AnalyticsService {
     super(db, 'accounts');
   }
 
-  public async getAccount(address: string): Promise<Account> {
+  public getAccounts(): Promise<APIResult> {
+    return new Promise<APIResult>((resolve, reject) => {
+      const apiQuery = new APIQuery();
+      apiQuery.collection = this.collection;
+      apiQuery.paginationField = 'registeredOn';
+      this.db.find(apiQuery, (error, data: any) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(data);
+      });
+    });
+  }
+
+  public getAccount(address: string): Promise<Account> {
     return new Promise<Account>((resolve, reject) => {
       const apiQuery = new APIQuery();
       apiQuery.collection = this.collection;
@@ -29,7 +43,7 @@ export class AccountService extends AnalyticsService {
     });
   }
 
-  public async getQueryResults(apiQuery: APIQuery): Promise<APIResult> {
+  public getQueryResults(apiQuery: APIQuery): Promise<APIResult> {
     return new Promise<APIResult>((resolve, reject) => {
       apiQuery.collection = this.collection;
       apiQuery.paginationField = 'registeredOn';

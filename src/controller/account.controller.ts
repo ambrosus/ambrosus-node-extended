@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { inject } from 'inversify';
+import { Route } from 'tsoa';
 import {
   BaseHttpController,
   controller,
@@ -13,14 +14,20 @@ import { IAnalytics } from '../interface/analytics.interface';
 import { Account, APIQuery, APIResult } from '../model';
 import { AccountService } from '../service/account.service';
 
+@Route('/account')
 @controller('/account', TYPES.AuthorizeMiddleWare)
 export class AccountController extends BaseHttpController implements IAnalytics {
   constructor(@inject(TYPES.AccountService) private accountService: AccountService) {
     super();
   }
 
+  @httpGet('/')
+  public getAccounts(): Promise<APIResult> {
+    return this.accountService.getAccounts();
+  }
+
   @httpGet('/:address')
-  public get(@requestParam('address') address: string): Promise<Account> {
+  public getAccount(@requestParam('address') address: string): Promise<Account> {
     return this.accountService.getAccount(address);
   }
 

@@ -21,6 +21,7 @@ export class MongoDBClient {
   }
 
   public find(apiQuery: APIQuery, results: (error, data) => void): void {
+    console.log(apiQuery.fields);
     MongoPaging.find(this.db.collection(apiQuery.collection), {
       query: apiQuery.query,
       fields: { projection: apiQuery.fields },

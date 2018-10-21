@@ -11,12 +11,26 @@ export class BundleService extends AnalyticsService {
     super(db, 'bundles');
   }
 
+  public getBundles(): Promise<APIResult> {
+    return new Promise<APIResult>((resolve, reject) => {
+      const apiQuery = new APIQuery();
+      apiQuery.collection = this.collection;
+      apiQuery.exludeField('content');
+      this.db.find(apiQuery, (error, data: any) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(data);
+      });
+    });
+  }
+
   public async getBundle(bundleId: string): Promise<Bundle> {
     return new Promise<Bundle>((resolve, reject) => {
       const apiQuery = new APIQuery();
       apiQuery.collection = this.collection;
       apiQuery.query = { bundleId };
-
+      apiQuery.exludeField('content');
       this.db.findOne(apiQuery, (error, data: Bundle) => {
         if (error) {
           reject(error);
@@ -29,7 +43,7 @@ export class BundleService extends AnalyticsService {
   public async getQueryResults(apiQuery: APIQuery): Promise<APIResult> {
     return new Promise<APIResult>((resolve, reject) => {
       apiQuery.collection = this.collection;
-      apiQuery.paginationField = 'content.idData.timestamp';
+      apiQuery.exludeField('content');
       this.db.find(apiQuery, (error, data: any) => {
         if (error) {
           reject(error);
