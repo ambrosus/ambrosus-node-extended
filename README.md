@@ -169,32 +169,38 @@ curl -X POST http://localhost:3000/event/query \
 }
 ```
 
-Querying a specific event type, created after a specific time
+Querying a not of a type, for a list of assets
 ```
 curl -X POST http://localhost:3000/event/query \
   -H 'Content-Type: application/json' \
   -d '{
 	"query": [{
 		"field": "content.data.type",
-		"value": "ambrosus.asset.info",
-		"operator": "equal"
+		"value": [
+			"ambrosus.asset.info", "ambrosus.asset.branding"
+			],
+		"operator": "not-equal"
 	},
 	{
-		"field": "content.idData.timestamp",
-		"value": 1535723311,
-		"operator": "greater-than-equal"
+		"field": "content.idData.assetId",
+		"value": [
+			"0x7dca2776fad2ee828b2fbc5d51951b1a8d95d8fa83593e692e95dfed084c5691", "0xf0e2333a01d75a71a6e944a602b11d8f2399c2f57070be3131a869cb0b5e1d97"
+			],
+		"operator": "equal"
 	}]
 }
 ```
 
-Querying for specific assets not created by a specific user
+Querying events for assets not created by a user
 ```
 curl -X POST http://localhost:3000/event/query \
   -H 'Content-Type: application/json' \
   -d '{
 	"query": [{
 		"field": "content.idData.assetId",
-		"value": ["0x7dca2776fad2ee828b2fbc5d51951b1a8d95d8fa83593e692e95dfed084c5691", "0xf0e2333a01d75a71a6e944a602b11d8f2399c2f57070be3131a869cb0b5e1d97"],
+		"value": [
+			"0x7dca2776fad2ee828b2fbc5d51951b1a8d95d8fa83593e692e95dfed084c5691", "0xf0e2333a01d75a71a6e944a602b11d8f2399c2f57070be3131a869cb0b5e1d97"
+			],
 		"operator": "equal"
 	},
 	{
