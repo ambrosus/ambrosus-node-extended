@@ -1,6 +1,6 @@
 # Hermes Extended API   
 
-The extended API consists of both REST and GraphQL APIs.
+Additional querying capabilities which consists of both REST and GraphQL APIs.
 
 
 ## Getting Started
@@ -114,18 +114,21 @@ Querying (filtering) can be achieved by sending a POST request containing a vali
 	},
     ],
     "limit": 0,
-    "previoius": ""
+    "previous": ""
     "next": ""
     }
 ```
 
 #### Explanation:
 
-The field key corresponds to a field in the database and can be targeted using dot notation. For example 'metadata.bundleId' and 'content.data.unit'. 
+The **field** key corresponds to a field in the database and can be targeted using dot notation. For example 'metadata.bundleId' and 'content.data.unit'. 
 
-The value key is used to filter the supplied field and can contain an array, dict or a primitive.
+The **value** key is used to filter the supplied field and can contain an array, dict or primitive.
 
-The operator specifies how the field should be queried against the value. The following operators are supported: 
+The **operator** key specifies how the field should be queried against the value. 
+
+
+#### The following operators are supported: 
 
 | Operator | Expected value |
 | --- | --- |
