@@ -13,7 +13,7 @@ export class GraphQLController {
 
   public setup(app: express.Application): void {
     app.use(
-      '/graphql',
+      '/gql',
       bodyParser.json(),
       graphqlExpress((req, res) => {
         return {

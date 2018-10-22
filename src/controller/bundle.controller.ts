@@ -1,5 +1,10 @@
 import { inject } from 'inversify';
-import { BaseHttpController, controller, httpGet, requestParam } from 'inversify-express-utils';
+import {
+  BaseHttpController,
+  controller,
+  httpGet,
+  requestParam
+} from 'inversify-express-utils';
 
 import { TYPES } from '../constant/types';
 import { IAnalytics } from '../interface/analytics.interface';
@@ -8,18 +13,10 @@ import { Bundle, APIResult } from '../model';
 
 @controller('/bundle', TYPES.AuthorizeMiddleWare)
 export class BundleController extends BaseHttpController implements IAnalytics {
-  constructor(@inject(TYPES.BundleService) private bundleService: BundleService) {
+  constructor(
+    @inject(TYPES.BundleService) private bundleService: BundleService
+  ) {
     super();
-  }
-
-  @httpGet('/')
-  public getEvents(): Promise<APIResult> {
-    return this.bundleService.getBundles();
-  }
-
-  @httpGet('/:bundleId')
-  public get(@requestParam('bundleId') bundleId: string): Promise<Bundle> {
-    return this.bundleService.getBundle(bundleId);
   }
 
   @httpGet('/count')
@@ -33,7 +30,9 @@ export class BundleController extends BaseHttpController implements IAnalytics {
   }
 
   @httpGet('/count/date/:date')
-  public async getCountByDate(@requestParam('date') date: string): Promise<any> {
+  public async getCountByDate(
+    @requestParam('date') date: string
+  ): Promise<any> {
     return this.bundleService.getCountByDate(date);
   }
 
@@ -46,12 +45,26 @@ export class BundleController extends BaseHttpController implements IAnalytics {
   }
 
   @httpGet('/count/rolling/hours/:hours')
-  public async getCountByRollingHours(@requestParam('hours') num: number): Promise<any> {
+  public async getCountByRollingHours(
+    @requestParam('hours') num: number
+  ): Promise<any> {
     return this.bundleService.getCountByRollingHours(num);
   }
 
   @httpGet('/count/rolling/days/:days')
-  public async getCountByRollingDays(@requestParam('days') num: number): Promise<any> {
+  public async getCountByRollingDays(
+    @requestParam('days') num: number
+  ): Promise<any> {
     return this.bundleService.getCountByRollingDays(num);
+  }
+
+  @httpGet('/')
+  public getEvents(): Promise<APIResult> {
+    return this.bundleService.getBundles();
+  }
+
+  @httpGet('/:bundleId')
+  public get(@requestParam('bundleId') bundleId: string): Promise<Bundle> {
+    return this.bundleService.getBundle(bundleId);
   }
 }

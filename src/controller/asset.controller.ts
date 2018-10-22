@@ -19,15 +19,7 @@ export class AssetController extends BaseHttpController implements IAnalytics {
     super();
   }
 
-  @httpGet('/')
-  public getAssets(): Promise<APIResult> {
-    return this.assetService.getAssets();
-  }
 
-  @httpGet('/:assetId')
-  public get(@requestParam('assetId') assetId: string): Promise<Asset> {
-    return this.assetService.getAsset(assetId);
-  }
 
   @httpPost('/query')
   public query(req: Request): Promise<APIResult> {
@@ -36,6 +28,7 @@ export class AssetController extends BaseHttpController implements IAnalytics {
 
   @httpGet('/count')
   public async getCount(): Promise<any> {
+    console.log("dsagasdgsdgsdgasdgasdg");
     return this.assetService.getCountTotal();
   }
 
@@ -71,5 +64,15 @@ export class AssetController extends BaseHttpController implements IAnalytics {
     @requestParam('days') num: number
   ): Promise<any> {
     return this.assetService.getCountByRollingDays(num);
+  }
+
+  @httpGet('/')
+  public getAssets(): Promise<APIResult> {
+    return this.assetService.getAssets();
+  }
+
+  @httpGet('/:assetId')
+  public get(@requestParam('assetId') assetId: string): Promise<Asset> {
+    return this.assetService.getAsset(assetId);
   }
 }
