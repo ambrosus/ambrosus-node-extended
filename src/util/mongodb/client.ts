@@ -22,14 +22,15 @@ export class MongoDBClient {
   }
 
   public find(apiQuery: APIQuery, results: (error, data) => void): void {
-    console.log(apiQuery);
+    //console.log(apiQuery);
     MongoPaging.find(this.db.collection(apiQuery.collection), {
       query: apiQuery.query,
       fields: { projection: apiQuery.fields },
       paginatedField: apiQuery.paginationField,
+      sortAscending: apiQuery.sortAscending,
       limit: apiQuery.limit,
       next: apiQuery.next,
-      previous: apiQuery.previous,
+      previous: apiQuery.previous
     })
       .then(data => {
         results(undefined, data);
@@ -40,6 +41,7 @@ export class MongoDBClient {
   }
 
   public findOne(apiQuery: APIQuery, result: (error, data) => void): void {
+    //console.log(apiQuery);
     this.db
       .collection(apiQuery.collection)
       .findOne(apiQuery.query, apiQuery.options, (error, data) => {

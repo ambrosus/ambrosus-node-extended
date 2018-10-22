@@ -1,33 +1,26 @@
 import * as express from 'express';
+import { inject, injectable } from 'inversify';
 
-import { AuthService } from '../service/auth.service';
+import { TYPES } from '../constant/types';
 import { LoggerService } from '../service/logger.service';
+import { IPrincipal } from '../model';
 
-export const authorizeMiddlewareFactory = (
-  authService: AuthService,
-  logger: LoggerService
-) => {
-  return (
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
-  ) => {
-    if (process.env.NODE_ENV === 'dev') {
-      return next();
+import { BaseMiddleware } from 'inversify-express-utils';
+import { AuthenticationError } from '../error';
+
+@injectable()
+export class AuthorizeMiddleware extends BaseMiddleware {
+  @inject(TYPES.LoggerService)
+  private readonly logger: LoggerService;
+
+  public handler(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const user = <IPrincipal>this.httpContext.user;
+
+    if (!user.isAuthorized()) {
+      this.logger.info(`Anonymous => ${req.url}`);
+      throw new AuthenticationError("Unauthorized");
     }
-    const authorization = req.header('authorization');
-
-    if (authorization && authorization.split(' ')[0] === 'AMB_TOKEN') {
-      const token = authorization.split(' ')[1];
-
-      if (authService.isAuthorized(token)) {
-        logger.info(`Token ${token} authorized`);
-        return next();
-      }
-      logger.warn('Token not authorized');
-      res.status(401).end('Unauthorized');
-    } else {
-      res.status(401).end('Unauthorized');
-    }
-  };
-};
+    this.logger.info(`${user.account.address} => ${req.url}`);
+    return next();
+  }
+}

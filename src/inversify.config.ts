@@ -23,8 +23,9 @@ import {
   QueryType
 } from './graphql/type';
 import {
-  authorizeMiddlewareFactory,
-  errorMiddlewareFactory
+  // authorizeMiddlewareFactory,
+  // errorMiddlewareFactory,
+  AuthorizeMiddleware
 } from './middleware';
 import { AccountService } from './service/account.service';
 import { AssetService } from './service/asset.service';
@@ -86,15 +87,18 @@ iocContainer
   .inSingletonScope();
 
 // middleware
-iocContainer
-  .bind<RequestHandler>(TYPES.AuthorizeMiddleWare)
-  .toDynamicValue((context: interfaces.Context) => {
-    const authService: AuthService = context.container.get(TYPES.AuthService);
-    const loggerService: LoggerService = context.container.get(
-      TYPES.LoggerService
-    );
-    return authorizeMiddlewareFactory(authService, loggerService);
-  });
+// iocContainer
+//   .bind<RequestHandler>(TYPES.AuthorizeMiddleWare)
+//   .toDynamicValue((context: interfaces.Context) => {
+//     const authService: AuthService = context.container.get(TYPES.AuthService);
+//     const loggerService: LoggerService = context.container.get(
+//       TYPES.LoggerService
+//     );
+//     return authorizeMiddlewareFactory(authService, loggerService);
+//   });
+
+  iocContainer.bind<AuthorizeMiddleware>(TYPES.AuthorizeMiddleware)
+         .to(AuthorizeMiddleware);
 
 // gql schema
 iocContainer.bind<IGraphQLSchema>(TYPES.GraphQLSchema).to(GraphQLSchema);

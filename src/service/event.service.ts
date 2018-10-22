@@ -54,7 +54,6 @@ export class EventService extends AnalyticsService {
   }
 
   public getLatestType(apiAssetAgg: APIAssetAggregate): Promise<APIResult> {
-    console.log(apiAssetAgg.pipeline);
     return new Promise<APIResult>((resolve, reject) => {
       apiAssetAgg.collection = this.collection;
       apiAssetAgg.paginationField = 'content.idData.timestamp';

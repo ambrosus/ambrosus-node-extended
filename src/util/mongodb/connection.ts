@@ -2,7 +2,7 @@ import { Db, MongoClient } from 'mongodb';
 
 import { config } from '../../config';
 import { ConnectionError } from '../../error';
-import * as  querystring from 'querystring';
+import * as querystring from 'querystring';
 
 export class MongoDBConnection {
   public static isConnected = false;
@@ -35,19 +35,19 @@ export class MongoDBConnection {
     );
   }
 
-  private static getConnUrl(): string{
+  private static getConnUrl(): string {
     let query = {};
     let credentials = '';
 
     if (config.db.resplicaset) {
       query['replicaSet'] = config.db.resplicaset;
     }
-  
+
     if (config.db.user) {
       const user = encodeURIComponent(config.db.user);
       const password = encodeURIComponent(config.db.pass);
       credentials = `${user}:${password}@`;
-  
+
       query['authSource'] = 'admin';
     }
 

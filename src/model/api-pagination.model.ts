@@ -4,5 +4,5 @@ export interface IAPIPagination {
   next: string;
   previous: string;
   paginationField: string;
-
+  sortAscending: boolean;
 }

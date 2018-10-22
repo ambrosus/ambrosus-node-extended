@@ -28,6 +28,7 @@ export class APIQuery implements IAPIQuery, IAPIPagination {
   public next;
   public previous;
   public paginationField;
+  public sortAscending;
   protected fieldBlacklist;
 
   get fields(): any {
