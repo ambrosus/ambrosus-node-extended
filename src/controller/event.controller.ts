@@ -13,12 +13,16 @@ import { IAnalytics } from '../interface/analytics.interface';
 import { EventService } from '../service/event.service';
 import { Event, APIQuery, APIResult, APIAssetAggregate } from '../model';
 
-@controller('/event', TYPES.AuthorizeMiddleWare)
-export class EventController implements IAnalytics {
-  constructor(@inject(TYPES.EventService) private eventService: EventService) {}
+@controller('/event', TYPES.AuthorizeMiddleware)
+export class EventController extends BaseHttpController implements IAnalytics {
+  constructor(@inject(TYPES.EventService) private eventService: EventService) {
+    super();
+  }
 
   @httpPost('/query')
   public query(req: Request): Promise<APIResult> {
+    //console.log(this.httpContext.user);
+
     return this.eventService.getQueryResults(APIQuery.create(req));
   }
 
@@ -29,7 +33,6 @@ export class EventController implements IAnalytics {
 
   @httpGet('/count')
   public getCount(): Promise<any> {
-    console.log('dsagasdgsdgsdgasdgasdg');
     return this.eventService.getCountTotal();
   }
 

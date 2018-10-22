@@ -13,13 +13,11 @@ import { IAnalytics } from '../interface/analytics.interface';
 import { AssetService } from '../service/asset.service';
 import { Asset, APIQuery, APIResult } from '../model';
 
-@controller('/asset', TYPES.AuthorizeMiddleWare)
+@controller('/asset', TYPES.AuthorizeMiddleware)
 export class AssetController extends BaseHttpController implements IAnalytics {
   constructor(@inject(TYPES.AssetService) private assetService: AssetService) {
     super();
   }
-
-
 
   @httpPost('/query')
   public query(req: Request): Promise<APIResult> {
@@ -28,7 +26,6 @@ export class AssetController extends BaseHttpController implements IAnalytics {
 
   @httpGet('/count')
   public async getCount(): Promise<any> {
-    console.log("dsagasdgsdgsdgasdgasdg");
     return this.assetService.getCountTotal();
   }
 

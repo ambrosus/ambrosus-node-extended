@@ -15,12 +15,9 @@ import { Account, APIQuery, APIResult } from '../model';
 import { AccountService } from '../service/account.service';
 
 @Route('/account')
-@controller('/account', TYPES.AuthorizeMiddleWare)
-export class AccountController extends BaseHttpController
-  implements IAnalytics {
-  constructor(
-    @inject(TYPES.AccountService) private accountService: AccountService
-  ) {
+@controller('/account', TYPES.AuthorizeMiddleware)
+export class AccountController extends BaseHttpController implements IAnalytics {
+  constructor(@inject(TYPES.AccountService) private accountService: AccountService) {
     super();
   }
 
@@ -40,9 +37,7 @@ export class AccountController extends BaseHttpController
   }
 
   @httpGet('/count/date/:date')
-  public async getCountByDate(
-    @requestParam('date') date: string
-  ): Promise<any> {
+  public async getCountByDate(@requestParam('date') date: string): Promise<any> {
     return this.accountService.getCountByDate(date);
   }
 
@@ -55,16 +50,12 @@ export class AccountController extends BaseHttpController
   }
 
   @httpGet('/count/rolling/hours/:hours')
-  public async getCountByRollingHours(
-    @requestParam('hours') num: number
-  ): Promise<any> {
+  public async getCountByRollingHours(@requestParam('hours') num: number): Promise<any> {
     return this.accountService.getCountByRollingHours(num);
   }
 
   @httpGet('/count/rolling/days/:days')
-  public async getCountByRollingDays(
-    @requestParam('days') num: number
-  ): Promise<any> {
+  public async getCountByRollingDays(@requestParam('days') num: number): Promise<any> {
     return this.accountService.getCountByRollingDays(num);
   }
 
@@ -74,9 +65,7 @@ export class AccountController extends BaseHttpController
   }
 
   @httpGet('/:address')
-  public getAccount(
-    @requestParam('address') address: string
-  ): Promise<Account> {
+  public getAccount(@requestParam('address') address: string): Promise<Account> {
     return this.accountService.getAccount(address);
   }
 }

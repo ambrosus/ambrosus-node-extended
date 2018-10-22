@@ -55,31 +55,31 @@ GET endpoints exist for basic fetching of various data collections including ass
 
 Get asset
 ```
-curl -X GET http://localhost:3000/asset/<assetId>
+curl -X GET http://localhost:3000/api/asset/<assetId>
 ```
 Get assets
 ```
-curl -X GET http://localhost:3000/asset 
+curl -X GET http://localhost:3000/api/asset 
 ```
 
 Get event
 ```
-curl -X GET http://localhost:3000/event/<eventId>
+curl -X GET http://localhost:3000/api/event/<eventId>
 ```
 
 Get events
 ```
-curl -X GET http://localhost:3000/event 
+curl -X GET http://localhost:3000/api/event 
 ```
 
 Get bundle
 ```
-curl -X GET http://localhost:3000/bundle/<bundleId>
+curl -X GET http://localhost:3000/api/bundle/<bundleId>
 
 ```
 Get bundles
 ```
-curl -X GET http://localhost:3000/bundle 
+curl -X GET http://localhost:3000/api/bundle 
 ```
 
 ### Pagination
@@ -153,7 +153,7 @@ The inrange operator expects a value in the following format:
 
 Querying an event of type, created gte to a timestamp
 ```
-curl -X POST http://localhost:3000/event/query \
+curl -X POST http://localhost:3000/api/event/query \
   -H 'Content-Type: application/json' \
   -d '{
 	"query": [{
@@ -171,7 +171,7 @@ curl -X POST http://localhost:3000/event/query \
 
 Querying events not of a type, for a list of assets
 ```
-curl -X POST http://localhost:3000/event/query \
+curl -X POST http://localhost:3000/api/event/query \
   -H 'Content-Type: application/json' \
   -d '{
 	"query": [{
@@ -193,7 +193,7 @@ curl -X POST http://localhost:3000/event/query \
 
 Querying events for assets not created by a user
 ```
-curl -X POST http://localhost:3000/event/query \
+curl -X POST http://localhost:3000/api/event/query \
   -H 'Content-Type: application/json' \
   -d '{
 	"query": [{
@@ -218,7 +218,7 @@ A special endpoint exists to perform limited aggregation of events grouped by as
 #### Examples:
 
 ```
-curl -X POST http://localhost:3000/event/latest/type \
+curl -X POST http://localhost:3000/api/event/latest/type \
   -H 'Content-Type: application/json' \
   -d '{
 	"assets": ["0x9d8c8bb6101751b583e64002ad8abe681aa61b6f8179ccef668fce91798e3018", "0x2be15879ad66636da6a5cccc70d75cda65809113f50355d97c93296d67486913"],
@@ -234,32 +234,32 @@ The following summations are available for all data collections. Time serious da
 
 Count all events
 ```
-curl -X GET  http://localhost:3000/event/count 
+curl -X GET  http://localhost:3000/api/event/count 
 ```
 
 Count of events created month to date
 ```
-curl -X GET  http://localhost:3000/event/mtd
+curl -X GET  http://localhost:3000/api/event/mtd
 ```
 
 Count of events created on a sepcific date
 ```
-curl -X GET  http://localhost:3000/event/count/date/20181001
+curl -X GET  http://localhost:3000/api/event/count/date/20181001
 ```
 
 Count of events created within a date range
 ```
-curl -X GET  http://localhost:3000/event/count/daterange/20180901/20181031
+curl -X GET  http://localhost:3000/api/event/count/daterange/20180901/20181031
 ```
 
 Count of events created from now to a number of hours back
 ```
-curl -X GET  http://localhost:3000/event/count/rolling/hours/10
+curl -X GET  http://localhost:3000/api/event/count/rolling/hours/10
 ```
 
 Count of events created from now to a number of days back
 ```
-curl -X GET  http://localhost:3000/event/count/rolling/days/10
+curl -X GET  http://localhost:3000/api/event/count/rolling/days/10
 ```
 
 ## Usage (GraphQL)
@@ -271,13 +271,13 @@ GraphQL support is in progress.
 In browser IDE:
 
 ```
-http://localhost:3000/graphiql
+http://localhost:3000/api/graphiql
 ```
 
 GraphQL Endpoint:
 
 ```
-http://localhost:3000/gql
+http://localhost:3000/api/gql
 ```
 
 Angular support:

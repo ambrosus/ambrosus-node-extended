@@ -5,6 +5,8 @@ import { TYPES } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
 import { getTimestamp } from '../util/helpers';
 import { Web3Service } from './web3.service';
+import { AuthenticationError } from '../error';
+import { AuthToken } from '../model';
 
 @injectable()
 export class AuthService {
@@ -13,31 +15,34 @@ export class AuthService {
     @inject(TYPES.LoggerService) private logger: ILogger
   ) {}
 
-  public isAuthorized(token: string) {
-    const decoded = this.decode(token);
+  public getAuthToken(authHeader: string): AuthToken {
+    if (!authHeader) {
+      this.logger.warn('Token error: missing authentication header');
+      return undefined;
+    }
 
-    if (decoded) {
-      this.logger.warn('Token: Failed to decode');
-      return false;
+    const [type, token] = authHeader.split(' ');
+
+    if (type !== 'AMB_TOKEN') {
+      this.logger.warn('Token error: missing AMB_TOKEN ');
+      return undefined;
+    }
+
+    const decoded = this.decode(token);
+    if (decoded == undefined) {
+      this.logger.warn('Token error: decode failure');
+      return undefined;
     }
 
     const { signature, idData } = decoded;
-
     if (!this.web3Service.validateSignature(idData.createdBy, signature, idData)) {
-      this.logger.warn('Token: Invalid signature');
-      return false;
+      this.logger.warn('Token error: invalid signature');
+      return undefined;
     }
 
-    if (!decoded.idData.validUntil) {
-      this.logger.warn("Token: Missing 'validUntil'");
-      return false;
-    }
-    if (decoded.idData.validUntil < getTimestamp()) {
-      this.logger.warn('Token: Has expired');
-      return false;
-    }
+    const authToken = new AuthToken(idData.createdBy, idData.validUntil, signature);
 
-    return true;
+    return authToken;
   }
 
   public encode(data) {

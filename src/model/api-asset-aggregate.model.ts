@@ -22,11 +22,9 @@ export class APIAssetAggregate implements IAPIAssetAggregate, IAPIPagination {
 
     apiAssetAgg.stepMatch['$match']['content.data.type'] = req.body.type;
 
-    console.log(req.body.asset);
-
     if (req.body.assets) {
       apiAssetAgg.stepMatch['$match']['content.idData.assetId'] = {
-        '$in': req.body.assets,
+        $in: req.body.assets
       };
     }
 
@@ -40,6 +38,7 @@ export class APIAssetAggregate implements IAPIAssetAggregate, IAPIPagination {
   public next;
   public previous;
   public paginationField;
+  public sortAscending;
   public stepMatch;
   public stepGroup;
   public stepProject;
@@ -54,9 +53,9 @@ export class APIAssetAggregate implements IAPIAssetAggregate, IAPIPagination {
       $group: {
         _id: '$content.idData.assetId',
         doc: {
-          $first: '$$ROOT',
-        },
-      },
+          $first: '$$ROOT'
+        }
+      }
     };
 
     this.stepProject = {
@@ -65,8 +64,8 @@ export class APIAssetAggregate implements IAPIAssetAggregate, IAPIPagination {
         assetId: '$_id',
         eventId: '$doc.eventId',
         content: '$doc.content',
-        metadata: '$doc.metadata',
-      },
+        metadata: '$doc.metadata'
+      }
     };
   }
 }
