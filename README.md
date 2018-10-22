@@ -151,7 +151,7 @@ The inrange operator expects a value in the following format:
 
 ### Query Examples:
 
-Querying a specific event type, created after a specific time
+Querying an event of type, created gte to a timestamp
 ```
 curl -X POST http://localhost:3000/event/query \
   -H 'Content-Type: application/json' \
@@ -169,7 +169,7 @@ curl -X POST http://localhost:3000/event/query \
 }
 ```
 
-Querying a not of a type, for a list of assets
+Querying events not of a type, for a list of assets
 ```
 curl -X POST http://localhost:3000/event/query \
   -H 'Content-Type: application/json' \
