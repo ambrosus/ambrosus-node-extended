@@ -49,9 +49,9 @@ npm dev:clean
 
 ## Usage (REST)
 
-#### GET endpoints exist for basic fetching of various data collections including assets, events and bundles. 
+GET endpoints exist for basic fetching of various data collections including assets, events and bundles. 
 
-### Examples:
+#### Examples:
 
 Get asset
 ```
@@ -84,8 +84,9 @@ curl -X GET http://localhost:3000/bundle
 
 ### Pagination
 
-#### Result sets contain next and previous object pointers which allow navigation through the result set. To navigate to the next page send either pointers and the result set will begin from that position. If both pointers are sent, the next pointer will take precendence. 'hasNext' and 'hasPrevious' indicate whether or not there is additional data is either direction.
+Result sets contain next and previous object pointers which allow navigation through the result set. To navigate to the next page send either pointers and the result set will begin from that position. If both pointers are sent, the next pointer will take precendence. 'hasNext' and 'hasPrevious' indicate whether or not there is additional data in either direction.
 
+#### Example
 ```
 {
     "results": [
@@ -100,9 +101,9 @@ curl -X GET http://localhost:3000/bundle
 
 ### Filtering data
 
-#### Querying (filtering) can be achieved by sending a POST request containing a valid query object. 
+Querying (filtering) can be achieved by sending a POST request containing a valid query object. 
 
-The query object has the following format
+#### The query object has the following format:
 
 ```
 {
@@ -118,7 +119,7 @@ The query object has the following format
     }
 ```
 
-Explanation:
+#### Explanation:
 
 The field key corresponds to a field in the database and can be targeted using dot notation. For example 'metadata.bundleId' and 'content.data.unit'. 
 
@@ -203,9 +204,9 @@ curl -X POST http://localhost:3000/event/query \
 
 ### Aggregation
 
-### A special endpoint exists to perform limited aggregation of events grouped by assetId. The endpoint exists to fetch the latest asset event of a certain type.
+A special endpoint exists to perform limited aggregation of events grouped by assetId. The endpoint exists to fetch the latest asset event of a certain type.
 
-Example:
+#### Examples:
 
 ```
 curl -X POST http://localhost:3000/event/latest/type \
@@ -218,9 +219,9 @@ curl -X POST http://localhost:3000/event/latest/type \
 
 ### Analytics
 
-### The following summations are available for all data collections. Time serious data is TBD
+The following summations are available for all data collections. Time serious data is TBD
 
-Examples:
+#### Examples:
 
 Count all events
 ```
