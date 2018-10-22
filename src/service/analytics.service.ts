@@ -26,10 +26,11 @@ export class AnalyticsService {
     this.collection = collection;
   }
 
-  public async getCountTotal(): Promise<any> {
+  public getCountTotal(): Promise<any> {
     const apiQuery = new APIQuery();
     apiQuery.collection = this.collection;
     return new Promise<any>((resolve, reject) => {
+      console.log("HERE");
       this.db.count(apiQuery, (error, count: number) => {
         if (error) {
           reject(error);
@@ -39,13 +40,13 @@ export class AnalyticsService {
     });
   }
 
-  public async getCountByMonthToDate(): Promise<any> {
+  public getCountByMonthToDate(): Promise<any> {
     const start: number = getTimestampMonthStart();
     const end: number = getTimestamp();
     return this.getCountForDateRange(start, end);
   }
 
-  public async getCountByDate(date: string): Promise<any> {
+  public getCountByDate(date: string): Promise<any> {
     if (!isValidDate(date)) {
       throw new ValidationError(`Invalid date string: ${date}`);
     }
@@ -54,7 +55,7 @@ export class AnalyticsService {
     return this.getCountForDateRange(start, end);
   }
 
-  public async getCountByDateRange(startDate: string, endDate: string): Promise<any> {
+  public getCountByDateRange(startDate: string, endDate: string): Promise<any> {
     if (!isValidDate(startDate)) {
       throw new ValidationError(`Invalid date string: ${startDate}`);
     }
@@ -66,25 +67,25 @@ export class AnalyticsService {
     return this.getCountForDateRange(start, end);
   }
 
-  public async getCountByRollingHours(hours: number): Promise<any> {
+  public getCountByRollingHours(hours: number): Promise<any> {
     const start: number = getTimestampSubHours(hours);
     const end: number = getTimestamp();
     return this.getCountForDateRange(start, end);
   }
 
-  public async getCountByRollingDays(days: number): Promise<any> {
+  public getCountByRollingDays(days: number): Promise<any> {
     const start: number = getTimestampSubDays(days);
     const end: number = getTimestamp();
     return this.getCountForDateRange(start, end);
   }
 
-  public async getCountByRollingWeeks(weeks: number): Promise<any> {
+  public getCountByRollingWeeks(weeks: number): Promise<any> {
     const start: number = getTimestampSubWeeks(weeks);
     const end: number = getTimestamp();
     return this.getCountForDateRange(start, end);
   }
 
-  private async getCountForDateRange(start: number, end: number) {
+  private getCountForDateRange(start: number, end: number) {
     const apiQuery = new APIQuery();
     apiQuery.collection = this.collection;
     apiQuery.query = { 'content.idData.timestamp': { $gte: start, $lte: end } };

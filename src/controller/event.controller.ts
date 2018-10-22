@@ -14,20 +14,8 @@ import { EventService } from '../service/event.service';
 import { Event, APIQuery, APIResult, APIAssetAggregate } from '../model';
 
 @controller('/event', TYPES.AuthorizeMiddleWare)
-export class EventController extends BaseHttpController implements IAnalytics {
-  constructor(@inject(TYPES.EventService) private eventService: EventService) {
-    super();
-  }
-
-  @httpGet('/')
-  public getEvents(): Promise<APIResult> {
-    return this.eventService.getEvents();
-  }
-
-  @httpGet('/:eventId')
-  public get(@requestParam('eventId') eventId: string): Promise<Event> {
-    return this.eventService.getEvent(eventId);
-  }
+export class EventController implements IAnalytics {
+  constructor(@inject(TYPES.EventService) private eventService: EventService) {}
 
   @httpPost('/query')
   public query(req: Request): Promise<APIResult> {
@@ -41,6 +29,7 @@ export class EventController extends BaseHttpController implements IAnalytics {
 
   @httpGet('/count')
   public getCount(): Promise<any> {
+    console.log('dsagasdgsdgsdgasdgasdg');
     return this.eventService.getCountTotal();
   }
 
@@ -63,12 +52,27 @@ export class EventController extends BaseHttpController implements IAnalytics {
   }
 
   @httpGet('/count/rolling/hours/:hours')
-  public getCountByRollingHours(@requestParam('hours') num: number): Promise<any> {
+  public getCountByRollingHours(
+    @requestParam('hours') num: number
+  ): Promise<any> {
     return this.eventService.getCountByRollingHours(num);
   }
 
   @httpGet('/count/rolling/days/:days')
-  public getCountByRollingDays(@requestParam('days') num: number): Promise<any> {
+  public getCountByRollingDays(
+    @requestParam('days') num: number
+  ): Promise<any> {
     return this.eventService.getCountByRollingDays(num);
+  }
+
+  @httpGet('/')
+  public getEvents(): Promise<APIResult> {
+    console.log('dsagasdgsdgsdgasdgasdg');
+    return this.eventService.getEvents();
+  }
+
+  @httpGet('/:eventId')
+  public get(@requestParam('eventId') eventId: string): Promise<Event> {
+    return this.eventService.getEvent(eventId);
   }
 }
