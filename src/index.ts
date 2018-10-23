@@ -17,7 +17,7 @@ import { ValidationError, PermissionError, NotFoundError, AuthenticationError } 
 const server = new InversifyExpressServer(
   iocContainer,
   null,
-  { rootPath: '/api' },
+  null,
   null,
   AMBAuthProvider
 );
