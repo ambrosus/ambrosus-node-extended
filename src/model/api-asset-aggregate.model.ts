@@ -12,7 +12,7 @@ export interface IAPIAssetAggregate {
 
 @injectable()
 export class APIAssetAggregate implements IAPIAssetAggregate, IAPIPagination {
-  public static create(req: Request) {
+  public static fromRequest(req: Request) {
     const apiAssetAgg = new APIAssetAggregate();
     apiAssetAgg.assets = req.body.assets;
     apiAssetAgg.aggregateType = req.body.type;

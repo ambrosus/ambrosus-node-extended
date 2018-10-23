@@ -9,14 +9,14 @@ export class QueryType implements IGraphQLType {
   constructor() {
     this.defs = `
       type Query {
-        accounts: [Account]
-        account(address: String!): Account
-        assets: [Asset]
-        asset(assetId: String!): Asset
-        events: [Event]
-        event(eventId: String!): Event
-        bundles: [Bundle]
-        bundle(bundleId: String!): Bundle
+        getAccounts(next: String, previous: String, limit: Int): AccountResults
+        getAccount(address: String!): Account
+        getAssets(next: String, previous: String, limit: Int): AssetResults
+        getAsset(assetId: String!): Asset
+        getEvents(next: String, previous: String, limit: Int): EventResults
+        getEvent(eventId: String!): Event
+        getBundles(next: String, previous: String, limit: Int): BundleResults
+        getBundle(bundleId: String!): Bundle
       }
     `;
   }

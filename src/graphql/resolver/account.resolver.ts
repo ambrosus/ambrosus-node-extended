@@ -3,7 +3,7 @@ import { inject, injectable } from 'inversify';
 import { IGraphQLResolver } from '..';
 import { TYPES } from '../../constant/types';
 import { AccountService } from '../../service/account.service';
-import { Account } from '../../model';
+import { Account, APIResult, APIQuery } from '../../model';
 @injectable()
 export class AccountResolver implements IGraphQLResolver {
   public resolver;
@@ -14,17 +14,22 @@ export class AccountResolver implements IGraphQLResolver {
   constructor() {
     this.resolver = {
       Query: {
-        accounts: this.getAccounts.bind(this),
-        account: this.getAccount.bind(this),
+        getAccounts: this.getAccounts.bind(this),
+        getAsset: this.getAccount.bind(this),
       },
     };
   }
 
-  private getAccounts(_, args, context): Promise<number> {
-    return this.accountService.getCountTotal();
+  private getAccounts(_, { next, previous, limit}, context): Promise<APIResult> {
+    const apiQuery = new APIQuery();
+    apiQuery.next = next;
+    apiQuery.previous = previous;
+    apiQuery.limit = limit;
+    return this.accountService.getAccounts(apiQuery);
   }
 
   private getAccount(_, { address }, args, context): Promise<Account> {
     return this.accountService.getAccount(address);
   }
 }
+ 

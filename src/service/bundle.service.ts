@@ -11,9 +11,8 @@ export class BundleService extends AnalyticsService {
     super(db, 'bundles');
   }
 
-  public getBundles(): Promise<APIResult> {
+  public getBundles(apiQuery: APIQuery): Promise<APIResult> {
     return new Promise<APIResult>((resolve, reject) => {
-      const apiQuery = new APIQuery();
       apiQuery.collection = this.collection;
       apiQuery.exludeField('content');
       this.db.find(apiQuery, (error, data: any) => {

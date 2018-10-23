@@ -13,12 +13,12 @@ export interface IAPIQuery {
 
 @injectable()
 export class APIQuery implements IAPIQuery, IAPIPagination {
-  public static create(req: Request) {
+  public static fromRequest(req: Request) {
     const apiQuery = new APIQuery();
-    apiQuery.query = parseAPIQuery(req.body.query);
-    apiQuery.limit = req.body.limit;
-    apiQuery.next = req.body.next;
-    apiQuery.previous = req.body.previous;
+    apiQuery.query = parseAPIQuery(req.body.query || req.query.query);
+    apiQuery.limit = +(req.body.limit || req.query.limit);
+    apiQuery.next = req.body.next || req.query.next;
+    apiQuery.previous = req.body.previous || req.query.previous;
     return apiQuery;
   }
 
@@ -37,16 +37,16 @@ export class APIQuery implements IAPIQuery, IAPIPagination {
 
   get options(): any {
     const opt = {
-      projection: this.fieldBlacklist,
+      projection: this.fieldBlacklist
     };
 
     return opt;
   }
 
-  constructor() {
+  constructor(query?: object, next?: string, previous?: string, limit?: number) {
     this.fieldBlacklist = {
       _id: 0,
-      repository: 0,
+      repository: 0
     };
   }
 

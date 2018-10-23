@@ -8,9 +8,19 @@ export class BundleType implements IGraphQLType {
 
   constructor() {
     this.defs = `
+
+      type BundleResults {
+        results: [Bundle!]!
+        hasNext: Boolean
+        next: String
+        hasPrevious: Boolean
+        previous: String
+      }
+
       type Bundle {
         bundleId: String
       }
+
     `;
   }
 }

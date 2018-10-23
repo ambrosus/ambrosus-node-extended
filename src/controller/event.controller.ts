@@ -21,14 +21,12 @@ export class EventController extends BaseHttpController implements IAnalytics {
 
   @httpPost('/query')
   public query(req: Request): Promise<APIResult> {
-    //console.log(this.httpContext.user);
-
-    return this.eventService.getQueryResults(APIQuery.create(req));
+    return this.eventService.getQueryResults(APIQuery.fromRequest(req));
   }
 
   @httpPost('/latest/type')
   public latestType(req: Request): Promise<APIResult> {
-    return this.eventService.getLatestType(APIAssetAggregate.create(req));
+    return this.eventService.getLatestType(APIAssetAggregate.fromRequest(req));
   }
 
   @httpGet('/count')
@@ -55,23 +53,18 @@ export class EventController extends BaseHttpController implements IAnalytics {
   }
 
   @httpGet('/count/rolling/hours/:hours')
-  public getCountByRollingHours(
-    @requestParam('hours') num: number
-  ): Promise<any> {
+  public getCountByRollingHours(@requestParam('hours') num: number): Promise<any> {
     return this.eventService.getCountByRollingHours(num);
   }
 
   @httpGet('/count/rolling/days/:days')
-  public getCountByRollingDays(
-    @requestParam('days') num: number
-  ): Promise<any> {
+  public getCountByRollingDays(@requestParam('days') num: number): Promise<any> {
     return this.eventService.getCountByRollingDays(num);
   }
 
   @httpGet('/')
-  public getEvents(): Promise<APIResult> {
-    console.log('dsagasdgsdgsdgasdgasdg');
-    return this.eventService.getEvents();
+  public getEvents(req: Request): Promise<APIResult> {
+    return this.eventService.getEvents(APIQuery.fromRequest(req));
   }
 
   @httpGet('/:eventId')

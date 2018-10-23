@@ -8,9 +8,19 @@ export class EventType implements IGraphQLType {
 
   constructor() {
     this.defs = `
+
+      type EventResults {
+        results: [Event!]!
+        hasNext: Boolean
+        next: String
+        hasPrevious: Boolean
+        previous: String
+      }
+
       type Event {
         eventId: String
       }
+
     `;
   }
 }
