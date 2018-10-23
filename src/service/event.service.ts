@@ -12,9 +12,8 @@ export class EventService extends AnalyticsService {
     super(dbClient, 'events');
   }
 
-  public getEvents(): Promise<APIResult> {
+  public getEvents(apiQuery: APIQuery): Promise<APIResult> {
     return new Promise<APIResult>((resolve, reject) => {
-      const apiQuery = new APIQuery();
       apiQuery.collection = this.collection;
       apiQuery.paginationField = 'content.idData.timestamp';
       this.db.find(apiQuery, (error, data: any) => {

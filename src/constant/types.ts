@@ -20,7 +20,7 @@ export const TYPES: any = {
   EventService: Symbol.for('EventService'),
   BundleService: Symbol.for('BundleService'),
 
-  AuthorizeMiddleware: Symbol.for('AuthorizeMiddleware'),
+  AuthorizedMiddleware: Symbol.for('AuthorizedMiddleware'),
   ErrorMiddleWare: Symbol.for('ErrorMiddleWare'),
 
   GraphQLSchema: Symbol('GraphQLSchema'),

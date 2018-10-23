@@ -13,7 +13,7 @@ import { IAnalytics } from '../interface/analytics.interface';
 import { AssetService } from '../service/asset.service';
 import { Asset, APIQuery, APIResult } from '../model';
 
-@controller('/asset', TYPES.AuthorizeMiddleware)
+@controller('/asset', TYPES.AuthorizedMiddleware)
 export class AssetController extends BaseHttpController implements IAnalytics {
   constructor(@inject(TYPES.AssetService) private assetService: AssetService) {
     super();
@@ -21,7 +21,7 @@ export class AssetController extends BaseHttpController implements IAnalytics {
 
   @httpPost('/query')
   public query(req: Request): Promise<APIResult> {
-    return this.assetService.getQueryResults(APIQuery.create(req));
+    return this.assetService.getQueryResults(APIQuery.fromRequest(req));
   }
 
   @httpGet('/count')
@@ -35,9 +35,7 @@ export class AssetController extends BaseHttpController implements IAnalytics {
   }
 
   @httpGet('/count/date/:date')
-  public async getCountByDate(
-    @requestParam('date') date: string
-  ): Promise<any> {
+  public async getCountByDate(@requestParam('date') date: string): Promise<any> {
     return this.assetService.getCountByDate(date);
   }
 
@@ -50,22 +48,18 @@ export class AssetController extends BaseHttpController implements IAnalytics {
   }
 
   @httpGet('/count/rolling/hours/:hours')
-  public async getCountByRollingHours(
-    @requestParam('hours') num: number
-  ): Promise<any> {
+  public async getCountByRollingHours(@requestParam('hours') num: number): Promise<any> {
     return this.assetService.getCountByRollingHours(num);
   }
 
   @httpGet('/count/rolling/days/:days')
-  public async getCountByRollingDays(
-    @requestParam('days') num: number
-  ): Promise<any> {
+  public async getCountByRollingDays(@requestParam('days') num: number): Promise<any> {
     return this.assetService.getCountByRollingDays(num);
   }
 
   @httpGet('/')
-  public getAssets(): Promise<APIResult> {
-    return this.assetService.getAssets();
+  public getAssets(req: Request): Promise<APIResult> {
+    return this.assetService.getAssets(APIQuery.fromRequest(req));
   }
 
   @httpGet('/:assetId')

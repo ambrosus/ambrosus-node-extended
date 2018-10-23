@@ -1,2 +1,2 @@
-export * from './authorize.middleware';
+export * from './authorized.middleware';
 

@@ -6,6 +6,7 @@ import {
   controller,
   httpGet,
   requestParam,
+  queryParam,
   httpPost
 } from 'inversify-express-utils';
 
@@ -15,7 +16,7 @@ import { Account, APIQuery, APIResult } from '../model';
 import { AccountService } from '../service/account.service';
 
 @Route('/account')
-@controller('/account', TYPES.AuthorizeMiddleware)
+@controller('/account', TYPES.AuthorizedMiddleware)
 export class AccountController extends BaseHttpController implements IAnalytics {
   constructor(@inject(TYPES.AccountService) private accountService: AccountService) {
     super();
@@ -23,7 +24,7 @@ export class AccountController extends BaseHttpController implements IAnalytics 
 
   @httpPost('/query')
   public async query(req: Request): Promise<APIResult> {
-    return this.accountService.getQueryResults(APIQuery.create(req));
+    return this.accountService.getQueryResults(APIQuery.fromRequest(req));
   }
 
   @httpGet('/count')
@@ -60,8 +61,8 @@ export class AccountController extends BaseHttpController implements IAnalytics 
   }
 
   @httpGet('/')
-  public getAccounts(): Promise<APIResult> {
-    return this.accountService.getAccounts();
+  public getAccounts(req: Request): Promise<APIResult> {
+    return this.accountService.getAccounts(APIQuery.fromRequest(req));
   }
 
   @httpGet('/:address')

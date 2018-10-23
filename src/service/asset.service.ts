@@ -12,9 +12,9 @@ export class AssetService extends AnalyticsService {
     super(db, 'assets');
   }
 
-  public getAssets(): Promise<APIResult> {
+  public getAssets(apiQuery: APIQuery): Promise<APIResult> {
+    console.log(apiQuery);
     return new Promise<APIResult>((resolve, reject) => {
-      const apiQuery = new APIQuery();
       apiQuery.collection = this.collection;
       apiQuery.paginationField = 'content.idData.timestamp';
       this.db.find(apiQuery, (error, data: any) => {

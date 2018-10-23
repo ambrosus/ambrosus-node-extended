@@ -28,7 +28,7 @@ export class GraphQLController {
     app.use(
       '/graphiql',
       graphiqlExpress({
-        endpointURL: '/graphql',
+        endpointURL: '/gql',
       })
     );
 

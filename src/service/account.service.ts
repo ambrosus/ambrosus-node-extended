@@ -15,11 +15,10 @@ export class AccountService extends AnalyticsService {
     super(db, 'accounts');
   }
 
-  public getAccounts(): Promise<APIResult> {
+  public getAccounts(apiQuery: APIQuery): Promise<APIResult> {
     return new Promise<APIResult>((resolve, reject) => {
-      const apiQuery = new APIQuery();
       apiQuery.collection = this.collection;
-      //apiQuery.paginationField = 'registeredOn';
+      apiQuery.paginationField = 'registeredOn';
       apiQuery.sortAscending = false;
       this.db.find(apiQuery, (error, data: any) => {
         if (error) {
@@ -47,7 +46,7 @@ export class AccountService extends AnalyticsService {
   public getQueryResults(apiQuery: APIQuery): Promise<APIResult> {
     return new Promise<APIResult>((resolve, reject) => {
       apiQuery.collection = this.collection;
-      //apiQuery.paginationField = 'registeredOn';
+      apiQuery.paginationField = 'registeredOn';
       this.db.find(apiQuery, (error, data: any) => {
         if (error) {
           reject(error);

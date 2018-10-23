@@ -3,26 +3,30 @@ import { inject, injectable } from 'inversify';
 import { IGraphQLResolver } from '..';
 import { TYPES } from '../../constant/types';
 import { BundleService } from '../../service/bundle.service';
-import { Bundle } from '../../model';
+import { Bundle, APIQuery, APIResult } from '../../model';
 
 @injectable()
-export class AssetResolver implements IGraphQLResolver {
+export class BundleResolver implements IGraphQLResolver {
   public resolver;
 
-  @inject(TYPES.AccountService)
+  @inject(TYPES.BundleService)
   private bundleService: BundleService;
 
   constructor() {
     this.resolver = {
       Query: {
-        bundles: this.getBundles.bind(this),
-        bundle: this.getBundle.bind(this),
+        getBundles: this.getBundles.bind(this),
+        getBundle: this.getBundle.bind(this),
       },
     };
   }
 
-  private getBundles(_, args, context): Promise<number> {
-    return this.bundleService.getCountTotal();
+  private getBundles(_, { next, previous, limit}, context): Promise<APIResult> {
+    const apiQuery = new APIQuery();
+    apiQuery.next = next;
+    apiQuery.previous = previous;
+    apiQuery.limit = limit;
+    return this.bundleService.getBundles(apiQuery);
   }
 
   private getBundle(_, { bundleId }, args, context): Promise<Bundle> {

@@ -8,11 +8,24 @@ export class AccountType implements IGraphQLType {
 
   constructor() {
     this.defs = `
-      type Account {
+    
+    type AccountResults {
+      results: [Account!]!
+      hasNext: Boolean
+      next: String
+      hasPrevious: Boolean
+      previous: String
+    }
+    
+    type Account {
         address: String
         accessLevel: Int
-        registeredOn: String
+        organization: String
+        permissions: [String]
+        registeredOn: Float
+        registeredBy: String
       }
+      
     `;
   }
 }
