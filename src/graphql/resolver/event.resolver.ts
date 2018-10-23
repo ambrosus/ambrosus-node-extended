@@ -9,19 +9,19 @@ import { Event, APIResult, APIQuery } from '../../model';
 export class EventResolver implements IGraphQLResolver {
   public resolver;
 
-  @inject(TYPES.AccountService)
+  @inject(TYPES.EventService)
   private eventService: EventService;
 
   constructor() {
     this.resolver = {
       Query: {
-        events: this.getBundles.bind(this),
-        event: this.getBundle.bind(this)
+        getEvents: this.getEvents.bind(this),
+        getEvent: this.getEvent.bind(this)
       }
     };
   }
 
-  private getBundles(_, { next, previous, limit }, context): Promise<APIResult> {
+  private getEvents(_, { next, previous, limit }, context): Promise<APIResult> {
     const apiQuery = new APIQuery();
     apiQuery.next = next;
     apiQuery.previous = previous;
@@ -29,7 +29,7 @@ export class EventResolver implements IGraphQLResolver {
     return this.eventService.getEvents(apiQuery);
   }
 
-  private getBundle(_, { eventId }, args, context): Promise<Event> {
+  private getEvent(_, { eventId }, args, context): Promise<Event> {
     return this.eventService.getEvent(eventId);
   }
 }

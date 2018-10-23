@@ -7,7 +7,7 @@ import { IAnalytics } from '../interface/analytics.interface';
 import { BundleService } from '../service/bundle.service';
 import { Bundle, APIResult, APIQuery } from '../model';
 
-@controller('/bundle', TYPES.AuthorizeMiddleware)
+@controller('/bundle', TYPES.AuthorizedMiddleware)
 export class BundleController extends BaseHttpController implements IAnalytics {
   constructor(@inject(TYPES.BundleService) private bundleService: BundleService) {
     super();

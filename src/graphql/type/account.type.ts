@@ -22,7 +22,7 @@ export class AccountType implements IGraphQLType {
         accessLevel: Int
         organization: String
         permissions: [String]
-        registeredOn: Int
+        registeredOn: Float
         registeredBy: String
       }
       

@@ -15,7 +15,7 @@ export class AccountResolver implements IGraphQLResolver {
     this.resolver = {
       Query: {
         getAccounts: this.getAccounts.bind(this),
-        getAsset: this.getAccount.bind(this),
+        getAccount: this.getAccount.bind(this),
       },
     };
   }

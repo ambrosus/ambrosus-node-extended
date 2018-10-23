@@ -6,10 +6,10 @@ import { BundleService } from '../../service/bundle.service';
 import { Bundle, APIQuery, APIResult } from '../../model';
 
 @injectable()
-export class AssetResolver implements IGraphQLResolver {
+export class BundleResolver implements IGraphQLResolver {
   public resolver;
 
-  @inject(TYPES.AccountService)
+  @inject(TYPES.BundleService)
   private bundleService: BundleService;
 
   constructor() {

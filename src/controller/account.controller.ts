@@ -16,7 +16,7 @@ import { Account, APIQuery, APIResult } from '../model';
 import { AccountService } from '../service/account.service';
 
 @Route('/account')
-@controller('/account', TYPES.AuthorizeMiddleware)
+@controller('/account', TYPES.AuthorizedMiddleware)
 export class AccountController extends BaseHttpController implements IAnalytics {
   constructor(@inject(TYPES.AccountService) private accountService: AccountService) {
     super();

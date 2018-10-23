@@ -13,7 +13,7 @@ import { IAnalytics } from '../interface/analytics.interface';
 import { AssetService } from '../service/asset.service';
 import { Asset, APIQuery, APIResult } from '../model';
 
-@controller('/asset', TYPES.AuthorizeMiddleware)
+@controller('/asset', TYPES.AuthorizedMiddleware)
 export class AssetController extends BaseHttpController implements IAnalytics {
   constructor(@inject(TYPES.AssetService) private assetService: AssetService) {
     super();

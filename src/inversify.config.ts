@@ -1,6 +1,4 @@
-import { RequestHandler } from 'express';
-import { Container, interfaces } from 'inversify';
-
+import { Container } from 'inversify';
 import { TYPES } from './constant/types';
 import { AccountController } from './controller/account.controller';
 import { AssetController } from './controller/asset.controller';
@@ -9,11 +7,9 @@ import { EventController } from './controller/event.controller';
 import { GraphQLController } from './controller/graphql.controller';
 import { RootController } from './controller/root.controller';
 import { GraphQLSchema, IGraphQLResolver, IGraphQLSchema, IGraphQLType } from './graphql';
-import { AccountResolver } from './graphql/resolver/account.resolver';
+import { AccountResolver, AssetResolver, EventResolver, BundleResolver } from './graphql/resolver';
 import { AccountType, AssetType, BundleType, EventType, QueryType } from './graphql/type';
-import {
-  AuthorizeMiddleware
-} from './middleware';
+import { AuthorizedMiddleware } from './middleware';
 import { AccountService } from './service/account.service';
 import { AssetService } from './service/asset.service';
 import { AuthService } from './service/auth.service';
@@ -70,7 +66,7 @@ iocContainer
   .inSingletonScope();
 
 // middleware
-iocContainer.bind<AuthorizeMiddleware>(TYPES.AuthorizeMiddleware).to(AuthorizeMiddleware);
+iocContainer.bind<AuthorizedMiddleware>(TYPES.AuthorizedMiddleware).to(AuthorizedMiddleware);
 
 // gql schema
 iocContainer.bind<IGraphQLSchema>(TYPES.GraphQLSchema).to(GraphQLSchema);
@@ -84,3 +80,6 @@ iocContainer.bind<IGraphQLType>(TYPES.GraphQLType).to(QueryType);
 
 // gql resolvers
 iocContainer.bind<IGraphQLResolver>(TYPES.GraphQLResolver).to(AccountResolver);
+iocContainer.bind<IGraphQLResolver>(TYPES.GraphQLResolver).to(AssetResolver);
+iocContainer.bind<IGraphQLResolver>(TYPES.GraphQLResolver).to(EventResolver);
+iocContainer.bind<IGraphQLResolver>(TYPES.GraphQLResolver).to(BundleResolver);

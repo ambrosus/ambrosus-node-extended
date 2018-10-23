@@ -8,7 +8,7 @@ import { Asset, APIResult, APIQuery } from '../../model';
 export class AssetResolver implements IGraphQLResolver {
   public resolver;
 
-  @inject(TYPES.AccountService)
+  @inject(TYPES.AssetService)
   private assetService: AssetService;
 
   constructor() {
@@ -21,6 +21,7 @@ export class AssetResolver implements IGraphQLResolver {
   }
 
   private getAssets(_, { next, previous, limit}, context): Promise<APIResult> {
+    console.log("getAssets");
     const apiQuery = new APIQuery();
     apiQuery.next = next;
     apiQuery.previous = previous;
@@ -29,6 +30,7 @@ export class AssetResolver implements IGraphQLResolver {
   }
 
   private getAsset(_, { assetId }, args, context): Promise<Asset> {
+    console.log("getAsset");
     return this.assetService.getAsset(assetId);
   }
 }

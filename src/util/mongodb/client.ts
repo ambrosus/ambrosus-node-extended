@@ -15,14 +15,12 @@ export class MongoDBClient {
   }
 
   public count(apiQuery: APIQuery, result: (err, rv) => void): void {
-    console.log(apiQuery);
     this.db.collection(apiQuery.collection).countDocuments(apiQuery.query, (error, data) => {
       return result(error, data);
     });
   }
 
   public find(apiQuery: APIQuery, results: (error, data) => void): void {
-    //console.log(apiQuery);
     MongoPaging.find(this.db.collection(apiQuery.collection), {
       query: apiQuery.query,
       fields: { projection: apiQuery.fields },

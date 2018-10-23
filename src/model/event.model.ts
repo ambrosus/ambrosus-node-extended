@@ -1,14 +1,17 @@
 import { injectable } from 'inversify';
+import { EventContent } from './event-content.model';
 
 export interface IEvent {
-  _id?: string;
+  _id: string;
   eventId: string;
+  content: EventContent;
 }
 
 @injectable()
 export class Event implements IEvent {
-  constructor(
-    public eventId: string,
-    public _id?: string
-  ) {}
+  public _id: string;
+  public eventId: string;
+  public content: EventContent;
+
+  constructor() {}
 }

@@ -13,7 +13,7 @@ import { IAnalytics } from '../interface/analytics.interface';
 import { EventService } from '../service/event.service';
 import { Event, APIQuery, APIResult, APIAssetAggregate } from '../model';
 
-@controller('/event', TYPES.AuthorizeMiddleware)
+@controller('/event', TYPES.AuthorizedMiddleware)
 export class EventController extends BaseHttpController implements IAnalytics {
   constructor(@inject(TYPES.EventService) private eventService: EventService) {
     super();

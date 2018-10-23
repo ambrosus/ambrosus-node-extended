@@ -16,7 +16,7 @@ export class APIQuery implements IAPIQuery, IAPIPagination {
   public static fromRequest(req: Request) {
     const apiQuery = new APIQuery();
     apiQuery.query = parseAPIQuery(req.body.query || req.query.query);
-    apiQuery.limit = +(req.body.limit || req.query.limit);
+    apiQuery.limit = +req.body.limit || +req.query.limit || undefined;
     apiQuery.next = req.body.next || req.query.next;
     apiQuery.previous = req.body.previous || req.query.previous;
     return apiQuery;
