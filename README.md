@@ -264,8 +264,6 @@ curl -X GET  http://localhost:3000/api/event/count/rolling/days/10
 
 ## Usage (GraphQL)
 
-GraphQL support is in progress.
-
 ![](./docs/images/graphiql.png)
 
 In browser IDE:
@@ -283,3 +281,62 @@ http://localhost:3000/api/gql
 Angular support:
 
 https://www.apollographql.com/docs/angular/
+
+
+#### Examples:
+
+Get events
+```
+curl -X POST http://localhost:3000/gql \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "query": "{
+		getEvents {
+			results {
+				eventId
+				content {
+					signature
+					idData {
+						assetId
+						createdBy
+						accessLevel
+						timestamp
+					} 
+				}
+			}
+			hasNext
+			next
+			hasPrevious
+			previous
+		}
+	}",
+    "variables": null,
+    "operationName": null
+}'
+
+```
+
+Get events, limiting results
+```
+curl -X POST http://localhost:3000/gql \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "query": "{
+		getEvents {
+			results {
+				eventId
+				content {
+					idData {
+						assetId
+					} 
+				}
+			}
+			hasNext
+			next
+		}
+	}",
+    "variables": null,
+    "operationName": null
+}'
+
+```
