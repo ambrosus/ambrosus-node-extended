@@ -20,11 +20,12 @@ export class AMBAuthProvider implements interfaces.AuthProvider {
     next: NextFunction
   ): Promise<interfaces.Principal> {
     const authorization = req.header('authorization');
-    const authToken = this.authService.getAuthToken(authorization);
-    if (authToken) {
+    try {
+      const authToken = this.authService.getAuthToken(authorization);
       const account: Account = await this.accountService.getAccount(authToken.createdBy);
       return new Principal(account, authToken);
+    } catch (error) {
+      return new Principal(undefined);
     }
-    return new Principal(undefined);
   }
 }

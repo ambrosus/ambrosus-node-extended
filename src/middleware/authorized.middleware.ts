@@ -13,17 +13,12 @@ export class AuthorizedMiddleware extends BaseMiddleware {
   private readonly logger: LoggerService;
 
   public handler(req: express.Request, res: express.Response, next: express.NextFunction) {
-    if (process.env.NODE_ENV === 'dev') {
-      return next();
-    }
-
     const user = this.httpContext.user as Principal;
-
     if (!user.isAuthorized()) {
-      this.logger.info(`Anonymous => ${req.url}`);
+      this.logger.debug(`Anonymous => ${req.url}`);
       throw new AuthenticationError('Unauthorized');
     }
-    this.logger.info(`${user.account.address} => ${req.url}`);
+    this.logger.debug(`${user.account.address}(${user.account.accessLevel}) => ${req.url}`);
     return next();
   }
 }

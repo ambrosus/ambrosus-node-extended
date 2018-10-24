@@ -14,11 +14,13 @@ export interface IAuthToken {
 
 @injectable()
 export class AuthToken implements IAuthToken {
+  public createdBy;
+  public validUntil;
+  public signature;
   public authError;
-  constructor(public createdBy: string, public validUntil: number, public signature: string) {}
 
   public isValid(): boolean {
-    if (this.validUntil && this.validUntil >= getTimestamp()) {
+    if (!this.authError && this.validUntil && this.validUntil >= getTimestamp()) {
       return true;
     }
     return false;

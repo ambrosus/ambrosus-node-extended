@@ -35,7 +35,7 @@ server.setConfig(app => {
   app.use(cors());
   app.use((req, res, next) => {
     res.set('cache-control', 'no-store');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS ');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT ');
     next();
   });
 });

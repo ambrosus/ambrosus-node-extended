@@ -3,25 +3,14 @@ import * as GraphiQL from 'apollo-server-module-graphiql';
 import { Request, Response } from 'express';
 import { printSchema } from 'graphql';
 import { inject } from 'inversify';
-import {
-  BaseHttpController,
-  controller,
-  httpGet,
-  httpPost,
-  interfaces,
-} from 'inversify-express-utils';
+import { BaseHttpController, controller, httpGet, httpPost } from 'inversify-express-utils';
 import * as url from 'url';
 
 import { TYPES } from '../constant/types';
 import { IGraphQLSchema } from '../graphql';
 
-export const injectHttpContext = inject(TYPES.HttpContext);
-
-@controller('/graphql')
+@controller('/graphql', TYPES.AuthorizedMiddleware)
 export class GraphQLController extends BaseHttpController {
-  @injectHttpContext
-  protected readonly httpContext: interfaces.HttpContext;
-
   constructor(@inject(TYPES.GraphQLSchema) private graphQL: IGraphQLSchema) {
     super();
   }
