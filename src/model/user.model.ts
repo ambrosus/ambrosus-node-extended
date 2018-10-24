@@ -1,4 +1,5 @@
 import { injectable } from 'inversify';
+
 import { Account, AuthToken } from './';
 
 export interface IUser {
@@ -10,5 +11,4 @@ export interface IUser {
 export class User implements IUser {
   public account: Account;
   public authToken: AuthToken;
-  constructor() {}
 }

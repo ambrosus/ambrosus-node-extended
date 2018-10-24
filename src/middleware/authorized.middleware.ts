@@ -1,12 +1,11 @@
 import * as express from 'express';
 import { inject, injectable } from 'inversify';
+import { BaseMiddleware } from 'inversify-express-utils';
 
 import { TYPES } from '../constant/types';
-import { LoggerService } from '../service/logger.service';
-import { IPrincipal } from '../model';
-
-import { BaseMiddleware } from 'inversify-express-utils';
 import { AuthenticationError } from '../error';
+import { IPrincipal, Principal } from '../model';
+import { LoggerService } from '../service/logger.service';
 
 @injectable()
 export class AuthorizedMiddleware extends BaseMiddleware {
@@ -18,7 +17,7 @@ export class AuthorizedMiddleware extends BaseMiddleware {
       return next();
     }
 
-    const user = <IPrincipal>this.httpContext.user;
+    const user = this.httpContext.user as Principal;
 
     if (!user.isAuthorized()) {
       this.logger.info(`Anonymous => ${req.url}`);

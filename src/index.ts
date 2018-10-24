@@ -7,29 +7,26 @@ import * as morgan from 'morgan';
 
 import { config } from './config';
 import { TYPES } from './constant/types';
-import { GraphQLController } from './controller/graphql.controller';
+import { AuthenticationError, NotFoundError, PermissionError, ValidationError } from './error';
 import { iocContainer } from './inversify.config';
 import { LoggerService } from './service/logger.service';
 import { AMBAuthProvider } from './util/auth/auth.provider';
 
-import { ValidationError, PermissionError, NotFoundError, AuthenticationError } from './error';
-
 const server = new InversifyExpressServer(
   iocContainer,
-  null,
-  null,
-  null,
+  undefined,
+  undefined,
+  undefined,
   AMBAuthProvider
 );
 
 const logger = iocContainer.get<LoggerService>(TYPES.LoggerService);
 
 server.setConfig(app => {
-  iocContainer.get<GraphQLController>(TYPES.GraphQLController).setup(app);
   app.set('json spaces', 2);
   app.use(
     bodyParser.urlencoded({
-      extended: true
+      extended: true,
     })
   );
   app.use(bodyParser.json());

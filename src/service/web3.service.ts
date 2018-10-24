@@ -1,10 +1,11 @@
 import { inject, injectable } from 'inversify';
 import web3 = require('web3');
-import { TYPES } from '../constant/types';
+
 import { config } from '../config';
+import { TYPES } from '../constant/types';
 import { AuthenticationError, ValidationError } from '../error';
-import { matchHexOfLength } from '../util/helpers';
 import { ILogger } from '../interface/logger.inferface';
+import { matchHexOfLength } from '../util/helpers';
 
 @injectable()
 export class Web3Service {

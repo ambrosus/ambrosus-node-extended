@@ -18,7 +18,7 @@ export class MongoDBConnection {
   }
 
   private static connect(result: (error, db: Db) => void) {
-    let connStr = this.getConnUrl();
+    const connStr = this.getConnUrl();
     const dbName = config.db.dbName;
 
     MongoClient.connect(
@@ -36,7 +36,7 @@ export class MongoDBConnection {
   }
 
   private static getConnUrl(): string {
-    let query = {};
+    const query = {};
     let credentials = '';
 
     if (config.db.resplicaset) {

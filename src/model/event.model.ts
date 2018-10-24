@@ -12,6 +12,4 @@ export class Event implements IEvent {
   public _id: string;
   public eventId: string;
   public content: EventContent;
-
-  constructor() {}
 }

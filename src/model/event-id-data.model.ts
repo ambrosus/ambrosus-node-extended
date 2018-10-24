@@ -10,6 +10,4 @@ export class EventIdData implements IEventIdData {
   public createdBy: string;
   public accessLevel: number;
   public timestamp: number;
-
-  constructor() {}
 }

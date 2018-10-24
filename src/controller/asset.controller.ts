@@ -5,13 +5,13 @@ import {
   controller,
   httpGet,
   httpPost,
-  requestParam
+  requestParam,
 } from 'inversify-express-utils';
 
 import { TYPES } from '../constant/types';
 import { IAnalytics } from '../interface/analytics.interface';
+import { APIQuery, APIResult, Asset } from '../model';
 import { AssetService } from '../service/asset.service';
-import { Asset, APIQuery, APIResult } from '../model';
 
 @controller('/asset', TYPES.AuthorizedMiddleware)
 export class AssetController extends BaseHttpController implements IAnalytics {

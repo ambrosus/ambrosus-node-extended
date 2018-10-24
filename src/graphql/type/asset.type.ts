@@ -8,7 +8,6 @@ export class AssetType implements IGraphQLType {
 
   constructor() {
     this.defs = `
-    
     type AssetResults {
       results: [Asset]
       hasNext: Boolean
@@ -32,13 +31,12 @@ export class AssetType implements IGraphQLType {
       timestamp: Int
       sequenceNumber: Int
     }
-    
+
     type Asset {
       assetId: String
       content: AssetContent
       metadata: AssetMetaData
     }
-
     `;
   }
 }

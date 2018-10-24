@@ -2,8 +2,8 @@ import { inject, injectable } from 'inversify';
 
 import { IGraphQLResolver } from '..';
 import { TYPES } from '../../constant/types';
+import { APIQuery, APIResult, Event } from '../../model';
 import { EventService } from '../../service/event.service';
-import { Event, APIResult, APIQuery } from '../../model';
 
 @injectable()
 export class EventResolver implements IGraphQLResolver {
@@ -16,8 +16,8 @@ export class EventResolver implements IGraphQLResolver {
     this.resolver = {
       Query: {
         getEvents: this.getEvents.bind(this),
-        getEvent: this.getEvent.bind(this)
-      }
+        getEvent: this.getEvent.bind(this),
+      },
     };
   }
 

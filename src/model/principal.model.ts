@@ -1,6 +1,6 @@
 import { interfaces } from 'inversify-express-utils';
-import { Request, Response, NextFunction } from 'express';
-import { Account, User } from './';
+
+import { Account } from './';
 import { AuthToken } from './auth-token.model';
 
 export interface IPrincipal extends interfaces.Principal {

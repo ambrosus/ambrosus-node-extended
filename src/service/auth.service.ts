@@ -3,10 +3,8 @@ import { inject, injectable } from 'inversify';
 
 import { TYPES } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
-import { getTimestamp } from '../util/helpers';
-import { Web3Service } from './web3.service';
-import { AuthenticationError } from '../error';
 import { AuthToken } from '../model';
+import { Web3Service } from './web3.service';
 
 @injectable()
 export class AuthService {
@@ -29,7 +27,7 @@ export class AuthService {
     }
 
     const decoded = this.decode(token);
-    if (decoded == undefined) {
+    if (decoded === undefined) {
       this.logger.warn('Token error: decode failure');
       return undefined;
     }

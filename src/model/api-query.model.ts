@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { injectable } from 'inversify';
+
 import { parseAPIQuery } from '../util/helpers';
 import { IAPIPagination } from './api-pagination.model';
 
@@ -37,7 +38,7 @@ export class APIQuery implements IAPIQuery, IAPIPagination {
 
   get options(): any {
     const opt = {
-      projection: this.fieldBlacklist
+      projection: this.fieldBlacklist,
     };
 
     return opt;
@@ -46,7 +47,7 @@ export class APIQuery implements IAPIQuery, IAPIPagination {
   constructor(query?: object, next?: string, previous?: string, limit?: number) {
     this.fieldBlacklist = {
       _id: 0,
-      repository: 0
+      repository: 0,
     };
   }
 

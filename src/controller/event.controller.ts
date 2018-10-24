@@ -5,13 +5,13 @@ import {
   controller,
   httpGet,
   httpPost,
-  requestParam
+  requestParam,
 } from 'inversify-express-utils';
 
 import { TYPES } from '../constant/types';
 import { IAnalytics } from '../interface/analytics.interface';
+import { APIAssetAggregate, APIQuery, APIResult, Event } from '../model';
 import { EventService } from '../service/event.service';
-import { Event, APIQuery, APIResult, APIAssetAggregate } from '../model';
 
 @controller('/event', TYPES.AuthorizedMiddleware)
 export class EventController extends BaseHttpController implements IAnalytics {

@@ -1,11 +1,11 @@
-import { injectable, inject } from 'inversify';
+import { NextFunction, Request, Response } from 'express';
+import { inject, injectable } from 'inversify';
 import { interfaces } from 'inversify-express-utils';
-import { Request, Response, NextFunction } from 'express';
-import { Principal, Account } from '../../model';
+
 import { TYPES } from '../../constant';
-import { AuthService } from '../../service/auth.service';
+import { Account, Principal } from '../../model';
 import { AccountService } from '../../service/account.service';
-import { User } from '../../model/user.model';
+import { AuthService } from '../../service/auth.service';
 
 @injectable()
 export class AMBAuthProvider implements interfaces.AuthProvider {

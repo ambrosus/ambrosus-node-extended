@@ -1,10 +1,9 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPES } from '../constant/types';
+import { APIQuery, APIResult, Asset } from '../model';
 import { MongoDBClient } from '../util/mongodb/client';
 import { AnalyticsService } from './analytics.service';
-import { Asset, APIQuery, APIResult } from '../model';
-import { query } from 'winston';
 
 @injectable()
 export class AssetService extends AnalyticsService {

@@ -2,8 +2,8 @@ import { inject, injectable } from 'inversify';
 
 import { IGraphQLResolver } from '..';
 import { TYPES } from '../../constant/types';
+import { APIQuery, APIResult, Bundle } from '../../model';
 import { BundleService } from '../../service/bundle.service';
-import { Bundle, APIQuery, APIResult } from '../../model';
 
 @injectable()
 export class BundleResolver implements IGraphQLResolver {
@@ -21,7 +21,7 @@ export class BundleResolver implements IGraphQLResolver {
     };
   }
 
-  private getBundles(_, { next, previous, limit}, context): Promise<APIResult> {
+  private getBundles(_, { next, previous, limit }, context): Promise<APIResult> {
     const apiQuery = new APIQuery();
     apiQuery.next = next;
     apiQuery.previous = previous;

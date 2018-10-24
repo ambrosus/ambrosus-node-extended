@@ -4,8 +4,8 @@ import { BaseHttpController, controller, httpGet, requestParam } from 'inversify
 
 import { TYPES } from '../constant/types';
 import { IAnalytics } from '../interface/analytics.interface';
+import { APIQuery, APIResult, Bundle } from '../model';
 import { BundleService } from '../service/bundle.service';
-import { Bundle, APIResult, APIQuery } from '../model';
 
 @controller('/bundle', TYPES.AuthorizedMiddleware)
 export class BundleController extends BaseHttpController implements IAnalytics {
