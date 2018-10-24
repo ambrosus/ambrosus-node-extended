@@ -1,4 +1,5 @@
 import { injectable } from 'inversify';
+
 import { AmbrosusError } from '../error/ambrosus.error';
 import { getTimestamp } from '../util/helpers';
 
@@ -16,7 +17,7 @@ export class AuthToken implements IAuthToken {
   public authError;
   constructor(public createdBy: string, public validUntil: number, public signature: string) {}
 
-  isValid(): boolean {
+  public isValid(): boolean {
     if (this.validUntil && this.validUntil >= getTimestamp()) {
       return true;
     }

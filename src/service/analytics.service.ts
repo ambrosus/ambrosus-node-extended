@@ -1,20 +1,19 @@
 import { inject, injectable, unmanaged } from 'inversify';
 
 import { TYPES } from '../constant';
+import { ValidationError } from '../error';
+import { APIQuery } from '../model';
 import {
   getTimestamp,
+  getTimestampDateEnd,
+  getTimestampDateStart,
+  getTimestampMonthStart,
   getTimestampSubDays,
   getTimestampSubHours,
   getTimestampSubWeeks,
-  getTimestampMonthStart,
-  getTimestampDateStart,
-  getTimestampDateEnd,
-  isValidDate
+  isValidDate,
 } from '../util/helpers';
-import { ValidationError } from '../error';
-
 import { MongoDBClient } from '../util/mongodb/client';
-import { APIQuery } from '../model';
 
 @injectable()
 export class AnalyticsService {
@@ -30,7 +29,6 @@ export class AnalyticsService {
     const apiQuery = new APIQuery();
     apiQuery.collection = this.collection;
     return new Promise<any>((resolve, reject) => {
-      console.log("HERE");
       this.db.count(apiQuery, (error, count: number) => {
         if (error) {
           reject(error);

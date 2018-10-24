@@ -8,7 +8,6 @@ export class AccountType implements IGraphQLType {
 
   constructor() {
     this.defs = `
-    
     type AccountResults {
       results: [Account!]!
       hasNext: Boolean
@@ -16,7 +15,6 @@ export class AccountType implements IGraphQLType {
       hasPrevious: Boolean
       previous: String
     }
-    
     type Account {
         address: String
         accessLevel: Int
@@ -25,7 +23,6 @@ export class AccountType implements IGraphQLType {
         registeredOn: Float
         registeredBy: String
       }
-      
     `;
   }
 }

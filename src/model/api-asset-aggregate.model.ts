@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { injectable } from 'inversify';
+
 import { IAPIPagination } from './api-pagination.model';
 
 export interface IAPIAssetAggregate {
@@ -24,7 +25,7 @@ export class APIAssetAggregate implements IAPIAssetAggregate, IAPIPagination {
 
     if (req.body.assets) {
       apiAssetAgg.stepMatch['$match']['content.idData.assetId'] = {
-        $in: req.body.assets
+        $in: req.body.assets,
       };
     }
 
@@ -53,9 +54,9 @@ export class APIAssetAggregate implements IAPIAssetAggregate, IAPIPagination {
       $group: {
         _id: '$content.idData.assetId',
         doc: {
-          $first: '$$ROOT'
-        }
-      }
+          $first: '$$ROOT',
+        },
+      },
     };
 
     this.stepProject = {
@@ -64,8 +65,8 @@ export class APIAssetAggregate implements IAPIAssetAggregate, IAPIPagination {
         assetId: '$_id',
         eventId: '$doc.eventId',
         content: '$doc.content',
-        metadata: '$doc.metadata'
-      }
+        metadata: '$doc.metadata',
+      },
     };
   }
 }

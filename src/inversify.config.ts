@@ -1,4 +1,5 @@
 import { Container } from 'inversify';
+
 import { TYPES } from './constant/types';
 import { AccountController } from './controller/account.controller';
 import { AssetController } from './controller/asset.controller';
@@ -7,7 +8,7 @@ import { EventController } from './controller/event.controller';
 import { GraphQLController } from './controller/graphql.controller';
 import { RootController } from './controller/root.controller';
 import { GraphQLSchema, IGraphQLResolver, IGraphQLSchema, IGraphQLType } from './graphql';
-import { AccountResolver, AssetResolver, EventResolver, BundleResolver } from './graphql/resolver';
+import { AccountResolver, AssetResolver, BundleResolver, EventResolver } from './graphql/resolver';
 import { AccountType, AssetType, BundleType, EventType, QueryType } from './graphql/type';
 import { AuthorizedMiddleware } from './middleware';
 import { AccountService } from './service/account.service';

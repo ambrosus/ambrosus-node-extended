@@ -1,10 +1,10 @@
 import { inject, injectable } from 'inversify';
+import * as MongoPaging from 'mongo-cursor-pagination';
 
 import { TYPES } from '../constant/types';
+import { APIAssetAggregate, APIQuery, APIResult, Event } from '../model';
 import { MongoDBClient } from '../util/mongodb/client';
 import { AnalyticsService } from './analytics.service';
-import { Event, APIQuery, APIResult, APIAssetAggregate } from '../model';
-import * as MongoPaging from 'mongo-cursor-pagination';
 
 @injectable()
 export class EventService extends AnalyticsService {
@@ -57,16 +57,13 @@ export class EventService extends AnalyticsService {
       apiAssetAgg.collection = this.collection;
       apiAssetAgg.paginationField = 'content.idData.timestamp';
 
-      MongoPaging.aggregate(
-        this.dbClient.db.collection(apiAssetAgg.collection),
-        {
-          aggregation: apiAssetAgg.pipeline,
-          paginatedField: apiAssetAgg.paginationField,
-          limit: apiAssetAgg.limit,
-          next: apiAssetAgg.next,
-          previous: apiAssetAgg.previous,
-        }
-      )
+      MongoPaging.aggregate(this.dbClient.db.collection(apiAssetAgg.collection), {
+        aggregation: apiAssetAgg.pipeline,
+        paginatedField: apiAssetAgg.paginationField,
+        limit: apiAssetAgg.limit,
+        next: apiAssetAgg.next,
+        previous: apiAssetAgg.previous,
+      })
         .then(data => {
           resolve(data);
         })

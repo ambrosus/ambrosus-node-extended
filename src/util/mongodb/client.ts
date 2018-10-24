@@ -28,7 +28,7 @@ export class MongoDBClient {
       sortAscending: apiQuery.sortAscending,
       limit: apiQuery.limit,
       next: apiQuery.next,
-      previous: apiQuery.previous
+      previous: apiQuery.previous,
     })
       .then(data => {
         results(undefined, data);
@@ -39,7 +39,6 @@ export class MongoDBClient {
   }
 
   public findOne(apiQuery: APIQuery, result: (error, data) => void): void {
-    //console.log(apiQuery);
     this.db
       .collection(apiQuery.collection)
       .findOne(apiQuery.query, apiQuery.options, (error, data) => {

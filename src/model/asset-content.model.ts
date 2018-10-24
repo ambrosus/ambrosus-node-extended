@@ -7,8 +7,5 @@ export interface IAssetContent {
 
 export class AssetContent implements IAssetContent {
   public signature: string;
-
   public idData: AssetIdData;
-
-  constructor() {}
 }

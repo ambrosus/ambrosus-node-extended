@@ -6,6 +6,4 @@ export interface IAssetMetaData {
 export class AssetMetaData implements IAssetMetaData {
   public bundleId: string;
   public bundleTransactionHash: string;
-
-  constructor() {}
 }

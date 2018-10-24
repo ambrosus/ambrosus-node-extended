@@ -1,9 +1,9 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPES } from '../constant/types';
+import { APIQuery, APIResult, Bundle } from '../model';
 import { MongoDBClient } from '../util/mongodb/client';
 import { AnalyticsService } from './analytics.service';
-import { Bundle, APIQuery, APIResult } from '../model';
 
 @injectable()
 export class BundleService extends AnalyticsService {

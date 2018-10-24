@@ -8,7 +8,6 @@ export class EventType implements IGraphQLType {
 
   constructor() {
     this.defs = `
-
     type EventResults {
       results: [Event]
       hasNext: Boolean
@@ -16,25 +15,21 @@ export class EventType implements IGraphQLType {
       hasPrevious: Boolean
       previous: String
     }
-
     type EventContent {
       signature: String
       idData: EventIdData
 
     }
-
     type EventIdData {
       assetId: String
       createdBy: String
       accessLevel: Int
       timestamp: Float
     }
-    
     type Event {
       eventId: String
       content: EventContent
     }
-
     `;
   }
 }

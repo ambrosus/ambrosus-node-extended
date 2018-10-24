@@ -15,6 +15,4 @@ export class Asset implements IAsset {
   public assetId: string;
   public content: AssetContent;
   public metadata: AssetMetaData;
-
-  constructor() {}
 }

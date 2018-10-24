@@ -8,5 +8,4 @@ export class AssetIdData implements IAssetIdData {
   public createdBy: string;
   public timestamp: number;
   public sequenceNumber: number;
-  constructor() {}
 }

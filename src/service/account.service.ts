@@ -1,11 +1,11 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPES } from '../constant/types';
-
-import { MongoDBClient } from '../util/mongodb/client';
 import { ILogger } from '../interface/logger.inferface';
 import { Account, APIQuery, APIResult } from '../model';
+import { MongoDBClient } from '../util/mongodb/client';
 import { AnalyticsService } from './analytics.service';
+
 @injectable()
 export class AccountService extends AnalyticsService {
   constructor(

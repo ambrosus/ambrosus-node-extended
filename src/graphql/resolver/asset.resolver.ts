@@ -2,8 +2,9 @@ import { inject, injectable } from 'inversify';
 
 import { IGraphQLResolver } from '..';
 import { TYPES } from '../../constant/types';
+import { APIQuery, APIResult, Asset } from '../../model';
 import { AssetService } from '../../service/asset.service';
-import { Asset, APIResult, APIQuery } from '../../model';
+
 @injectable()
 export class AssetResolver implements IGraphQLResolver {
   public resolver;
@@ -20,8 +21,7 @@ export class AssetResolver implements IGraphQLResolver {
     };
   }
 
-  private getAssets(_, { next, previous, limit}, context): Promise<APIResult> {
-    console.log("getAssets");
+  private getAssets(_, { next, previous, limit }, context): Promise<APIResult> {
     const apiQuery = new APIQuery();
     apiQuery.next = next;
     apiQuery.previous = previous;
@@ -30,7 +30,6 @@ export class AssetResolver implements IGraphQLResolver {
   }
 
   private getAsset(_, { assetId }, args, context): Promise<Asset> {
-    console.log("getAsset");
     return this.assetService.getAsset(assetId);
   }
 }

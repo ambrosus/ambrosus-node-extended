@@ -8,7 +8,6 @@ export class BundleType implements IGraphQLType {
 
   constructor() {
     this.defs = `
-
       type BundleResults {
         results: [Bundle!]!
         hasNext: Boolean
@@ -16,11 +15,9 @@ export class BundleType implements IGraphQLType {
         hasPrevious: Boolean
         previous: String
       }
-
       type Bundle {
         bundleId: String
       }
-
     `;
   }
 }

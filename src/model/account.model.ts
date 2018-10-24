@@ -20,5 +20,4 @@ export class Account implements IAccount {
   public registeredOn: number;
   public registeredBy: string;
 
-  constructor() {}
 }
