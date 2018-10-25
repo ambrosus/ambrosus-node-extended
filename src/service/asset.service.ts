@@ -1,54 +1,27 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPES } from '../constant/types';
+import { AssetRepository } from '../database/repository';
+import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResult, Asset } from '../model';
-import { MongoDBClient } from '../util/mongodb/client';
-import { AnalyticsService } from './analytics.service';
 
 @injectable()
-export class AssetService extends AnalyticsService {
-  constructor(@inject(TYPES.MongoDBClient) protected db: MongoDBClient) {
-    super(db, 'assets');
-  }
+export class AssetService {
+  @inject(TYPES.AssetRepository)
+  public assetRepository: AssetRepository;
+
+  @inject(TYPES.LoggerService)
+  public logger: ILogger;
 
   public getAssets(apiQuery: APIQuery): Promise<APIResult> {
-    console.log(apiQuery);
-    return new Promise<APIResult>((resolve, reject) => {
-      apiQuery.collection = this.collection;
-      apiQuery.paginationField = 'content.idData.timestamp';
-      this.db.find(apiQuery, (error, data: any) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(data);
-      });
-    });
+    apiQuery.paginationField = 'content.idData.timestamp';
+    apiQuery.sortAscending = false;
+    return this.assetRepository.find(apiQuery);
   }
 
-  public async getAsset(assetId: string): Promise<Asset> {
-    return new Promise<Asset>((resolve, reject) => {
-      const apiQuery = new APIQuery();
-      apiQuery.collection = this.collection;
-      apiQuery.query = { assetId };
-      this.db.findOne(apiQuery, (error, data: Asset) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(data);
-      });
-    });
-  }
-
-  public async getQueryResults(apiQuery: APIQuery): Promise<APIResult> {
-    return new Promise<APIResult>((resolve, reject) => {
-      apiQuery.collection = this.collection;
-      apiQuery.paginationField = 'content.idData.timestamp';
-      this.db.find(apiQuery, (error, data: any) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(data);
-      });
-    });
+  public getAsset(assetId: string): Promise<Asset> {
+    const apiQuery = new APIQuery();
+    apiQuery.query = { assetId };
+    return this.assetRepository.findOne(apiQuery);
   }
 }

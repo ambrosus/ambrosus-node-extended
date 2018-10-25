@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 
 export interface IAccount {
-  _id?: string;
+  _id: string;
   address: string;
   accessLevel: number;
   organization: string;
@@ -12,7 +12,7 @@ export interface IAccount {
 
 @injectable()
 export class Account implements IAccount {
-  public _id?: string;
+  public _id: string;
   public address: string;
   public accessLevel: number;
   public organization: string;

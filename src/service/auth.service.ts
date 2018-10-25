@@ -2,6 +2,7 @@ import base64url from 'base64url';
 import { inject, injectable } from 'inversify';
 
 import { TYPES } from '../constant/types';
+import { ValidationError } from '../error';
 import { ILogger } from '../interface/logger.inferface';
 import { AuthToken } from '../model';
 import { Web3Service } from './web3.service';
@@ -15,31 +16,33 @@ export class AuthService {
 
   public getAuthToken(authHeader: string): AuthToken {
     if (!authHeader) {
-      this.logger.warn('Token error: missing authentication header');
-      return undefined;
+      this.logger.debug('getAuthToken: missing authentication header');
+      throw new ValidationError('Invalid token');
     }
 
     const [type, token] = authHeader.split(' ');
 
     if (type !== 'AMB_TOKEN') {
-      this.logger.warn('Token error: missing AMB_TOKEN ');
-      return undefined;
+      this.logger.debug('getAuthToken: AMB_TOKEN not found in authentication header');
+      throw new ValidationError('Invalid token');
     }
 
     const decoded = this.decode(token);
     if (decoded === undefined) {
-      this.logger.warn('Token error: decode failure');
-      return undefined;
+      this.logger.debug('getAuthToken: failed to decode AMB_TOKEN');
+      throw new ValidationError('Invalid token');
     }
 
     const { signature, idData } = decoded;
     if (!this.web3Service.validateSignature(idData.createdBy, signature, idData)) {
-      this.logger.warn('Token error: invalid signature');
-      return undefined;
+      this.logger.debug('getAuthToken: failed to validate signature');
+      throw new ValidationError('Invalid token');
     }
 
-    const authToken = new AuthToken(idData.createdBy, idData.validUntil, signature);
-
+    const authToken = new AuthToken();
+    authToken.createdBy = idData.createdBy;
+    authToken.validUntil = idData.validUntil;
+    authToken.signature = signature;
     return authToken;
   }
 

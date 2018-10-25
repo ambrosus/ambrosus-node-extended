@@ -1,54 +1,27 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPES } from '../constant/types';
+import { BundleRepository } from '../database/repository';
+import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResult, Bundle } from '../model';
-import { MongoDBClient } from '../util/mongodb/client';
-import { AnalyticsService } from './analytics.service';
 
 @injectable()
-export class BundleService extends AnalyticsService {
-  constructor(@inject(TYPES.MongoDBClient) protected db: MongoDBClient) {
-    super(db, 'bundles');
-  }
+export class BundleService {
+  @inject(TYPES.BundleRepository)
+  public bundleRepository: BundleRepository;
+
+  @inject(TYPES.LoggerService)
+  public logger: ILogger;
 
   public getBundles(apiQuery: APIQuery): Promise<APIResult> {
-    return new Promise<APIResult>((resolve, reject) => {
-      apiQuery.collection = this.collection;
-      apiQuery.exludeField('content');
-      this.db.find(apiQuery, (error, data: any) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(data);
-      });
-    });
+    apiQuery.exludeField('content');
+    return this.bundleRepository.find(apiQuery);
   }
 
-  public async getBundle(bundleId: string): Promise<Bundle> {
-    return new Promise<Bundle>((resolve, reject) => {
-      const apiQuery = new APIQuery();
-      apiQuery.collection = this.collection;
-      apiQuery.query = { bundleId };
-      apiQuery.exludeField('content');
-      this.db.findOne(apiQuery, (error, data: Bundle) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(data);
-      });
-    });
-  }
-
-  public async getQueryResults(apiQuery: APIQuery): Promise<APIResult> {
-    return new Promise<APIResult>((resolve, reject) => {
-      apiQuery.collection = this.collection;
-      apiQuery.exludeField('content');
-      this.db.find(apiQuery, (error, data: any) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(data);
-      });
-    });
+  public getBundle(bundleId: string): Promise<Bundle> {
+    const apiQuery = new APIQuery();
+    apiQuery.query = { bundleId };
+    apiQuery.exludeField('content');
+    return this.bundleRepository.findOne(apiQuery);
   }
 }
