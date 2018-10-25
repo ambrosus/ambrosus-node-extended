@@ -40,7 +40,7 @@ export const matchMongoOperator = operator => {
   return undefined;
 };
 
-export const parseAPIQuery = q => {
+export const getMongoFilter = q => {
   return _.reduce(
     q,
     (result, filter) => {

@@ -8,22 +8,14 @@ import { AnalyticsService } from './analytics.service';
 import { AccountRepository } from '../database/repository';
 
 @injectable()
-export class AccountService {
+export class UserService extends AnalyticsService {
   @inject(TYPES.AccountRepository)
   public accountRepository: AccountRepository;
 
-  @inject(TYPES.LoggerService)
-  public logger: ILogger;
-
-  public getAccounts(apiQuery: APIQuery): Promise<APIResult> {
-    apiQuery.paginationField = 'registeredOn';
-    apiQuery.sortAscending = false;
-    return this.accountRepository.find(apiQuery);
-  }
-
-  public getAccount(address: string): Promise<Account> {
-    const apiQuery = new APIQuery();
-    apiQuery.query = { address };
-    return this.accountRepository.findOne(apiQuery);
+  constructor(
+    @inject(TYPES.MongoDBClient) protected db: MongoDBClient,
+    @inject(TYPES.LoggerService) public logger: ILogger
+  ) {
+    super(db, 'accounts');
   }
 }

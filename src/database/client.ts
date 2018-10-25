@@ -1,23 +1,14 @@
+import { injectable } from 'inversify';
 import { Db, MongoClient } from 'mongodb';
-
-import { config } from '../../config';
-import { ConnectionError } from '../../error';
 import * as querystring from 'querystring';
 
-export class MongoDBConnection {
-  public static isConnected = false;
-  public static db: Db;
+import { config } from '../config';
+import { ConnectionError } from '../error';
 
-  public static getConnection(result: (connection) => void) {
-    if (this.isConnected) {
-      return result(this.db);
-    }
-    this.connect((error, db: Db) => {
-      return result(this.db);
-    });
-  }
-
-  private static connect(result: (error, db: Db) => void) {
+@injectable()
+export class DBClient {
+  public db: Db;
+  constructor() {
     const connStr = this.getConnUrl();
     const dbName = config.db.dbName;
 
@@ -29,13 +20,11 @@ export class MongoDBConnection {
           throw new ConnectionError(err.message);
         }
         this.db = client.db(dbName);
-        this.isConnected = true;
-        return result(err, this.db);
       }
     );
   }
 
-  private static getConnUrl(): string {
+  private getConnUrl(): string {
     const query = {};
     let credentials = '';
 

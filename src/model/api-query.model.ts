@@ -1,36 +1,43 @@
 import { Request } from 'express';
 import { injectable } from 'inversify';
 
-import { parseAPIQuery } from '../util/helpers';
-import { IAPIPagination } from './api-pagination.model';
+import { APIPagination } from './api-pagination.model';
+import * as _ from 'lodash';
+import { getMongoFilter, getParamValue } from '../util/helpers';
 
 export interface IAPIQuery {
-  collection: string;
   query: object;
-
   validate();
   options();
 }
 
 @injectable()
-export class APIQuery implements IAPIQuery, IAPIPagination {
+export class APIQuery extends APIPagination implements IAPIQuery {
   public static fromRequest(req: Request) {
     const apiQuery = new APIQuery();
-    apiQuery.query = parseAPIQuery(req.body.query || req.query.query);
-    apiQuery.limit = +req.body.limit || +req.query.limit || undefined;
-    apiQuery.next = req.body.next || req.query.next;
-    apiQuery.previous = req.body.previous || req.query.previous;
+    const query = getParamValue(req, 'query');
+    if (query) {
+      apiQuery.query = getMongoFilter(query);
+    }
+    apiQuery.limit = +getParamValue(req, 'limit') || undefined;
+    apiQuery.next = getParamValue(req, 'next');
+    apiQuery.previous = getParamValue(req, 'previous');
+
     return apiQuery;
   }
 
-  public collection;
+  public aggregate;
+  public pipeline;
   public query;
-  public limit;
-  public next;
-  public previous;
-  public paginationField;
-  public sortAscending;
-  protected fieldBlacklist;
+  private fieldBlacklist;
+
+  constructor() {
+    super();
+    this.fieldBlacklist = {
+      _id: 0,
+      repository: 0,
+    };
+  }
 
   get fields(): any {
     return this.fieldBlacklist;
@@ -42,13 +49,6 @@ export class APIQuery implements IAPIQuery, IAPIPagination {
     };
 
     return opt;
-  }
-
-  constructor(query?: object, next?: string, previous?: string, limit?: number) {
-    this.fieldBlacklist = {
-      _id: 0,
-      repository: 0,
-    };
   }
 
   public exludeField(field: string) {

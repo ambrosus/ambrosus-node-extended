@@ -5,3 +5,11 @@ export interface IAPIPagination {
   paginationField: string;
   sortAscending: boolean;
 }
+
+export class APIPagination implements IAPIPagination {
+  public limit: number;
+  public next: string;
+  public previous: string;
+  public paginationField: string;
+  public sortAscending: boolean;
+}

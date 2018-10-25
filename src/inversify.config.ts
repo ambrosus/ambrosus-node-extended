@@ -2,11 +2,19 @@ import { Container } from 'inversify';
 
 import { TYPES } from './constant/types';
 import { AccountController } from './controller/account.controller';
+import { AnalyticsController } from './controller/analytics.controller';
 import { AssetController } from './controller/asset.controller';
 import { BundleController } from './controller/bundle.controller';
 import { EventController } from './controller/event.controller';
 import { GraphQLController } from './controller/graphql.controller';
 import { RootController } from './controller/root.controller';
+import { DBClient } from './database/client';
+import {
+  AccountRepository,
+  AssetRepository,
+  BundleRepository,
+  EventRepository,
+} from './database/repository';
 import { GraphQLSchema, IGraphQLResolver, IGraphQLSchema, IGraphQLType } from './graphql';
 import { AccountResolver, AssetResolver, BundleResolver, EventResolver } from './graphql/resolver';
 import { AccountType, AssetType, BundleType, EventType, QueryType } from './graphql/type';
@@ -18,14 +26,13 @@ import { BundleService } from './service/bundle.service';
 import { EventService } from './service/event.service';
 import { LoggerService } from './service/logger.service';
 import { Web3Service } from './service/web3.service';
-import { MongoDBClient } from './util/mongodb/client';
 
 export const iocContainer: Container = new Container();
 
 // db
 iocContainer
-  .bind<MongoDBClient>(TYPES.MongoDBClient)
-  .to(MongoDBClient)
+  .bind<DBClient>(TYPES.DBClient)
+  .to(DBClient)
   .inSingletonScope();
 
 // controllers
@@ -35,6 +42,7 @@ iocContainer.bind<AccountController>(TYPES.AccountController).to(AccountControll
 iocContainer.bind<AssetController>(TYPES.AssetController).to(AssetController);
 iocContainer.bind<EventController>(TYPES.EventController).to(EventController);
 iocContainer.bind<BundleController>(TYPES.BundleController).to(BundleController);
+iocContainer.bind<AnalyticsController>(TYPES.AnalyticsController).to(AnalyticsController);
 
 // services
 iocContainer
@@ -65,6 +73,12 @@ iocContainer
   .bind<BundleService>(TYPES.BundleService)
   .to(BundleService)
   .inSingletonScope();
+
+// repositories
+iocContainer.bind<AccountRepository>(TYPES.AccountRepository).to(AccountRepository);
+iocContainer.bind<AssetRepository>(TYPES.AssetRepository).to(AssetRepository);
+iocContainer.bind<EventRepository>(TYPES.EventRepository).to(EventRepository);
+iocContainer.bind<BundleRepository>(TYPES.BundleRepository).to(BundleRepository);
 
 // middleware
 iocContainer.bind<AuthorizedMiddleware>(TYPES.AuthorizedMiddleware).to(AuthorizedMiddleware);

@@ -1,49 +1,21 @@
 import { Request } from 'express';
 import { inject } from 'inversify';
-import { BaseHttpController, controller, httpGet, requestParam } from 'inversify-express-utils';
+import {
+  BaseHttpController,
+  controller,
+  httpGet,
+  httpPost,
+  requestParam,
+} from 'inversify-express-utils';
 
 import { TYPES } from '../constant/types';
-import { IAnalytics } from '../interface/analytics.interface';
 import { APIQuery, APIResult, Bundle } from '../model';
 import { BundleService } from '../service/bundle.service';
 
 @controller('/bundle', TYPES.AuthorizedMiddleware)
-export class BundleController extends BaseHttpController implements IAnalytics {
+export class BundleController extends BaseHttpController {
   constructor(@inject(TYPES.BundleService) private bundleService: BundleService) {
     super();
-  }
-
-  @httpGet('/count')
-  public async getCount(): Promise<any> {
-    return this.bundleService.getCountTotal();
-  }
-
-  @httpGet('/count/mtd')
-  public async getCountByMonthToDate(): Promise<any> {
-    return this.bundleService.getCountByMonthToDate();
-  }
-
-  @httpGet('/count/date/:date')
-  public async getCountByDate(@requestParam('date') date: string): Promise<any> {
-    return this.bundleService.getCountByDate(date);
-  }
-
-  @httpGet('/count/daterange/:start/:end')
-  public async getCountByDateRange(
-    @requestParam('start') start: string,
-    @requestParam('end') end: string
-  ): Promise<any> {
-    return this.bundleService.getCountByDateRange(start, end);
-  }
-
-  @httpGet('/count/rolling/hours/:hours')
-  public async getCountByRollingHours(@requestParam('hours') num: number): Promise<any> {
-    return this.bundleService.getCountByRollingHours(num);
-  }
-
-  @httpGet('/count/rolling/days/:days')
-  public async getCountByRollingDays(@requestParam('days') num: number): Promise<any> {
-    return this.bundleService.getCountByRollingDays(num);
   }
 
   @httpGet('/')
@@ -54,5 +26,10 @@ export class BundleController extends BaseHttpController implements IAnalytics {
   @httpGet('/:bundleId')
   public get(@requestParam('bundleId') bundleId: string): Promise<Bundle> {
     return this.bundleService.getBundle(bundleId);
+  }
+
+  @httpPost('/query')
+  public query(req: Request): Promise<APIResult> {
+    return this.bundleService.getBundles(APIQuery.fromRequest(req));
   }
 }
