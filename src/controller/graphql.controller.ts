@@ -49,7 +49,6 @@ export class GraphQLController extends BaseHttpController {
   @httpGet('/playground')
   public playground(req: Request, res: Response) {
     return new Promise(() => {
-      console.log(this.httpContext.user);
       const options = {
         endpointURL: '/graphql',
       };

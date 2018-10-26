@@ -10,11 +10,9 @@ export interface IAPIResult {
 
 @injectable()
 export class APIResult implements IAPIResult {
-  constructor(
-    public results: any[],
-    public hasPrevious: boolean,
-    public previous: string,
-    public hasNext: boolean,
-    public next: string
-  ) {}
+  public results: any[];
+  public hasPrevious: boolean;
+  public previous: string;
+  public hasNext: boolean;
+  public next: string;
 }

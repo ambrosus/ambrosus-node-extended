@@ -4,6 +4,6 @@ export * from './api-result.model';
 export * from './asset.model';
 export * from './event.model';
 export * from './bundle.model';
-export * from './principal.model';
 export * from './auth-token.model';
 export * from './user.model';
+export * from './user-principal.model';

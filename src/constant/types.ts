@@ -12,7 +12,6 @@ export const TYPES: any = {
   BundleController: Symbol('BundleController'),
 
   AuthService: Symbol.for('AuthService'),
-  DBService: Symbol.for('DBService'),
   Web3Service: Symbol.for('Web3Service'),
   LoggerService: Symbol.for('LoggerService'),
 
@@ -33,4 +32,5 @@ export const TYPES: any = {
   GraphQLType: Symbol('GraphQLType'),
   GraphQLResolver: Symbol('GraphQLResolver'),
 
+  AccessLevel: Symbol('AccessLevel'),
 };

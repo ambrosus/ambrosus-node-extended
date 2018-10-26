@@ -1,6 +1,6 @@
 import { inject } from 'inversify';
 import { BaseHttpController, controller, httpGet, requestParam } from 'inversify-express-utils';
-
+import { Request } from 'express';
 import { TYPES } from '../constant/types';
 import {
   AccountRepository,
@@ -9,18 +9,20 @@ import {
   EventRepository,
 } from '../database/repository';
 
+import { APIQuery } from '../model';
+
 @controller('/analytics', TYPES.AuthorizedMiddleware)
 export class AnalyticsController extends BaseHttpController {
   @inject(TYPES.AccountRepository)
   public account: AccountRepository;
 
-  @inject(TYPES.AccountRepository)
+  @inject(TYPES.AssetRepository)
   public asset: AssetRepository;
 
-  @inject(TYPES.AccountRepository)
+  @inject(TYPES.EventRepository)
   public event: EventRepository;
 
-  @inject(TYPES.AccountRepository)
+  @inject(TYPES.BundleRepository)
   public bundle: BundleRepository;
 
   constructor() {
@@ -41,7 +43,7 @@ export class AnalyticsController extends BaseHttpController {
     if (!this[collection]) {
       return this.badRequest('Invalid path');
     }
-    const count = await this[collection].getCountByMonthToDate();
+    const count = await this[collection].countByMonthToDate();
     return { count };
   }
 
@@ -53,7 +55,7 @@ export class AnalyticsController extends BaseHttpController {
     if (!this[collection]) {
       return this.badRequest('Invalid path');
     }
-    const count = await this[collection].getCountByDate(date);
+    const count = await this[collection].countByDate(date);
     return { count };
   }
 
@@ -66,7 +68,7 @@ export class AnalyticsController extends BaseHttpController {
     if (!this[collection]) {
       return this.badRequest('Invalid path');
     }
-    const count = await this[collection].getCountByDateRange(start, end);
+    const count = await this[collection].countByDateRange(start, end);
     return { count };
   }
 
@@ -78,7 +80,7 @@ export class AnalyticsController extends BaseHttpController {
     if (!this[collection]) {
       return this.badRequest('Invalid path');
     }
-    const count = await this[collection].getCountByRollingHours(hours);
+    const count = await this[collection].countByRollingHours(hours);
     return { count };
   }
 
@@ -90,7 +92,25 @@ export class AnalyticsController extends BaseHttpController {
     if (!this[collection]) {
       return this.badRequest('Invalid path');
     }
-    const count = await this[collection].getCountByRollingDays(days);
+    const count = await this[collection].countByRollingDays(days);
     return { count };
+  }
+
+  @httpGet('/:collection/timeseries/day')
+  public async getTimeSeriesDay(@requestParam('collection') collection: string, req: Request) {
+    if (!this[collection]) {
+      return this.badRequest('Invalid path');
+    }
+    const result = await this[collection].timeSeriesDay(APIQuery.fromRequest(req));
+    return result;
+  }
+
+  @httpGet('/:collection/timeseries/month')
+  public async getTimeSeriesMonth(@requestParam('collection') collection: string, req: Request) {
+    if (!this[collection]) {
+      return this.badRequest('Invalid path');
+    }
+    const result = await this[collection].timeSeriesMonth(APIQuery.fromRequest(req));
+    return result;
   }
 }

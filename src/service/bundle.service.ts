@@ -13,15 +13,17 @@ export class BundleService {
   @inject(TYPES.LoggerService)
   public logger: ILogger;
 
+  constructor(@inject(TYPES.AccessLevel) private readonly accessLevel: number) {}
+
   public getBundles(apiQuery: APIQuery): Promise<APIResult> {
-    apiQuery.exludeField('content');
-    return this.bundleRepository.find(apiQuery);
+    apiQuery.exludeField('content.entries');
+    return this.bundleRepository.query(apiQuery);
   }
 
   public getBundle(bundleId: string): Promise<Bundle> {
     const apiQuery = new APIQuery();
     apiQuery.query = { bundleId };
-    apiQuery.exludeField('content');
-    return this.bundleRepository.findOne(apiQuery);
+    apiQuery.exludeField('content.entries');
+    return this.bundleRepository.single(apiQuery);
   }
 }
