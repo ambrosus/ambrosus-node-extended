@@ -1,14 +1,14 @@
 import { Request } from 'express';
 import { injectable } from 'inversify';
 
-import { APIPagination } from './api-pagination.model';
-import * as _ from 'lodash';
 import { getMongoFilter, getParamValue } from '../util/helpers';
+import { APIPagination } from './api-pagination.model';
 
 export interface IAPIQuery {
   query: object;
   validate();
   options();
+  fields();
 }
 
 @injectable()
@@ -26,33 +26,34 @@ export class APIQuery extends APIPagination implements IAPIQuery {
     return apiQuery;
   }
 
-  public aggregate;
-  public pipeline;
+  public accessField;
   public query;
-  private fieldBlacklist;
+  private blackListFields;
 
   constructor() {
     super();
-    this.fieldBlacklist = {
+    this.blackListFields = {
       _id: 0,
       repository: 0,
     };
   }
 
   get fields(): any {
-    return this.fieldBlacklist;
+    return {
+      projection: this.blackListFields,
+    };
   }
 
   get options(): any {
     const opt = {
-      projection: this.fieldBlacklist,
+      projection: this.blackListFields,
     };
 
     return opt;
   }
 
   public exludeField(field: string) {
-    this.fieldBlacklist[field] = 0;
+    this.blackListFields[field] = 0;
   }
 
   public validate() {

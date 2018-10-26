@@ -5,6 +5,7 @@ import { TYPES } from '../../constant';
 import { ConnectionError, ValidationError } from '../../error';
 import { ILogger } from '../../interface/logger.inferface';
 import { APIQuery, APIResult } from '../../model';
+
 import {
   getTimestamp,
   getTimestampDateEnd,
@@ -24,7 +25,7 @@ export class BaseRepository<T> {
 
   constructor(
     @inject(TYPES.DBClient) protected client: DBClient,
-    @unmanaged() private collectionName: string
+    @unmanaged() protected collectionName: string
   ) {}
 
   get collection(): any {
@@ -32,6 +33,14 @@ export class BaseRepository<T> {
       throw new ConnectionError('Database client not initialized');
     }
     return this.client.db.collection(this.collectionName);
+  }
+
+  get timestampField(): any {
+    throw new Error('timestampField getter must be overridden!');
+  }
+
+  get accessLevelField(): any {
+    throw new Error('accessLevelField getter must be overridden!');
   }
 
   public create(item: T): Promise<boolean> {
@@ -44,25 +53,35 @@ export class BaseRepository<T> {
     throw new Error('Method not implemented.');
   }
 
-  public find(apiQuery: APIQuery): Promise<APIResult> {
-    this.logger.debug(`find ${this.collectionName}: ${JSON.stringify(apiQuery)}`);
-    return MongoPaging.find(this.collection, {
-      query: apiQuery.query,
-      fields: { projection: apiQuery.fields },
-      paginatedField: apiQuery.paginationField,
-      sortAscending: apiQuery.sortAscending,
-      limit: apiQuery.limit,
-      next: apiQuery.next,
-      previous: apiQuery.previous,
-    });
+  public query(apiQuery: APIQuery, accessLevel: number): Promise<APIResult> {
+    const q = {
+      ...apiQuery.query,
+      ...{
+        [this.accessLevelField]: { $gte: accessLevel },
+      },
+    };
+    return this.pagedResults(
+      q,
+      apiQuery.fields,
+      apiQuery.paginationField,
+      apiQuery.sortAscending,
+      apiQuery.limit,
+      apiQuery.next,
+      apiQuery.previous
+    );
   }
 
-  public findOne(apiQuery: APIQuery): Promise<T> {
-    this.logger.debug(`findOne ${this.collectionName}: ${JSON.stringify(apiQuery)}`);
-    return this.collection.findOne(apiQuery.query, apiQuery.options);
+  public single(apiQuery: APIQuery, accessLevel: number): Promise<T> {
+    const q = {
+      ...apiQuery.query,
+      ...{
+        [this.accessLevelField]: { $gte: accessLevel },
+      },
+    };
+    return this.singleResult(q, apiQuery.options);
   }
 
-  public aggregate(pipeline: object, apiQuery: APIQuery): Promise<APIResult> {
+  public aggregatePaging(pipeline: object, apiQuery: APIQuery): Promise<APIResult> {
     this.logger.debug(
       `aggregate ${this.collectionName}: ${JSON.stringify(pipeline)} ${JSON.stringify(apiQuery)}`
     );
@@ -75,6 +94,13 @@ export class BaseRepository<T> {
     });
   }
 
+  public aggregate(pipeline: object, apiQuery: APIQuery): Promise<any> {
+    this.logger.debug(
+      `aggregate ${this.collectionName}: ${JSON.stringify(pipeline)} ${JSON.stringify(apiQuery)}`
+    );
+    return this.collection.aggregate(pipeline).toArray();
+  }
+
   public count(): Promise<number> {
     this.logger.debug(`count ${this.collectionName}`);
     return this.collection.countDocuments();
@@ -85,22 +111,22 @@ export class BaseRepository<T> {
     return this.collection.countDocuments(apiQuery.query);
   }
 
-  public getCountByMonthToDate(): Promise<number> {
+  public countByMonthToDate(): Promise<number> {
     const start: number = getTimestampMonthStart();
     const end: number = getTimestamp();
-    return this.getCountForDateRange(start, end);
+    return this.countForDateRange(start, end);
   }
 
-  public getCountByDate(date: string): Promise<number> {
+  public countByDate(date: string): Promise<number> {
     if (!isValidDate(date)) {
       throw new ValidationError(`Invalid date string: ${date}`);
     }
     const start: number = getTimestampDateStart(date);
     const end: number = getTimestampDateEnd(date);
-    return this.getCountForDateRange(start, end);
+    return this.countForDateRange(start, end);
   }
 
-  public getCountByDateRange(startDate: string, endDate: string): Promise<number> {
+  public countByDateRange(startDate: string, endDate: string): Promise<number> {
     if (!isValidDate(startDate)) {
       throw new ValidationError(`Invalid date string: ${startDate}`);
     }
@@ -109,30 +135,149 @@ export class BaseRepository<T> {
     }
     const start: number = getTimestampDateStart(startDate);
     const end: number = getTimestampDateEnd(endDate);
-    return this.getCountForDateRange(start, end);
+    return this.countForDateRange(start, end);
   }
 
-  public getCountByRollingHours(hours: number): Promise<number> {
+  public countByRollingHours(hours: number): Promise<number> {
     const start: number = getTimestampSubHours(hours);
     const end: number = getTimestamp();
-    return this.getCountForDateRange(start, end);
+    return this.countForDateRange(start, end);
   }
 
-  public getCountByRollingDays(days: number): Promise<number> {
+  public countByRollingDays(days: number): Promise<number> {
     const start: number = getTimestampSubDays(days);
     const end: number = getTimestamp();
-    return this.getCountForDateRange(start, end);
+    return this.countForDateRange(start, end);
   }
 
-  public getCountByRollingWeeks(weeks: number): Promise<number> {
+  public countByRollingWeeks(weeks: number): Promise<number> {
     const start: number = getTimestampSubWeeks(weeks);
     const end: number = getTimestamp();
-    return this.getCountForDateRange(start, end);
+    return this.countForDateRange(start, end);
   }
 
-  private getCountForDateRange(start: number, end: number): Promise<number> {
+  public timeSeriesDay(apiQuery: APIQuery): Promise<any> {
+    const pipeline = [
+      {
+        $match: {
+          [this.timestampField]: { $lte: getTimestamp() },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: {
+              format: '%Y-%m-%d',
+              date: {
+                $toDate: {
+                  $multiply: [1000, { $toLong: `$${this.timestampField}` }],
+                },
+              },
+            },
+          },
+          count: {
+            $sum: 1.0,
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0.0,
+          date: '$_id',
+          count: 1.0,
+        },
+      },
+      {
+        $sort: {
+          date: -1.0,
+        },
+      },
+    ];
+    return this.aggregate(pipeline, apiQuery);
+  }
+
+  public timeSeriesMonth(apiQuery: APIQuery): Promise<any> {
+    const pipeline = [
+      {
+        $match: {
+          [this.timestampField]: { $lte: getTimestamp() },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: {
+              format: '%Y-%m',
+              date: {
+                $toDate: {
+                  $multiply: [1000, { $toLong: `$${this.timestampField}` }],
+                },
+              },
+            },
+          },
+          count: {
+            $sum: 1.0,
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0.0,
+          date: '$_id',
+          count: 1.0,
+        },
+      },
+      {
+        $sort: {
+          date: -1.0,
+        },
+      },
+    ];
+    return this.aggregate(pipeline, apiQuery);
+  }
+
+  protected pagedResults(
+    query: object,
+    fields: object,
+    pageField: string,
+    sortAsc: boolean,
+    limit: number,
+    next: string,
+    previous: string
+  ): Promise<APIResult> {
+    this.logger.debug(
+      `pagedResults for ${this.collectionName}:
+      ${JSON.stringify(query)}
+      ${JSON.stringify(fields)}
+      ${pageField}
+      ${sortAsc}
+      ${limit}
+      ${next}
+      ${previous}`
+    );
+    return MongoPaging.find(this.collection, {
+      query,
+      fields,
+      pageField,
+      sortAsc,
+      limit,
+      next,
+      previous,
+    });
+  }
+
+  protected singleResult(query: object, options: object) {
+    this.logger.debug(
+      `singleResult for ${this.collectionName}:
+      ${JSON.stringify(query)}
+      ${JSON.stringify(options)}`
+    );
+    return this.collection.findOne(query, options);
+  }
+
+  private countForDateRange(start: number, end: number): Promise<number> {
     const apiQuery = new APIQuery();
-    apiQuery.query = { 'content.idData.timestamp': { $gte: start, $lte: end } };
+    apiQuery.query = { [this.timestampField]: { $gte: start, $lte: end } };
     return this.countQuery(apiQuery);
   }
 }

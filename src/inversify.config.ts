@@ -45,34 +45,13 @@ iocContainer.bind<BundleController>(TYPES.BundleController).to(BundleController)
 iocContainer.bind<AnalyticsController>(TYPES.AnalyticsController).to(AnalyticsController);
 
 // services
-iocContainer
-  .bind<AuthService>(TYPES.AuthService)
-  .to(AuthService)
-  .inSingletonScope();
-iocContainer
-  .bind<Web3Service>(TYPES.Web3Service)
-  .to(Web3Service)
-  .inSingletonScope();
-iocContainer
-  .bind<LoggerService>(TYPES.LoggerService)
-  .to(LoggerService)
-  .inSingletonScope();
-iocContainer
-  .bind<AccountService>(TYPES.AccountService)
-  .to(AccountService)
-  .inSingletonScope();
-iocContainer
-  .bind<AssetService>(TYPES.AssetService)
-  .to(AssetService)
-  .inSingletonScope();
-iocContainer
-  .bind<EventService>(TYPES.EventService)
-  .to(EventService)
-  .inSingletonScope();
-iocContainer
-  .bind<BundleService>(TYPES.BundleService)
-  .to(BundleService)
-  .inSingletonScope();
+iocContainer.bind<AuthService>(TYPES.AuthService).to(AuthService);
+iocContainer.bind<Web3Service>(TYPES.Web3Service).to(Web3Service);
+iocContainer.bind<LoggerService>(TYPES.LoggerService).to(LoggerService);
+iocContainer.bind<AccountService>(TYPES.AccountService).to(AccountService);
+iocContainer.bind<AssetService>(TYPES.AssetService).to(AssetService);
+iocContainer.bind<EventService>(TYPES.EventService).to(EventService);
+iocContainer.bind<BundleService>(TYPES.BundleService).to(BundleService);
 
 // repositories
 iocContainer.bind<AccountRepository>(TYPES.AccountRepository).to(AccountRepository);
@@ -98,3 +77,5 @@ iocContainer.bind<IGraphQLResolver>(TYPES.GraphQLResolver).to(AccountResolver);
 iocContainer.bind<IGraphQLResolver>(TYPES.GraphQLResolver).to(AssetResolver);
 iocContainer.bind<IGraphQLResolver>(TYPES.GraphQLResolver).to(EventResolver);
 iocContainer.bind<IGraphQLResolver>(TYPES.GraphQLResolver).to(BundleResolver);
+
+iocContainer.bind<number>(TYPES.AccessLevel).toConstantValue(Number.MAX_SAFE_INTEGER);

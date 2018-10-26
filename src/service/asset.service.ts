@@ -13,15 +13,17 @@ export class AssetService {
   @inject(TYPES.LoggerService)
   public logger: ILogger;
 
+  constructor(@inject(TYPES.AccessLevel) private readonly accessLevel: number) {}
+
   public getAssets(apiQuery: APIQuery): Promise<APIResult> {
     apiQuery.paginationField = 'content.idData.timestamp';
     apiQuery.sortAscending = false;
-    return this.assetRepository.find(apiQuery);
+    return this.assetRepository.query(apiQuery, this.accessLevel);
   }
 
   public getAsset(assetId: string): Promise<Asset> {
     const apiQuery = new APIQuery();
     apiQuery.query = { assetId };
-    return this.assetRepository.findOne(apiQuery);
+    return this.assetRepository.single(apiQuery, this.accessLevel);
   }
 }
