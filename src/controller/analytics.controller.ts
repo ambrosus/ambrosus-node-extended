@@ -1,49 +1,26 @@
+import { Request } from 'express';
 import { inject } from 'inversify';
 import { BaseHttpController, controller, httpGet, requestParam } from 'inversify-express-utils';
-import { Request } from 'express';
-import { TYPES } from '../constant/types';
-import {
-  AccountRepository,
-  AssetRepository,
-  BundleRepository,
-  EventRepository,
-} from '../database/repository';
 
+import { TYPES } from '../constant/types';
 import { APIQuery } from '../model';
+import { AnalyticsService } from '../service/analytics.service';
 
 @controller('/analytics', TYPES.AuthorizedMiddleware)
 export class AnalyticsController extends BaseHttpController {
-  @inject(TYPES.AccountRepository)
-  public account: AccountRepository;
-
-  @inject(TYPES.AssetRepository)
-  public asset: AssetRepository;
-
-  @inject(TYPES.EventRepository)
-  public event: EventRepository;
-
-  @inject(TYPES.BundleRepository)
-  public bundle: BundleRepository;
-
-  constructor() {
+  constructor(@inject(TYPES.AnalyticsService) private analyticsService: AnalyticsService) {
     super();
   }
 
   @httpGet('/:collection/count')
   public async getCount(@requestParam('collection') collection: string) {
-    if (!this[collection]) {
-      return this.badRequest('Invalid path');
-    }
-    const count = await this[collection].count();
+    const count = await this.analyticsService.count(collection);
     return { count };
   }
 
   @httpGet('/:collection/count/mtd')
   public async getCountByMonthToDate(@requestParam('collection') collection: string) {
-    if (!this[collection]) {
-      return this.badRequest('Invalid path');
-    }
-    const count = await this[collection].countByMonthToDate();
+    const count = await this.analyticsService.countByMonthToDate(collection);
     return { count };
   }
 
@@ -52,10 +29,7 @@ export class AnalyticsController extends BaseHttpController {
     @requestParam('collection') collection: string,
     @requestParam('date') date: string
   ) {
-    if (!this[collection]) {
-      return this.badRequest('Invalid path');
-    }
-    const count = await this[collection].countByDate(date);
+    const count = await this.analyticsService.countByDate(collection, date);
     return { count };
   }
 
@@ -65,10 +39,7 @@ export class AnalyticsController extends BaseHttpController {
     @requestParam('start') start: string,
     @requestParam('end') end: string
   ) {
-    if (!this[collection]) {
-      return this.badRequest('Invalid path');
-    }
-    const count = await this[collection].countByDateRange(start, end);
+    const count = await this.analyticsService.countByDateRange(collection, start, end);
     return { count };
   }
 
@@ -77,10 +48,7 @@ export class AnalyticsController extends BaseHttpController {
     @requestParam('collection') collection: string,
     @requestParam('hours') hours: number
   ) {
-    if (!this[collection]) {
-      return this.badRequest('Invalid path');
-    }
-    const count = await this[collection].countByRollingHours(hours);
+    const count = await this.analyticsService.countByRollingHours(collection, hours);
     return { count };
   }
 
@@ -89,28 +57,22 @@ export class AnalyticsController extends BaseHttpController {
     @requestParam('collection') collection: string,
     @requestParam('days') days: number
   ) {
-    if (!this[collection]) {
-      return this.badRequest('Invalid path');
-    }
-    const count = await this[collection].countByRollingDays(days);
+    const count = await this.analyticsService.countByRollingDays(collection, days);
     return { count };
   }
 
   @httpGet('/:collection/timeseries/day')
   public async getTimeSeriesDay(@requestParam('collection') collection: string, req: Request) {
-    if (!this[collection]) {
-      return this.badRequest('Invalid path');
-    }
-    const result = await this[collection].timeSeriesDay(APIQuery.fromRequest(req));
+    const result = await this.analyticsService.timeSeriesDay(collection, APIQuery.fromRequest(req));
     return result;
   }
 
   @httpGet('/:collection/timeseries/month')
   public async getTimeSeriesMonth(@requestParam('collection') collection: string, req: Request) {
-    if (!this[collection]) {
-      return this.badRequest('Invalid path');
-    }
-    const result = await this[collection].timeSeriesMonth(APIQuery.fromRequest(req));
+    const result = await this.analyticsService.timeSeriesMonth(
+      collection,
+      APIQuery.fromRequest(req)
+    );
     return result;
   }
 }

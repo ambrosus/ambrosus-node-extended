@@ -1,22 +1,11 @@
 import { inject, injectable, unmanaged } from 'inversify';
 import * as MongoPaging from 'mongo-cursor-pagination';
+import { InsertOneWriteOpResult } from 'mongodb';
 
 import { TYPES } from '../../constant';
-import { ConnectionError, ValidationError } from '../../error';
+import { ConnectionError } from '../../error';
 import { ILogger } from '../../interface/logger.inferface';
 import { APIQuery, APIResult } from '../../model';
-import { MongoClient, Db, Collection, InsertOneWriteOpResult } from 'mongodb';
-
-import {
-  getTimestamp,
-  getTimestampDateEnd,
-  getTimestampDateStart,
-  getTimestampMonthStart,
-  getTimestampSubDays,
-  getTimestampSubHours,
-  getTimestampSubWeeks,
-  isValidDate,
-} from '../../util/helpers';
 import { DBClient } from '../client';
 
 @injectable()
@@ -56,6 +45,10 @@ export class BaseRepository<T> {
     throw new Error('Method not implemented.');
   }
 
+  public count(query: object): Promise<number> {
+    return this.collection.countDocuments(query);
+  }
+
   public query(apiQuery: APIQuery, accessLevel: number): Promise<APIResult> {
     const q = {
       ...apiQuery.query,
@@ -84,6 +77,7 @@ export class BaseRepository<T> {
     return this.singleResult(q, apiQuery.options);
   }
 
+  // TODO: Add accessLevel to aggregates
   public aggregatePaging(pipeline: object, apiQuery: APIQuery): Promise<APIResult> {
     this.logger.debug(
       `aggregate ${this.collectionName}: ${JSON.stringify(pipeline)} ${JSON.stringify(apiQuery)}`
@@ -97,146 +91,12 @@ export class BaseRepository<T> {
     });
   }
 
+  // TODO: Add accessLevel to aggregates
   public aggregate(pipeline: object, apiQuery: APIQuery): Promise<any> {
     this.logger.debug(
       `aggregate ${this.collectionName}: ${JSON.stringify(pipeline)} ${JSON.stringify(apiQuery)}`
     );
     return this.collection.aggregate(pipeline).toArray();
-  }
-
-  public count(): Promise<number> {
-    this.logger.debug(`count ${this.collectionName}`);
-    return this.collection.countDocuments();
-  }
-
-  public countQuery(apiQuery: APIQuery): Promise<number> {
-    this.logger.debug(`countQuery ${this.collectionName}: ${JSON.stringify(apiQuery)}`);
-    return this.collection.countDocuments(apiQuery.query);
-  }
-
-  public countByMonthToDate(): Promise<number> {
-    const start: number = getTimestampMonthStart();
-    const end: number = getTimestamp();
-    return this.countForDateRange(start, end);
-  }
-
-  public countByDate(date: string): Promise<number> {
-    if (!isValidDate(date)) {
-      throw new ValidationError(`Invalid date string: ${date}`);
-    }
-    const start: number = getTimestampDateStart(date);
-    const end: number = getTimestampDateEnd(date);
-    return this.countForDateRange(start, end);
-  }
-
-  public countByDateRange(startDate: string, endDate: string): Promise<number> {
-    if (!isValidDate(startDate)) {
-      throw new ValidationError(`Invalid date string: ${startDate}`);
-    }
-    if (!isValidDate(endDate)) {
-      throw new ValidationError(`Invalid date string: ${endDate}`);
-    }
-    const start: number = getTimestampDateStart(startDate);
-    const end: number = getTimestampDateEnd(endDate);
-    return this.countForDateRange(start, end);
-  }
-
-  public countByRollingHours(hours: number): Promise<number> {
-    const start: number = getTimestampSubHours(hours);
-    const end: number = getTimestamp();
-    return this.countForDateRange(start, end);
-  }
-
-  public countByRollingDays(days: number): Promise<number> {
-    const start: number = getTimestampSubDays(days);
-    const end: number = getTimestamp();
-    return this.countForDateRange(start, end);
-  }
-
-  public countByRollingWeeks(weeks: number): Promise<number> {
-    const start: number = getTimestampSubWeeks(weeks);
-    const end: number = getTimestamp();
-    return this.countForDateRange(start, end);
-  }
-
-  public timeSeriesDay(apiQuery: APIQuery): Promise<any> {
-    const pipeline = [
-      {
-        $match: {
-          [this.timestampField]: { $lte: getTimestamp() },
-        },
-      },
-      {
-        $group: {
-          _id: {
-            $dateToString: {
-              format: '%Y-%m-%d',
-              date: {
-                $toDate: {
-                  $multiply: [1000, { $toLong: `$${this.timestampField}` }],
-                },
-              },
-            },
-          },
-          count: {
-            $sum: 1.0,
-          },
-        },
-      },
-      {
-        $project: {
-          _id: 0.0,
-          date: '$_id',
-          count: 1.0,
-        },
-      },
-      {
-        $sort: {
-          date: -1.0,
-        },
-      },
-    ];
-    return this.aggregate(pipeline, apiQuery);
-  }
-
-  public timeSeriesMonth(apiQuery: APIQuery): Promise<any> {
-    const pipeline = [
-      {
-        $match: {
-          [this.timestampField]: { $lte: getTimestamp() },
-        },
-      },
-      {
-        $group: {
-          _id: {
-            $dateToString: {
-              format: '%Y-%m',
-              date: {
-                $toDate: {
-                  $multiply: [1000, { $toLong: `$${this.timestampField}` }],
-                },
-              },
-            },
-          },
-          count: {
-            $sum: 1.0,
-          },
-        },
-      },
-      {
-        $project: {
-          _id: 0.0,
-          date: '$_id',
-          count: 1.0,
-        },
-      },
-      {
-        $sort: {
-          date: -1.0,
-        },
-      },
-    ];
-    return this.aggregate(pipeline, apiQuery);
   }
 
   protected pagedResults(
@@ -276,11 +136,5 @@ export class BaseRepository<T> {
       ${JSON.stringify(options)}`
     );
     return this.collection.findOne(query, options);
-  }
-
-  private countForDateRange(start: number, end: number): Promise<number> {
-    const apiQuery = new APIQuery();
-    apiQuery.query = { [this.timestampField]: { $gte: start, $lte: end } };
-    return this.countQuery(apiQuery);
   }
 }

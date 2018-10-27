@@ -26,6 +26,7 @@ import { BundleService } from './service/bundle.service';
 import { EventService } from './service/event.service';
 import { LoggerService } from './service/logger.service';
 import { Web3Service } from './service/web3.service';
+import { AnalyticsService } from './service/analytics.service';
 
 export const iocContainer: Container = new Container();
 
@@ -52,6 +53,8 @@ iocContainer.bind<AccountService>(TYPES.AccountService).to(AccountService);
 iocContainer.bind<AssetService>(TYPES.AssetService).to(AssetService);
 iocContainer.bind<EventService>(TYPES.EventService).to(EventService);
 iocContainer.bind<BundleService>(TYPES.BundleService).to(BundleService);
+iocContainer.bind<AnalyticsService>(TYPES.AnalyticsService).to(AnalyticsService);
+
 
 // repositories
 iocContainer.bind<AccountRepository>(TYPES.AccountRepository).to(AccountRepository);
