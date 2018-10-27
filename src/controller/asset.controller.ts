@@ -40,7 +40,7 @@ export class AssetController extends BaseHttpController {
   @httpPost('/query')
   public async query(req: Request): Promise<APIResult | NotFoundResult> {
     const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
-    if (!result) {
+    if (!result.results.length) {
       return this.notFound();
     }
     return result;

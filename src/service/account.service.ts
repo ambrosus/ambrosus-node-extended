@@ -7,13 +7,13 @@ import { AccountRepository } from '../database/repository';
 
 @injectable()
 export class AccountService {
-  @inject(TYPES.AccountRepository)
-  public accountRepository: AccountRepository;
-
   @inject(TYPES.LoggerService)
   public logger: ILogger;
 
-  constructor(@inject(TYPES.AccessLevel) private readonly accessLevel: number) {}
+  @inject(TYPES.AccessLevel)
+  private readonly accessLevel: number;
+
+  constructor(@inject(TYPES.AccountRepository) public accountRepository: AccountRepository) {}
 
   public getAccounts(apiQuery: APIQuery): Promise<APIResult> {
     apiQuery.paginationField = 'registeredOn';

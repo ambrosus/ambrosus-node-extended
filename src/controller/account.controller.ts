@@ -15,10 +15,7 @@ import { NotFoundResult } from 'inversify-express-utils/dts/results';
 
 @controller('/account', TYPES.AuthorizedMiddleware)
 export class AccountController extends BaseHttpController {
-  @inject(TYPES.AccountService)
-  private accountService: AccountService;
-
-  constructor() {
+  constructor(@inject(TYPES.AccountService) private accountService: AccountService) {
     super();
   }
 

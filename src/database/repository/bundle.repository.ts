@@ -17,7 +17,6 @@ export class BundleRepository extends BaseRepository<Bundle> {
   }
 
   public query(apiQuery: APIQuery): Promise<APIResult> {
-    this.logger.debug(`query ${this.collectionName}: ${JSON.stringify(apiQuery.query)}`);
     return super.pagedResults(
       apiQuery.query,
       apiQuery.fields,
@@ -30,7 +29,6 @@ export class BundleRepository extends BaseRepository<Bundle> {
   }
 
   public single(apiQuery: APIQuery): Promise<Bundle> {
-    this.logger.debug(`single ${this.collectionName}: ${JSON.stringify(apiQuery)}`);
     return super.singleResult(apiQuery.query, apiQuery.options);
   }
 }

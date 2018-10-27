@@ -13,8 +13,6 @@ export class BundleService {
   @inject(TYPES.LoggerService)
   public logger: ILogger;
 
-  constructor(@inject(TYPES.AccessLevel) private readonly accessLevel: number) {}
-
   public getBundles(apiQuery: APIQuery): Promise<APIResult> {
     apiQuery.exludeField('content.entries');
     return this.bundleRepository.query(apiQuery);

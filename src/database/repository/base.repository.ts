@@ -5,6 +5,7 @@ import { TYPES } from '../../constant';
 import { ConnectionError, ValidationError } from '../../error';
 import { ILogger } from '../../interface/logger.inferface';
 import { APIQuery, APIResult } from '../../model';
+import { MongoClient, Db, Collection, InsertOneWriteOpResult } from 'mongodb';
 
 import {
   getTimestamp,
@@ -43,9 +44,11 @@ export class BaseRepository<T> {
     throw new Error('accessLevelField getter must be overridden!');
   }
 
-  public create(item: T): Promise<boolean> {
-    throw new Error('Method not implemented.');
+  public async create(item: T): Promise<boolean> {
+    const result: InsertOneWriteOpResult = await this.collection.insert(item);
+    return !!result.result.ok;
   }
+
   public update(id: string, item: T): Promise<boolean> {
     throw new Error('Method not implemented.');
   }
