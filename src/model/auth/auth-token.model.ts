@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 
-import { AmbrosusError } from '../error/ambrosus.error';
-import { getTimestamp } from '../util/helpers';
+import { AmbrosusError } from '../../model';
+import { getTimestamp } from '../../util/helpers';
 
 export interface IAuthToken {
   createdBy: string;

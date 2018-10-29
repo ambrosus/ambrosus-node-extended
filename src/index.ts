@@ -7,8 +7,8 @@ import * as morgan from 'morgan';
 
 import { config } from './config';
 import { TYPES } from './constant/types';
-import { AuthenticationError, NotFoundError, PermissionError, ValidationError } from './error';
 import { iocContainer } from './inversify.config';
+import { AuthenticationError, NotFoundError, PermissionError, ValidationError } from './model';
 import { LoggerService } from './service/logger.service';
 import { AMBAuthProvider } from './util/auth/auth.provider';
 

@@ -3,7 +3,7 @@ import web3 = require('web3');
 
 import { config } from '../config';
 import { TYPES } from '../constant/types';
-import { AuthenticationError, ValidationError } from '../error';
+import { AuthenticationError, ValidationError } from '../model';
 import { ILogger } from '../interface/logger.inferface';
 import { matchHexOfLength } from '../util/helpers';
 

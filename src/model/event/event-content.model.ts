@@ -1,4 +1,4 @@
-import { EventIdData } from './event-id-data.model';
+import { EventIdData } from './event-iddata.model';
 
 export interface IEventContent {
   signature: string;

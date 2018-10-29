@@ -1,4 +1,4 @@
-import { AssetIdData } from './asset-id-data.model';
+import { AssetIdData } from './asset-iddata.model';
 
 export interface IAssetContent {
   signature: string;

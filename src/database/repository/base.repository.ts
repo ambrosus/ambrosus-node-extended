@@ -3,9 +3,8 @@ import * as MongoPaging from 'mongo-cursor-pagination';
 import { InsertOneWriteOpResult } from 'mongodb';
 
 import { TYPES } from '../../constant';
-import { ConnectionError } from '../../error';
 import { ILogger } from '../../interface/logger.inferface';
-import { APIQuery, APIResult } from '../../model';
+import { APIQuery, APIResult, ConnectionError } from '../../model';
 import { DBClient } from '../client';
 
 @injectable()

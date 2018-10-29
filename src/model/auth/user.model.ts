@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
 
-import { Account, AuthToken } from './';
+import { Account, AuthToken } from '../';
 
 export interface IUser {
   account: Account;

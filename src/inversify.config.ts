@@ -1,5 +1,5 @@
 import { Container, interfaces } from 'inversify';
-
+import { RequestHandler } from 'express';
 import { TYPES } from './constant/types';
 import { AccountController } from './controller/account.controller';
 import { AnalyticsController } from './controller/analytics.controller';

@@ -1,7 +1,7 @@
 import { Request } from 'express';
 import { injectable } from 'inversify';
 
-import { getMongoFilter, getParamValue } from '../util/helpers';
+import { getMongoFilter, getParamValue } from '../../util/helpers';
 import { APIPagination } from './api-pagination.model';
 
 export interface IAPIQuery {

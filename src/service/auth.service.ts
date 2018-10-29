@@ -2,9 +2,8 @@ import base64url from 'base64url';
 import { inject, injectable } from 'inversify';
 
 import { TYPES } from '../constant/types';
-import { ValidationError } from '../error';
 import { ILogger } from '../interface/logger.inferface';
-import { AuthToken } from '../model';
+import { AuthToken, ValidationError } from '../model';
 import { Web3Service } from './web3.service';
 
 @injectable()

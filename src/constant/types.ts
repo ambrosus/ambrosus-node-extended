@@ -1,15 +1,15 @@
 export const TYPES: any = {
-  App: Symbol('App'),
+  App: Symbol.for('App'),
   DBClient: Symbol.for('DBClient'),
 
-  RootController: Symbol('RootController'),
-  GraphQLController: Symbol('GraphQLController'),
+  RootController: Symbol.for('RootController'),
+  GraphQLController: Symbol.for('GraphQLController'),
 
-  AccountController: Symbol('AccountController'),
-  AnalyticsController: Symbol('AnalyticsController'),
-  AssetController: Symbol('AssetController'),
-  EventController: Symbol('EventController'),
-  BundleController: Symbol('BundleController'),
+  AccountController: Symbol.for('AccountController'),
+  AnalyticsController: Symbol.for('AnalyticsController'),
+  AssetController: Symbol.for('AssetController'),
+  EventController: Symbol.for('EventController'),
+  BundleController: Symbol.for('BundleController'),
 
   AuthService: Symbol.for('AuthService'),
   Web3Service: Symbol.for('Web3Service'),
@@ -27,11 +27,11 @@ export const TYPES: any = {
   BundleRepository: Symbol.for('BundleRepository'),
 
   AuthorizedMiddleware: Symbol.for('AuthorizedMiddleware'),
-  ErrorMiddleWare: Symbol.for('ErrorMiddleWare'),
+  RoleMiddleware: Symbol.for('RoleMiddleware'),
 
-  GraphQLSchema: Symbol('GraphQLSchema'),
-  GraphQLType: Symbol('GraphQLType'),
-  GraphQLResolver: Symbol('GraphQLResolver'),
+  GraphQLSchema: Symbol.for('GraphQLSchema'),
+  GraphQLType: Symbol.for('GraphQLType'),
+  GraphQLResolver: Symbol.for('GraphQLResolver'),
 
-  UserPrincipal: Symbol('UserPrincipal'),
+  UserPrincipal: Symbol.for('UserPrincipal'),
 };

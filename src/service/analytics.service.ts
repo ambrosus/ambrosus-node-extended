@@ -7,9 +7,8 @@ import {
   BundleRepository,
   EventRepository,
 } from '../database/repository';
-import { NotFoundError, ValidationError } from '../error';
 import { ILogger } from '../interface/logger.inferface';
-import { APIQuery, APIResult } from '../model';
+import { APIQuery, NotFoundError, ValidationError } from '../model';
 import {
   getTimestamp,
   getTimestampDateEnd,

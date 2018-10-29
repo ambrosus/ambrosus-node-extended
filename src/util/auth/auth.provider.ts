@@ -4,8 +4,7 @@ import { interfaces } from 'inversify-express-utils';
 
 import { TYPES } from '../../constant';
 import { ILogger } from '../../interface/logger.inferface';
-import { Account } from '../../model';
-import { UserPrincipal } from '../../model/user-principal.model';
+import { Account, UserPrincipal } from '../../model';
 import { AccountService } from '../../service/account.service';
 import { AuthService } from '../../service/auth.service';
 

@@ -1,5 +1,4 @@
 import { injectable } from 'inversify';
-import { add } from 'winston';
 
 export interface IAccount {
   _id: string;
