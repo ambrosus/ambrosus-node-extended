@@ -2,16 +2,11 @@ import { inject, injectable } from 'inversify';
 
 import { TYPES } from '../constant/types';
 import { AssetRepository } from '../database/repository';
-import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResult, Asset } from '../model';
 
 @injectable()
 export class AssetService {
-  @inject(TYPES.AssetRepository)
-  public assetRepository: AssetRepository;
-
-  @inject(TYPES.LoggerService)
-  public logger: ILogger;
+  constructor(@inject(TYPES.AssetRepository) private readonly assetRepository: AssetRepository) {}
 
   public getAssets(apiQuery: APIQuery): Promise<APIResult> {
     apiQuery.paginationField = 'content.idData.timestamp';

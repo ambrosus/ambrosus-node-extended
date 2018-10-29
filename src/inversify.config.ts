@@ -1,4 +1,4 @@
-import { Container } from 'inversify';
+import { Container, interfaces } from 'inversify';
 
 import { TYPES } from './constant/types';
 import { AccountController } from './controller/account.controller';
@@ -19,14 +19,15 @@ import { GraphQLSchema, IGraphQLResolver, IGraphQLSchema, IGraphQLType } from '.
 import { AccountResolver, AssetResolver, BundleResolver, EventResolver } from './graphql/resolver';
 import { AccountType, AssetType, BundleType, EventType, QueryType } from './graphql/type';
 import { AuthorizedMiddleware } from './middleware';
+import { UserPrincipal } from './model';
 import { AccountService } from './service/account.service';
+import { AnalyticsService } from './service/analytics.service';
 import { AssetService } from './service/asset.service';
 import { AuthService } from './service/auth.service';
 import { BundleService } from './service/bundle.service';
 import { EventService } from './service/event.service';
 import { LoggerService } from './service/logger.service';
 import { Web3Service } from './service/web3.service';
-import { AnalyticsService } from './service/analytics.service';
 
 export const iocContainer: Container = new Container();
 
@@ -55,7 +56,6 @@ iocContainer.bind<EventService>(TYPES.EventService).to(EventService);
 iocContainer.bind<BundleService>(TYPES.BundleService).to(BundleService);
 iocContainer.bind<AnalyticsService>(TYPES.AnalyticsService).to(AnalyticsService);
 
-
 // repositories
 iocContainer.bind<AccountRepository>(TYPES.AccountRepository).to(AccountRepository);
 iocContainer.bind<AssetRepository>(TYPES.AssetRepository).to(AssetRepository);
@@ -81,4 +81,8 @@ iocContainer.bind<IGraphQLResolver>(TYPES.GraphQLResolver).to(AssetResolver);
 iocContainer.bind<IGraphQLResolver>(TYPES.GraphQLResolver).to(EventResolver);
 iocContainer.bind<IGraphQLResolver>(TYPES.GraphQLResolver).to(BundleResolver);
 
-iocContainer.bind<number>(TYPES.AccessLevel).toConstantValue(Number.MAX_SAFE_INTEGER);
+iocContainer
+  .bind<UserPrincipal>(TYPES.UserPrincipal)
+  .toDynamicValue((context: interfaces.Context) => {
+    return new UserPrincipal();
+  });

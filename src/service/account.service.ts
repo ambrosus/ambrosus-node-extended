@@ -7,24 +7,22 @@ import { AccountRepository } from '../database/repository';
 
 @injectable()
 export class AccountService {
-  @inject(TYPES.LoggerService)
-  public logger: ILogger;
-
-  @inject(TYPES.AccessLevel)
-  private readonly accessLevel: number;
-
-  constructor(@inject(TYPES.AccountRepository) public accountRepository: AccountRepository) {}
+  constructor(
+    @inject(TYPES.UserPrincipal) private readonly user: UserPrincipal,
+    @inject(TYPES.AccountRepository) private readonly accountRepository: AccountRepository
+  ) {}
 
   public getAccounts(apiQuery: APIQuery): Promise<APIResult> {
     apiQuery.paginationField = 'registeredOn';
     apiQuery.sortAscending = false;
-    return this.accountRepository.query(apiQuery, this.accessLevel);
+
+    return this.accountRepository.query(apiQuery, this.user.accessLevel);
   }
 
   public getAccount(address: string): Promise<Account> {
     const apiQuery = new APIQuery();
     apiQuery.query = { address };
-    return this.accountRepository.single(apiQuery, this.accessLevel);
+    return this.accountRepository.single(apiQuery, this.user.accessLevel);
   }
 
   public getAccountForAuth(address: string): Promise<Account> {

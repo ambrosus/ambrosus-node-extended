@@ -23,20 +23,13 @@ import {
 
 @injectable()
 export class AnalyticsService {
-  @inject(TYPES.LoggerService)
-  public logger: ILogger;
-
-  @inject(TYPES.AccountRepository)
-  public account: AccountRepository;
-
-  @inject(TYPES.AssetRepository)
-  public asset: AssetRepository;
-
-  @inject(TYPES.EventRepository)
-  public event: EventRepository;
-
-  @inject(TYPES.BundleRepository)
-  public bundle: BundleRepository;
+  constructor(
+    @inject(TYPES.AccountRepository) private readonly account: AccountRepository,
+    @inject(TYPES.AssetRepository) private readonly asset: AssetRepository,
+    @inject(TYPES.EventRepository) private readonly event: EventRepository,
+    @inject(TYPES.BundleRepository) private readonly bundle: BundleRepository,
+    @inject(TYPES.LoggerService) private readonly logger: ILogger
+  ) {}
 
   public count(collection: string): Promise<number> {
     if (!this[collection]) {

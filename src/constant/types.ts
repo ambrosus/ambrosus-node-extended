@@ -33,5 +33,5 @@ export const TYPES: any = {
   GraphQLType: Symbol('GraphQLType'),
   GraphQLResolver: Symbol('GraphQLResolver'),
 
-  AccessLevel: Symbol('AccessLevel'),
+  UserPrincipal: Symbol('UserPrincipal'),
 };

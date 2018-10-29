@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, interfaces } from 'inversify';
 import { BaseMiddleware } from 'inversify-express-utils';
 
 import { TYPES } from '../constant/types';
@@ -20,7 +20,9 @@ export class AuthorizedMiddleware extends BaseMiddleware {
       throw new AuthenticationError('Unauthorized');
     }
 
-    this.bind<number>(TYPES.AccessLevel).toConstantValue(user.accessLevel);
+    this.bind<UserPrincipal>(TYPES.UserPrincipal).toDynamicValue(
+      (context: interfaces.Context) => user
+    );
 
     this.logger.debug(`${user.address}(${user.accessLevel}) => ${req.url}`);
 
