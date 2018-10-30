@@ -4,21 +4,36 @@ import { inject } from 'inversify';
 import {
   BaseHttpController,
   controller,
-  httpPost,
   httpGet,
-  response,
+  httpPost,
   request,
+  response,
+  requestParam,
 } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { OrganizationRequest } from '../model';
-import { OrganizationService } from '../service/organization.service';
+import { APIQuery, APIResult, OrganizationRequest } from '../model';
 import { APISuccess } from '../model/api/api-success.model';
+import { OrganizationService } from '../service/organization.service';
 
 @controller('/organization', MIDDLEWARE.Authorized)
 export class OrganizationController extends BaseHttpController {
   constructor(@inject(TYPE.OrganizationService) private organizationService: OrganizationService) {
     super();
+  }
+
+  @httpGet('/request', MIDDLEWARE.NodeAdmin)
+  public async getOrgReguests(req: Request): Promise<APIResult> {
+    const result = await this.organizationService.getOrgRequests(APIQuery.fromRequest(req));
+    return result;
+  }
+
+  @httpGet('/request/:address', MIDDLEWARE.NodeAdmin)
+  public async getOrgReguest(
+    @requestParam('address') address: string
+  ): Promise<OrganizationRequest> {
+    const result = await this.organizationService.getOrgRequest(address);
+    return result;
   }
 
   @httpPost(

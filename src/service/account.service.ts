@@ -13,7 +13,7 @@ export class AccountService {
   ) {}
 
   public getAccountExists(address: string) {
-    return this.accountRepository.existsOr({ address }, 'address');
+    return this.accountRepository.existsOR({ address }, 'address');
   }
 
   public getAccounts(apiQuery: APIQuery): Promise<APIResult> {

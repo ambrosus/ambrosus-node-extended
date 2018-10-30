@@ -17,11 +17,11 @@ export class User implements IUser {
   public authToken: AuthToken;
 
   public hasRole(role: string): boolean {
-    return true;
+    return false;
   }
 
   public hasPermission(permission: string): boolean {
-    return true;
+    return this.account.permissions.indexOf(permission) > -1;
   }
 
   public isAuthorized(): boolean {

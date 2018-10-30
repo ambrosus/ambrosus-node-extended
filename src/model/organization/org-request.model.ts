@@ -2,6 +2,7 @@ import { Request } from 'express';
 import { injectable } from 'inversify';
 import { checkSchema, ValidationSchema } from 'express-validator/check';
 import web3 = require('web3');
+import { getTimestamp } from '../../util/helpers';
 
 export interface IOrganizationRequest {
   _id: string;
@@ -9,6 +10,7 @@ export interface IOrganizationRequest {
   title: string;
   email: string;
   message: string;
+  createdOn: number;
 }
 
 @injectable()
@@ -19,7 +21,7 @@ export class OrganizationRequest implements IOrganizationRequest {
     orgRequest.address = req.body.address;
     orgRequest.email = req.body.email;
     orgRequest.message = req.body.message;
-
+    orgRequest.createdOn = getTimestamp();
     return orgRequest;
   }
 
@@ -63,4 +65,5 @@ export class OrganizationRequest implements IOrganizationRequest {
   public title: string;
   public email: string;
   public message: string;
+  public createdOn: number;
 }

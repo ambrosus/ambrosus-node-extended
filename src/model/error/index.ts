@@ -5,3 +5,4 @@ export * from './notfound.error';
 export * from './permission.error';
 export * from './validation.error';
 export * from './ambrosus.error';
+export * from './exists.error';

@@ -78,14 +78,21 @@ export class BaseRepository<T> {
       });
   }
 
-  public async existsOr(obj, ...fields): Promise<boolean> {
+  public async existsOR(obj, ...fields): Promise<boolean> {
     const qor = _.map(fields, field => {
       return { [field]: obj[field] };
     });
-    const exists = await this.exists({
-      $or: qor,
+    this.logger.debug(
+      `existsOR for ${this.collectionName}:
+      ${JSON.stringify(qor)}`
+    );
+    return this.collection
+    .find(qor, { _id: 1 })
+    .limit(1)
+    .toArray()
+    .then(arrs => {
+      return Promise.resolve(arrs.length > 0);
     });
-    return exists;
   }
 
   protected find(

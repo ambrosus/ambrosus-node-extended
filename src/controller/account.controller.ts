@@ -24,22 +24,14 @@ export class AccountController extends BaseHttpController {
   }
 
   @httpGet('/')
-  public async getAccounts(req: Request): Promise<APIResult | NotFoundResult> {
+  public async getAccounts(req: Request): Promise<APIResult> {
     const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
-    if (!result.results.length) {
-      return this.notFound();
-    }
     return result;
   }
 
   @httpGet('/:address')
-  public async getAccount(
-    @requestParam('address') address: string
-  ): Promise<Account | NotFoundResult> {
+  public async getAccount(@requestParam('address') address: string): Promise<Account> {
     const result = await this.accountService.getAccount(address);
-    if (!result) {
-      return this.notFound();
-    }
     return result;
   }
 
@@ -53,30 +45,8 @@ export class AccountController extends BaseHttpController {
   }
 
   @httpPost('/query')
-  public async queryAccounts(req: Request): Promise<APIResult | NotFoundResult> {
+  public async queryAccounts(req: Request): Promise<APIResult> {
     const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
-    if (!result.results.length) {
-      return this.notFound();
-    }
-    return result;
-  }
-
-  @httpPut(
-    '/detail/:address',
-    body('email')
-      .isEmail()
-      .normalizeEmail(),
-    sanitizeBody('notifyOnReply').toBoolean(),
-    MIDDLEWARE.ValidateRequest
-  )
-  public async updateDetail(
-    @requestParam('address') address: string,
-    req: Request
-  ): Promise<Account | NotFoundResult> {
-    const result = await this.accountService.getAccount(address);
-    if (!result) {
-      return this.notFound();
-    }
     return result;
   }
 }
