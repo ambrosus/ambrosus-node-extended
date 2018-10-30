@@ -8,14 +8,14 @@ import {
   requestParam,
 } from 'inversify-express-utils';
 
-import { TYPES } from '../constant/types';
+import { TYPE, MIDDLEWARE } from '../constant/types';
 import { APIQuery, APIResult, Bundle } from '../model';
 import { BundleService } from '../service/bundle.service';
 import { NotFoundResult } from 'inversify-express-utils/dts/results';
 
-@controller('/bundle', TYPES.AuthorizedMiddleware)
+@controller('/bundle', MIDDLEWARE.Authorized)
 export class BundleController extends BaseHttpController {
-  constructor(@inject(TYPES.BundleService) private bundleService: BundleService) {
+  constructor(@inject(TYPE.BundleService) private bundleService: BundleService) {
     super();
   }
 

@@ -8,24 +8,21 @@ import {
   requestParam,
 } from 'inversify-express-utils';
 
-import { TYPES } from '../constant/types';
+import { TYPE, MIDDLEWARE } from '../constant/types';
 import { APIQuery, APIResult, Event } from '../model';
 import { EventService } from '../service/event.service';
 import { getParamValue } from '../util/helpers';
 import { NotFoundResult } from 'inversify-express-utils/dts/results';
 
-@controller('/event', TYPES.AuthorizedMiddleware)
+@controller('/event', MIDDLEWARE.Authorized)
 export class EventController extends BaseHttpController {
-  constructor(@inject(TYPES.EventService) private eventService: EventService) {
+  constructor(@inject(TYPE.EventService) private eventService: EventService) {
     super();
   }
 
   @httpGet('/')
   public async getEvents(req: Request): Promise<APIResult | NotFoundResult> {
     const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
-    if (!result.results.length) {
-      return this.notFound();
-    }
     return result;
   }
 
@@ -41,9 +38,6 @@ export class EventController extends BaseHttpController {
   @httpPost('/query')
   public async query(req: Request): Promise<APIResult | NotFoundResult> {
     const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
-    if (!result.results.length) {
-      return this.notFound();
-    }
     return result;
   }
 
@@ -57,9 +51,6 @@ export class EventController extends BaseHttpController {
       type,
       APIQuery.fromRequest(req)
     );
-    if (!result.results.length) {
-      return this.notFound();
-    }
     return result;
   }
 }

@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 
 import { IGraphQLResolver } from '..';
-import { TYPES } from '../../constant/types';
+import { TYPE } from '../../constant/types';
 import { APIQuery, APIResult, Bundle } from '../../model';
 import { BundleService } from '../../service/bundle.service';
 
@@ -9,7 +9,7 @@ import { BundleService } from '../../service/bundle.service';
 export class BundleResolver implements IGraphQLResolver {
   public resolver;
 
-  @inject(TYPES.BundleService)
+  @inject(TYPE.BundleService)
   private bundleService: BundleService;
 
   constructor() {

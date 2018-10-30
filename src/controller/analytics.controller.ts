@@ -2,13 +2,13 @@ import { Request } from 'express';
 import { inject } from 'inversify';
 import { BaseHttpController, controller, httpGet, requestParam } from 'inversify-express-utils';
 
-import { TYPES } from '../constant/types';
+import { TYPE, MIDDLEWARE } from '../constant/types';
 import { APIQuery } from '../model';
 import { AnalyticsService } from '../service/analytics.service';
 
-@controller('/analytics', TYPES.AuthorizedMiddleware)
+@controller('/analytics', MIDDLEWARE.Authorized)
 export class AnalyticsController extends BaseHttpController {
-  constructor(@inject(TYPES.AnalyticsService) private analyticsService: AnalyticsService) {
+  constructor(@inject(TYPE.AnalyticsService) private analyticsService: AnalyticsService) {
     super();
   }
 

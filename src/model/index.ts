@@ -7,4 +7,6 @@ export * from './bundle/bundle.model';
 export * from './auth/auth-token.model';
 export * from './auth/user.model';
 export * from './auth/user-principal.model';
+export * from './organization/org.model';
+export * from './organization/org-request.model';
 export * from './error';

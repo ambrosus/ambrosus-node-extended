@@ -1,26 +1,26 @@
 import { inject, injectable } from 'inversify';
 
-import { TYPES } from '../constant/types';
+import { TYPE } from '../constant/types';
 import { EventRepository } from '../database/repository';
 import { APIQuery, APIResult, Event, UserPrincipal } from '../model';
 
 @injectable()
 export class EventService {
   constructor(
-    @inject(TYPES.UserPrincipal) private readonly user: UserPrincipal,
-    @inject(TYPES.EventRepository) private readonly eventRepository: EventRepository
+    @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
+    @inject(TYPE.EventRepository) private readonly eventRepository: EventRepository
   ) {}
 
   public getEvents(apiQuery: APIQuery): Promise<APIResult> {
     apiQuery.paginationField = 'content.idData.timestamp';
     apiQuery.sortAscending = false;
-    return this.eventRepository.query(apiQuery, this.user.accessLevel);
+    return this.eventRepository.queryEvents(apiQuery, this.user.accessLevel);
   }
 
   public getEvent(eventId: string): Promise<Event> {
     const apiQuery = new APIQuery();
     apiQuery.query = { eventId };
-    return this.eventRepository.single(apiQuery, this.user.accessLevel);
+    return this.eventRepository.queryEvent(apiQuery, this.user.accessLevel);
   }
 
   public getLatestAssetEventsOfType(

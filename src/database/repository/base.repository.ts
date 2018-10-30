@@ -2,18 +2,20 @@ import { inject, injectable, unmanaged } from 'inversify';
 import * as MongoPaging from 'mongo-cursor-pagination';
 import { InsertOneWriteOpResult } from 'mongodb';
 
-import { TYPES } from '../../constant';
+import { TYPE } from '../../constant';
 import { ILogger } from '../../interface/logger.inferface';
 import { APIQuery, APIResult, ConnectionError } from '../../model';
 import { DBClient } from '../client';
 
+import * as _ from 'lodash';
+
 @injectable()
 export class BaseRepository<T> {
-  @inject(TYPES.LoggerService)
+  @inject(TYPE.LoggerService)
   public logger: ILogger;
 
   constructor(
-    @inject(TYPES.DBClient) protected client: DBClient,
+    @inject(TYPE.DBClient) protected client: DBClient,
     @unmanaged() protected collectionName: string
   ) {}
 
@@ -22,14 +24,6 @@ export class BaseRepository<T> {
       throw new ConnectionError('Database client not initialized');
     }
     return this.client.db.collection(this.collectionName);
-  }
-
-  get timestampField(): any {
-    throw new Error('timestampField getter must be overridden!');
-  }
-
-  get accessLevelField(): any {
-    throw new Error('accessLevelField getter must be overridden!');
   }
 
   public async create(item: T): Promise<boolean> {
@@ -46,34 +40,6 @@ export class BaseRepository<T> {
 
   public count(query: object): Promise<number> {
     return this.collection.countDocuments(query);
-  }
-
-  public query(apiQuery: APIQuery, accessLevel: number): Promise<APIResult> {
-    const q = {
-      ...apiQuery.query,
-      ...{
-        [this.accessLevelField]: { $gte: accessLevel },
-      },
-    };
-    return this.pagedResults(
-      q,
-      apiQuery.fields,
-      apiQuery.paginationField,
-      apiQuery.sortAscending,
-      apiQuery.limit,
-      apiQuery.next,
-      apiQuery.previous
-    );
-  }
-
-  public single(apiQuery: APIQuery, accessLevel: number): Promise<T> {
-    const q = {
-      ...apiQuery.query,
-      ...{
-        [this.accessLevelField]: { $gte: accessLevel },
-      },
-    };
-    return this.singleResult(q, apiQuery.options);
   }
 
   // TODO: Add accessLevel to aggregates
@@ -98,42 +64,72 @@ export class BaseRepository<T> {
     return this.collection.aggregate(pipeline).toArray();
   }
 
-  protected pagedResults(
-    query: object,
-    fields: object,
-    pageField: string,
-    sortAsc: boolean,
-    limit: number,
-    next: string,
-    previous: string
+  public async exists(query: object): Promise<boolean> {
+    this.logger.debug(
+      `exists for ${this.collectionName}:
+      ${JSON.stringify(query)}`
+    );
+    return this.collection
+      .find(query, { _id: 1 })
+      .limit(1)
+      .toArray()
+      .then(arrs => {
+        return Promise.resolve(arrs.length > 0);
+      });
+  }
+
+  public async existsOr(obj, ...fields): Promise<boolean> {
+    const qor = _.map(fields, field => {
+      return { [field]: obj[field] };
+    });
+    const exists = await this.exists({
+      $or: qor,
+    });
+    return exists;
+  }
+
+  protected find(
+    findQuery: object,
+    findFields: object,
+    findPaginationField: string,
+    findSortAsc: boolean,
+    findLimit: number,
+    findNext: string,
+    findPrevious: string
   ): Promise<APIResult> {
     this.logger.debug(
-      `pagedResults for ${this.collectionName}:
-      ${JSON.stringify(query)}
-      ${JSON.stringify(fields)}
-      ${pageField}
-      ${sortAsc}
-      ${limit}
-      ${next}
-      ${previous}`
+      `find for ${this.collectionName}:
+      ${JSON.stringify(findQuery)}
+      ${JSON.stringify(findFields)}
+      ${findPaginationField}
+      ${findSortAsc}
+      ${findLimit}
+      ${findNext}
+      ${findPrevious}`
     );
     return MongoPaging.find(this.collection, {
-      query,
-      fields,
-      pageField,
-      sortAsc,
-      limit,
-      next,
-      previous,
+      query: findQuery,
+      fields: findFields,
+      paginatedField: findPaginationField,
+      sortAscending: findSortAsc,
+      limit: findLimit,
+      next: findNext,
+      previous: findPrevious,
     });
   }
 
-  protected singleResult(query: object, options: object) {
+  protected findOne(query: object, options: object) {
     this.logger.debug(
-      `singleResult for ${this.collectionName}:
+      `findOne for ${this.collectionName}:
       ${JSON.stringify(query)}
       ${JSON.stringify(options)}`
     );
-    return this.collection.findOne(query, options);
+    return this.collection
+      .find(query, options)
+      .limit(1)
+      .toArray()
+      .then(arrs => {
+        return arrs[0] || undefined;
+      });
   }
 }

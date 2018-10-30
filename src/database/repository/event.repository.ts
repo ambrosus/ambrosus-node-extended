@@ -1,22 +1,42 @@
 import { inject, injectable } from 'inversify';
 
-import { TYPES } from '../../constant';
+import { TYPE } from '../../constant';
 import { APIQuery, APIResult, Event } from '../../model';
 import { DBClient } from '../client';
 import { BaseRepository } from './base.repository';
 
 @injectable()
 export class EventRepository extends BaseRepository<Event> {
-  constructor(@inject(TYPES.DBClient) protected client: DBClient) {
+  constructor(@inject(TYPE.DBClient) protected client: DBClient) {
     super(client, 'events');
   }
 
-  get timestampField(): any {
-    return 'content.idData.timestamp';
+  public queryEvents(apiQuery: APIQuery, accessLevel: number): Promise<APIResult> {
+    const q = {
+      ...apiQuery.query,
+      ...{
+        'content.idData.accessLevel': { $gte: accessLevel },
+      },
+    };
+    return this.find(
+      q,
+      apiQuery.fields,
+      apiQuery.paginationField,
+      apiQuery.sortAscending,
+      apiQuery.limit,
+      apiQuery.next,
+      apiQuery.previous
+    );
   }
 
-  get accessLevelField(): any {
-    return 'content.idData.accessLevel';
+  public queryEvent(apiQuery: APIQuery, accessLevel: number): Promise<Event> {
+    const q = {
+      ...apiQuery.query,
+      ...{
+        'content.idData.accessLevel': { $gte: accessLevel },
+      },
+    };
+    return this.findOne(q, apiQuery.options);
   }
 
   public assetEventsOfType(assets: string[], type: string, apiQuery: APIQuery): Promise<APIResult> {

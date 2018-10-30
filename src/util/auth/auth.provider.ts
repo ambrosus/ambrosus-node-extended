@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
 import { interfaces } from 'inversify-express-utils';
 
-import { TYPES } from '../../constant';
+import { TYPE } from '../../constant';
 import { ILogger } from '../../interface/logger.inferface';
 import { Account, UserPrincipal } from '../../model';
 import { AccountService } from '../../service/account.service';
@@ -10,13 +10,13 @@ import { AuthService } from '../../service/auth.service';
 
 @injectable()
 export class AMBAuthProvider implements interfaces.AuthProvider {
-  @inject(TYPES.AuthService)
+  @inject(TYPE.AuthService)
   private authService: AuthService;
 
-  @inject(TYPES.AccountService)
+  @inject(TYPE.AccountService)
   private accountService: AccountService;
 
-  @inject(TYPES.LoggerService)
+  @inject(TYPE.LoggerService)
   private logger: ILogger;
 
   public async getUser(

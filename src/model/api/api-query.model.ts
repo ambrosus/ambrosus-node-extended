@@ -33,7 +33,7 @@ export class APIQuery extends APIPagination implements IAPIQuery {
   constructor() {
     super();
     this.blackListFields = {
-      _id: 0,
+      //_id: 0, Excluding the _id field is breaking cursor based pagination
       repository: 0,
     };
   }

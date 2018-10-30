@@ -1,7 +1,7 @@
 import base64url from 'base64url';
 import { inject, injectable } from 'inversify';
 
-import { TYPES } from '../constant/types';
+import { TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
 import { AuthToken, ValidationError } from '../model';
 import { Web3Service } from './web3.service';
@@ -9,8 +9,8 @@ import { Web3Service } from './web3.service';
 @injectable()
 export class AuthService {
   constructor(
-    @inject(TYPES.Web3Service) private web3Service: Web3Service,
-    @inject(TYPES.LoggerService) private logger: ILogger
+    @inject(TYPE.Web3Service) private web3Service: Web3Service,
+    @inject(TYPE.LoggerService) private logger: ILogger
   ) {}
 
   public getAuthToken(authHeader: string): AuthToken {

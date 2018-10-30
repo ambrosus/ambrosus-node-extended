@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 
 import { IGraphQLResolver } from '..';
-import { TYPES } from '../../constant/types';
+import { TYPE } from '../../constant/types';
 import { APIQuery, APIResult, Asset } from '../../model';
 import { AssetService } from '../../service/asset.service';
 
@@ -9,7 +9,7 @@ import { AssetService } from '../../service/asset.service';
 export class AssetResolver implements IGraphQLResolver {
   public resolver;
 
-  @inject(TYPES.AssetService)
+  @inject(TYPE.AssetService)
   private assetService: AssetService;
 
   constructor() {

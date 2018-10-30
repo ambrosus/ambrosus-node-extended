@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 
 import { IGraphQLResolver } from '..';
-import { TYPES } from '../../constant/types';
+import { TYPE } from '../../constant/types';
 import { APIQuery, APIResult, Event } from '../../model';
 import { EventService } from '../../service/event.service';
 
@@ -9,7 +9,7 @@ import { EventService } from '../../service/event.service';
 export class EventResolver implements IGraphQLResolver {
   public resolver;
 
-  @inject(TYPES.EventService)
+  @inject(TYPE.EventService)
   private eventService: EventService;
 
   constructor() {

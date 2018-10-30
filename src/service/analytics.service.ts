@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 
-import { TYPES } from '../constant/types';
+import { TYPE } from '../constant/types';
 import {
   AccountRepository,
   AssetRepository,
@@ -23,11 +23,11 @@ import {
 @injectable()
 export class AnalyticsService {
   constructor(
-    @inject(TYPES.AccountRepository) private readonly account: AccountRepository,
-    @inject(TYPES.AssetRepository) private readonly asset: AssetRepository,
-    @inject(TYPES.EventRepository) private readonly event: EventRepository,
-    @inject(TYPES.BundleRepository) private readonly bundle: BundleRepository,
-    @inject(TYPES.LoggerService) private readonly logger: ILogger
+    @inject(TYPE.AccountRepository) private readonly account: AccountRepository,
+    @inject(TYPE.AssetRepository) private readonly asset: AssetRepository,
+    @inject(TYPE.EventRepository) private readonly event: EventRepository,
+    @inject(TYPE.BundleRepository) private readonly bundle: BundleRepository,
+    @inject(TYPE.LoggerService) private readonly logger: ILogger
   ) {}
 
   public count(collection: string): Promise<number> {

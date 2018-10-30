@@ -6,7 +6,7 @@ import { InversifyExpressServer } from 'inversify-express-utils';
 import * as morgan from 'morgan';
 
 import { config } from './config';
-import { TYPES } from './constant/types';
+import { TYPE } from './constant/types';
 import { iocContainer } from './inversify.config';
 import { AuthenticationError, NotFoundError, PermissionError, ValidationError } from './model';
 import { LoggerService } from './service/logger.service';
@@ -20,7 +20,7 @@ const server = new InversifyExpressServer(
   AMBAuthProvider
 );
 
-const logger = iocContainer.get<LoggerService>(TYPES.LoggerService);
+const logger = iocContainer.get<LoggerService>(TYPE.LoggerService);
 
 server.setConfig(app => {
   app.set('json spaces', 2);

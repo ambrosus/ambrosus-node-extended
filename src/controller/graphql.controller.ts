@@ -6,12 +6,12 @@ import { inject } from 'inversify';
 import { BaseHttpController, controller, httpGet, httpPost } from 'inversify-express-utils';
 import * as url from 'url';
 
-import { TYPES } from '../constant/types';
+import { TYPE, MIDDLEWARE } from '../constant/types';
 import { IGraphQLSchema } from '../graphql';
 
-@controller('/graphql', TYPES.AuthorizedMiddleware)
+@controller('/graphql', MIDDLEWARE.Authorized)
 export class GraphQLController extends BaseHttpController {
-  constructor(@inject(TYPES.GraphQLSchema) private graphQL: IGraphQLSchema) {
+  constructor(@inject(TYPE.GraphQLSchema) private graphQL: IGraphQLSchema) {
     super();
   }
 
