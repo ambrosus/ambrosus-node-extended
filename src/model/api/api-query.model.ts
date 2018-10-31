@@ -38,18 +38,18 @@ export class APIQuery extends APIPagination implements IAPIQuery {
     };
   }
 
-  get fields(): any {
-    return {
-      projection: this.blackListFields,
-    };
-  }
-
   get options(): any {
     const opt = {
       projection: this.blackListFields,
     };
 
     return opt;
+  }
+
+  get fields(): any {
+    return {
+      projection: this.blackListFields,
+    };
   }
 
   public exludeField(field: string) {

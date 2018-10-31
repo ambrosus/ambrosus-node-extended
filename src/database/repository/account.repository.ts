@@ -15,7 +15,7 @@ export class AccountRepository extends BaseRepository<Account> {
     const q = {
       ...apiQuery.query,
       ...{
-        'accessLevel': { $gte: accessLevel },
+        'accessLevel': { $lte: accessLevel },
       },
     };
     return this.find(
@@ -33,7 +33,7 @@ export class AccountRepository extends BaseRepository<Account> {
     const q = {
       ...apiQuery.query,
       ...{
-        'accessLevel': { $gte: accessLevel },
+        'accessLevel': { $lte: accessLevel },
       },
     };
     return this.findOne(q, apiQuery.options);

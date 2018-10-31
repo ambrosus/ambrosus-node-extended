@@ -15,7 +15,7 @@ export class NodeAdminMiddleware extends BaseMiddleware {
     this.logger.debug('Begin NodeAdminMiddleware');
 
     const user = this.httpContext.user as UserPrincipal;
-    
+
     if (!user.hasPermission('super_account')) {
       throw new AuthenticationError('Unauthorized access');
     }

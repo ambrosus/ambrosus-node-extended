@@ -15,7 +15,7 @@ export class EventRepository extends BaseRepository<Event> {
     const q = {
       ...apiQuery.query,
       ...{
-        'content.idData.accessLevel': { $gte: accessLevel },
+        'content.idData.accessLevel': { $lte: accessLevel },
       },
     };
     return this.find(
@@ -33,7 +33,7 @@ export class EventRepository extends BaseRepository<Event> {
     const q = {
       ...apiQuery.query,
       ...{
-        'content.idData.accessLevel': { $gte: accessLevel },
+        'content.idData.accessLevel': { $lte: accessLevel },
       },
     };
     return this.findOne(q, apiQuery.options);

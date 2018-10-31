@@ -10,7 +10,7 @@ export class AssetService {
 
   public getAssets(apiQuery: APIQuery): Promise<APIResult> {
     apiQuery.paginationField = 'content.idData.timestamp';
-    apiQuery.sortAscending = true;
+    apiQuery.sortAscending = false;
     return this.assetRepository.find(apiQuery);
   }
 

@@ -87,7 +87,7 @@ export class BaseRepository<T> {
       ${JSON.stringify(qor)}`
     );
     return this.collection
-    .find(qor, { _id: 1 })
+    .find({$or: qor}, { _id: 1 })
     .limit(1)
     .toArray()
     .then(arrs => {
