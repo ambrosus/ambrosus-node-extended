@@ -2,13 +2,12 @@ import { Request, Response } from 'express';
 import { checkSchema } from 'express-validator/check';
 import { inject } from 'inversify';
 import {
-  BaseHttpController,
   controller,
   httpGet,
   httpPost,
   request,
-  response,
   requestParam,
+  response,
 } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
@@ -17,10 +16,8 @@ import { APISuccess } from '../model/api/api-success.model';
 import { OrganizationService } from '../service/organization.service';
 
 @controller('/organization', MIDDLEWARE.Authorized)
-export class OrganizationController extends BaseHttpController {
-  constructor(@inject(TYPE.OrganizationService) private organizationService: OrganizationService) {
-    super();
-  }
+export class OrganizationController {
+  constructor(@inject(TYPE.OrganizationService) private organizationService: OrganizationService) {}
 
   @httpGet('/request', MIDDLEWARE.NodeAdmin)
   public async getOrgReguests(req: Request): Promise<APIResult> {

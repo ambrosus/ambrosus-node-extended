@@ -1,52 +1,72 @@
 import { Request, Response } from 'express';
+import { checkSchema, param } from 'express-validator/check';
 import { inject } from 'inversify';
 import {
   BaseHttpController,
   controller,
   httpGet,
   httpPost,
-  httpPut,
+  request,
   requestParam,
   response,
 } from 'inversify-express-utils';
+import web3 = require('web3');
 
-import { TYPE, MIDDLEWARE } from '../constant/types';
-import { Account, APIQuery, APIResult } from '../model';
+import { MIDDLEWARE, TYPE } from '../constant/types';
+import { APIQuery, APIResponse, APIResponseMeta } from '../model';
 import { AccountService } from '../service/account.service';
-import { NotFoundResult } from 'inversify-express-utils/dts/results';
-import { body } from 'express-validator/check';
-import { sanitizeBody } from 'express-validator/filter';
 
 @controller('/account', MIDDLEWARE.Authorized)
-export class AccountController extends BaseHttpController {
-  constructor(@inject(TYPE.AccountService) private accountService: AccountService) {
-    super();
-  }
+export class AccountController {
+  constructor(@inject(TYPE.AccountService) private accountService: AccountService) {}
 
-  @httpGet('/')
-  public async getAccounts(req: Request): Promise<APIResult> {
+  @httpGet('/', ...checkSchema(APIQuery.validationSchema()), MIDDLEWARE.ValidateRequest)
+  public async getAccounts(
+    @request() req: Request,
+    @response() res: Response
+  ): Promise<APIResponse> {
     const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
-    return result;
+    const apiResponse = APIResponse.fromMongoPagedResult(result);
+    apiResponse.meta = new APIResponseMeta(200);
+    return apiResponse;
   }
 
-  @httpGet('/:address')
-  public async getAccount(@requestParam('address') address: string): Promise<Account> {
+  @httpGet(
+    '/:address',
+    param('address').custom(value => web3.utils.isAddress(value)),
+    MIDDLEWARE.ValidateRequest
+  )
+  public async getAccount(
+    @requestParam('address') address: string,
+    @response() res: Response
+  ): Promise<APIResponse> {
     const result = await this.accountService.getAccount(address);
-    return result;
+    const apiResponse = new APIResponse(result);
+    apiResponse.meta = new APIResponseMeta(200);
+    return apiResponse;
   }
 
-  @httpGet('/verify/:address')
+  @httpGet(
+    '/exists/:address',
+    param('address').custom(value => web3.utils.isAddress(value)),
+    MIDDLEWARE.ValidateRequest
+  )
   public async getAccountExists(
     @requestParam('address') address: string,
     @response() res: Response
-  ): Promise<any> {
+  ): Promise<APIResponse> {
     const result = await this.accountService.getAccountExists(address);
-    return res.status(200).json({ result });
+    const apiResponse = new APIResponse();
+    apiResponse.meta = new APIResponseMeta(200);
+    apiResponse.meta.exists = result;
+    return apiResponse;
   }
 
-  @httpPost('/query')
-  public async queryAccounts(req: Request): Promise<APIResult> {
+  @httpPost('/query', ...checkSchema(APIQuery.validationSchema()), MIDDLEWARE.ValidateRequest)
+  public async queryAccounts(req: Request): Promise<APIResponse> {
     const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
-    return result;
+    const apiResponse = APIResponse.fromMongoPagedResult(result);
+    apiResponse.meta = new APIResponseMeta(200);
+    return apiResponse;
   }
 }

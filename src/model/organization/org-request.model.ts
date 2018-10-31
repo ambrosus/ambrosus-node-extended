@@ -1,7 +1,8 @@
 import { Request } from 'express';
+import { ValidationSchema } from 'express-validator/check';
 import { injectable } from 'inversify';
-import { checkSchema, ValidationSchema } from 'express-validator/check';
 import web3 = require('web3');
+
 import { getTimestamp } from '../../util/helpers';
 
 export interface IOrganizationRequest {
@@ -29,6 +30,7 @@ export class OrganizationRequest implements IOrganizationRequest {
     return {
       title: {
         in: ['body'],
+        optional: true,
         isLength: {
           errorMessage: 'Organization title may not exceed 200 characters',
           options: { max: 200 },
@@ -36,6 +38,7 @@ export class OrganizationRequest implements IOrganizationRequest {
       },
       address: {
         in: ['body'],
+        optional: false,
         custom: {
           options: (value, { req, location, path }) => {
             return web3.utils.isAddress(value);
@@ -45,13 +48,14 @@ export class OrganizationRequest implements IOrganizationRequest {
       },
       email: {
         in: ['body'],
+        optional: false,
         errorMessage: 'Invalid email',
         isEmail: true,
         normalizeEmail: true,
       },
       message: {
         in: ['body'],
-        errorMessage: 'Invalid email',
+        optional: true,
         isLength: {
           errorMessage: 'Message may not exceed 1024 characters',
           options: { max: 1024 },

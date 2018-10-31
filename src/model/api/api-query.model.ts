@@ -3,6 +3,8 @@ import { injectable } from 'inversify';
 
 import { getMongoFilter, getParamValue } from '../../util/helpers';
 import { APIPagination } from './api-pagination.model';
+import { ValidationSchema } from 'express-validator/check';
+import { config } from '../../config';
 
 export interface IAPIQuery {
   query: object;
@@ -19,11 +21,36 @@ export class APIQuery extends APIPagination implements IAPIQuery {
     if (query) {
       apiQuery.query = getMongoFilter(query);
     }
-    apiQuery.limit = +getParamValue(req, 'limit') || undefined;
+    apiQuery.limit = +getParamValue(req, 'limit') || +config.paginationDefault;
     apiQuery.next = getParamValue(req, 'next');
     apiQuery.previous = getParamValue(req, 'previous');
 
     return apiQuery;
+  }
+
+  public static validationSchema(): ValidationSchema {
+    return {
+      limit: {
+        in: ['body', 'query'],
+        isInt: {
+          options: { min: 1 },
+        },
+        optional: true,
+        errorMessage: 'Limit must be a numeric value > 0',
+      },
+      next: {
+        in: ['body', 'query'],
+        isBase64: true,
+        optional: true,
+        errorMessage: 'Next must be a base64 encoded string',
+      },
+      previous: {
+        in: ['body', 'query'],
+        isBase64: true,
+        optional: true,
+        errorMessage: 'Previous must be a base64 encoded string',
+      },
+    };
   }
 
   public accessField;
@@ -33,7 +60,6 @@ export class APIQuery extends APIPagination implements IAPIQuery {
   constructor() {
     super();
     this.blackListFields = {
-      //_id: 0, Excluding the _id field is breaking cursor based pagination
       repository: 0,
     };
   }

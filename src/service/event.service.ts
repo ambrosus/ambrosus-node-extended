@@ -11,6 +11,10 @@ export class EventService {
     @inject(TYPE.EventRepository) private readonly eventRepository: EventRepository
   ) {}
 
+  public getEventExists(eventId: string) {
+    return this.eventRepository.existsOR({ eventId }, 'eventId');
+  }
+
   public getEvents(apiQuery: APIQuery): Promise<APIResult> {
     apiQuery.paginationField = 'content.idData.timestamp';
     apiQuery.sortAscending = false;

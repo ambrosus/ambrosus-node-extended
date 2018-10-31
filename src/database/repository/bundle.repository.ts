@@ -12,6 +12,10 @@ export class BundleRepository extends BaseRepository<Bundle> {
     super(client, 'bundles');
   }
 
+  get timestampField(): any {
+    return 'content.idData.timestamp';
+  }
+
   public find(apiQuery: APIQuery): Promise<APIResult> {
     return super.find(
       apiQuery.query,

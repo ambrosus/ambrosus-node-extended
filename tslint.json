@@ -7,7 +7,6 @@
     ],
     "no-unnecessary-initializer": false,
     "no-var-requires": true,
-    "no-null-keyword": true,
     "no-consecutive-blank-lines": true,
     "quotemark": [true, "single", "avoid-escape"],
     "interface-name": false,

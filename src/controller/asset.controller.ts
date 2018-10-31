@@ -8,41 +8,44 @@ import {
   requestParam,
 } from 'inversify-express-utils';
 
-import { TYPE, MIDDLEWARE } from '../constant/types';
-import { APIQuery, APIResult, Asset } from '../model';
+import { MIDDLEWARE, TYPE } from '../constant/types';
+import { APIQuery, APIResponse, APIResponseMeta } from '../model';
 import { AssetService } from '../service/asset.service';
-import { NotFoundResult } from 'inversify-express-utils/dts/results';
 
 @controller('/asset', MIDDLEWARE.Authorized)
-export class AssetController extends BaseHttpController {
-  constructor(@inject(TYPE.AssetService) private assetService: AssetService) {
-    super();
-  }
+export class AssetController {
+  constructor(@inject(TYPE.AssetService) private assetService: AssetService) {}
 
   @httpGet('/')
-  public async getAssets(req: Request): Promise<APIResult | NotFoundResult> {
+  public async getAssets(req: Request): Promise<APIResponse> {
     const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
-    if (!result.results.length) {
-      return this.notFound();
-    }
-    return result;
+    const apiResponse = APIResponse.fromMongoPagedResult(result);
+    apiResponse.meta = new APIResponseMeta(200);
+    return apiResponse;
   }
 
   @httpGet('/:assetId')
-  public async get(@requestParam('assetId') assetId: string): Promise<Asset | NotFoundResult> {
+  public async get(@requestParam('assetId') assetId: string): Promise<APIResponse> {
     const result = await this.assetService.getAsset(assetId);
-    if (!result) {
-      return this.notFound();
-    }
-    return result;
+    const apiResponse = new APIResponse(result);
+    apiResponse.meta = new APIResponseMeta(200);
+    return apiResponse;
+  }
+
+  @httpGet('/exists/:assetId')
+  public async getAssetExists(@requestParam('assetId') assetId: string): Promise<APIResponse> {
+    const result = await this.assetService.getAssetExists(assetId);
+    const apiResponse = new APIResponse();
+    apiResponse.meta = new APIResponseMeta(200);
+    apiResponse.meta.exists = result;
+    return apiResponse;
   }
 
   @httpPost('/query')
-  public async query(req: Request): Promise<APIResult | NotFoundResult> {
+  public async query(req: Request): Promise<APIResponse> {
     const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
-    if (!result.results.length) {
-      return this.notFound();
-    }
-    return result;
+    const apiResponse = APIResponse.fromMongoPagedResult(result);
+    apiResponse.meta = new APIResponseMeta(200);
+    return apiResponse;
   }
 }

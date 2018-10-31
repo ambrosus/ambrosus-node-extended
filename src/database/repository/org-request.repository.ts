@@ -11,6 +11,10 @@ export class OrganizationRequestRepository extends BaseRepository<OrganizationRe
     super(client, 'organizationRequest');
   }
 
+  get timestampField(): any {
+    return 'createdOn';
+  }
+
   public getOrganizationRequests(apiQuery: APIQuery) {
     return this.find(
       {},

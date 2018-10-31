@@ -8,6 +8,10 @@ import { APIQuery, APIResult, Asset } from '../model';
 export class AssetService {
   constructor(@inject(TYPE.AssetRepository) private readonly assetRepository: AssetRepository) {}
 
+  public getAssetExists(assetId: string) {
+    return this.assetRepository.existsOR({ assetId }, 'assetId');
+  }
+
   public getAssets(apiQuery: APIQuery): Promise<APIResult> {
     apiQuery.paginationField = 'content.idData.timestamp';
     apiQuery.sortAscending = false;

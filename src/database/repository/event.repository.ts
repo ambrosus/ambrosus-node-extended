@@ -11,6 +11,10 @@ export class EventRepository extends BaseRepository<Event> {
     super(client, 'events');
   }
 
+  get timestampField(): any {
+    return 'content.idData.timestamp';
+  }
+
   public queryEvents(apiQuery: APIQuery, accessLevel: number): Promise<APIResult> {
     const q = {
       ...apiQuery.query,

@@ -10,6 +10,10 @@ export class BundleService {
     @inject(TYPE.BundleRepository) private readonly bundleRepository: BundleRepository
   ) {}
 
+  public getBundleExists(bundleId: string) {
+    return this.bundleRepository.existsOR({ bundleId }, 'bundleId');
+  }
+
   public getBundles(apiQuery: APIQuery): Promise<APIResult> {
     apiQuery.exludeField('content.entries');
     return this.bundleRepository.find(apiQuery);

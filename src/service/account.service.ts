@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 
 import { TYPE } from '../constant/types';
 import { AccountRepository } from '../database/repository';
-import { Account, APIQuery, APIResult, UserPrincipal } from '../model';
+import { Account, APIQuery, APIResult, UserPrincipal, MongoPagedResult } from '../model';
 
 @injectable()
 export class AccountService {
@@ -16,7 +16,7 @@ export class AccountService {
     return this.accountRepository.existsOR({ address }, 'address');
   }
 
-  public getAccounts(apiQuery: APIQuery): Promise<APIResult> {
+  public getAccounts(apiQuery: APIQuery): Promise<MongoPagedResult> {
     apiQuery.paginationField = 'registeredOn';
     apiQuery.sortAscending = false;
 

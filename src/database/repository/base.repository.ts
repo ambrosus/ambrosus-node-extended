@@ -4,8 +4,9 @@ import { InsertOneWriteOpResult } from 'mongodb';
 
 import { TYPE } from '../../constant';
 import { ILogger } from '../../interface/logger.inferface';
-import { APIQuery, APIResult, ConnectionError } from '../../model';
+import { APIQuery, MongoPagedResult, ConnectionError } from '../../model';
 import { DBClient } from '../client';
+import { config } from '../../config';
 
 import * as _ from 'lodash';
 
@@ -17,7 +18,14 @@ export class BaseRepository<T> {
   constructor(
     @inject(TYPE.DBClient) protected client: DBClient,
     @unmanaged() protected collectionName: string
-  ) {}
+  ) {
+    MongoPaging.config.DEFAULT_LIMIT = config.paginationDefault;
+    MongoPaging.config.MAX_LIMIT = config.paginationMax;
+  }
+
+  get timestampField(): any {
+    throw new Error('timestampField getter must be overridden!');
+  }
 
   get collection(): any {
     if (!this.client) {
@@ -27,7 +35,7 @@ export class BaseRepository<T> {
   }
 
   public async create(item: T): Promise<boolean> {
-    const result: InsertOneWriteOpResult = await this.collection.insert(item);
+    const result: InsertOneWriteOpResult = await this.collection.insertOne(item);
     return !!result.result.ok;
   }
 
@@ -43,7 +51,7 @@ export class BaseRepository<T> {
   }
 
   // TODO: Add accessLevel to aggregates
-  public aggregatePaging(pipeline: object, apiQuery: APIQuery): Promise<APIResult> {
+  public aggregatePaging(pipeline: object, apiQuery: APIQuery): Promise<MongoPagedResult> {
     this.logger.debug(
       `aggregate ${this.collectionName}: ${JSON.stringify(pipeline)} ${JSON.stringify(apiQuery)}`
     );
@@ -57,7 +65,7 @@ export class BaseRepository<T> {
   }
 
   // TODO: Add accessLevel to aggregates
-  public aggregate(pipeline: object, apiQuery: APIQuery): Promise<any> {
+  public aggregate(pipeline: object, apiQuery: APIQuery): Promise<MongoPagedResult> {
     this.logger.debug(
       `aggregate ${this.collectionName}: ${JSON.stringify(pipeline)} ${JSON.stringify(apiQuery)}`
     );
@@ -87,12 +95,12 @@ export class BaseRepository<T> {
       ${JSON.stringify(qor)}`
     );
     return this.collection
-    .find({$or: qor}, { _id: 1 })
-    .limit(1)
-    .toArray()
-    .then(arrs => {
-      return Promise.resolve(arrs.length > 0);
-    });
+      .find({ $or: qor }, { _id: 1 })
+      .limit(1)
+      .toArray()
+      .then(arrs => {
+        return Promise.resolve(arrs.length > 0);
+      });
   }
 
   protected find(
@@ -103,7 +111,7 @@ export class BaseRepository<T> {
     findLimit: number,
     findNext: string,
     findPrevious: string
-  ): Promise<APIResult> {
+  ): Promise<MongoPagedResult> {
     this.logger.debug(
       `find for ${this.collectionName}:
       ${JSON.stringify(findQuery)}
@@ -114,6 +122,7 @@ export class BaseRepository<T> {
       ${findNext}
       ${findPrevious}`
     );
+
     return MongoPaging.find(this.collection, {
       query: findQuery,
       fields: findFields,
@@ -125,7 +134,7 @@ export class BaseRepository<T> {
     });
   }
 
-  protected findOne(query: object, options: object) {
+  protected findOne(query: object, options: object): Promise<T> {
     this.logger.debug(
       `findOne for ${this.collectionName}:
       ${JSON.stringify(query)}

@@ -8,49 +8,59 @@ import {
   requestParam,
 } from 'inversify-express-utils';
 
-import { TYPE, MIDDLEWARE } from '../constant/types';
-import { APIQuery, APIResult, Event } from '../model';
+import { MIDDLEWARE, TYPE } from '../constant/types';
+import { APIQuery, APIResponse, APIResponseMeta } from '../model';
 import { EventService } from '../service/event.service';
 import { getParamValue } from '../util/helpers';
-import { NotFoundResult } from 'inversify-express-utils/dts/results';
 
 @controller('/event', MIDDLEWARE.Authorized)
-export class EventController extends BaseHttpController {
-  constructor(@inject(TYPE.EventService) private eventService: EventService) {
-    super();
-  }
+export class EventController {
+  constructor(@inject(TYPE.EventService) private eventService: EventService) {}
 
   @httpGet('/')
-  public async getEvents(req: Request): Promise<APIResult | NotFoundResult> {
+  public async getEvents(req: Request): Promise<APIResponse> {
     const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
-    return result;
+    const apiResponse = APIResponse.fromMongoPagedResult(result);
+    apiResponse.meta = new APIResponseMeta(200);
+    return apiResponse;
   }
 
   @httpGet('/:eventId')
-  public async get(@requestParam('eventId') eventId: string): Promise<Event | NotFoundResult> {
+  public async getEvent(@requestParam('eventId') eventId: string): Promise<APIResponse> {
     const result = await this.eventService.getEvent(eventId);
-    if (!result) {
-      return this.notFound();
-    }
-    return result;
+    const apiResponse = new APIResponse(result);
+    apiResponse.meta = new APIResponseMeta(200);
+    return apiResponse;
+  }
+
+  @httpGet('/exists/:eventId')
+  public async getEventExists(@requestParam('eventId') eventId: string): Promise<APIResponse> {
+    const result = await this.eventService.getEventExists(eventId);
+    const apiResponse = new APIResponse();
+    apiResponse.meta = new APIResponseMeta(200);
+    apiResponse.meta.exists = result;
+    return apiResponse;
   }
 
   @httpPost('/query')
-  public async query(req: Request): Promise<APIResult | NotFoundResult> {
+  public async queryEvents(req: Request): Promise<APIResponse> {
     const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
-    return result;
+    const apiResponse = APIResponse.fromMongoPagedResult(result);
+    apiResponse.meta = new APIResponseMeta(200);
+    return apiResponse;
   }
 
   @httpPost('/latest/type')
-  public async latestType(req: Request): Promise<APIResult | NotFoundResult> {
+  public async latestType(req: Request): Promise<APIResponse> {
     const assets = getParamValue(req, 'assets');
     const type = getParamValue(req, 'type');
-
     const result = await this.eventService.getLatestAssetEventsOfType(
       assets,
       type,
       APIQuery.fromRequest(req)
     );
-    return result;
+    const apiResponse = APIResponse.fromMongoPagedResult(result);
+    apiResponse.meta = new APIResponseMeta(200);
+    return apiResponse;
   }
 }

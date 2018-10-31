@@ -11,6 +11,10 @@ export class AssetRepository extends BaseRepository<Asset> {
     super(client, 'assets');
   }
 
+  get timestampField(): any {
+    return 'content.idData.timestamp';
+  }
+
   public find(apiQuery: APIQuery): Promise<APIResult> {
     return super.find(
       apiQuery.query,

@@ -11,11 +11,15 @@ export class AccountRepository extends BaseRepository<Account> {
     super(client, 'accounts');
   }
 
+  get timestampField(): any {
+    return 'registeredOn';
+  }
+
   public queryAccounts(apiQuery: APIQuery, accessLevel: number): Promise<APIResult> {
     const q = {
       ...apiQuery.query,
       ...{
-        'accessLevel': { $lte: accessLevel },
+        accessLevel: { $lte: accessLevel },
       },
     };
     return this.find(
@@ -33,7 +37,7 @@ export class AccountRepository extends BaseRepository<Account> {
     const q = {
       ...apiQuery.query,
       ...{
-        'accessLevel': { $lte: accessLevel },
+        accessLevel: { $lte: accessLevel },
       },
     };
     return this.findOne(q, apiQuery.options);
