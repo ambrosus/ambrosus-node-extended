@@ -15,8 +15,11 @@ export interface IAPIResponse {
 export class APIResponse implements IAPIResponse {
   public static fromMongoPagedResult(mongoPagedResult: MongoPagedResult): APIResponse {
     const apiResponse = new APIResponse();
+
     apiResponse.pagination = APIResponsePagination.fromMongoPagedResult(mongoPagedResult);
-    apiResponse.data = mongoPagedResult.results;
+    apiResponse.data = mongoPagedResult.results || [];
+    apiResponse.meta = new APIResponseMeta();
+    apiResponse.meta.count = apiResponse.data.length;
     return apiResponse;
   }
 
@@ -25,6 +28,8 @@ export class APIResponse implements IAPIResponse {
   public pagination: any;
 
   constructor(_data?: any) {
-    this.data = _data;
+    this.data = _data || {};
+    this.meta = new APIResponseMeta();
+    this.meta.count = this.data.length;
   }
 }

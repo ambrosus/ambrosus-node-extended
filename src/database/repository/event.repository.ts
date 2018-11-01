@@ -71,6 +71,7 @@ export class EventRepository extends BaseRepository<Event> {
       },
     ];
 
-    return super.aggregatePaging(pipeline, apiQuery);
+    return super.aggregate(pipeline, apiQuery);
   }
+
 }

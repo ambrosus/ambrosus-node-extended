@@ -14,7 +14,8 @@
     "dev:clean": "rimraf ./build",
     "dev:start": "source ./.env.dev && nodemon ./build/index.js",
     "dev:test": "mocha **/*.spec.ts",
-    "dev:lint": "tslint -c tslint.json --project tsconfig.json 'src/**/*.ts'"
+    "dev:lint": "tslint -c tslint.json --project tsconfig.json 'src/**/*.ts'",
+    "test:start": "source ./.env.test && nodemon ./build/index.js"
   },
   "files": [
     "src"

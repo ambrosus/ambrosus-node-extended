@@ -59,8 +59,8 @@ export class EventController {
       type,
       APIQuery.fromRequest(req)
     );
-    const apiResponse = APIResponse.fromMongoPagedResult(result);
-    apiResponse.meta = new APIResponseMeta(200);
+    const apiResponse = new APIResponse(result);
+    apiResponse.meta.code = 200;
     return apiResponse;
   }
 }

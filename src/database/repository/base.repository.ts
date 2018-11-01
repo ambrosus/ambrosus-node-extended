@@ -65,7 +65,7 @@ export class BaseRepository<T> {
   }
 
   // TODO: Add accessLevel to aggregates
-  public aggregate(pipeline: object, apiQuery: APIQuery): Promise<MongoPagedResult> {
+  public aggregate(pipeline: object, apiQuery: APIQuery): Promise<any> {
     this.logger.debug(
       `aggregate ${this.collectionName}: ${JSON.stringify(pipeline)} ${JSON.stringify(apiQuery)}`
     );
