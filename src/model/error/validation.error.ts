@@ -1,7 +1,7 @@
 import { AmbrosusError } from './ambrosus.error';
 
 export class ValidationError extends AmbrosusError {
-  constructor(message) {
-    super(`Invalid data: ${message}`);
+  constructor(message, code: number) {
+    super(`Invalid data: ${message}`, code);
   }
 }

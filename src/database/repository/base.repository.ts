@@ -1,14 +1,13 @@
 import { inject, injectable, unmanaged } from 'inversify';
+import * as _ from 'lodash';
 import * as MongoPaging from 'mongo-cursor-pagination';
 import { InsertOneWriteOpResult } from 'mongodb';
 
+import { config } from '../../config';
 import { TYPE } from '../../constant';
 import { ILogger } from '../../interface/logger.inferface';
-import { APIQuery, MongoPagedResult, ConnectionError } from '../../model';
+import { APIQuery, ConnectionError, MongoPagedResult } from '../../model';
 import { DBClient } from '../client';
-import { config } from '../../config';
-
-import * as _ from 'lodash';
 
 @injectable()
 export class BaseRepository<T> {
@@ -23,8 +22,17 @@ export class BaseRepository<T> {
     MongoPaging.config.MAX_LIMIT = config.paginationMax;
   }
 
-  get timestampField(): any {
-    throw new Error('timestampField getter must be overridden!');
+  get timestampField(): string {
+    // For when we have a system control creation date
+    return this.paginatedField;
+  }
+
+  get paginatedField(): string {
+    throw new Error('paginatedField getter must be overridden!');
+  }
+
+  get paginatedAscending(): boolean {
+    throw new Error('paginatedAscending getter must be overridden!');
   }
 
   get collection(): any {
@@ -51,13 +59,13 @@ export class BaseRepository<T> {
   }
 
   // TODO: Add accessLevel to aggregates
-  public aggregatePaging(pipeline: object, apiQuery: APIQuery): Promise<MongoPagedResult> {
-    this.logger.debug(
-      `aggregate ${this.collectionName}: ${JSON.stringify(pipeline)} ${JSON.stringify(apiQuery)}`
-    );
+  // FIXME: Aggregation isn't returning the correct data with paging b/c a limit to the pipeline.
+  public aggregatePaging(apiQuery: APIQuery): Promise<MongoPagedResult> {
+    this.logger.debug(`aggregate ${this.collectionName}: ${JSON.stringify(apiQuery)}`);
     return MongoPaging.aggregate(this.collection, {
-      aggregation: pipeline,
-      paginatedField: apiQuery.paginationField,
+      aggregation: apiQuery.query,
+      paginatedField: this.paginatedField,
+      paginatedAscending: this.paginatedAscending,
       limit: apiQuery.limit,
       next: apiQuery.next,
       previous: apiQuery.previous,
@@ -65,20 +73,18 @@ export class BaseRepository<T> {
   }
 
   // TODO: Add accessLevel to aggregates
-  public aggregate(pipeline: object, apiQuery: APIQuery): Promise<any> {
-    this.logger.debug(
-      `aggregate ${this.collectionName}: ${JSON.stringify(pipeline)} ${JSON.stringify(apiQuery)}`
-    );
-    return this.collection.aggregate(pipeline).toArray();
+  public aggregate(apiQuery: APIQuery): Promise<any> {
+    this.logger.debug(`aggregate ${this.collectionName}: ${JSON.stringify(apiQuery)}`);
+    return this.collection.aggregate(apiQuery.query).toArray();
   }
 
-  public async exists(query: object): Promise<boolean> {
+  public async exists(apiQuery: APIQuery): Promise<boolean> {
     this.logger.debug(
       `exists for ${this.collectionName}:
-      ${JSON.stringify(query)}`
+      ${JSON.stringify(apiQuery)}`
     );
     return this.collection
-      .find(query, { _id: 1 })
+      .find(apiQuery.query, { _id: 1 })
       .limit(1)
       .toArray()
       .then(arrs => {
@@ -103,45 +109,43 @@ export class BaseRepository<T> {
       });
   }
 
-  protected find(
-    findQuery: object,
-    findFields: object,
-    findPaginationField: string,
-    findSortAsc: boolean,
-    findLimit: number,
-    findNext: string,
-    findPrevious: string
-  ): Promise<MongoPagedResult> {
+  public async find(apiQuery: APIQuery): Promise<MongoPagedResult> {
     this.logger.debug(
-      `find for ${this.collectionName}:
-      ${JSON.stringify(findQuery)}
-      ${JSON.stringify(findFields)}
-      ${findPaginationField}
-      ${findSortAsc}
-      ${findLimit}
-      ${findNext}
-      ${findPrevious}`
+      `
+      ################ find ################
+      collection      ${this.collectionName}:
+      query:          ${JSON.stringify(apiQuery.query)}
+      fields:         ${JSON.stringify(apiQuery.fields)}
+      paginatedField: ${this.paginatedField}
+      sortAscending:  ${this.paginatedAscending}
+      limit:          ${apiQuery.limit}
+      next:           ${apiQuery.next}
+      previous:       ${apiQuery.previous}
+      `
     );
 
     return MongoPaging.find(this.collection, {
-      query: findQuery,
-      fields: findFields,
-      paginatedField: findPaginationField,
-      sortAscending: findSortAsc,
-      limit: findLimit,
-      next: findNext,
-      previous: findPrevious,
+      query: apiQuery.query,
+      fields: apiQuery.projection,
+      paginatedField: this.paginatedField,
+      sortAscending: this.paginatedAscending,
+      limit: apiQuery.limit,
+      next: apiQuery.next,
+      previous: apiQuery.previous,
     });
   }
 
-  protected findOne(query: object, options: object): Promise<T> {
+  public async findOne(apiQuery: APIQuery): Promise<T> {
     this.logger.debug(
-      `findOne for ${this.collectionName}:
-      ${JSON.stringify(query)}
-      ${JSON.stringify(options)}`
+      `
+      ################ findOne ################
+      collection      ${this.collectionName}:
+      query:          ${JSON.stringify(apiQuery.query)}
+      fields:         ${JSON.stringify(apiQuery.projection)}
+      `
     );
     return this.collection
-      .find(query, options)
+      .find(apiQuery.query, apiQuery.projection)
       .limit(1)
       .toArray()
       .then(arrs => {

@@ -43,13 +43,13 @@ export class OrganizationRequest implements IOrganizationRequest {
           options: (value, { req, location, path }) => {
             return web3.utils.isAddress(value);
           },
-          errorMessage: 'Invalid address public key',
+          errorMessage: 'Invalid public key address',
         },
       },
       email: {
         in: ['body'],
         optional: false,
-        errorMessage: 'Invalid email',
+        errorMessage: 'Invalid email format',
         isEmail: true,
         normalizeEmail: true,
       },

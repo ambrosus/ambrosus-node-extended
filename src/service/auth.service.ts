@@ -16,26 +16,26 @@ export class AuthService {
   public getAuthToken(authHeader: string): AuthToken {
     if (!authHeader) {
       this.logger.debug('getAuthToken: missing authentication header');
-      throw new ValidationError('Invalid token');
+      throw new ValidationError('Invalid token', 400);
     }
 
     const [type, token] = authHeader.split(' ');
 
     if (type !== 'AMB_TOKEN') {
       this.logger.debug('getAuthToken: AMB_TOKEN not found in authentication header');
-      throw new ValidationError('Invalid token');
+      throw new ValidationError('Invalid token', 400);
     }
 
     const decoded = this.decode(token);
     if (decoded === undefined) {
       this.logger.debug('getAuthToken: failed to decode AMB_TOKEN');
-      throw new ValidationError('Invalid token');
+      throw new ValidationError('Invalid token', 400);
     }
 
     const { signature, idData } = decoded;
     if (!this.web3Service.validateSignature(idData.createdBy, signature, idData)) {
       this.logger.debug('getAuthToken: failed to validate signature');
-      throw new ValidationError('Invalid token');
+      throw new ValidationError('Invalid token', 400);
     }
 
     const authToken = new AuthToken();

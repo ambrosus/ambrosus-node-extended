@@ -15,14 +15,14 @@ export interface IOrganization {
 
 @injectable()
 export class Organization implements IOrganization {
-    public _id: string;
-    public organizationId: number;
-    public owner: string;
-    public title: string;
-    public legalAddress: string;
-    public active: boolean;
-    public createdBy: string;
-    public createdOn: number;
-    public modifiedBy: string;
-    public modifiedOn: number;
+  public _id: string;
+  public organizationId: number;
+  public owner: string;
+  public title: string;
+  public legalAddress: string;
+  public active: boolean;
+  public createdBy: string;
+  public createdOn: number;
+  public modifiedBy: string;
+  public modifiedOn: number;
 }

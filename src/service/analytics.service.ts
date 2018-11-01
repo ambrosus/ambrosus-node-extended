@@ -51,7 +51,7 @@ export class AnalyticsService {
 
   public countByDate(collection: string, date: string): Promise<number> {
     if (!isValidDate(date)) {
-      throw new ValidationError(`Invalid date string: ${date}`);
+      throw new ValidationError(`Invalid date string: ${date}`, 400);
     }
     const start: number = getTimestampDateStart(date);
     const end: number = getTimestampDateEnd(date);
@@ -60,10 +60,10 @@ export class AnalyticsService {
 
   public countByDateRange(collection: string, startDate: string, endDate: string): Promise<number> {
     if (!isValidDate(startDate)) {
-      throw new ValidationError(`Invalid date string: ${startDate}`);
+      throw new ValidationError(`Invalid date string: ${startDate}`, 400);
     }
     if (!isValidDate(endDate)) {
-      throw new ValidationError(`Invalid date string: ${endDate}`);
+      throw new ValidationError(`Invalid date string: ${endDate}`, 400);
     }
     const start: number = getTimestampDateStart(startDate);
     const end: number = getTimestampDateEnd(endDate);
@@ -89,7 +89,7 @@ export class AnalyticsService {
   }
 
   public timeSeriesDay(collection, apiQuery: APIQuery): Promise<any> {
-    const pipeline = [
+    apiQuery.query = [
       {
         $match: {
           [this[collection].timestampField]: { $lte: getTimestamp() },
@@ -125,11 +125,11 @@ export class AnalyticsService {
         },
       },
     ];
-    return this[collection].aggregate(pipeline, apiQuery);
+    return this[collection].aggregate(apiQuery);
   }
 
   public timeSeriesMonth(collection, apiQuery: APIQuery): Promise<any> {
-    const pipeline = [
+    apiQuery.query = [
       {
         $match: {
           [this[collection].timestampField]: { $lte: getTimestamp() },
@@ -165,7 +165,7 @@ export class AnalyticsService {
         },
       },
     ];
-    return this[collection].aggregate(pipeline, apiQuery);
+    return this[collection].aggregate(apiQuery);
   }
 
   private countForDateRange(collection: string, start: number, end: number): Promise<number> {

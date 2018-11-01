@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPE } from '../../constant';
-import { OrganizationRequest, APIQuery } from '../../model';
+import { OrganizationRequest } from '../../model';
 import { DBClient } from '../client';
 import { BaseRepository } from './base.repository';
 
@@ -11,23 +11,11 @@ export class OrganizationRequestRepository extends BaseRepository<OrganizationRe
     super(client, 'organizationRequest');
   }
 
-  get timestampField(): any {
+  get paginatedField(): string {
     return 'createdOn';
   }
 
-  public getOrganizationRequests(apiQuery: APIQuery) {
-    return this.find(
-      {},
-      apiQuery.fields,
-      apiQuery.paginationField,
-      apiQuery.sortAscending,
-      apiQuery.limit,
-      apiQuery.next,
-      apiQuery.previous
-    );
-  }
-
-  public getOrganizationRequest(apiQuery: APIQuery): Promise<OrganizationRequest> {
-    return this.findOne(apiQuery.query, apiQuery.options);
+  get paginatedAscending(): boolean {
+    return false;
   }
 }

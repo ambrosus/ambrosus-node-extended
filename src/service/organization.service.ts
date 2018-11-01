@@ -3,11 +3,11 @@ import { inject, injectable } from 'inversify';
 import { TYPE } from '../constant/types';
 import { OrganizationRepository, OrganizationRequestRepository } from '../database/repository';
 import {
+  APIQuery,
+  ExistsError,
+  MongoPagedResult,
   OrganizationRequest,
   UserPrincipal,
-  ExistsError,
-  APIResult,
-  APIQuery,
 } from '../model';
 import { AccountService } from '../service/account.service';
 
@@ -21,14 +21,13 @@ export class OrganizationService {
     @inject(TYPE.AccountService) private readonly accountService: AccountService
   ) {}
 
-  public getOrgRequests(apiQuery: APIQuery): Promise<APIResult> {
-    return this.orgRequestRepository.getOrganizationRequests(apiQuery);
+  public getOrgRequests(apiQuery: APIQuery): Promise<MongoPagedResult> {
+    return this.orgRequestRepository.find(apiQuery);
   }
 
   public getOrgRequest(address: string): Promise<OrganizationRequest> {
-    const apiQuery = new APIQuery();
-    apiQuery.query = { address };
-    return this.orgRequestRepository.getOrganizationRequest(apiQuery);
+    const apiQuery = new APIQuery({ address });
+    return this.orgRequestRepository.findOne(apiQuery);
   }
 
   public async createOrgRequest(orgRequest: OrganizationRequest): Promise<any> {

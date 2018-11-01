@@ -11,11 +11,11 @@ export class OrganizationRepository extends BaseRepository<Organization> {
     super(client, 'organization');
   }
 
-  get timestampField(): any {
-    return 'registeredOn';
+  get paginatedField(): string {
+    return 'createdOn';
   }
 
-  get accessLevelField(): any {
-    return 'accessLevel';
+  get paginatedAscending(): boolean {
+    return false;
   }
 }

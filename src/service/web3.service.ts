@@ -14,7 +14,7 @@ export class Web3Service {
   private privateKey = config.web3.privateKey;
   constructor(@inject(TYPE.LoggerService) public logger: ILogger) {
     if (!matchHexOfLength(this.privateKey, 64)) {
-      throw new ValidationError('Invalid private key format');
+      throw new ValidationError('Invalid private key format', 400);
     }
 
     this.web3 = new web3();

@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 
 import { TYPE } from '../constant/types';
 import { AssetRepository } from '../database/repository';
-import { APIQuery, APIResult, Asset } from '../model';
+import { APIQuery, Asset, MongoPagedResult } from '../model';
 
 @injectable()
 export class AssetService {
@@ -12,7 +12,7 @@ export class AssetService {
     return this.assetRepository.existsOR({ assetId }, 'assetId');
   }
 
-  public getAssets(apiQuery: APIQuery): Promise<APIResult> {
+  public getAssets(apiQuery: APIQuery): Promise<MongoPagedResult> {
     apiQuery.paginationField = 'content.idData.timestamp';
     apiQuery.sortAscending = false;
     return this.assetRepository.find(apiQuery);

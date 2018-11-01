@@ -1,5 +1,6 @@
 import { injectable } from 'inversify';
-import { MongoPagedResult } from '../mongo-paged-result.model';
+
+import { MongoPagedResult } from '../query/mongo-paged-result.model';
 
 export interface IAPIResponsePagination {
   hasNext: boolean;

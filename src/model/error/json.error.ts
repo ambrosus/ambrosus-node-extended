@@ -10,7 +10,7 @@ export class JsonValidationError extends ValidationError {
       return err.message;
     };
 
-    super(errors.map(err => messageForError(err)).join(', '));
+    super(errors.map(err => messageForError(err)).join(', '), 400);
     this.errors = errors;
   }
 }

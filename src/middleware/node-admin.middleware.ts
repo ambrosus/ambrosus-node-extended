@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { inject, injectable, interfaces } from 'inversify';
+import { inject, injectable } from 'inversify';
 import { BaseMiddleware } from 'inversify-express-utils';
 
 import { TYPE } from '../constant/types';

@@ -1,7 +1,7 @@
 // Based on https://www.instagram.com/developer/endpoints/
-
 import { injectable } from 'inversify';
-import { MongoPagedResult } from '../mongo-paged-result.model';
+
+import { MongoPagedResult } from '../query/mongo-paged-result.model';
 import { APIResponseMeta } from './api-res-meta.model';
 import { APIResponsePagination } from './api-res-pagination.model';
 
@@ -18,7 +18,7 @@ export class APIResponse implements IAPIResponse {
 
     apiResponse.pagination = APIResponsePagination.fromMongoPagedResult(mongoPagedResult);
     apiResponse.data = mongoPagedResult.results || [];
-    apiResponse.meta = new APIResponseMeta();
+    apiResponse.meta = new APIResponseMeta(200);
     apiResponse.meta.count = apiResponse.data.length;
     return apiResponse;
   }
@@ -28,8 +28,10 @@ export class APIResponse implements IAPIResponse {
   public pagination: any;
 
   constructor(_data?: any) {
-    this.data = _data || {};
-    this.meta = new APIResponseMeta();
-    this.meta.count = this.data.length;
+    this.data = _data;
+    this.meta = new APIResponseMeta(200);
+    if (this.data) {
+      this.meta.count = this.data.length;
+    }
   }
 }

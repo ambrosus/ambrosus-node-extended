@@ -1,3 +1,3 @@
 export * from './authorized.middleware';
-export * from './validate-request.middleware';
+export * from './validation.middleware';
 export * from './node-admin.middleware';

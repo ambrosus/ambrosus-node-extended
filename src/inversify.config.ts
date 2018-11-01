@@ -22,11 +22,7 @@ import {
 import { GraphQLSchema, IGraphQLResolver, IGraphQLSchema, IGraphQLType } from './graphql';
 import { AccountResolver, AssetResolver, BundleResolver, EventResolver } from './graphql/resolver';
 import { AccountType, AssetType, BundleType, EventType, QueryType } from './graphql/type';
-import {
-  AuthorizedMiddleware,
-  ValidateRequestMiddleware,
-  NodeAdminMiddleware,
-} from './middleware';
+import { AuthorizedMiddleware, NodeAdminMiddleware, ValidateRequestMiddleware } from './middleware';
 import { UserPrincipal } from './model';
 import { AccountService } from './service/account.service';
 import { AnalyticsService } from './service/analytics.service';

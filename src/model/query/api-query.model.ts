@@ -1,24 +1,33 @@
 import { Request } from 'express';
+import { ValidationSchema } from 'express-validator/check';
 import { injectable } from 'inversify';
 
-import { getMongoFilter, getParamValue } from '../../util/helpers';
-import { APIPagination } from './api-pagination.model';
-import { ValidationSchema } from 'express-validator/check';
 import { config } from '../../config';
+import { getMongoFilter, getParamValue, validateOperators } from '../../util/helpers';
+import { ValidationError } from '../error';
+
+export interface IAPIPagination {
+  limit: number;
+  next: string;
+  previous: string;
+  paginationField: string;
+  sortAscending: boolean;
+}
 
 export interface IAPIQuery {
   query: object;
-  validate();
-  options();
-  fields();
 }
 
 @injectable()
-export class APIQuery extends APIPagination implements IAPIQuery {
-  public static fromRequest(req: Request) {
+export class APIQuery implements IAPIQuery {
+  public static fromRequest(req: Request): APIQuery {
     const apiQuery = new APIQuery();
     const query = getParamValue(req, 'query');
     if (query) {
+      const errors = validateOperators(query);
+      if (errors.length) {
+        throw new ValidationError('bad operators found in query', 400);
+      }
       apiQuery.query = getMongoFilter(query);
     }
     apiQuery.limit = +getParamValue(req, 'limit') || +config.paginationDefault;
@@ -53,36 +62,35 @@ export class APIQuery extends APIPagination implements IAPIQuery {
     };
   }
 
-  public accessField;
   public query;
-  private blackListFields;
+  public limit: number;
+  public next: string;
+  public previous: string;
+  public paginationField: string;
+  public sortAscending: boolean;
+  private blacklistedFields: object;
 
-  constructor() {
-    super();
-    this.blackListFields = {
+  constructor(_query?: object) {
+    this.query = _query;
+    this.blacklistedFields = {
+      _id: 0,
       repository: 0,
     };
   }
 
-  get options(): any {
-    const opt = {
-      projection: this.blackListFields,
+  public exludeFields(...fields) {
+    this.blacklistedFields = {
+      ...[this.blacklistedFields],
+      fields,
     };
-
-    return opt;
   }
 
-  get fields(): any {
+  get projection(): any {
     return {
-      projection: this.blackListFields,
+      projection: this.fields,
     };
   }
-
-  public exludeField(field: string) {
-    this.blackListFields[field] = 0;
-  }
-
-  public validate() {
-    // TODO: validate all the things
+  get fields(): any {
+    return this.blacklistedFields;
   }
 }

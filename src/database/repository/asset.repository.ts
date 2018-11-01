@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPE } from '../../constant';
-import { APIQuery, APIResult, Asset, Bundle } from '../../model';
+import { Asset } from '../../model';
 import { DBClient } from '../client';
 import { BaseRepository } from './base.repository';
 
@@ -11,23 +11,43 @@ export class AssetRepository extends BaseRepository<Asset> {
     super(client, 'assets');
   }
 
-  get timestampField(): any {
+  get paginatedField(): string {
     return 'content.idData.timestamp';
   }
 
-  public find(apiQuery: APIQuery): Promise<APIResult> {
-    return super.find(
-      apiQuery.query,
-      apiQuery.fields,
-      apiQuery.paginationField,
-      apiQuery.sortAscending,
-      apiQuery.limit,
-      apiQuery.next,
-      apiQuery.previous
-    );
+  get paginatedAscending(): boolean {
+    return false;
   }
 
-  public findOne(apiQuery: APIQuery): Promise<Asset> {
-    return super.findOne(apiQuery.query, apiQuery.options);
+  public findAssetIdsWhereLastEventIsOfType() {
+    const pipeline = [
+      {
+        $group: {
+          _id: '$content.idData.assetId',
+          lastOfType: {
+            $last: '$content.idData.timestamp',
+          },
+          type: {
+            $first: '$content.data.type',
+          },
+          doc: {
+            $first: '$$ROOT',
+          },
+        },
+      },
+      {
+        $match: {
+          type: 'ambrosus.asset.info',
+        },
+      },
+      {
+        $project: {
+          _id: 0.0,
+          eventId: '$doc.eventId',
+          content: '$doc.content',
+          metadata: '$doc.metadata',
+        },
+      },
+    ];
   }
 }

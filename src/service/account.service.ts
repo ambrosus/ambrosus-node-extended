@@ -1,9 +1,8 @@
 import { inject, injectable } from 'inversify';
-import * as _ from 'lodash';
 
 import { TYPE } from '../constant/types';
 import { AccountRepository } from '../database/repository';
-import { Account, APIQuery, APIResult, UserPrincipal, MongoPagedResult } from '../model';
+import { Account, APIQuery, MongoPagedResult, UserPrincipal } from '../model';
 
 @injectable()
 export class AccountService {
@@ -16,22 +15,17 @@ export class AccountService {
     return this.accountRepository.existsOR({ address }, 'address');
   }
 
-  public getAccounts(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    apiQuery.paginationField = 'registeredOn';
-    apiQuery.sortAscending = false;
-
-    return this.accountRepository.queryAccounts(apiQuery, this.user.accessLevel);
+  public getAccounts(query: APIQuery): Promise<MongoPagedResult> {
+    return this.accountRepository.queryAccounts(query, this.user.accessLevel);
   }
 
   public getAccount(address: string): Promise<Account> {
-    const apiQuery = new APIQuery();
-    apiQuery.query = { address };
+    const apiQuery = new APIQuery({ address });
     return this.accountRepository.queryAccount(apiQuery, this.user.accessLevel);
   }
 
   public getAccountForAuth(address: string): Promise<Account> {
-    const apiQuery = new APIQuery();
-    apiQuery.query = { address };
+    const apiQuery = new APIQuery({ address });
     return this.accountRepository.getAccountForAuthorization(apiQuery);
   }
 }

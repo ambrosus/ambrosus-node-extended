@@ -3,7 +3,7 @@ import { inject, injectable, interfaces } from 'inversify';
 import { BaseMiddleware } from 'inversify-express-utils';
 
 import { TYPE } from '../constant/types';
-import { AuthenticationError, UserPrincipal } from '../model';
+import { APIResponse, APIResponseMeta, UserPrincipal } from '../model';
 import { LoggerService } from '../service/logger.service';
 
 @injectable()
@@ -17,8 +17,14 @@ export class AuthorizedMiddleware extends BaseMiddleware {
     const user = this.httpContext.user as UserPrincipal;
 
     if (!user.isAuthorized()) {
-      this.logger.debug(`Anonymous => ${req.url}`);
-      throw new AuthenticationError('Unauthorized');
+      this.logger.debug(`Unauthorized login attempt => ${req.url}`);
+      const errorResponse = new APIResponse();
+      errorResponse.meta = new APIResponseMeta(401);
+      errorResponse.meta.error = 'AuthenticationError';
+      errorResponse.meta.error_message = 'Unauthorized';
+      errorResponse.data = undefined;
+      errorResponse.pagination = undefined;
+      return res.status(errorResponse.meta.code).json(errorResponse);
     }
 
     this.bind<UserPrincipal>(TYPE.UserPrincipal).toDynamicValue(

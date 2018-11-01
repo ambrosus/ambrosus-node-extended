@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPE } from '../../constant';
-import { Account, APIQuery, APIResult } from '../../model';
+import { Account, APIQuery, MongoPagedResult } from '../../model';
 import { DBClient } from '../client';
 import { BaseRepository } from './base.repository';
 
@@ -11,39 +11,35 @@ export class AccountRepository extends BaseRepository<Account> {
     super(client, 'accounts');
   }
 
-  get timestampField(): any {
+  get paginatedField(): string {
     return 'registeredOn';
   }
 
-  public queryAccounts(apiQuery: APIQuery, accessLevel: number): Promise<APIResult> {
-    const q = {
+  get paginatedAscending(): boolean {
+    return false;
+  }
+
+  public queryAccounts(apiQuery: APIQuery, accessLevel: number): Promise<MongoPagedResult> {
+    apiQuery.query = {
       ...apiQuery.query,
       ...{
         accessLevel: { $lte: accessLevel },
       },
     };
-    return this.find(
-      q,
-      apiQuery.fields,
-      apiQuery.paginationField,
-      apiQuery.sortAscending,
-      apiQuery.limit,
-      apiQuery.next,
-      apiQuery.previous
-    );
+    return this.find(apiQuery);
   }
 
   public queryAccount(apiQuery: APIQuery, accessLevel: number): Promise<Account> {
-    const q = {
+    apiQuery.query = {
       ...apiQuery.query,
       ...{
         accessLevel: { $lte: accessLevel },
       },
     };
-    return this.findOne(q, apiQuery.options);
+    return this.findOne(apiQuery);
   }
 
   public getAccountForAuthorization(apiQuery: APIQuery): Promise<Account> {
-    return super.findOne(apiQuery.query, apiQuery.options);
+    return super.findOne(apiQuery);
   }
 }
