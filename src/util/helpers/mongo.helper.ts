@@ -40,6 +40,25 @@ export const matchMongoOperator = operator => {
   return undefined;
 };
 
+export const validateOperators = q => {
+  const errors = [];
+  _.forEach(q, filter => {
+    if (
+      !filter.hasOwnProperty('field') ||
+      !filter.hasOwnProperty('operator') ||
+      !filter.hasOwnProperty('value')
+    ) {
+      errors.push(`Invalid query object ${filter}`);
+    } else {
+      const op = filter.operator;
+      if (!matchMongoOperator(op)) {
+        errors.push(`Invalid query operator: ${op}`);
+      }
+    }
+  });
+  return errors;
+};
+
 export const getMongoFilter = q => {
   return _.reduce(
     q,

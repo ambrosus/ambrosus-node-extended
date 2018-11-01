@@ -6,8 +6,7 @@ import { InversifyExpressServer } from 'inversify-express-utils';
 import * as morgan from 'morgan';
 
 import { config } from './config';
-import { TYPES } from './constant/types';
-import { AuthenticationError, NotFoundError, PermissionError, ValidationError } from './error';
+import { TYPE } from './constant/types';
 import { iocContainer } from './inversify.config';
 import { LoggerService } from './service/logger.service';
 import { AMBAuthProvider } from './util/auth/auth.provider';
@@ -20,7 +19,7 @@ const server = new InversifyExpressServer(
   AMBAuthProvider
 );
 
-const logger = iocContainer.get<LoggerService>(TYPES.LoggerService);
+const logger = iocContainer.get<LoggerService>(TYPE.LoggerService);
 
 server.setConfig(app => {
   app.set('json spaces', 2);
@@ -42,23 +41,8 @@ server.setConfig(app => {
 
 server.setErrorConfig(app => {
   app.use((err, req, res, next) => {
-    let status;
-    if (err instanceof ValidationError || err.type === 'entity.parse.failed') {
-      status = 400;
-    } else if (err instanceof AuthenticationError) {
-      status = 401;
-    } else if (err instanceof PermissionError) {
-      status = 403;
-    } else if (err instanceof NotFoundError) {
-      status = 404;
-    } else if (err.type === 'entity.too.large') {
-      status = 413;
-    } else {
-      logger.error(err);
-      status = 500;
-    }
-
-    res.status(status).send({ reason: err.message });
+    // Unhandled exceptions only
+    res.status(500).send({ reason: err.message });
   });
 });
 

@@ -1,29 +1,26 @@
 import { inject, injectable } from 'inversify';
 
-import { TYPES } from '../constant/types';
+import { TYPE } from '../constant/types';
 import { BundleRepository } from '../database/repository';
-import { ILogger } from '../interface/logger.inferface';
-import { APIQuery, APIResult, Bundle } from '../model';
+import { APIQuery, Bundle, MongoPagedResult } from '../model';
 
 @injectable()
 export class BundleService {
-  @inject(TYPES.BundleRepository)
-  public bundleRepository: BundleRepository;
+  constructor(@inject(TYPE.BundleRepository) private readonly bundleRepository: BundleRepository) {}
 
-  @inject(TYPES.LoggerService)
-  public logger: ILogger;
+  public getBundleExists(bundleId: string) {
+    return this.bundleRepository.existsOR({ bundleId }, 'bundleId');
+  }
 
-  constructor(@inject(TYPES.AccessLevel) private readonly accessLevel: number) {}
-
-  public getBundles(apiQuery: APIQuery): Promise<APIResult> {
-    apiQuery.exludeField('content.entries');
-    return this.bundleRepository.query(apiQuery);
+  public getBundles(apiQuery: APIQuery): Promise<MongoPagedResult> {
+    apiQuery.exludeFields('content.entries');
+    return this.bundleRepository.find(apiQuery);
   }
 
   public getBundle(bundleId: string): Promise<Bundle> {
     const apiQuery = new APIQuery();
     apiQuery.query = { bundleId };
-    apiQuery.exludeField('content.entries');
-    return this.bundleRepository.single(apiQuery);
+    apiQuery.exludeFields('content.entries');
+    return this.bundleRepository.findOne(apiQuery);
   }
 }

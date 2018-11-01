@@ -1,32 +1,39 @@
 import { inject, injectable, unmanaged } from 'inversify';
+import * as _ from 'lodash';
 import * as MongoPaging from 'mongo-cursor-pagination';
+import { InsertOneWriteOpResult } from 'mongodb';
 
-import { TYPES } from '../../constant';
-import { ConnectionError, ValidationError } from '../../error';
+import { config } from '../../config';
+import { TYPE } from '../../constant';
 import { ILogger } from '../../interface/logger.inferface';
-import { APIQuery, APIResult } from '../../model';
-
-import {
-  getTimestamp,
-  getTimestampDateEnd,
-  getTimestampDateStart,
-  getTimestampMonthStart,
-  getTimestampSubDays,
-  getTimestampSubHours,
-  getTimestampSubWeeks,
-  isValidDate,
-} from '../../util/helpers';
+import { APIQuery, ConnectionError, MongoPagedResult } from '../../model';
 import { DBClient } from '../client';
 
 @injectable()
 export class BaseRepository<T> {
-  @inject(TYPES.LoggerService)
+  @inject(TYPE.LoggerService)
   public logger: ILogger;
 
   constructor(
-    @inject(TYPES.DBClient) protected client: DBClient,
+    @inject(TYPE.DBClient) protected client: DBClient,
     @unmanaged() protected collectionName: string
-  ) {}
+  ) {
+    MongoPaging.config.DEFAULT_LIMIT = config.paginationDefault;
+    MongoPaging.config.MAX_LIMIT = config.paginationMax;
+  }
+
+  get timestampField(): string {
+    // For when we have a system control creation date
+    return this.paginatedField;
+  }
+
+  get paginatedField(): string {
+    throw new Error('paginatedField getter must be overridden!');
+  }
+
+  get paginatedAscending(): boolean {
+    throw new Error('paginatedAscending getter must be overridden!');
+  }
 
   get collection(): any {
     if (!this.client) {
@@ -35,17 +42,11 @@ export class BaseRepository<T> {
     return this.client.db.collection(this.collectionName);
   }
 
-  get timestampField(): any {
-    throw new Error('timestampField getter must be overridden!');
+  public async create(item: T): Promise<boolean> {
+    const result: InsertOneWriteOpResult = await this.collection.insertOne(item);
+    return !!result.result.ok;
   }
 
-  get accessLevelField(): any {
-    throw new Error('accessLevelField getter must be overridden!');
-  }
-
-  public create(item: T): Promise<boolean> {
-    throw new Error('Method not implemented.');
-  }
   public update(id: string, item: T): Promise<boolean> {
     throw new Error('Method not implemented.');
   }
@@ -53,231 +54,102 @@ export class BaseRepository<T> {
     throw new Error('Method not implemented.');
   }
 
-  public query(apiQuery: APIQuery, accessLevel: number): Promise<APIResult> {
-    const q = {
-      ...apiQuery.query,
-      ...{
-        [this.accessLevelField]: { $gte: accessLevel },
-      },
-    };
-    return this.pagedResults(
-      q,
-      apiQuery.fields,
-      apiQuery.paginationField,
-      apiQuery.sortAscending,
-      apiQuery.limit,
-      apiQuery.next,
-      apiQuery.previous
-    );
+  public count(query: object): Promise<number> {
+    return this.collection.countDocuments(query);
   }
 
-  public single(apiQuery: APIQuery, accessLevel: number): Promise<T> {
-    const q = {
-      ...apiQuery.query,
-      ...{
-        [this.accessLevelField]: { $gte: accessLevel },
-      },
-    };
-    return this.singleResult(q, apiQuery.options);
-  }
-
-  public aggregatePaging(pipeline: object, apiQuery: APIQuery): Promise<APIResult> {
-    this.logger.debug(
-      `aggregate ${this.collectionName}: ${JSON.stringify(pipeline)} ${JSON.stringify(apiQuery)}`
-    );
+  // TODO: Add accessLevel to aggregates
+  // FIXME: Aggregation isn't returning the correct data with paging b/c a limit to the pipeline.
+  public aggregatePaging(apiQuery: APIQuery): Promise<MongoPagedResult> {
+    this.logger.debug(`aggregate ${this.collectionName}: ${JSON.stringify(apiQuery)}`);
     return MongoPaging.aggregate(this.collection, {
-      aggregation: pipeline,
-      paginatedField: apiQuery.paginationField,
+      aggregation: apiQuery.query,
+      paginatedField: this.paginatedField,
+      paginatedAscending: this.paginatedAscending,
       limit: apiQuery.limit,
       next: apiQuery.next,
       previous: apiQuery.previous,
     });
   }
 
-  public aggregate(pipeline: object, apiQuery: APIQuery): Promise<any> {
+  // TODO: Add accessLevel to aggregates
+  public aggregate(apiQuery: APIQuery): Promise<any> {
+    this.logger.debug(`aggregate ${this.collectionName}: ${JSON.stringify(apiQuery)}`);
+    return this.collection.aggregate(apiQuery.query).toArray();
+  }
+
+  public async exists(apiQuery: APIQuery): Promise<boolean> {
     this.logger.debug(
-      `aggregate ${this.collectionName}: ${JSON.stringify(pipeline)} ${JSON.stringify(apiQuery)}`
+      `exists for ${this.collectionName}:
+      ${JSON.stringify(apiQuery)}`
     );
-    return this.collection.aggregate(pipeline).toArray();
+    return this.collection
+      .find(apiQuery.query, { _id: 1 })
+      .limit(1)
+      .toArray()
+      .then(arrs => {
+        return Promise.resolve(arrs.length > 0);
+      });
   }
 
-  public count(): Promise<number> {
-    this.logger.debug(`count ${this.collectionName}`);
-    return this.collection.countDocuments();
-  }
-
-  public countQuery(apiQuery: APIQuery): Promise<number> {
-    this.logger.debug(`countQuery ${this.collectionName}: ${JSON.stringify(apiQuery)}`);
-    return this.collection.countDocuments(apiQuery.query);
-  }
-
-  public countByMonthToDate(): Promise<number> {
-    const start: number = getTimestampMonthStart();
-    const end: number = getTimestamp();
-    return this.countForDateRange(start, end);
-  }
-
-  public countByDate(date: string): Promise<number> {
-    if (!isValidDate(date)) {
-      throw new ValidationError(`Invalid date string: ${date}`);
-    }
-    const start: number = getTimestampDateStart(date);
-    const end: number = getTimestampDateEnd(date);
-    return this.countForDateRange(start, end);
-  }
-
-  public countByDateRange(startDate: string, endDate: string): Promise<number> {
-    if (!isValidDate(startDate)) {
-      throw new ValidationError(`Invalid date string: ${startDate}`);
-    }
-    if (!isValidDate(endDate)) {
-      throw new ValidationError(`Invalid date string: ${endDate}`);
-    }
-    const start: number = getTimestampDateStart(startDate);
-    const end: number = getTimestampDateEnd(endDate);
-    return this.countForDateRange(start, end);
-  }
-
-  public countByRollingHours(hours: number): Promise<number> {
-    const start: number = getTimestampSubHours(hours);
-    const end: number = getTimestamp();
-    return this.countForDateRange(start, end);
-  }
-
-  public countByRollingDays(days: number): Promise<number> {
-    const start: number = getTimestampSubDays(days);
-    const end: number = getTimestamp();
-    return this.countForDateRange(start, end);
-  }
-
-  public countByRollingWeeks(weeks: number): Promise<number> {
-    const start: number = getTimestampSubWeeks(weeks);
-    const end: number = getTimestamp();
-    return this.countForDateRange(start, end);
-  }
-
-  public timeSeriesDay(apiQuery: APIQuery): Promise<any> {
-    const pipeline = [
-      {
-        $match: {
-          [this.timestampField]: { $lte: getTimestamp() },
-        },
-      },
-      {
-        $group: {
-          _id: {
-            $dateToString: {
-              format: '%Y-%m-%d',
-              date: {
-                $toDate: {
-                  $multiply: [1000, { $toLong: `$${this.timestampField}` }],
-                },
-              },
-            },
-          },
-          count: {
-            $sum: 1.0,
-          },
-        },
-      },
-      {
-        $project: {
-          _id: 0.0,
-          date: '$_id',
-          count: 1.0,
-        },
-      },
-      {
-        $sort: {
-          date: -1.0,
-        },
-      },
-    ];
-    return this.aggregate(pipeline, apiQuery);
-  }
-
-  public timeSeriesMonth(apiQuery: APIQuery): Promise<any> {
-    const pipeline = [
-      {
-        $match: {
-          [this.timestampField]: { $lte: getTimestamp() },
-        },
-      },
-      {
-        $group: {
-          _id: {
-            $dateToString: {
-              format: '%Y-%m',
-              date: {
-                $toDate: {
-                  $multiply: [1000, { $toLong: `$${this.timestampField}` }],
-                },
-              },
-            },
-          },
-          count: {
-            $sum: 1.0,
-          },
-        },
-      },
-      {
-        $project: {
-          _id: 0.0,
-          date: '$_id',
-          count: 1.0,
-        },
-      },
-      {
-        $sort: {
-          date: -1.0,
-        },
-      },
-    ];
-    return this.aggregate(pipeline, apiQuery);
-  }
-
-  protected pagedResults(
-    query: object,
-    fields: object,
-    pageField: string,
-    sortAsc: boolean,
-    limit: number,
-    next: string,
-    previous: string
-  ): Promise<APIResult> {
+  public async existsOR(obj, ...fields): Promise<boolean> {
+    const qor = _.map(fields, field => {
+      return { [field]: obj[field] };
+    });
     this.logger.debug(
-      `pagedResults for ${this.collectionName}:
-      ${JSON.stringify(query)}
-      ${JSON.stringify(fields)}
-      ${pageField}
-      ${sortAsc}
-      ${limit}
-      ${next}
-      ${previous}`
+      `existsOR for ${this.collectionName}:
+      ${JSON.stringify(qor)}`
     );
+    return this.collection
+      .find({ $or: qor }, { _id: 1 })
+      .limit(1)
+      .toArray()
+      .then(arrs => {
+        return Promise.resolve(arrs.length > 0);
+      });
+  }
+
+  public async find(apiQuery: APIQuery): Promise<MongoPagedResult> {
+    this.logger.debug(
+      `
+      ################ find ################
+      collection      ${this.collectionName}:
+      query:          ${JSON.stringify(apiQuery.query)}
+      fields:         ${JSON.stringify(apiQuery.fields)}
+      paginatedField: ${this.paginatedField}
+      sortAscending:  ${this.paginatedAscending}
+      limit:          ${apiQuery.limit}
+      next:           ${apiQuery.next}
+      previous:       ${apiQuery.previous}
+      `
+    );
+
     return MongoPaging.find(this.collection, {
-      query,
-      fields,
-      pageField,
-      sortAsc,
-      limit,
-      next,
-      previous,
+      query: apiQuery.query,
+      fields: apiQuery.projection,
+      paginatedField: this.paginatedField,
+      sortAscending: this.paginatedAscending,
+      limit: apiQuery.limit,
+      next: apiQuery.next,
+      previous: apiQuery.previous,
     });
   }
 
-  protected singleResult(query: object, options: object) {
+  public async findOne(apiQuery: APIQuery): Promise<T> {
     this.logger.debug(
-      `singleResult for ${this.collectionName}:
-      ${JSON.stringify(query)}
-      ${JSON.stringify(options)}`
+      `
+      ################ findOne ################
+      collection      ${this.collectionName}:
+      query:          ${JSON.stringify(apiQuery.query)}
+      fields:         ${JSON.stringify(apiQuery.projection)}
+      `
     );
-    return this.collection.findOne(query, options);
-  }
-
-  private countForDateRange(start: number, end: number): Promise<number> {
-    const apiQuery = new APIQuery();
-    apiQuery.query = { [this.timestampField]: { $gte: start, $lte: end } };
-    return this.countQuery(apiQuery);
+    return this.collection
+      .find(apiQuery.query, apiQuery.projection)
+      .limit(1)
+      .toArray()
+      .then(arrs => {
+        return arrs[0] || undefined;
+      });
   }
 }

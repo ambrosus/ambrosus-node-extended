@@ -1,38 +1,34 @@
 import { inject, injectable } from 'inversify';
-import { TYPES } from '../constant/types';
-import { APIQuery, APIResult, Event } from '../model';
+
+import { TYPE } from '../constant/types';
 import { EventRepository } from '../database/repository';
-import { ILogger } from '../interface/logger.inferface';
+import { APIQuery, Event, MongoPagedResult, UserPrincipal } from '../model';
 
 @injectable()
 export class EventService {
-  @inject(TYPES.EventRepository)
-  public eventRepository: EventRepository;
+  constructor(
+    @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
+    @inject(TYPE.EventRepository) private readonly eventRepository: EventRepository
+  ) {}
 
-  @inject(TYPES.LoggerService)
-  public logger: ILogger;
+  public getEventExists(eventId: string) {
+    return this.eventRepository.existsOR({ eventId }, 'eventId');
+  }
 
-  constructor(@inject(TYPES.AccessLevel) private readonly accessLevel: number) {}
-
-  public getEvents(apiQuery: APIQuery): Promise<APIResult> {
-    apiQuery.paginationField = 'content.idData.timestamp';
-    apiQuery.sortAscending = false;
-    return this.eventRepository.query(apiQuery, this.accessLevel);
+  public getEvents(apiQuery: APIQuery): Promise<MongoPagedResult> {
+    return this.eventRepository.queryEvents(apiQuery, this.user.accessLevel);
   }
 
   public getEvent(eventId: string): Promise<Event> {
-    const apiQuery = new APIQuery();
-    apiQuery.query = { eventId };
-    return this.eventRepository.single(apiQuery, this.accessLevel);
+    const apiQuery = new APIQuery({ eventId });
+    return this.eventRepository.queryEvent(apiQuery, this.user.accessLevel);
   }
 
   public getLatestAssetEventsOfType(
     assets: string[],
     type: string,
     apiQuery: APIQuery
-  ): Promise<APIResult> {
-    apiQuery.paginationField = 'content.idData.timestamp';
-    apiQuery.sortAscending = false;
+  ): Promise<MongoPagedResult> {
     return this.eventRepository.assetEventsOfType(assets, type, apiQuery);
   }
 }

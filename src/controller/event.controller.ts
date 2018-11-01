@@ -1,65 +1,78 @@
 import { Request } from 'express';
 import { inject } from 'inversify';
-import {
-  BaseHttpController,
-  controller,
-  httpGet,
-  httpPost,
-  requestParam,
-} from 'inversify-express-utils';
+import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
 
-import { TYPES } from '../constant/types';
-import { APIQuery, APIResult, Event } from '../model';
+import { MIDDLEWARE, TYPE } from '../constant/types';
+import { APIQuery, APIResponse } from '../model';
 import { EventService } from '../service/event.service';
 import { getParamValue } from '../util/helpers';
-import { NotFoundResult } from 'inversify-express-utils/dts/results';
+import { BaseController } from './base.controller';
 
-@controller('/event', TYPES.AuthorizedMiddleware)
-export class EventController extends BaseHttpController {
-  constructor(@inject(TYPES.EventService) private eventService: EventService) {
+@controller('/event', MIDDLEWARE.Authorized)
+export class EventController extends BaseController {
+  constructor(@inject(TYPE.EventService) private eventService: EventService) {
     super();
   }
 
   @httpGet('/')
-  public async getEvents(req: Request): Promise<APIResult | NotFoundResult> {
-    const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
-    if (!result.results.length) {
-      return this.notFound();
+  public async getEvents(req: Request): Promise<APIResponse> {
+    try {
+      const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
+      const apiResponse = APIResponse.fromMongoPagedResult(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
     }
-    return result;
   }
 
   @httpGet('/:eventId')
-  public async get(@requestParam('eventId') eventId: string): Promise<Event | NotFoundResult> {
-    const result = await this.eventService.getEvent(eventId);
-    if (!result) {
-      return this.notFound();
+  public async getEvent(@requestParam('eventId') eventId: string): Promise<APIResponse> {
+    try {
+      const result = await this.eventService.getEvent(eventId);
+      const apiResponse = new APIResponse(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
     }
-    return result;
+  }
+
+  @httpGet('/exists/:eventId')
+  public async getEventExists(@requestParam('eventId') eventId: string): Promise<APIResponse> {
+    try {
+      const result = await this.eventService.getEventExists(eventId);
+      const apiResponse = new APIResponse();
+      apiResponse.meta.exists = result;
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
+    }
   }
 
   @httpPost('/query')
-  public async query(req: Request): Promise<APIResult | NotFoundResult> {
-    const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
-    if (!result.results.length) {
-      return this.notFound();
+  public async queryEvents(req: Request): Promise<APIResponse> {
+    try {
+      const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
+      const apiResponse = APIResponse.fromMongoPagedResult(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
     }
-    return result;
   }
 
   @httpPost('/latest/type')
-  public async latestType(req: Request): Promise<APIResult | NotFoundResult> {
-    const assets = getParamValue(req, 'assets');
-    const type = getParamValue(req, 'type');
-
-    const result = await this.eventService.getLatestAssetEventsOfType(
-      assets,
-      type,
-      APIQuery.fromRequest(req)
-    );
-    if (!result.results.length) {
-      return this.notFound();
+  public async latestType(req: Request): Promise<APIResponse> {
+    try {
+      const assets = getParamValue(req, 'assets');
+      const type = getParamValue(req, 'type');
+      const result = await this.eventService.getLatestAssetEventsOfType(
+        assets,
+        type,
+        APIQuery.fromRequest(req)
+      );
+      const apiResponse = new APIResponse(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
     }
-    return result;
   }
 }

@@ -1,0 +1,1006 @@
+{
+	"info": {
+		"_postman_id": "8b4a8487-d32b-4b26-885b-3124cb3547fc",
+		"name": "Extended API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Organization",
+			"item": []
+		},
+		{
+			"name": "Org Requests",
+			"item": [
+				{
+					"name": "Get Org Requests",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"owner\": \"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8\",\n\t\"email\": \"testETWT@test.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/organization/request?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization",
+								"request"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Org Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"owner\": \"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8\",\n\t\"email\": \"testETWT@test.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/organization/request?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization",
+								"request"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Org Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"Conor's test2\",\n\t\"address\": \"0xc0ffee254729296a45a3885639AC7E10F9d54979\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/organization/request?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization",
+								"request"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "Get Accounts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "AMB_TOKEN {{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/account?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"account"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Account Detail",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"SDFSDFDSFSDFSDsdfsdf@test.com3r34\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/account/detail/0xbaEE2FC002b2B8E1fDde3CdEdAee5cA98640c04f?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"account",
+								"detail",
+								"0xbaEE2FC002b2B8E1fDde3CdEdAee5cA98640c04f"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "AMB_TOKEN {{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/account/0xf9C5d4Ed4FEdf62e2D42601F9E04b8B5ab840ea4",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"account",
+								"0xf9C5d4Ed4FEdf62e2D42601F9E04b8B5ab840ea4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Account",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/account/verify/0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"account",
+								"verify",
+								"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Accounts Example #1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "AMB_TOKEN {{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"query\": [{\n\t\t\"field\": \"registeredBy\",\n\t\t\"value\": \"0x0C7401498719555B2119C01bB6af0dFA904AD69e\",\n\t\t\"operator\": \"equal\"\n\t}]\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/account/query",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"account",
+								"query"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account Detail",
+			"item": []
+		},
+		{
+			"name": "Asset",
+			"item": [
+				{
+					"name": "Get Assets",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/asset?limit=5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"asset"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Asset",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "AMB_TOKEN {{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/asset/0x6904151c80b33a26925bf940b061c7d365dee013f468adc555d6c699dc0e3b79",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"asset",
+								"0x6904151c80b33a26925bf940b061c7d365dee013f468adc555d6c699dc0e3b79"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Assets #1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "AMB_TOKEN {{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"query\": [{\n\t\t\"field\": \"content.idData.timestamp\",\n\t\t\"value\": 1533081600,\n\t\t\"operator\": \"greater-than\"\n\t},\n\t{\n\t\t\"field\": \"assetId\",\n\t\t\"value\": [\"0x5f6bd84a02174c87068f5675bdd947aee74507ea9774ca5d89ccd02469d77665\", \"0x937e903442a2dcc387a818f36a74304c6d0ace094fd350bdf033617ee817023d\", \"0xa7b867566e7e210ffb01354577624a6edba27d4781c2a8a268a0f7b28d143eb2\"],\n\t\t\"operator\": \"not-equal\"\n\t}]\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/asset/query",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"asset",
+								"query"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Assets #1 Copy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "AMB_TOKEN {{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": [{\n        \"field\": \"content.idData.createdBy\",\n        \"value\": \"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8\",\n        \"operator\": \"equal\"\n    }]\n\t,\"limit\": 2\n}"
+						},
+						"url": {
+							"raw": "{{url}}/asset/query",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"asset",
+								"query"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Analytics",
+			"item": [
+				{
+					"name": "getCount",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/analytics/account/count",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"analytics",
+								"account",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCountByMonthToDate",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/analytics/account/count/mtd",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"analytics",
+								"account",
+								"count",
+								"mtd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCountByDate",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/analytics/account/count/date/20181001",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"analytics",
+								"account",
+								"count",
+								"date",
+								"20181001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCountByDateRange",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/analytics/account/count/daterange/20180101/20181010",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"analytics",
+								"account",
+								"count",
+								"daterange",
+								"20180101",
+								"20181010"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCountByRollingHours",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/analytics/account/count/rolling/hours/180",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"analytics",
+								"account",
+								"count",
+								"rolling",
+								"hours",
+								"180"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCountByRollingDays",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/analytics/account/count/rolling/days/365",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"analytics",
+								"account",
+								"count",
+								"rolling",
+								"days",
+								"365"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTimeSeriesDay",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/analytics/account/timeseries/day",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"analytics",
+								"account",
+								"timeseries",
+								"day"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTimeSeriesMonth",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "AMB_TOKEN {{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/analytics/event/timeseries/month",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"analytics",
+								"event",
+								"timeseries",
+								"month"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bundle",
+			"item": [
+				{
+					"name": "Get Bundles",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/bundle?limit=5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"bundle"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Bundle",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/bundle/0xd8376819325cf020f8855ecee1999563432085af848605b820f036b678d98af5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"bundle",
+								"0xd8376819325cf020f8855ecee1999563432085af848605b820f036b678d98af5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Bundles #1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "AMB_TOKEN {{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"query\": [{\n\t\t\"field\": \"bundleId\",\n\t\t\"value\": [\"0xd8376819325cf020f8855ecee1999563432085af848605b820f036b678d98af5\", \"0x81aae998852e50efbcaecd2296f705e1b8e6811cb1fc167ea21d4781a12cf492\"],\n\t\t\"operator\": \"equal\"\n\t}]\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/account/query",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"account",
+								"query"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Event",
+			"item": [
+				{
+					"name": "Get Events",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "AMB_TOKEN {{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/event?limit=5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"event"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Event",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/event/0xd40a3aae2a9601de347f0bcaa186bace27b0fb2ff315b932ed11d5d639322407",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"event",
+								"0xd40a3aae2a9601de347f0bcaa186bace27b0fb2ff315b932ed11d5d639322407"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Events #1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "AMB_TOKEN {{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"query\": [{\n\t\t\"field\": \"content.data.type\",\n\t\t\"value\": \"ambrosus.asset.info\",\n\t\t\"operator\": \"equal\"\n\t}],\n\t\"limit\": 10\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/event/query",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"event",
+								"query"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Events #2",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "AMB_TOKEN {{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"query\": [\n\t{\n\t\t\"field\": \"content.idData.timestamp\",\n\t\t\"value\": {\"greater-than-equal\": 1538315311, \"less-than-equal\": 1540216111},\n\t\t\"operator\": \"inrange\"\n\t}],\n\t\"limit\": 10\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/event/query",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"event",
+								"query"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Latest Event Type",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "AMB_TOKEN {{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n\t\t\"assets\": [\"0x9d8c8bb6101751b583e64002ad8abe681aa61b6f8179ccef668fce91798e3018\", \"0x2be15879ad66636da6a5cccc70d75cda65809113f50355d97c93296d67486913\"],\n\t\t\"type\": \"ambrosus.asset.info\"\n\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/event/latest/type",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"event",
+								"latest",
+								"type"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Latest Event Type Copy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "AMB_TOKEN {{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n\t\t\"assets\": [\"0x9d8c8bb6101751b583e64002ad8abe681aa61b6f8179ccef668fce91798e3018\", \"0x2be15879ad66636da6a5cccc70d75cda65809113f50355d97c93296d67486913\"],\n\t\t\"type\": \"ambrosus.asset.info\"\n\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/event/latest/type",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"event",
+								"latest",
+								"type"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

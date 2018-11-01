@@ -1,15 +1,15 @@
 import { inject, injectable } from 'inversify';
 
 import { IGraphQLResolver } from '..';
-import { TYPES } from '../../constant/types';
-import { APIQuery, APIResult, Bundle } from '../../model';
+import { TYPE } from '../../constant/types';
+import { APIQuery, Bundle, MongoPagedResult } from '../../model';
 import { BundleService } from '../../service/bundle.service';
 
 @injectable()
 export class BundleResolver implements IGraphQLResolver {
   public resolver;
 
-  @inject(TYPES.BundleService)
+  @inject(TYPE.BundleService)
   private bundleService: BundleService;
 
   constructor() {
@@ -21,7 +21,7 @@ export class BundleResolver implements IGraphQLResolver {
     };
   }
 
-  private getBundles(_, { next, previous, limit }, context): Promise<APIResult> {
+  private getBundles(_, { next, previous, limit }, context): Promise<MongoPagedResult> {
     const apiQuery = new APIQuery();
     apiQuery.next = next;
     apiQuery.previous = previous;

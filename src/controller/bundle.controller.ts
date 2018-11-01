@@ -1,48 +1,61 @@
 import { Request } from 'express';
+import { checkSchema } from 'express-validator/check';
 import { inject } from 'inversify';
-import {
-  BaseHttpController,
-  controller,
-  httpGet,
-  httpPost,
-  requestParam,
-} from 'inversify-express-utils';
+import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
 
-import { TYPES } from '../constant/types';
-import { APIQuery, APIResult, Bundle } from '../model';
+import { MIDDLEWARE, TYPE } from '../constant/types';
+import { APIQuery, APIResponse } from '../model';
 import { BundleService } from '../service/bundle.service';
-import { NotFoundResult } from 'inversify-express-utils/dts/results';
+import { BaseController } from './base.controller';
 
-@controller('/bundle', TYPES.AuthorizedMiddleware)
-export class BundleController extends BaseHttpController {
-  constructor(@inject(TYPES.BundleService) private bundleService: BundleService) {
+@controller('/bundle', MIDDLEWARE.Authorized)
+export class BundleController extends BaseController {
+  constructor(@inject(TYPE.BundleService) private bundleService: BundleService) {
     super();
   }
 
   @httpGet('/')
-  public async getEvents(req: Request): Promise<APIResult | NotFoundResult> {
-    const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
-    if (!result.results.length) {
-      return this.notFound();
+  public async getBundles(req: Request): Promise<APIResponse> {
+    try {
+      const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
+      const apiResponse = APIResponse.fromMongoPagedResult(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
     }
-    return result;
   }
 
   @httpGet('/:bundleId')
-  public async get(@requestParam('bundleId') bundleId: string): Promise<Bundle | NotFoundResult> {
-    const result = await this.bundleService.getBundle(bundleId);
-    if (!result) {
-      return this.notFound();
+  public async getBundle(@requestParam('bundleId') bundleId: string): Promise<APIResponse> {
+    try {
+      const result = await this.bundleService.getBundle(bundleId);
+      const apiResponse = new APIResponse(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
     }
-    return result;
   }
 
-  @httpPost('/query')
-  public async query(req: Request): Promise<APIResult | NotFoundResult> {
-    const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
-    if (!result.results.length) {
-      return this.notFound();
+  @httpGet('/exists/:bundleId')
+  public async getBundleExists(@requestParam('bundleId') bundleId: string): Promise<APIResponse> {
+    try {
+      const result = await this.bundleService.getBundleExists(bundleId);
+      const apiResponse = new APIResponse();
+      apiResponse.meta.exists = result;
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
     }
-    return result;
+  }
+
+  @httpPost('/query', ...checkSchema(APIQuery.validationSchema()), MIDDLEWARE.ValidateRequest)
+  public async queryBundles(req: Request): Promise<APIResponse> {
+    try {
+      const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
+      const apiResponse = APIResponse.fromMongoPagedResult(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
+    }
   }
 }

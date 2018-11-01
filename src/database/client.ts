@@ -3,7 +3,7 @@ import { Db, MongoClient } from 'mongodb';
 import * as querystring from 'querystring';
 
 import { config } from '../config';
-import { ConnectionError } from '../error';
+import { ConnectionError } from '../model';
 
 @injectable()
 export class DBClient {

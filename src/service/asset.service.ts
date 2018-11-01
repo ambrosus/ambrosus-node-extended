@@ -1,29 +1,26 @@
 import { inject, injectable } from 'inversify';
 
-import { TYPES } from '../constant/types';
+import { TYPE } from '../constant/types';
 import { AssetRepository } from '../database/repository';
-import { ILogger } from '../interface/logger.inferface';
-import { APIQuery, APIResult, Asset } from '../model';
+import { APIQuery, Asset, MongoPagedResult } from '../model';
 
 @injectable()
 export class AssetService {
-  @inject(TYPES.AssetRepository)
-  public assetRepository: AssetRepository;
+  constructor(@inject(TYPE.AssetRepository) private readonly assetRepository: AssetRepository) {}
 
-  @inject(TYPES.LoggerService)
-  public logger: ILogger;
+  public getAssetExists(assetId: string) {
+    return this.assetRepository.existsOR({ assetId }, 'assetId');
+  }
 
-  constructor(@inject(TYPES.AccessLevel) private readonly accessLevel: number) {}
-
-  public getAssets(apiQuery: APIQuery): Promise<APIResult> {
+  public getAssets(apiQuery: APIQuery): Promise<MongoPagedResult> {
     apiQuery.paginationField = 'content.idData.timestamp';
     apiQuery.sortAscending = false;
-    return this.assetRepository.query(apiQuery, this.accessLevel);
+    return this.assetRepository.find(apiQuery);
   }
 
   public getAsset(assetId: string): Promise<Asset> {
     const apiQuery = new APIQuery();
     apiQuery.query = { assetId };
-    return this.assetRepository.single(apiQuery, this.accessLevel);
+    return this.assetRepository.findOne(apiQuery);
   }
 }

@@ -1,13 +1,13 @@
 import { inject, injectable } from 'inversify';
 
-import { TYPES } from '../../constant';
-import { APIQuery, APIResult, Event } from '../../model';
+import { TYPE } from '../../constant';
+import { APIQuery, Event, MongoPagedResult } from '../../model';
 import { DBClient } from '../client';
 import { BaseRepository } from './base.repository';
 
 @injectable()
 export class EventRepository extends BaseRepository<Event> {
-  constructor(@inject(TYPES.DBClient) protected client: DBClient) {
+  constructor(@inject(TYPE.DBClient) protected client: DBClient) {
     super(client, 'events');
   }
 
@@ -15,12 +15,32 @@ export class EventRepository extends BaseRepository<Event> {
     return 'content.idData.timestamp';
   }
 
-  get accessLevelField(): any {
-    return 'content.idData.accessLevel';
+  public queryEvents(apiQuery: APIQuery, accessLevel: number): Promise<MongoPagedResult> {
+    apiQuery.query = {
+      ...apiQuery.query,
+      ...{
+        accessLevel: { $lte: accessLevel },
+      },
+    };
+    return this.find(apiQuery);
   }
 
-  public assetEventsOfType(assets: string[], type: string, apiQuery: APIQuery): Promise<APIResult> {
-    const pipeline = [
+  public queryEvent(apiQuery: APIQuery, accessLevel: number): Promise<Event> {
+    apiQuery.query = {
+      ...apiQuery.query,
+      ...{
+        accessLevel: { $lte: accessLevel },
+      },
+    };
+    return this.findOne(apiQuery);
+  }
+
+  public assetEventsOfType(
+    assets: string[],
+    type: string,
+    apiQuery: APIQuery
+  ): Promise<MongoPagedResult> {
+    apiQuery.query = [
       {
         $match: {
           'content.data.type': type,
@@ -47,6 +67,6 @@ export class EventRepository extends BaseRepository<Event> {
       },
     ];
 
-    return super.aggregatePaging(pipeline, apiQuery);
+    return super.aggregate(apiQuery);
   }
 }

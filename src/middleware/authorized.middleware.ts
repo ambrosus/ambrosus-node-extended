@@ -1,26 +1,35 @@
 import * as express from 'express';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, interfaces } from 'inversify';
 import { BaseMiddleware } from 'inversify-express-utils';
 
-import { TYPES } from '../constant/types';
-import { AuthenticationError } from '../error';
+import { TYPE } from '../constant/types';
+import { APIResponse, APIResponseMeta, UserPrincipal } from '../model';
 import { LoggerService } from '../service/logger.service';
-import { UserPrincipal } from '../model/user-principal.model';
 
 @injectable()
 export class AuthorizedMiddleware extends BaseMiddleware {
-  @inject(TYPES.LoggerService)
+  @inject(TYPE.LoggerService)
   private readonly logger: LoggerService;
 
   public handler(req: express.Request, res: express.Response, next: express.NextFunction) {
+    this.logger.debug('Begin AuthorizedMiddleware');
+
     const user = this.httpContext.user as UserPrincipal;
 
     if (!user.isAuthorized()) {
-      this.logger.debug(`Anonymous => ${req.url}`);
-      throw new AuthenticationError('Unauthorized');
+      this.logger.debug(`Unauthorized login attempt => ${req.url}`);
+      const errorResponse = new APIResponse();
+      errorResponse.meta = new APIResponseMeta(401);
+      errorResponse.meta.error = 'AuthenticationError';
+      errorResponse.meta.error_message = 'Unauthorized';
+      errorResponse.data = undefined;
+      errorResponse.pagination = undefined;
+      return res.status(errorResponse.meta.code).json(errorResponse);
     }
 
-    this.bind<number>(TYPES.AccessLevel).toConstantValue(user.accessLevel);
+    this.bind<UserPrincipal>(TYPE.UserPrincipal).toDynamicValue(
+      (context: interfaces.Context) => user
+    );
 
     this.logger.debug(`${user.address}(${user.accessLevel}) => ${req.url}`);
 

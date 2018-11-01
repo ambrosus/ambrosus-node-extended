@@ -2,8 +2,8 @@ import { inject, injectable } from 'inversify';
 import web3 = require('web3');
 
 import { config } from '../config';
-import { TYPES } from '../constant/types';
-import { AuthenticationError, ValidationError } from '../error';
+import { TYPE } from '../constant/types';
+import { AuthenticationError, ValidationError } from '../model';
 import { ILogger } from '../interface/logger.inferface';
 import { matchHexOfLength } from '../util/helpers';
 
@@ -12,9 +12,9 @@ export class Web3Service {
   private web3;
   private w3Account;
   private privateKey = config.web3.privateKey;
-  constructor(@inject(TYPES.LoggerService) public logger: ILogger) {
+  constructor(@inject(TYPE.LoggerService) public logger: ILogger) {
     if (!matchHexOfLength(this.privateKey, 64)) {
-      throw new ValidationError('Invalid private key format');
+      throw new ValidationError('Invalid private key format', 400);
     }
 
     this.web3 = new web3();

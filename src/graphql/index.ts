@@ -3,7 +3,7 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { injectable, multiInject } from 'inversify';
 import { merge } from 'lodash';
 
-import { TYPES } from '../constant/types';
+import { TYPE } from '../constant/types';
 
 export interface IGraphQLSchema {
   schema: graphql.GraphQLSchema;
@@ -22,8 +22,8 @@ export class GraphQLSchema implements IGraphQLSchema {
   public schema;
 
   public constructor(
-    @multiInject(TYPES.GraphQLType) typesClasses: IGraphQLType[],
-    @multiInject(TYPES.GraphQLResolver) resolversClasses: IGraphQLResolver[]
+    @multiInject(TYPE.GraphQLType) typesClasses: IGraphQLType[],
+    @multiInject(TYPE.GraphQLResolver) resolversClasses: IGraphQLResolver[]
   ) {
     const typeDefs = typesClasses.map(t => t.defs);
     const resolvers = merge(resolversClasses.map(r => r.resolver));

@@ -1,35 +1,31 @@
 import { inject, injectable } from 'inversify';
 
-import { TYPES } from '../constant/types';
-import { ILogger } from '../interface/logger.inferface';
-import { Account, APIQuery, APIResult, UserPrincipal } from '../model';
+import { TYPE } from '../constant/types';
 import { AccountRepository } from '../database/repository';
+import { Account, APIQuery, MongoPagedResult, UserPrincipal } from '../model';
 
 @injectable()
 export class AccountService {
-  @inject(TYPES.AccountRepository)
-  public accountRepository: AccountRepository;
+  constructor(
+    @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
+    @inject(TYPE.AccountRepository) private readonly accountRepository: AccountRepository
+  ) {}
 
-  @inject(TYPES.LoggerService)
-  public logger: ILogger;
+  public getAccountExists(address: string) {
+    return this.accountRepository.existsOR({ address }, 'address');
+  }
 
-  constructor(@inject(TYPES.AccessLevel) private readonly accessLevel: number) {}
-
-  public getAccounts(apiQuery: APIQuery): Promise<APIResult> {
-    apiQuery.paginationField = 'registeredOn';
-    apiQuery.sortAscending = false;
-    return this.accountRepository.query(apiQuery, this.accessLevel);
+  public getAccounts(query: APIQuery): Promise<MongoPagedResult> {
+    return this.accountRepository.queryAccounts(query, this.user.accessLevel);
   }
 
   public getAccount(address: string): Promise<Account> {
-    const apiQuery = new APIQuery();
-    apiQuery.query = { address };
-    return this.accountRepository.single(apiQuery, this.accessLevel);
+    const apiQuery = new APIQuery({ address });
+    return this.accountRepository.queryAccount(apiQuery, this.user.accessLevel);
   }
 
   public getAccountForAuth(address: string): Promise<Account> {
-    const apiQuery = new APIQuery();
-    apiQuery.query = { address };
-    return this.accountRepository.singleAccountAuth(apiQuery);
+    const apiQuery = new APIQuery({ address });
+    return this.accountRepository.getAccountForAuthorization(apiQuery);
   }
 }

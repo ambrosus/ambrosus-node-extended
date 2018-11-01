@@ -1,53 +1,80 @@
-import { Request } from 'express';
+import { Request, Response } from 'express';
+import { checkSchema, param } from 'express-validator/check';
 import { inject } from 'inversify';
 import {
-  BaseHttpController,
   controller,
   httpGet,
   httpPost,
+  request,
   requestParam,
+  response,
 } from 'inversify-express-utils';
+import web3 = require('web3');
 
-import { TYPES } from '../constant/types';
-import { Account, APIQuery, APIResult } from '../model';
+import { MIDDLEWARE, TYPE } from '../constant/types';
+import { APIQuery, APIResponse } from '../model';
 import { AccountService } from '../service/account.service';
-import { NotFoundResult } from 'inversify-express-utils/dts/results';
+import { BaseController } from './base.controller';
 
-@controller('/account', TYPES.AuthorizedMiddleware)
-export class AccountController extends BaseHttpController {
-  @inject(TYPES.AccountService)
-  private accountService: AccountService;
-
-  constructor() {
+@controller('/account', MIDDLEWARE.Authorized)
+export class AccountController extends BaseController {
+  constructor(@inject(TYPE.AccountService) private accountService: AccountService) {
     super();
   }
 
-  @httpGet('/')
-  public async getAccounts(req: Request): Promise<APIResult | NotFoundResult> {
-    const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
-    if (!result.results.length) {
-      return this.notFound();
+  @httpGet('/', ...checkSchema(APIQuery.validationSchema()), MIDDLEWARE.ValidateRequest)
+  public async getAccounts(@request() req: Request): Promise<APIResponse> {
+    try {
+      const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
+      const apiResponse = APIResponse.fromMongoPagedResult(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
     }
-    return result;
   }
 
-  @httpGet('/:address')
-  public async getAccount(
-    @requestParam('address') address: string
-  ): Promise<Account | NotFoundResult> {
-    const result = await this.accountService.getAccount(address);
-    if (!result) {
-      return this.notFound();
+  @httpGet(
+    '/:address',
+    param('address').custom(value => web3.utils.isAddress(value)),
+    MIDDLEWARE.ValidateRequest
+  )
+  public async getAccount(@requestParam('address') address: string): Promise<APIResponse> {
+    try {
+      const result = await this.accountService.getAccount(address);
+      const apiResponse = new APIResponse(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
     }
-    return result;
   }
 
-  @httpPost('/query')
-  public async queryAccounts(req: Request): Promise<APIResult | NotFoundResult> {
-    const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
-    if (!result.results.length) {
-      return this.notFound();
+  @httpGet(
+    '/exists/:address',
+    param('address').custom(value => web3.utils.isAddress(value)),
+    MIDDLEWARE.ValidateRequest
+  )
+  public async getAccountExists(
+    @requestParam('address') address: string,
+    @response() res: Response
+  ): Promise<APIResponse> {
+    try {
+      const result = await this.accountService.getAccountExists(address);
+      const apiResponse = new APIResponse();
+      apiResponse.meta.exists = result;
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
     }
-    return result;
+  }
+
+  @httpPost('/query', ...checkSchema(APIQuery.validationSchema()), MIDDLEWARE.ValidateRequest)
+  public async queryAccounts(req: Request): Promise<APIResponse> {
+    try {
+      const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
+      const apiResponse = APIResponse.fromMongoPagedResult(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
+    }
   }
 }
