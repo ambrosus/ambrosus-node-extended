@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 
 import { IGraphQLResolver } from '..';
 import { TYPE } from '../../constant/types';
-import { APIQuery, APIResult, Event } from '../../model';
+import { APIQuery, Event, MongoPagedResult } from '../../model';
 import { EventService } from '../../service/event.service';
 
 @injectable()
@@ -21,7 +21,7 @@ export class EventResolver implements IGraphQLResolver {
     };
   }
 
-  private getEvents(_, { next, previous, limit }, context): Promise<APIResult> {
+  private getEvents(_, { next, previous, limit }, context): Promise<MongoPagedResult> {
     const apiQuery = new APIQuery();
     apiQuery.next = next;
     apiQuery.previous = previous;

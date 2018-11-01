@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 
 import { IGraphQLResolver } from '..';
 import { TYPE } from '../../constant/types';
-import { APIQuery, APIResult, Asset } from '../../model';
+import { APIQuery, Asset, MongoPagedResult } from '../../model';
 import { AssetService } from '../../service/asset.service';
 
 @injectable()
@@ -21,7 +21,7 @@ export class AssetResolver implements IGraphQLResolver {
     };
   }
 
-  private getAssets(_, { next, previous, limit }, context): Promise<APIResult> {
+  private getAssets(_, { next, previous, limit }, context): Promise<MongoPagedResult> {
     const apiQuery = new APIQuery();
     apiQuery.next = next;
     apiQuery.previous = previous;

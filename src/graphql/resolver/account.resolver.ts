@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 
 import { IGraphQLResolver } from '..';
 import { TYPE } from '../../constant/types';
-import { Account, APIQuery, APIResult } from '../../model';
+import { Account, APIQuery, MongoPagedResult } from '../../model';
 import { AccountService } from '../../service/account.service';
 
 @injectable()
@@ -21,7 +21,7 @@ export class AccountResolver implements IGraphQLResolver {
     };
   }
 
-  private getAccounts(_, { next, previous, limit }, context): Promise<APIResult> {
+  private getAccounts(_, { next, previous, limit }, context): Promise<MongoPagedResult> {
     const apiQuery = new APIQuery();
     apiQuery.next = next;
     apiQuery.previous = previous;
