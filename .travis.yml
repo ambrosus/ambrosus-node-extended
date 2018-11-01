@@ -24,7 +24,7 @@ install:
   - docker pull hadolint/hadolint
 
 script:
-  - npx npm dev:lint
+  - npx npm run dev:lint
   - docker run --rm -i hadolint/hadolint < Dockerfile
 
 notifications:
