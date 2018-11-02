@@ -126,7 +126,7 @@ export class BaseRepository<T> {
 
     return MongoPaging.find(this.collection, {
       query: apiQuery.query,
-      fields: apiQuery.projection,
+      fields: { projection: apiQuery.fields },
       paginatedField: this.paginatedField,
       sortAscending: this.paginatedAscending,
       limit: apiQuery.limit,
@@ -141,11 +141,11 @@ export class BaseRepository<T> {
       ################ findOne ################
       collection      ${this.collectionName}:
       query:          ${JSON.stringify(apiQuery.query)}
-      fields:         ${JSON.stringify(apiQuery.projection)}
+      fields:         ${JSON.stringify(apiQuery.fields)}
       `
     );
     return this.collection
-      .find(apiQuery.query, apiQuery.projection)
+      .find(apiQuery.query, { projection: apiQuery.fields })
       .limit(1)
       .toArray()
       .then(arrs => {

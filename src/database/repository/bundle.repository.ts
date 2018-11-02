@@ -12,7 +12,7 @@ export class BundleRepository extends BaseRepository<Bundle> {
   }
 
   get paginatedField(): string {
-    return 'content.idData.timestamp';
+    return '_id';
   }
 
   get paginatedAscending(): boolean {

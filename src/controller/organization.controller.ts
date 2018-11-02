@@ -21,10 +21,25 @@ export class OrganizationController extends BaseController {
     super();
   }
 
+  @httpGet('/', MIDDLEWARE.NodeAdmin)
+  public async getOrganizations(req: Request): Promise<APIResponse> {
+    try {
+      const result = await this.organizationService.getOrganizations(
+        APIQuery.fromRequest(req)
+      );
+      const apiResponse = APIResponse.fromMongoPagedResult(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
+    }
+  }
+
   @httpGet('/request', MIDDLEWARE.NodeAdmin)
   public async getOrgReguests(req: Request): Promise<APIResponse> {
     try {
-      const result = await this.organizationService.getOrgRequests(APIQuery.fromRequest(req));
+      const result = await this.organizationService.getOrganizationRequests(
+        APIQuery.fromRequest(req)
+      );
       const apiResponse = APIResponse.fromMongoPagedResult(result);
       return apiResponse;
     } catch (err) {
@@ -35,7 +50,7 @@ export class OrganizationController extends BaseController {
   @httpGet('/request/:address', MIDDLEWARE.NodeAdmin)
   public async getOrgReguest(@requestParam('address') address: string): Promise<APIResponse> {
     try {
-      const result = await this.organizationService.getOrgRequest(address);
+      const result = await this.organizationService.getOrganizationRequest(address);
       const apiResponse = new APIResponse(result);
       return apiResponse;
     } catch (err) {
@@ -53,7 +68,9 @@ export class OrganizationController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const apiResponse = new APIResponse();
-      await this.organizationService.createOrgRequest(OrganizationRequest.fromRequest(req));
+      await this.organizationService.createOrganizationRequest(
+        OrganizationRequest.fromRequest(req)
+      );
       apiResponse.meta.message = 'Organization request created';
       return apiResponse;
     } catch (err) {

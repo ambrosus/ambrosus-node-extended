@@ -21,6 +21,7 @@ export class BundleService {
     const apiQuery = new APIQuery();
     apiQuery.query = { bundleId };
     apiQuery.exludeFields('content.entries');
+    console.log(apiQuery.fields);
     return this.bundleRepository.findOne(apiQuery);
   }
 }

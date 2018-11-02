@@ -79,17 +79,11 @@ export class APIQuery implements IAPIQuery {
   }
 
   public exludeFields(...fields) {
-    this.blacklistedFields = {
-      ...[this.blacklistedFields],
-      fields,
-    };
+    fields.forEach(field => {
+      this.blacklistedFields[field] = 0;
+    });
   }
 
-  get projection(): any {
-    return {
-      projection: this.fields,
-    };
-  }
   get fields(): any {
     return this.blacklistedFields;
   }
