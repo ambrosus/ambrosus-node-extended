@@ -6,6 +6,8 @@ import {
   APIQuery,
   ExistsError,
   MongoPagedResult,
+  NotFoundError,
+  Organization,
   OrganizationRequest,
   UserPrincipal,
 } from '../model';
@@ -26,9 +28,9 @@ export class OrganizationService {
     return this.organizationRepository.find(apiQuery);
   }
 
-  public getOrganization(organizationId: string): Promise<MongoPagedResult> {
-    const apiQuery = new APIQuery({ organizationId });
-    return this.organizationRepository.find(apiQuery);
+  public getOrganization(owner: string): Promise<Organization> {
+    const apiQuery = new APIQuery({ owner });
+    return this.organizationRepository.findOne(apiQuery);
   }
 
   public getOrganizationRequests(apiQuery: APIQuery): Promise<MongoPagedResult> {
@@ -38,6 +40,33 @@ export class OrganizationService {
   public getOrganizationRequest(address: string): Promise<OrganizationRequest> {
     const apiQuery = new APIQuery({ address });
     return this.organizationRequestRepository.findOne(apiQuery);
+  }
+
+  public async createOrganization(organization: Organization): Promise<any> {
+    if (!(await this.accountService.getAccountExists(organization.owner))) {
+      throw new NotFoundError('Organization owner must have an account');
+    }
+
+    if (await this.organizationRepository.existsOR(organization, 'title')) {
+      throw new ExistsError('An organization already exists with that title');
+    }
+
+    if (await this.organizationRepository.existsOR(organization, 'owner')) {
+      throw new ExistsError('An organization already exists with that owner');
+    }
+
+    organization.setCreationTimestamp(this.user.address);
+
+    return this.organizationRepository.create(organization);
+  }
+
+  public async updateOrganization(
+    owner: string,
+    organization: Organization
+  ): Promise<Organization> {
+    organization.setMutationTimestamp(this.user.address);
+    const apiQuery = new APIQuery({ owner });
+    return this.organizationRepository.update(apiQuery, organization);
   }
 
   public async createOrganizationRequest(organizationRequest: OrganizationRequest): Promise<any> {
@@ -59,6 +88,8 @@ export class OrganizationService {
     if (await this.organizationRepository.existsOR(organizationRequest, 'title')) {
       throw new ExistsError('An organization already exists with that title');
     }
+
+    organizationRequest.setCreationTimestamp();
 
     return this.organizationRequestRepository.create(organizationRequest);
   }

@@ -1,7 +1,7 @@
 import { inject, injectable, unmanaged } from 'inversify';
 import * as _ from 'lodash';
 import * as MongoPaging from 'mongo-cursor-pagination';
-import { InsertOneWriteOpResult } from 'mongodb';
+import { InsertOneWriteOpResult, WriteOpResult } from 'mongodb';
 
 import { config } from '../../config';
 import { TYPE } from '../../constant';
@@ -43,13 +43,38 @@ export class BaseRepository<T> {
   }
 
   public async create(item: T): Promise<boolean> {
+    this.logger.debug(
+      `
+      ################ create ################
+      collection      ${this.collectionName}:
+      item:          ${JSON.stringify(item)}
+      `
+    );
+
     const result: InsertOneWriteOpResult = await this.collection.insertOne(item);
     return !!result.result.ok;
   }
 
-  public update(id: string, item: T): Promise<boolean> {
-    throw new Error('Method not implemented.');
+  public async update(apiQuery: APIQuery, item: T): Promise<T> {
+    this.logger.debug(
+      `
+      ################ update ################
+      collection      ${this.collectionName}:
+      query:          ${JSON.stringify(apiQuery.query)}
+      item:          ${JSON.stringify(item)}
+      `
+    );
+
+    const result = await this.collection.findOneAndUpdate(
+      apiQuery.query,
+      { $set: item },
+      {
+        returnOriginal: false,
+      }
+    );
+    return result.value;
   }
+
   public delete(id: string): Promise<boolean> {
     throw new Error('Method not implemented.');
   }

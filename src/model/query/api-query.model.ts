@@ -73,7 +73,7 @@ export class APIQuery implements IAPIQuery {
   constructor(_query?: object) {
     this.query = _query;
     this.blacklistedFields = {
-      _id: 0,
+      // _id: 0,
       repository: 0,
     };
   }
