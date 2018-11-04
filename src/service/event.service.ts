@@ -19,6 +19,10 @@ export class EventService {
     return this.eventRepository.queryEvents(apiQuery, this.user.accessLevel);
   }
 
+  public getEventDistinctField(field: string): Promise<any> {
+    return this.eventRepository.distinct(field);
+  }
+
   public getEvent(eventId: string): Promise<Event> {
     const apiQuery = new APIQuery({ eventId });
     return this.eventRepository.queryEvent(apiQuery, this.user.accessLevel);

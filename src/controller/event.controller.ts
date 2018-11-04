@@ -59,6 +59,17 @@ export class EventController extends BaseController {
     }
   }
 
+  @httpGet('/lookup/types')
+  public async getEventTypes(req: Request): Promise<APIResponse> {
+    try {
+      const result = await this.eventService.getEventDistinctField('content.data.type');
+      const apiResponse = new APIResponse(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
+    }
+  }
+
   @httpPost('/latest/type')
   public async latestType(req: Request): Promise<APIResponse> {
     try {

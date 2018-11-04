@@ -8,6 +8,7 @@ import { TYPE } from '../../constant';
 import { ILogger } from '../../interface/logger.inferface';
 import { APIQuery, ConnectionError, MongoPagedResult } from '../../model';
 import { DBClient } from '../client';
+import { fieldsConflictMessage } from 'graphql/validation/rules/OverlappingFieldsCanBeMerged';
 
 @injectable()
 export class BaseRepository<T> {
@@ -132,6 +133,18 @@ export class BaseRepository<T> {
       .then(arrs => {
         return Promise.resolve(arrs.length > 0);
       });
+  }
+
+  public async distinct(field: string): Promise<any> {
+    this.logger.debug(
+      `
+      ################ find ################
+      collection      ${this.collectionName}:
+      field:          ${field}
+      `
+    );
+
+    return this.collection.distinct(field);
   }
 
   public async find(apiQuery: APIQuery): Promise<MongoPagedResult> {
