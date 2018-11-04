@@ -11,15 +11,19 @@ export class EventRepository extends BaseRepository<Event> {
     super(client, 'events');
   }
 
-  get timestampField(): any {
+  get paginatedField(): string {
     return 'content.idData.timestamp';
+  }
+
+  get paginatedAscending(): boolean {
+    return false;
   }
 
   public queryEvents(apiQuery: APIQuery, accessLevel: number): Promise<MongoPagedResult> {
     apiQuery.query = {
       ...apiQuery.query,
       ...{
-        accessLevel: { $lte: accessLevel },
+        'content.idData.accessLevel': { $lte: accessLevel },
       },
     };
     return this.find(apiQuery);
@@ -29,7 +33,7 @@ export class EventRepository extends BaseRepository<Event> {
     apiQuery.query = {
       ...apiQuery.query,
       ...{
-        accessLevel: { $lte: accessLevel },
+        'content.idData.accessLevel': { $lte: accessLevel },
       },
     };
     return this.findOne(apiQuery);

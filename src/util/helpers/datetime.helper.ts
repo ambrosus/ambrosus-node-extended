@@ -4,6 +4,8 @@ export const isValidDate = date => moment(date).isValid();
 
 export const getTimestamp = () => moment().unix();
 
+export const timestampToDateString = ts => moment.unix(ts).format('MMMM Do YYYY, h:mm:ss a');
+
 export const getTimestampMonthStart = () =>
   moment()
     .startOf('M')

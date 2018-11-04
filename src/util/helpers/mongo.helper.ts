@@ -37,6 +37,10 @@ export const matchMongoOperator = operator => {
     return '$range';
   }
 
+  if (operator === 'startsWith' || operator === 'contains') {
+    return '$regex';
+  }
+
   return undefined;
 };
 
@@ -79,6 +83,10 @@ export const getMongoFilter = q => {
         const opB = matchMongoOperator(Object.keys(val)[1]);
         result[field][opA] = val[Object.keys(val)[0]];
         result[field][opB] = val[Object.keys(val)[1]];
+      } else if (op === 'startsWith') {
+        result[field][matchMongoOperator(op)] = `(?i)^${val}`;
+      } else if (op === 'contains') {
+        result[field][matchMongoOperator(op)] = `(?i).*${val}.*`;
       } else {
         result[field][matchMongoOperator(op)] = val;
       }
