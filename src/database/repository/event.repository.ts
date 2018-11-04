@@ -29,6 +29,22 @@ export class EventRepository extends BaseRepository<Event> {
     return this.find(apiQuery);
   }
 
+  public searchEvents(apiQuery: APIQuery, accessLevel: number): Promise<MongoPagedResult> {
+    apiQuery.query = {
+      ...apiQuery.query,
+      ...{
+        'content.idData.accessLevel': { $lte: accessLevel },
+      },
+    };
+    const fields = {
+      'eventId': 1,
+      'content.idData': 1,
+      'content.data': 1,
+      'content.metadata': 1,
+    };
+    return this.search(apiQuery, fields);
+  }
+
   public queryEvent(apiQuery: APIQuery, accessLevel: number): Promise<Event> {
     apiQuery.query = {
       ...apiQuery.query,

@@ -19,6 +19,10 @@ export class EventService {
     return this.eventRepository.queryEvents(apiQuery, this.user.accessLevel);
   }
 
+  public searchEvents(apiQuery: APIQuery): Promise<MongoPagedResult> {
+    return this.eventRepository.searchEvents(apiQuery, this.user.accessLevel);
+  }
+
   public getEventDistinctField(field: string): Promise<any> {
     return this.eventRepository.distinct(field);
   }

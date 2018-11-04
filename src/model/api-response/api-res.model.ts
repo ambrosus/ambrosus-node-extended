@@ -14,6 +14,7 @@ export interface IAPIResponse {
 @injectable()
 export class APIResponse implements IAPIResponse {
   public static fromMongoPagedResult(mongoPagedResult: MongoPagedResult): APIResponse {
+    console.log(mongoPagedResult);
     const apiResponse = new APIResponse();
 
     apiResponse.pagination = APIResponsePagination.fromMongoPagedResult(mongoPagedResult);

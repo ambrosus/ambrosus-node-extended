@@ -59,6 +59,17 @@ export class EventController extends BaseController {
     }
   }
 
+  @httpPost('/search')
+  public async search(req: Request): Promise<APIResponse> {
+    try {
+      const result = await this.eventService.searchEvents(APIQuery.fromRequest(req));
+      const apiResponse = APIResponse.fromMongoPagedResult(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
+    }
+  }
+
   @httpGet('/lookup/types')
   public async getEventTypes(req: Request): Promise<APIResponse> {
     try {

@@ -14,14 +14,10 @@ export class APIResponsePagination implements IAPIResponsePagination {
   public static fromMongoPagedResult(mongoPageResult: MongoPagedResult): APIResponsePagination {
     const apiPagination = new APIResponsePagination();
     apiPagination.hasNext = mongoPageResult.hasNext;
-    if (apiPagination.hasNext) {
-      apiPagination.next = mongoPageResult.next;
-    }
-
+    apiPagination.next = mongoPageResult.next;
     apiPagination.hasPrevious = mongoPageResult.hasPrevious;
-    if (apiPagination.hasPrevious) {
-      apiPagination.previous = mongoPageResult.previous;
-    }
+    apiPagination.previous = mongoPageResult.previous;
+
     return apiPagination;
   }
   public hasNext: boolean;

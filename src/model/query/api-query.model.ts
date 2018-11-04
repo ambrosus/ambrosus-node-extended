@@ -16,6 +16,7 @@ export interface IAPIPagination {
 
 export interface IAPIQuery {
   query: object;
+  search: string;
 }
 
 @injectable()
@@ -30,6 +31,7 @@ export class APIQuery implements IAPIQuery {
       }
       apiQuery.query = getMongoFilter(query);
     }
+    apiQuery.search = getParamValue(req, 'search');
     apiQuery.limit = +getParamValue(req, 'limit') || +config.paginationDefault;
     apiQuery.next = getParamValue(req, 'next');
     apiQuery.previous = getParamValue(req, 'previous');
@@ -63,6 +65,7 @@ export class APIQuery implements IAPIQuery {
   }
 
   public query;
+  public search;
   public limit: number;
   public next: string;
   public previous: string;

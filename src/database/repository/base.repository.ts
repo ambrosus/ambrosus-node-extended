@@ -138,13 +138,38 @@ export class BaseRepository<T> {
   public async distinct(field: string): Promise<any> {
     this.logger.debug(
       `
-      ################ find ################
+      ################ distinct ################
       collection      ${this.collectionName}:
       field:          ${field}
       `
     );
 
     return this.collection.distinct(field);
+  }
+
+  public async search(apiQuery: APIQuery, queryFields: object): Promise<MongoPagedResult> {
+    this.logger.debug(
+      `
+      ################ search ################
+      collection      ${this.collectionName}:
+      search:         ${JSON.stringify(apiQuery.search)}
+      query:          ${JSON.stringify(apiQuery.query)}
+      fields:         ${JSON.stringify(queryFields)}
+      paginatedField: ${this.paginatedField}
+      sortAscending:  ${this.paginatedAscending}
+      limit:          ${apiQuery.limit}
+      next:           ${apiQuery.next}
+      previous:       ${apiQuery.previous}
+      `
+    );
+
+    return MongoPaging.search(this.collection, apiQuery.search, {
+      query: apiQuery.query,
+      fields: queryFields,
+      limit: apiQuery.limit,
+      next: apiQuery.next,
+      previous: apiQuery.previous,
+    });
   }
 
   public async find(apiQuery: APIQuery): Promise<MongoPagedResult> {
