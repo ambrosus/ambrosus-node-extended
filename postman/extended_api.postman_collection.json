@@ -7,7 +7,170 @@
 	"item": [
 		{
 			"name": "Organization",
-			"item": []
+			"item": [
+				{
+					"name": "Get Organizations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0xc0ffee254729296a45a3885639AC7E10F9d54979\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/organization?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Organization",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0xc0ffee254729296a45a3885639AC7E10F9d54979\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/organization/0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization",
+								"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Organization",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"owner\": \"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8\",\n\t\"title\": \"Bando Chemical Industries\",\n\t\"timeZone\": \"Asia/Tokyo\",\n\t\"legalAddress\": \"104-0031 Kyobashi MID Bldg., 13-10, Kyobashi 2-chome, Chuo-ku, Tokyo\",\n\t\"active\": true\n}"
+						},
+						"url": {
+							"raw": "{{url}}/organization?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modify Organization",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"owner\": \"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8\",\n\t\"title\": \"Bando Chemical Industries 111\",\n\t\"timeZone\": \"Asia/Tokyo\",\n\t\"legalAddress\": \"104-0031 Kyobashi MID Bldg., 13-10, Kyobashi 2-chome, Chuo-ku, Tokyo\",\n\t\"active\": \"true\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/organization/0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization",
+								"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "Org Requests",
@@ -15,7 +178,7 @@
 				{
 					"name": "Get Org Requests",
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
@@ -31,7 +194,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"owner\": \"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8\",\n\t\"email\": \"testETWT@test.com\"\n}"
+							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0xc0ffee254729296a45a3885639AC7E10F9d54979\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
 						},
 						"url": {
 							"raw": "{{url}}/organization/request?",
@@ -56,7 +219,7 @@
 				{
 					"name": "Get Org Request",
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
@@ -72,16 +235,17 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"owner\": \"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8\",\n\t\"email\": \"testETWT@test.com\"\n}"
+							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8\",\n\t\"email\": \"testETWT@test.com\"\n}"
 						},
 						"url": {
-							"raw": "{{url}}/organization/request?",
+							"raw": "{{url}}/organization/request/0xc0ffee254729296a45a3885639AC7E10F9d54979?",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"organization",
-								"request"
+								"request",
+								"0xc0ffee254729296a45a3885639AC7E10F9d54979"
 							],
 							"query": [
 								{
@@ -175,48 +339,6 @@
 					"response": []
 				},
 				{
-					"name": "Update Account Detail",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "AMB_TOKEN {{userToken}}"
-							},
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"email\": \"SDFSDFDSFSDFSDsdfsdf@test.com3r34\"\n}"
-						},
-						"url": {
-							"raw": "{{url}}/account/detail/0xbaEE2FC002b2B8E1fDde3CdEdAee5cA98640c04f?",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"account",
-								"detail",
-								"0xbaEE2FC002b2B8E1fDde3CdEdAee5cA98640c04f"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "5",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Get Account",
 					"request": {
 						"method": "GET",
@@ -232,20 +354,20 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/account/0xf9C5d4Ed4FEdf62e2D42601F9E04b8B5ab840ea4",
+							"raw": "{{url}}/account/0x779CC6cAF66d2A6Ad684257417BAECAf0cA1856d",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"account",
-								"0xf9C5d4Ed4FEdf62e2D42601F9E04b8B5ab840ea4"
+								"0x779CC6cAF66d2A6Ad684257417BAECAf0cA1856d"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Verify Account",
+					"name": "Verify Account Exists",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -260,13 +382,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/account/verify/0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8",
+							"raw": "{{url}}/account/exists/0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"account",
-								"verify",
+								"exists",
 								"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8"
 							]
 						}
@@ -444,6 +566,35 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Verify Asset Exists",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/asset/exists/0x2db032e832ecc7af032651b2a25848dc263fb21f22a8d2ab2038d22a311155c1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"asset",
+								"exists",
+								"0x2db032e832ecc7af032651b2a25848dc263fb21f22a8d2ab2038d22a311155c1"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -466,13 +617,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/analytics/account/count",
+							"raw": "{{url}}/analytics/event/count",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"analytics",
-								"account",
+								"event",
 								"count"
 							]
 						}
@@ -525,7 +676,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/analytics/account/count/date/20181001",
+							"raw": "{{url}}/analytics/account/count/date/20180910",
 							"host": [
 								"{{url}}"
 							],
@@ -534,7 +685,7 @@
 								"account",
 								"count",
 								"date",
-								"20181001"
+								"20180910"
 							]
 						}
 					},
@@ -795,6 +946,35 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Verify Bundle Exists",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/bundle/exists/0x66b57894cd0cda015fd07d07646ee81cc8f65bb751ee6e2b68380e4480b862f9",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"bundle",
+								"exists",
+								"0x66b57894cd0cda015fd07d07646ee81cc8f65bb751ee6e2b68380e4480b862f9"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -949,7 +1129,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\n\t\t\"assets\": [\"0x9d8c8bb6101751b583e64002ad8abe681aa61b6f8179ccef668fce91798e3018\", \"0x2be15879ad66636da6a5cccc70d75cda65809113f50355d97c93296d67486913\"],\n\t\t\"type\": \"ambrosus.asset.info\"\n\n}\n"
+							"raw": "{\n    \"assets\": [ \"0x7bde6d5c2d2e3e32c855a423a3af16654a2066d2a1153c62984fc11e7f3a4475\",\n                \"0xeb70ff8618c3c64695f6619d7f153a47e7d434c55cbfc38193857cc8ce669755\",\n                \"0xcbada74d6f873c090fcfee2cd6113b488f3b04f5c71a91313fc9dda0415ff831\",\n                \"0x79e1dec985346eef188ddb2f84e6050c4f0abe4cebbde95994d923b892cab2cd\",\n                 \"0xf98bcb1452c7b93cfed4477b0f6f6ca6ad25c50412f1f04a44b006ee75dd5dba\",\n                 \"0xdc39e75a28903d296001b8b3135e46b1a9f9a4e20f5f8c2b649cd283c36234c8\",\n                 \"0x07e47d3e08419be8cf82e253434aaf2ebadb63e504ce98cb77f2057fee5f625a\",\n                 \"0x421526ddfb6e314288328efdab0aa0f92da9e31ea0b92356224a2ee21eb9fb21\",\n                 \"0xd4ce232129591f59dd04d95c0b14295f5cfb5d4b07f0816f45d3212156eb6757\",\n                 \"0xd783e25fea63433c5e7ba80bbcc969957492c95fea40522c210c032ab08534e7\",\n                 \"0x87e735e01cd860da675144f0a0a358e58a81974ecb530d99c4d768b1e53be255\",\n                 \"0x5f6bd84a02174c87068f5675bdd947aee74507ea9774ca5d89ccd02469d77665\",\n                 \"0x2bf9fdd93313fec6ea82495cdca39bd8163b7d01ef33d0edea95d9e757661e88\",\n                 \"0xa5fbb5866e6cb31e778b3ad54444907b7e5bc3f3125c0578fdc00f4082874876\",\n                 \"0x20c8ab09f47669e752bd78da46fa7c6520c31fb685b0722815b5b3344e98cacf\" ],\n    \"type\": \"ambrosus.asset.info\"\n}"
 						},
 						"url": {
 							"raw": "{{url}}/event/latest/type",
@@ -995,6 +1175,204 @@
 								"event",
 								"latest",
 								"type"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Event Exists",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/event/exists/0x182dcf53d57043c6ae278cd7a183ccfa4049db3af057853627a43e604c6e9189",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"event",
+								"exists",
+								"0x182dcf53d57043c6ae278cd7a183ccfa4049db3af057853627a43e604c6e9189"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Text Search",
+			"item": [
+				{
+					"name": "startsWith #1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"query\": [{\n\t\t\"field\": \"content.data.type\",\n\t\t\"value\": \"ambrosus.asset.info\",\n\t\t\"operator\": \"equal\"\n\t},\n\t{\n\t\t\"field\": \"content.data.name\",\n\t\t\"value\": \"guernsey\",\n\t\t\"operator\": \"startsWith\"\n\t}],\n\t\"limit\": 10\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/event/query",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"event",
+								"query"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "contains",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"query\": [{\n\t\t\"field\": \"content.data.type\",\n\t\t\"value\": \"ambrosus.asset.info\",\n\t\t\"operator\": \"equal\"\n\t},\n\t{\n\t\t\"field\": \"content.data.name\",\n\t\t\"value\": \"cow\",\n\t\t\"operator\": \"contains\"\n\t}],\n\t\"limit\": 10\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/event/query",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"event",
+								"query"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "mongo text search #1",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"search\": \"chocolate\",\n\t\"limit\": 10\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/event/search",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"event",
+								"search"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c26a668d-54d8-428c-adef-78a9b4d32cfc",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "50e73a82-5882-421c-a9c2-653bebe42353",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Lookups",
+			"item": [
+				{
+					"name": "event types",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"query\": [{\n\t\t\"field\": \"content.data.type\",\n\t\t\"value\": \"ambrosus.asset.info\",\n\t\t\"operator\": \"equal\"\n\t},\n\t{\n\t\t\"field\": \"content.data.name\",\n\t\t\"value\": \"cow\",\n\t\t\"operator\": \"contains\"\n\t}],\n\t\"limit\": 10\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/event/lookup/types",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"event",
+								"lookup",
+								"types"
 							]
 						}
 					},
