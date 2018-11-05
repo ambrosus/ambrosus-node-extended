@@ -28,7 +28,7 @@ export class AssetController extends BaseController {
   public async get(@requestParam('assetId') assetId: string): Promise<APIResponse> {
     try {
       const result = await this.assetService.getAsset(assetId);
-      const apiResponse = new APIResponse(result);
+      const apiResponse = APIResponse.fromSingleResult(result);
       return apiResponse;
     } catch (err) {
       return super.handleError(err);

@@ -1,18 +1,20 @@
 import { Request, Response } from 'express';
-import { checkSchema, param } from 'express-validator/check';
+import { checkSchema, param, body } from 'express-validator/check';
 import { inject } from 'inversify';
 import {
   controller,
   httpGet,
   httpPost,
+  httpPut,
   request,
   requestParam,
+  requestBody,
   response,
 } from 'inversify-express-utils';
 import web3 = require('web3');
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { APIQuery, APIResponse } from '../model';
+import { APIQuery, APIResponse, AccountDetail } from '../model';
 import { AccountService } from '../service/account.service';
 import { BaseController } from './base.controller';
 
@@ -41,7 +43,7 @@ export class AccountController extends BaseController {
   public async getAccount(@requestParam('address') address: string): Promise<APIResponse> {
     try {
       const result = await this.accountService.getAccount(address);
-      const apiResponse = new APIResponse(result);
+      const apiResponse = APIResponse.fromSingleResult(result);
       return apiResponse;
     } catch (err) {
       return super.handleError(err);
@@ -72,6 +74,61 @@ export class AccountController extends BaseController {
     try {
       const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
       const apiResponse = APIResponse.fromMongoPagedResult(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
+    }
+  }
+
+  @httpGet(
+    '/detail/:address',
+    param('address').custom(value => web3.utils.isAddress(value)),
+    MIDDLEWARE.NodeAdmin
+  )
+  public async getAccountDetail(@requestParam('address') address: string): Promise<APIResponse> {
+    try {
+      const result = await this.accountService.getAccountDetail(address);
+      const apiResponse = APIResponse.fromSingleResult(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
+    }
+  }
+
+  @httpPut(
+    '/detail/:address',
+    param('address').custom(value => web3.utils.isAddress(value)),
+    ...checkSchema(AccountDetail.validationSchema()),
+    MIDDLEWARE.ValidateRequest,
+    MIDDLEWARE.NodeAdmin
+  )
+  public async updateAccountDetail(
+    @requestParam('address') address: string,
+    @request() req: Request
+  ): Promise<APIResponse> {
+    try {
+      const result = await this.accountService.updateAccountDetail(
+        address,
+        AccountDetail.fromRequestForUpdate(req)
+      );
+      const apiResponse = APIResponse.fromSingleResult(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
+    }
+  }
+
+  @httpPost(
+    '/detail/secret',
+    body('email')
+      .isEmail()
+      .normalizeEmail(),
+    MIDDLEWARE.ValidateRequest
+  )
+  public async getEncryptedSecretByEmail(@requestBody() acc: AccountDetail): Promise<APIResponse> {
+    try {
+      const result = await this.accountService.getAccountEncryptedToken(acc.email);
+      const apiResponse = APIResponse.fromSingleResult(result);
       return apiResponse;
     } catch (err) {
       return super.handleError(err);

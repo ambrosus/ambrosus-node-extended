@@ -12,6 +12,7 @@ import {
   UserPrincipal,
 } from '../model';
 import { AccountService } from '../service/account.service';
+import { assertWrappingType } from 'graphql';
 
 @injectable()
 export class OrganizationService {
@@ -56,6 +57,7 @@ export class OrganizationService {
     }
 
     organization.setCreationTimestamp(this.user.address);
+    organization.organizationId = await this.organizationRepository.getNewOrganizationIdentifier();
 
     return this.organizationRepository.create(organization);
   }

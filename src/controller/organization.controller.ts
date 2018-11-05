@@ -41,7 +41,7 @@ export class OrganizationController extends BaseController {
   public async getOrganization(@requestParam('owner') owner: string): Promise<APIResponse> {
     try {
       const result = await this.organizationService.getOrganization(owner);
-      const apiResponse = new APIResponse(result);
+      const apiResponse = APIResponse.fromSingleResult(result);
       return apiResponse;
     } catch (err) {
       return super.handleError(err);
@@ -81,7 +81,7 @@ export class OrganizationController extends BaseController {
         owner,
         Organization.fromRequestForUpdate(req)
       );
-      const apiResponse = new APIResponse(result);
+      const apiResponse = APIResponse.fromSingleResult(result);
       return apiResponse;
     } catch (err) {
       return super.handleError(err);
@@ -107,7 +107,7 @@ export class OrganizationController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const result = await this.organizationService.getOrganizationRequest(address);
-      const apiResponse = new APIResponse(result);
+      const apiResponse = APIResponse.fromSingleResult(result);
       return apiResponse;
     } catch (err) {
       return super.handleError(err);

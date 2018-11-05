@@ -6,7 +6,7 @@ import { getTimestamp } from '../../util/helpers';
 
 export interface IOrganization {
   _id: string;
-  organizationId: string;
+  organizationId: number;
   owner: string;
   title: string;
   timeZone: string;
@@ -85,7 +85,7 @@ export class Organization implements IOrganization {
   }
 
   public _id: string;
-  public organizationId: string;
+  public organizationId: number;
   public owner: string;
   public title: string;
   public timeZone: string;

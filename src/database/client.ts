@@ -43,4 +43,6 @@ export class DBClient {
     const queryStr = `?${querystring.stringify(query)}`;
     return `mongodb://${credentials}${config.db.hosts}/${queryStr}`;
   }
+  
+  public
 }

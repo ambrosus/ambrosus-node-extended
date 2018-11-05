@@ -13,6 +13,7 @@ import { RootController } from './controller/root.controller';
 import { DBClient } from './database/client';
 import {
   AccountRepository,
+  AccountDetailRepository,
   AssetRepository,
   BundleRepository,
   EventRepository,
@@ -65,6 +66,9 @@ iocContainer.bind<OrganizationService>(TYPE.OrganizationService).to(Organization
 
 // repositories
 iocContainer.bind<AccountRepository>(TYPE.AccountRepository).to(AccountRepository);
+iocContainer
+  .bind<AccountDetailRepository>(TYPE.AccountDetailRepository)
+  .to(AccountDetailRepository);
 iocContainer.bind<AssetRepository>(TYPE.AssetRepository).to(AssetRepository);
 iocContainer.bind<EventRepository>(TYPE.EventRepository).to(EventRepository);
 iocContainer.bind<BundleRepository>(TYPE.BundleRepository).to(BundleRepository);

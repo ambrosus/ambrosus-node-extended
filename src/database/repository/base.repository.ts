@@ -1,14 +1,14 @@
 import { inject, injectable, unmanaged } from 'inversify';
 import * as _ from 'lodash';
 import * as MongoPaging from 'mongo-cursor-pagination';
-import { InsertOneWriteOpResult, WriteOpResult } from 'mongodb';
+import { InsertOneWriteOpResult } from 'mongodb';
 
 import { config } from '../../config';
 import { TYPE } from '../../constant';
 import { ILogger } from '../../interface/logger.inferface';
 import { APIQuery, ConnectionError, MongoPagedResult } from '../../model';
 import { DBClient } from '../client';
-import { fieldsConflictMessage } from 'graphql/validation/rules/OverlappingFieldsCanBeMerged';
+import { getTimestamp } from '../../util/helpers';
 
 @injectable()
 export class BaseRepository<T> {
@@ -56,7 +56,7 @@ export class BaseRepository<T> {
     return !!result.result.ok;
   }
 
-  public async update(apiQuery: APIQuery, item: T): Promise<T> {
+  public async update(apiQuery: APIQuery, item: T, create: boolean = false): Promise<T> {
     this.logger.debug(
       `
       ################ update ################
@@ -71,6 +71,7 @@ export class BaseRepository<T> {
       { $set: item },
       {
         returnOriginal: false,
+        upsert: create,
       }
     );
     return result.value;
@@ -86,9 +87,9 @@ export class BaseRepository<T> {
 
   // TODO: Add accessLevel to aggregates
   // FIXME: Aggregation isn't returning the correct data with paging b/c a limit to the pipeline.
-  public aggregatePaging(apiQuery: APIQuery): Promise<MongoPagedResult> {
+  public async aggregatePaging(apiQuery: APIQuery): Promise<MongoPagedResult> {
     this.logger.debug(`aggregate ${this.collectionName}: ${JSON.stringify(apiQuery)}`);
-    return MongoPaging.aggregate(this.collection, {
+    const result = await MongoPaging.aggregate(this.collection, {
       aggregation: apiQuery.query,
       paginatedField: this.paginatedField,
       paginatedAscending: this.paginatedAscending,
@@ -96,12 +97,14 @@ export class BaseRepository<T> {
       next: apiQuery.next,
       previous: apiQuery.previous,
     });
+    return result;
   }
 
   // TODO: Add accessLevel to aggregates
-  public aggregate(apiQuery: APIQuery): Promise<any> {
+  public async aggregate(apiQuery: APIQuery): Promise<any> {
     this.logger.debug(`aggregate ${this.collectionName}: ${JSON.stringify(apiQuery)}`);
-    return this.collection.aggregate(apiQuery.query).toArray();
+    const result = await this.collection.aggregate(apiQuery.query).toArray();
+    return result;
   }
 
   public async exists(apiQuery: APIQuery): Promise<boolean> {
@@ -109,13 +112,12 @@ export class BaseRepository<T> {
       `exists for ${this.collectionName}:
       ${JSON.stringify(apiQuery)}`
     );
-    return this.collection
+    const result = await this.collection
       .find(apiQuery.query, { _id: 1 })
       .limit(1)
-      .toArray()
-      .then(arrs => {
-        return Promise.resolve(arrs.length > 0);
-      });
+      .toArray();
+
+    return result.length > 0;
   }
 
   public async existsOR(obj, ...fields): Promise<boolean> {
@@ -126,13 +128,12 @@ export class BaseRepository<T> {
       `existsOR for ${this.collectionName}:
       ${JSON.stringify(qor)}`
     );
-    return this.collection
+    const result = await this.collection
       .find({ $or: qor }, { _id: 1 })
       .limit(1)
-      .toArray()
-      .then(arrs => {
-        return Promise.resolve(arrs.length > 0);
-      });
+      .toArray();
+
+    return result.length > 0;
   }
 
   public async distinct(field: string): Promise<any> {
@@ -143,18 +144,18 @@ export class BaseRepository<T> {
       field:          ${field}
       `
     );
-
-    return this.collection.distinct(field);
+    const result = await this.collection.distinct(field);
+    return result;
   }
 
-  public async search(apiQuery: APIQuery, queryFields: object): Promise<MongoPagedResult> {
+  public async search(apiQuery: APIQuery): Promise<MongoPagedResult> {
     this.logger.debug(
       `
       ################ search ################
       collection      ${this.collectionName}:
       search:         ${JSON.stringify(apiQuery.search)}
       query:          ${JSON.stringify(apiQuery.query)}
-      fields:         ${JSON.stringify(queryFields)}
+      fields:         ${JSON.stringify(apiQuery.fields)}
       paginatedField: ${this.paginatedField}
       sortAscending:  ${this.paginatedAscending}
       limit:          ${apiQuery.limit}
@@ -163,13 +164,14 @@ export class BaseRepository<T> {
       `
     );
 
-    return MongoPaging.search(this.collection, apiQuery.search, {
+    const result = await MongoPaging.search(this.collection, apiQuery.search, {
       query: apiQuery.query,
-      fields: queryFields,
+      fields: apiQuery.fields,
       limit: apiQuery.limit,
       next: apiQuery.next,
       previous: apiQuery.previous,
     });
+    return result;
   }
 
   public async find(apiQuery: APIQuery): Promise<MongoPagedResult> {
@@ -187,7 +189,7 @@ export class BaseRepository<T> {
       `
     );
 
-    return MongoPaging.find(this.collection, {
+    const result = await MongoPaging.find(this.collection, {
       query: apiQuery.query,
       fields: { projection: apiQuery.fields },
       paginatedField: this.paginatedField,
@@ -196,6 +198,7 @@ export class BaseRepository<T> {
       next: apiQuery.next,
       previous: apiQuery.previous,
     });
+    return result;
   }
 
   public async findOne(apiQuery: APIQuery): Promise<T> {
@@ -207,12 +210,31 @@ export class BaseRepository<T> {
       fields:         ${JSON.stringify(apiQuery.fields)}
       `
     );
-    return this.collection
+    const result = await this.collection
       .find(apiQuery.query, { projection: apiQuery.fields })
       .limit(1)
-      .toArray()
-      .then(arrs => {
-        return arrs[0] || undefined;
-      });
+      .toArray();
+
+    return result[0] || undefined;
+  }
+
+  public async findOneOrCreate(apiQuery: APIQuery, createUser: string): Promise<T> {
+    this.logger.debug(
+      `
+      ################ findOneOrCreate ################
+      collection      ${this.collectionName}:
+      query:          ${JSON.stringify(apiQuery.query)}
+      fields:         ${JSON.stringify(apiQuery.fields)}
+      `
+    );
+    const result = await this.collection.findOneAndUpdate(
+      apiQuery.query,
+      { $setOnInsert: { createdOn: getTimestamp(), createdBy: createUser } },
+      {
+        upsert: true,
+        returnOriginal: false,
+      }
+    );
+    return result.value;
   }
 }

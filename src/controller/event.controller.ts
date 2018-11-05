@@ -29,7 +29,7 @@ export class EventController extends BaseController {
   public async getEvent(@requestParam('eventId') eventId: string): Promise<APIResponse> {
     try {
       const result = await this.eventService.getEvent(eventId);
-      const apiResponse = new APIResponse(result);
+      const apiResponse = APIResponse.fromSingleResult(result);
       return apiResponse;
     } catch (err) {
       return super.handleError(err);
@@ -74,7 +74,7 @@ export class EventController extends BaseController {
   public async getEventTypes(req: Request): Promise<APIResponse> {
     try {
       const result = await this.eventService.getEventDistinctField('content.data.type');
-      const apiResponse = new APIResponse(result);
+      const apiResponse = APIResponse.fromSingleResult(result);
       return apiResponse;
     } catch (err) {
       return super.handleError(err);
@@ -91,7 +91,7 @@ export class EventController extends BaseController {
         type,
         APIQuery.fromRequest(req)
       );
-      const apiResponse = new APIResponse(result);
+      const apiResponse = APIResponse.fromSingleResult(result);
       return apiResponse;
     } catch (err) {
       return super.handleError(err);

@@ -17,6 +17,7 @@ export interface IAPIPagination {
 export interface IAPIQuery {
   query: object;
   search: string;
+  fields: object;
 }
 
 @injectable()
@@ -71,23 +72,10 @@ export class APIQuery implements IAPIQuery {
   public previous: string;
   public paginationField: string;
   public sortAscending: boolean;
-  private blacklistedFields: object;
+  public fields: object;
 
   constructor(_query?: object) {
     this.query = _query;
-    this.blacklistedFields = {
-      // _id: 0,
-      repository: 0,
-    };
-  }
-
-  public exludeFields(...fields) {
-    fields.forEach(field => {
-      this.blacklistedFields[field] = 0;
-    });
-  }
-
-  get fields(): any {
-    return this.blacklistedFields;
+    this.fields = {};
   }
 }

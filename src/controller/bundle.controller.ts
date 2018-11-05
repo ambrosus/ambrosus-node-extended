@@ -29,7 +29,7 @@ export class BundleController extends BaseController {
   public async getBundle(@requestParam('bundleId') bundleId: string): Promise<APIResponse> {
     try {
       const result = await this.bundleService.getBundle(bundleId);
-      const apiResponse = new APIResponse(result);
+      const apiResponse = APIResponse.fromSingleResult(result);
       return apiResponse;
     } catch (err) {
       return super.handleError(err);

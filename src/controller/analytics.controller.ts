@@ -17,7 +17,7 @@ export class AnalyticsController extends BaseController {
   public async getCount(@requestParam('collection') collection: string): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.count(collection);
-      const apiResponse = new APIResponse({ count });
+      const apiResponse = APIResponse.fromSingleResult({ count });
       apiResponse.meta['collection'] = collection;
       return apiResponse;
     } catch (err) {
@@ -31,7 +31,7 @@ export class AnalyticsController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.countByMonthToDate(collection);
-      const apiResponse = new APIResponse({ count });
+      const apiResponse = APIResponse.fromSingleResult({ count });
       apiResponse.meta['collection'] = collection;
       return apiResponse;
     } catch (err) {
@@ -46,7 +46,7 @@ export class AnalyticsController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.countByDate(collection, date);
-      const apiResponse = new APIResponse({ count });
+      const apiResponse = APIResponse.fromSingleResult({ count });
       apiResponse.meta['collection'] = collection;
       return apiResponse;
     } catch (err) {
@@ -62,7 +62,7 @@ export class AnalyticsController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.countByDateRange(collection, start, end);
-      const apiResponse = new APIResponse({ count });
+      const apiResponse = APIResponse.fromSingleResult({ count });
       apiResponse.meta['collection'] = collection;
       return apiResponse;
     } catch (err) {
@@ -77,7 +77,7 @@ export class AnalyticsController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.countByRollingHours(collection, hours);
-      const apiResponse = new APIResponse({ count });
+      const apiResponse = APIResponse.fromSingleResult({ count });
       apiResponse.meta['collection'] = collection;
       return apiResponse;
     } catch (err) {
@@ -92,7 +92,7 @@ export class AnalyticsController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.countByRollingDays(collection, days);
-      const apiResponse = new APIResponse({ count });
+      const apiResponse = APIResponse.fromSingleResult({ count });
       apiResponse.meta['collection'] = collection;
       return apiResponse;
     } catch (err) {
@@ -110,7 +110,7 @@ export class AnalyticsController extends BaseController {
         collection,
         APIQuery.fromRequest(req)
       );
-      const apiResponse = new APIResponse({ count });
+      const apiResponse = APIResponse.fromSingleResult({ count });
       apiResponse.meta['collection'] = collection;
       return apiResponse;
     } catch (err) {
@@ -128,7 +128,7 @@ export class AnalyticsController extends BaseController {
         collection,
         APIQuery.fromRequest(req)
       );
-      const apiResponse = new APIResponse({ count });
+      const apiResponse = APIResponse.fromSingleResult({ count });
       apiResponse.meta['collection'] = collection;
       return apiResponse;
     } catch (err) {

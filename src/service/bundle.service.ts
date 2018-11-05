@@ -13,15 +13,18 @@ export class BundleService {
   }
 
   public getBundles(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    apiQuery.exludeFields('content.entries');
+    apiQuery.fields = {
+      'content.entries': 0,
+    };
     return this.bundleRepository.find(apiQuery);
   }
 
   public getBundle(bundleId: string): Promise<Bundle> {
     const apiQuery = new APIQuery();
     apiQuery.query = { bundleId };
-    apiQuery.exludeFields('content.entries');
-    console.log(apiQuery.fields);
+    apiQuery.fields = {
+      'content.entries': 0,
+    };
     return this.bundleRepository.findOne(apiQuery);
   }
 }

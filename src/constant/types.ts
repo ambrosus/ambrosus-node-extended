@@ -24,6 +24,7 @@ export const TYPE: any = {
   OrganizationService: Symbol.for('OrganizationService'),
 
   AccountRepository: Symbol.for('AccountRepository'),
+  AccountDetailRepository: Symbol.for('AccountDetailRepository'),
   AssetRepository: Symbol.for('AssetRepository'),
   EventRepository: Symbol.for('EventRepository'),
   BundleRepository: Symbol.for('BundleRepository'),
