@@ -428,12 +428,176 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Update Account Detail",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"fullName\": \"Mystery Man\",\n\t\"email\": \"test@test.com\",\n\t\"timeZone\": \"Asia/Tokyo\",\n\t\"token\": \"eyJpZERhdGEiOnsiY3JlYXRlZEJ5IjoiMHgyQTUyMTM5ZGUxMjNjOWZhMjY1QzIwNjc3MmQxNjA2ZTMyNkNDMDQ0IiwidmFsaWRVbnRpbCI6MTYwMDAwMDAwMH0sInNpZ25hdHVyZSI6IjB4YTU5MTE3ODMwZjdhY2M4MjIwMjZkMjMwNWIyYjJmOGNhMTIyOWIzMTNmNDFjMjVkZDM3YjhhNjhlNmIwZDViZDYwNzc2NjVkYWI3NWQ4Yjg0ZjUxODQ2ODAzMGI2YjAzMTg5NGNmODQxYzNjNjJmY2I5MTJiMjlhZjgyMGY0ZDkxYyJ9\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/account/detail/0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"account",
+								"detail",
+								"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account Detail Secret",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"test@test.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/account/detail/secret?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"account",
+								"detail",
+								"secret"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"test@test.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/account/detail/0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"account",
+								"detail",
+								"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account Permissions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"test@test.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/account/permissions/0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"account",
+								"permissions",
+								"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
-		},
-		{
-			"name": "Account Detail",
-			"item": []
 		},
 		{
 			"name": "Asset",
@@ -1301,7 +1465,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"search\": \"chocolate\",\n\t\"limit\": 10\n}\n"
+							"raw": "{\n\t\t\"query\": [{\n\t\t\"field\": \"content.data.type\",\n\t\t\"value\": \"ambrosus.asset.info\",\n\t\t\"operator\": \"equal\"\n\t}],\n\t\"search\": \"cow\"\n}\n"
 						},
 						"url": {
 							"raw": "{{url}}/event/search",
