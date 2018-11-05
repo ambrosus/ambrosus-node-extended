@@ -14,7 +14,7 @@ import {
 import web3 = require('web3');
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { APIQuery, APIResponse, AccountDetail } from '../model';
+import { APIQuery, APIResponse, AccountDetail, APIResponseMeta } from '../model';
 import { AccountService } from '../service/account.service';
 import { BaseController } from './base.controller';
 
@@ -51,6 +51,23 @@ export class AccountController extends BaseController {
   }
 
   @httpGet(
+    '/permissions/:address',
+    param('address').custom(value => web3.utils.isAddress(value)),
+    MIDDLEWARE.ValidateRequest
+  )
+  public async getAccountPermissions(
+    @requestParam('address') address: string
+  ): Promise<APIResponse> {
+    try {
+      const result = await this.accountService.getAccountPermissions(address);
+      const apiResponse = APIResponse.fromSingleResult(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
+    }
+  }
+
+  @httpGet(
     '/exists/:address',
     param('address').custom(value => web3.utils.isAddress(value)),
     MIDDLEWARE.ValidateRequest
@@ -62,6 +79,7 @@ export class AccountController extends BaseController {
     try {
       const result = await this.accountService.getAccountExists(address);
       const apiResponse = new APIResponse();
+      apiResponse.meta = new APIResponseMeta(200);
       apiResponse.meta.exists = result;
       return apiResponse;
     } catch (err) {

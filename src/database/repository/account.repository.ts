@@ -39,6 +39,20 @@ export class AccountRepository extends BaseRepository<Account> {
     return this.findOne(apiQuery);
   }
 
+  public getPermissions(apiQuery: APIQuery, accessLevel: number): Promise<Account> {
+    apiQuery.query = {
+      ...apiQuery.query,
+      ...{
+        accessLevel: { $lte: accessLevel },
+      },
+    };
+    apiQuery.fields = {
+      eventId: 1,
+      'permissions': 1,
+    };
+    return this.findOne(apiQuery);
+  }
+
   public getAccountForAuthorization(apiQuery: APIQuery): Promise<Account> {
     return super.findOne(apiQuery);
   }

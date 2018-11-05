@@ -33,6 +33,11 @@ export class AccountService {
     return this.accountRepository.queryAccount(apiQuery, this.user.accessLevel);
   }
 
+  public getAccountPermissions(address: string): Promise<Account> {
+    const apiQuery = new APIQuery({ address });
+    return this.accountRepository.getPermissions(apiQuery, this.user.accessLevel);
+  }
+
   public getAccountForAuth(address: string): Promise<Account> {
     const apiQuery = new APIQuery({ address });
     return this.accountRepository.getAccountForAuthorization(apiQuery);

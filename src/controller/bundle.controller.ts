@@ -4,7 +4,7 @@ import { inject } from 'inversify';
 import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { APIQuery, APIResponse } from '../model';
+import { APIQuery, APIResponse, APIResponseMeta } from '../model';
 import { BundleService } from '../service/bundle.service';
 import { BaseController } from './base.controller';
 
@@ -41,6 +41,7 @@ export class BundleController extends BaseController {
     try {
       const result = await this.bundleService.getBundleExists(bundleId);
       const apiResponse = new APIResponse();
+      apiResponse.meta = new APIResponseMeta(200);
       apiResponse.meta.exists = result;
       return apiResponse;
     } catch (err) {

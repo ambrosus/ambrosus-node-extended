@@ -3,7 +3,7 @@ import { inject } from 'inversify';
 import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { APIQuery, APIResponse } from '../model';
+import { APIQuery, APIResponse, APIResponseMeta } from '../model';
 import { AssetService } from '../service/asset.service';
 import { BaseController } from './base.controller';
 
@@ -40,6 +40,7 @@ export class AssetController extends BaseController {
     try {
       const result = await this.assetService.getAssetExists(assetId);
       const apiResponse = new APIResponse();
+      apiResponse.meta = new APIResponseMeta(200);
       apiResponse.meta.exists = result;
       return apiResponse;
     } catch (err) {
