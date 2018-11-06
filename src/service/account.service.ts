@@ -9,6 +9,7 @@ import {
   UserPrincipal,
   AccountDetail,
   NotFoundError,
+  PermissionError,
 } from '../model';
 
 @injectable()
@@ -24,41 +25,54 @@ export class AccountService {
     return this.accountRepository.existsOR({ address }, 'address');
   }
 
-  public getAccounts(query: APIQuery): Promise<MongoPagedResult> {
-    return this.accountRepository.queryAccounts(query, this.user.accessLevel);
+  public getAccounts(apiQuery: APIQuery): Promise<MongoPagedResult> {
+    if (!this.user.hasPermission('super_account') && !this.user.hasPermission('manage_accounts')) {
+      throw new PermissionError('You account has insufficient permissions to perform this task');
+    }
+    return this.accountRepository.getAccounts(
+      apiQuery,
+      this.user.organizationId,
+      this.user.accessLevel,
+      this.user.isSuperAdmin
+    );
   }
 
   public getAccount(address: string): Promise<Account> {
+    if (!this.user.hasPermission('super_account') && !this.user.hasPermission('manage_accounts')) {
+      throw new PermissionError('You account has insufficient permissions to perform this task');
+    }
     const apiQuery = new APIQuery({ address });
-    return this.accountRepository.queryAccount(apiQuery, this.user.accessLevel);
+    return this.accountRepository.getAccount(
+      apiQuery,
+      this.user.organizationId,
+      this.user.accessLevel,
+      this.user.isSuperAdmin
+    );
   }
 
-  public getAccountPermissions(address: string): Promise<Account> {
+  public async updateAccountDetail(
+    address: string,
+    accountDetail: AccountDetail
+  ): Promise<Account> {
     const apiQuery = new APIQuery({ address });
-    return this.accountRepository.getPermissions(apiQuery, this.user.accessLevel);
+
+    // First check if the current user can access this account
+    const currentAccount = await this.getAccount(address);
+    if (!currentAccount) {
+      throw new PermissionError('You account has insufficient permissions to perform this task');
+    }
+
+    // Update accountDetail collection
+    accountDetail.setMutationTimestamp(this.user.address);
+    await this.accountDetailRepository.update(apiQuery, accountDetail, true);
+
+    // Finally return the account and accountDetail document joined
+    return this.getAccount(address);
   }
 
   public getAccountForAuth(address: string): Promise<Account> {
     const apiQuery = new APIQuery({ address });
     return this.accountRepository.getAccountForAuthorization(apiQuery);
-  }
-
-  public async getAccountDetail(address: string): Promise<AccountDetail> {
-    if (!(await this.getAccountExists(address))) {
-      throw new NotFoundError('Account not found');
-    }
-
-    const apiQuery = new APIQuery({ address });
-    return this.accountDetailRepository.findOneOrCreate(apiQuery, this.user.account.address);
-  }
-
-  public updateAccountDetail(
-    address: string,
-    accountDetail: AccountDetail
-  ): Promise<AccountDetail> {
-    const apiQuery = new APIQuery({ address });
-    accountDetail.setMutationTimestamp(this.user.address);
-    return this.accountDetailRepository.update(apiQuery, accountDetail, true);
   }
 
   public getAccountEncryptedToken(email: string): Promise<AccountDetail> {

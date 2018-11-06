@@ -52,4 +52,12 @@ export class User implements IUser {
   get accessLevel(): number {
     return this.account.accessLevel;
   }
+
+  get organizationId(): number {
+    return this.account.organization;
+  }
+
+  get isSuperAdmin(): boolean {
+    return this.hasPermission('super_account');
+  }
 }

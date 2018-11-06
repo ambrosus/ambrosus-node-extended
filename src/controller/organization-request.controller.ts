@@ -8,13 +8,13 @@ import { APIQuery, APIResponse, APIResponseMeta, OrganizationRequest } from '../
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
 
-@controller('/organization/request', MIDDLEWARE.Authorized)
+@controller('/organization/request')
 export class OrganizationRequestController extends BaseController {
   constructor(@inject(TYPE.OrganizationService) private organizationService: OrganizationService) {
     super();
   }
 
-  @httpGet('/', MIDDLEWARE.NodeAdmin)
+  @httpGet('/', MIDDLEWARE.Authorized, MIDDLEWARE.NodeAdmin)
   public async getOrganizationReguests(req: Request): Promise<APIResponse> {
     try {
       const result = await this.organizationService.getOrganizationRequests(
@@ -27,7 +27,7 @@ export class OrganizationRequestController extends BaseController {
     }
   }
 
-  @httpGet('/:address', MIDDLEWARE.NodeAdmin)
+  @httpGet('/:address', MIDDLEWARE.Authorized, MIDDLEWARE.NodeAdmin)
   public async getOrganizationReguest(
     @requestParam('address') address: string
   ): Promise<APIResponse> {

@@ -88,7 +88,19 @@ export class BaseRepository<T> {
   // TODO: Add accessLevel to aggregates
   // FIXME: Aggregation isn't returning the correct data with paging b/c a limit to the pipeline.
   public async aggregatePaging(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    this.logger.debug(`aggregate ${this.collectionName}: ${JSON.stringify(apiQuery)}`);
+    this.logger.debug(
+      `
+      ################ aggregatePaging ################
+      collection      ${this.collectionName}:
+      aggregation:    ${JSON.stringify(apiQuery.query)}
+      paginatedField: ${this.paginatedField}
+      sortAscending:  ${this.paginatedAscending}
+      limit:          ${apiQuery.limit}
+      next:           ${apiQuery.next}
+      previous:       ${apiQuery.previous}
+      `
+    );
+
     const result = await MongoPaging.aggregate(this.collection, {
       aggregation: apiQuery.query,
       paginatedField: this.paginatedField,
@@ -100,9 +112,15 @@ export class BaseRepository<T> {
     return result;
   }
 
-  // TODO: Add accessLevel to aggregates
   public async aggregate(apiQuery: APIQuery): Promise<any> {
-    this.logger.debug(`aggregate ${this.collectionName}: ${JSON.stringify(apiQuery)}`);
+    this.logger.debug(
+      `
+      ################ aggregate ################
+      collection      ${this.collectionName}:
+      aggregation:    ${JSON.stringify(apiQuery.query)}
+      `
+    );
+
     const result = await this.collection.aggregate(apiQuery.query).toArray();
     return result;
   }

@@ -30,6 +30,7 @@ export class APIResponse implements IAPIResponse {
       apiResponse.meta = new APIResponseMeta(200);
     } else {
       apiResponse.meta = new APIResponseMeta(400);
+      apiResponse.meta.message = 'No results found';
     }
     return apiResponse;
   }

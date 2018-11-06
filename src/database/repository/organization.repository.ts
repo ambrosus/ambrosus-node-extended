@@ -10,6 +10,12 @@ import { join } from 'path';
 export class OrganizationRepository extends BaseRepository<Organization> {
   constructor(@inject(TYPE.DBClient) protected client: DBClient) {
     super(client, 'organization');
+
+    client.events.on('dbConnected', () => {
+      client.db.collection('organization').createIndex({ organizationId: 1 }, { unique: true });
+      client.db.collection('organization').createIndex({ title: 1 }, { unique: true });
+      client.db.collection('organization').createIndex({ owner: 1 }, { unique: true });
+    });
   }
 
   get paginatedField(): string {

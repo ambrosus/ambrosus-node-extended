@@ -33,13 +33,16 @@ export class OrganizationController extends BaseController {
   }
 
   @httpGet(
-    '/:owner',
-    param('owner').custom(value => web3.utils.isAddress(value)),
-    MIDDLEWARE.ValidateRequest
+    '/:organizationId',
+    param('organizationId')
+      .isInt()
+      .toInt()
   )
-  public async getOrganization(@requestParam('owner') owner: string): Promise<APIResponse> {
+  public async getOrganization(
+    @requestParam('organizationId') organizationId: number
+  ): Promise<APIResponse> {
     try {
-      const result = await this.organizationService.getOrganization(owner);
+      const result = await this.organizationService.getOrganization(organizationId);
       const apiResponse = APIResponse.fromSingleResult(result);
       return apiResponse;
     } catch (err) {

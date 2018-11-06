@@ -19,10 +19,4 @@ export class Account implements IAccount {
   public permissions: string[];
   public registeredOn: number;
   public registeredBy: string;
-
-  constructor(address: string, accessLevel: number, organization: number) {
-    this.address = address;
-    this.accessLevel = accessLevel;
-    this.organization = organization;
-  }
 }

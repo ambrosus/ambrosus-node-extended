@@ -52,7 +52,7 @@ export class APIQuery implements IAPIQuery {
       },
       next: {
         in: ['body', 'query'],
-        isBase64: true,
+        // isBase64: true,
         optional: true,
         errorMessage: 'Next must be a base64 encoded string',
       },
@@ -77,5 +77,12 @@ export class APIQuery implements IAPIQuery {
   constructor(_query?: object) {
     this.query = _query;
     this.fields = {};
+  }
+
+  public addToQuery(addition: object) {
+    this.query = {
+      ...this.query,
+      ...addition,
+    };
   }
 }

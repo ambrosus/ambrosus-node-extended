@@ -29,8 +29,8 @@ export class OrganizationService {
     return this.organizationRepository.find(apiQuery);
   }
 
-  public getOrganization(owner: string): Promise<Organization> {
-    const apiQuery = new APIQuery({ owner });
+  public getOrganization(organizationId: number): Promise<Organization> {
+    const apiQuery = new APIQuery({ organizationId });
     return this.organizationRepository.findOne(apiQuery);
   }
 

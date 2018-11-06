@@ -8,13 +8,13 @@ import {
   httpPut,
   request,
   requestParam,
-  requestBody,
   response,
+  requestBody
 } from 'inversify-express-utils';
 import web3 = require('web3');
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { APIQuery, APIResponse, AccountDetail, APIResponseMeta } from '../model';
+import { APIQuery, APIResponse, APIResponseMeta, AccountDetail } from '../model';
 import { AccountService } from '../service/account.service';
 import { BaseController } from './base.controller';
 
@@ -56,17 +56,22 @@ export class AccountController extends BaseController {
     }
   }
 
-  @httpGet(
-    '/permissions/:address',
+  @httpPut(
+    '/:address',
     param('address').custom(value => web3.utils.isAddress(value)),
+    ...checkSchema(AccountDetail.validationSchema()),
     MIDDLEWARE.ValidateRequest,
     MIDDLEWARE.Authorized
   )
-  public async getAccountPermissions(
-    @requestParam('address') address: string
+  public async updateAccountDetail(
+    @requestParam('address') address: string,
+    @request() req: Request
   ): Promise<APIResponse> {
     try {
-      const result = await this.accountService.getAccountPermissions(address);
+      const result = await this.accountService.updateAccountDetail(
+        address,
+        AccountDetail.fromRequestForUpdate(req)
+      );
       const apiResponse = APIResponse.fromSingleResult(result);
       return apiResponse;
     } catch (err) {
@@ -75,10 +80,9 @@ export class AccountController extends BaseController {
   }
 
   @httpGet(
-    '/exists/:address',
+    '/:address/exists',
     param('address').custom(value => web3.utils.isAddress(value)),
-    MIDDLEWARE.ValidateRequest,
-    MIDDLEWARE.Authorized
+    MIDDLEWARE.ValidateRequest
   )
   public async getAccountExists(
     @requestParam('address') address: string,
@@ -111,48 +115,8 @@ export class AccountController extends BaseController {
     }
   }
 
-  @httpGet(
-    '/detail/:address',
-    param('address').custom(value => web3.utils.isAddress(value)),
-    MIDDLEWARE.Authorized,
-    MIDDLEWARE.NodeAdmin
-  )
-  public async getAccountDetail(@requestParam('address') address: string): Promise<APIResponse> {
-    try {
-      const result = await this.accountService.getAccountDetail(address);
-      const apiResponse = APIResponse.fromSingleResult(result);
-      return apiResponse;
-    } catch (err) {
-      return super.handleError(err);
-    }
-  }
-
-  @httpPut(
-    '/detail/:address',
-    param('address').custom(value => web3.utils.isAddress(value)),
-    ...checkSchema(AccountDetail.validationSchema()),
-    MIDDLEWARE.ValidateRequest,
-    MIDDLEWARE.Authorized,
-    MIDDLEWARE.NodeAdmin
-  )
-  public async updateAccountDetail(
-    @requestParam('address') address: string,
-    @request() req: Request
-  ): Promise<APIResponse> {
-    try {
-      const result = await this.accountService.updateAccountDetail(
-        address,
-        AccountDetail.fromRequestForUpdate(req)
-      );
-      const apiResponse = APIResponse.fromSingleResult(result);
-      return apiResponse;
-    } catch (err) {
-      return super.handleError(err);
-    }
-  }
-
   @httpPost(
-    '/detail/secret',
+    '/secret',
     body('email')
       .isEmail()
       .normalizeEmail(),

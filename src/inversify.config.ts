@@ -44,6 +44,36 @@ iocContainer
   .to(DBClient)
   .inSingletonScope();
 
+// repositories
+iocContainer
+  .bind<AccountRepository>(TYPE.AccountRepository)
+  .to(AccountRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<AccountDetailRepository>(TYPE.AccountDetailRepository)
+  .to(AccountDetailRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<AssetRepository>(TYPE.AssetRepository)
+  .to(AssetRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<EventRepository>(TYPE.EventRepository)
+  .to(EventRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<BundleRepository>(TYPE.BundleRepository)
+  .to(BundleRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<OrganizationRepository>(TYPE.OrganizationRepository)
+  .to(OrganizationRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<OrganizationRequestRepository>(TYPE.OrganizationRequestRepository)
+  .to(OrganizationRequestRepository)
+  .inSingletonScope();
+
 // controllers
 iocContainer.bind<RootController>(TYPE.RootController).to(RootController);
 iocContainer.bind<GraphQLController>(TYPE.GraphQLController).to(GraphQLController);
@@ -67,19 +97,6 @@ iocContainer.bind<EventService>(TYPE.EventService).to(EventService);
 iocContainer.bind<BundleService>(TYPE.BundleService).to(BundleService);
 iocContainer.bind<AnalyticsService>(TYPE.AnalyticsService).to(AnalyticsService);
 iocContainer.bind<OrganizationService>(TYPE.OrganizationService).to(OrganizationService);
-
-// repositories
-iocContainer.bind<AccountRepository>(TYPE.AccountRepository).to(AccountRepository);
-iocContainer
-  .bind<AccountDetailRepository>(TYPE.AccountDetailRepository)
-  .to(AccountDetailRepository);
-iocContainer.bind<AssetRepository>(TYPE.AssetRepository).to(AssetRepository);
-iocContainer.bind<EventRepository>(TYPE.EventRepository).to(EventRepository);
-iocContainer.bind<BundleRepository>(TYPE.BundleRepository).to(BundleRepository);
-iocContainer.bind<OrganizationRepository>(TYPE.OrganizationRepository).to(OrganizationRepository);
-iocContainer
-  .bind<OrganizationRequestRepository>(TYPE.OrganizationRequestRepository)
-  .to(OrganizationRequestRepository);
 
 // middleware
 iocContainer.bind<AuthorizedMiddleware>(MIDDLEWARE.Authorized).to(AuthorizedMiddleware);

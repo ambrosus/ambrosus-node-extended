@@ -3,6 +3,7 @@ import { ValidationSchema } from 'express-validator/check';
 import { injectable } from 'inversify';
 
 import { getTimestamp } from '../../util/helpers';
+import { Account } from './account.model';
 
 export interface IAccountDetail {
   _id: string;
@@ -21,7 +22,7 @@ export interface IAccountDetail {
 }
 
 @injectable()
-export class AccountDetail implements IAccountDetail {
+export class AccountDetail extends Account implements IAccountDetail {
   public static fromRequestForUpdate(req: Request) {
     const accountDetail = new AccountDetail();
     accountDetail.fullName = req.body.fullName;
