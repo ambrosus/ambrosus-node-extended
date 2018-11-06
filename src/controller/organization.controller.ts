@@ -7,12 +7,11 @@ import {
   httpPost,
   request,
   requestParam,
-  response,
   httpPut,
 } from 'inversify-express-utils';
 import web3 = require('web3');
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { APIQuery, APIResponse, OrganizationRequest, Organization } from '../model';
+import { APIQuery, APIResponse, APIResponseMeta, Organization } from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
 
@@ -58,6 +57,7 @@ export class OrganizationController extends BaseController {
     try {
       const apiResponse = new APIResponse();
       await this.organizationService.createOrganization(Organization.fromRequest(req));
+      apiResponse.meta = new APIResponseMeta(200);
       apiResponse.meta.message = 'Organization created';
       return apiResponse;
     } catch (err) {
@@ -82,50 +82,6 @@ export class OrganizationController extends BaseController {
         Organization.fromRequestForUpdate(req)
       );
       const apiResponse = APIResponse.fromSingleResult(result);
-      return apiResponse;
-    } catch (err) {
-      return super.handleError(err);
-    }
-  }
-
-  @httpGet('/request', MIDDLEWARE.NodeAdmin)
-  public async getOrganizationReguests(req: Request): Promise<APIResponse> {
-    try {
-      const result = await this.organizationService.getOrganizationRequests(
-        APIQuery.fromRequest(req)
-      );
-      const apiResponse = APIResponse.fromMongoPagedResult(result);
-      return apiResponse;
-    } catch (err) {
-      return super.handleError(err);
-    }
-  }
-
-  @httpGet('/request/:address', MIDDLEWARE.NodeAdmin)
-  public async getOrganizationReguest(
-    @requestParam('address') address: string
-  ): Promise<APIResponse> {
-    try {
-      const result = await this.organizationService.getOrganizationRequest(address);
-      const apiResponse = APIResponse.fromSingleResult(result);
-      return apiResponse;
-    } catch (err) {
-      return super.handleError(err);
-    }
-  }
-
-  @httpPost(
-    '/request',
-    ...checkSchema(OrganizationRequest.validationSchema()),
-    MIDDLEWARE.ValidateRequest
-  )
-  public async createOrganizationReguest(@request() req: Request): Promise<APIResponse> {
-    try {
-      const apiResponse = new APIResponse();
-      await this.organizationService.createOrganizationRequest(
-        OrganizationRequest.fromRequest(req)
-      );
-      apiResponse.meta.message = 'Organization request created';
       return apiResponse;
     } catch (err) {
       return super.handleError(err);

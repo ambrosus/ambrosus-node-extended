@@ -11,6 +11,7 @@ export const TYPE: any = {
   EventController: Symbol.for('EventController'),
   BundleController: Symbol.for('BundleController'),
   OrganizationController: Symbol.for('OrganizationController'),
+  OrganizationRequestController: Symbol.for('OrganizationRequestController'),
 
   AuthService: Symbol.for('AuthService'),
   Web3Service: Symbol.for('Web3Service'),

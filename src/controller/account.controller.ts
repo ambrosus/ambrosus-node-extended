@@ -18,13 +18,18 @@ import { APIQuery, APIResponse, AccountDetail, APIResponseMeta } from '../model'
 import { AccountService } from '../service/account.service';
 import { BaseController } from './base.controller';
 
-@controller('/account', MIDDLEWARE.Authorized)
+@controller('/account')
 export class AccountController extends BaseController {
   constructor(@inject(TYPE.AccountService) private accountService: AccountService) {
     super();
   }
 
-  @httpGet('/', ...checkSchema(APIQuery.validationSchema()), MIDDLEWARE.ValidateRequest)
+  @httpGet(
+    '/',
+    ...checkSchema(APIQuery.validationSchema()),
+    MIDDLEWARE.ValidateRequest,
+    MIDDLEWARE.Authorized
+  )
   public async getAccounts(@request() req: Request): Promise<APIResponse> {
     try {
       const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
@@ -38,7 +43,8 @@ export class AccountController extends BaseController {
   @httpGet(
     '/:address',
     param('address').custom(value => web3.utils.isAddress(value)),
-    MIDDLEWARE.ValidateRequest
+    MIDDLEWARE.ValidateRequest,
+    MIDDLEWARE.Authorized
   )
   public async getAccount(@requestParam('address') address: string): Promise<APIResponse> {
     try {
@@ -53,7 +59,8 @@ export class AccountController extends BaseController {
   @httpGet(
     '/permissions/:address',
     param('address').custom(value => web3.utils.isAddress(value)),
-    MIDDLEWARE.ValidateRequest
+    MIDDLEWARE.ValidateRequest,
+    MIDDLEWARE.Authorized
   )
   public async getAccountPermissions(
     @requestParam('address') address: string
@@ -70,7 +77,8 @@ export class AccountController extends BaseController {
   @httpGet(
     '/exists/:address',
     param('address').custom(value => web3.utils.isAddress(value)),
-    MIDDLEWARE.ValidateRequest
+    MIDDLEWARE.ValidateRequest,
+    MIDDLEWARE.Authorized
   )
   public async getAccountExists(
     @requestParam('address') address: string,
@@ -87,7 +95,12 @@ export class AccountController extends BaseController {
     }
   }
 
-  @httpPost('/query', ...checkSchema(APIQuery.validationSchema()), MIDDLEWARE.ValidateRequest)
+  @httpPost(
+    '/query',
+    ...checkSchema(APIQuery.validationSchema()),
+    MIDDLEWARE.ValidateRequest,
+    MIDDLEWARE.Authorized
+  )
   public async queryAccounts(req: Request): Promise<APIResponse> {
     try {
       const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
@@ -101,6 +114,7 @@ export class AccountController extends BaseController {
   @httpGet(
     '/detail/:address',
     param('address').custom(value => web3.utils.isAddress(value)),
+    MIDDLEWARE.Authorized,
     MIDDLEWARE.NodeAdmin
   )
   public async getAccountDetail(@requestParam('address') address: string): Promise<APIResponse> {
@@ -118,6 +132,7 @@ export class AccountController extends BaseController {
     param('address').custom(value => web3.utils.isAddress(value)),
     ...checkSchema(AccountDetail.validationSchema()),
     MIDDLEWARE.ValidateRequest,
+    MIDDLEWARE.Authorized,
     MIDDLEWARE.NodeAdmin
   )
   public async updateAccountDetail(
