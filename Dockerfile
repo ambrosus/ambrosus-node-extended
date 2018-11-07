@@ -1,8 +1,8 @@
-FROM node:10
+FROM node:10-alpine
 
 WORKDIR /app
 
-COPY ./package.json /app/
+COPY ./package.json ./package-lock.json /app/
 
 RUN npm install
 
@@ -10,5 +10,4 @@ COPY . ./
 
 RUN npm run build
 
-CMD npm run start:server
-
+CMD ["npm", "run", "start:server"]
