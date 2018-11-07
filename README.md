@@ -72,15 +72,7 @@ Get events
 curl -X GET http://localhost:3000/event 
 ```
 
-Get bundle
-```
-curl -X GET http://localhost:3000/bundle/<bundleId>
-
-```
-Get bundles
-```
-curl -X GET http://localhost:3000/bundle 
-```
+For a full list of endpoints see the Postman collection 
 
 ### Pagination
 
@@ -242,25 +234,7 @@ Count of events created month to date
 curl -X GET  http://localhost:3000/event/mtd
 ```
 
-Count of events created on a sepcific date
-```
-curl -X GET  http://localhost:3000/event/count/date/20181001
-```
-
-Count of events created within a date range
-```
-curl -X GET  http://localhost:3000/event/count/daterange/20180901/20181031
-```
-
-Count of events created from now to a number of hours back
-```
-curl -X GET  http://localhost:3000/event/count/rolling/hours/10
-```
-
-Count of events created from now to a number of days back
-```
-curl -X GET  http://localhost:3000/event/count/rolling/days/10
-```
+For a full list of endpoints see the Postman collection 
 
 ## Usage (GraphQL)
 
@@ -290,28 +264,28 @@ Get events
 curl -X POST http://localhost:3000/gql \
   -H 'Content-Type: application/json' \
   -d '{
-    "query": "{
-		getEvents {
-			results {
-				eventId
-				content {
-					signature
-					idData {
-						assetId
-						createdBy
-						accessLevel
-						timestamp
-					} 
-				}
+"query": "{
+	getEvents {
+		results {
+			eventId
+			content {
+				signature
+				idData {
+					assetId
+					createdBy
+					accessLevel
+					timestamp
+				} 
 			}
-			hasNext
-			next
-			hasPrevious
-			previous
 		}
-	}",
-    "variables": null,
-    "operationName": null
+		hasNext
+		next
+		hasPrevious
+		previous
+	}
+}",
+"variables": null,
+"operationName": null
 }'
 
 ```
@@ -321,22 +295,22 @@ Get events, limiting results
 curl -X POST http://localhost:3000/gql \
   -H 'Content-Type: application/json' \
   -d '{
-    "query": "{
-		getEvents {
-			results {
-				eventId
-				content {
-					idData {
-						assetId
-					} 
-				}
+"query": "{
+	getEvents {
+		results {
+			eventId
+			content {
+				idData {
+					assetId
+				} 
 			}
-			hasNext
-			next
 		}
-	}",
-    "variables": null,
-    "operationName": null
+		hasNext
+		next
+	}
+}",
+"variables": null,
+"operationName": null
 }'
 
 ```
