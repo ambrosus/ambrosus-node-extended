@@ -118,8 +118,7 @@ export class AccountController extends BaseController {
   @httpPost(
     '/secret',
     body('email')
-      .isEmail()
-      .normalizeEmail(),
+      .isEmail(),
     MIDDLEWARE.ValidateRequest
   )
   public async getEncryptedSecretByEmail(@requestBody() acc: AccountDetail): Promise<APIResponse> {

@@ -49,7 +49,6 @@ export class OrganizationRequest implements IOrganizationRequest {
         optional: false,
         errorMessage: 'Invalid email format',
         isEmail: true,
-        normalizeEmail: true,
       },
       message: {
         in: ['body'],

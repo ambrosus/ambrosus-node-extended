@@ -44,10 +44,9 @@ export class AccountDetail extends Account implements IAccountDetail {
       },
       email: {
         in: ['body'],
-        optional: false,
+        optional: true,
         errorMessage: 'Invalid email format',
         isEmail: true,
-        normalizeEmail: true,
       },
       token: {
         in: ['body'],
