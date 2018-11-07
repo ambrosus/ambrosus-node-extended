@@ -31,7 +31,6 @@ export class AccountRepository extends BaseRepository<Account> {
     superAdmin: boolean = false
   ): Promise<MongoPagedResult> {
     const pipeline = this.getJoinPipeline(apiQuery.query, organizationId, accessLevel, superAdmin);
-
     apiQuery.query = pipeline;
     return super.aggregatePaging(apiQuery);
   }
@@ -45,7 +44,6 @@ export class AccountRepository extends BaseRepository<Account> {
     const pipeline = this.getJoinPipeline(apiQuery.query, organizationId, accessLevel, superAdmin);
     apiQuery.query = pipeline;
     const result = await super.aggregate(apiQuery);
-    console.log(result);
     if (result && result.length === 1) {
       return result[0];
     }
@@ -72,7 +70,7 @@ export class AccountRepository extends BaseRepository<Account> {
     });
     let matches = {};
     if (superAdmin) {
-      matches = match;
+      matches = match || {};
     } else {
       matches = {
         ...match,
@@ -92,6 +90,8 @@ export class AccountRepository extends BaseRepository<Account> {
       $project: {
         accountDetail: 0,
         token: 0,
+        modifiedBy: 0,
+        modifiedOn: 0,
       },
     });
 

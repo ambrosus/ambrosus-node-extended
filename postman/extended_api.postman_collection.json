@@ -70,13 +70,13 @@
 							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0xc0ffee254729296a45a3885639AC7E10F9d54979\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
 						},
 						"url": {
-							"raw": "{{url}}/organization/0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8?",
+							"raw": "{{url}}/organization/27?",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"organization",
-								"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8"
+								"27"
 							],
 							"query": [
 								{
@@ -354,13 +354,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/account/0x779CC6cAF66d2A6Ad684257417BAECAf0cA1856d",
+							"raw": "{{url}}/account/0x01a36fB9e4A7FD60A716E4455dD9fC2f06B3199F",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"account",
-								"0x779CC6cAF66d2A6Ad684257417BAECAf0cA1856d"
+								"0x01a36fB9e4A7FD60A716E4455dD9fC2f06B3199F"
 							]
 						}
 					},
@@ -382,14 +382,97 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/account/exists/0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8",
+							"raw": "{{url}}/account/0xbaEE2FC002b2B8E1fDde3CdEdAee5cA98640c04f/exists",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"account",
-								"exists",
-								"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8"
+								"0xbaEE2FC002b2B8E1fDde3CdEdAee5cA98640c04f",
+								"exists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Account",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"fullName\": \"Number 5\",\n\t\"email\": \"test@test241234.com\",\n\t\"timeZone\": \"Asia/Tokyo\",\n\t\"token\": \"eyJpZERhdGEiOnsiY3JlYXRlZEJ5IjoiMHgyQTUyMTM5ZGUxMjNjOWZhMjY1QzIwNjc3MmQxNjA2ZTMyNkNDMDQ0IiwidmFsaWRVbnRpbCI6MTYwMDAwMDAwMH0sInNpZ25hdHVyZSI6IjB4YTU5MTE3ODMwZjdhY2M4MjIwMjZkMjMwNWIyYjJmOGNhMTIyOWIzMTNmNDFjMjVkZDM3YjhhNjhlNmIwZDViZDYwNzc2NjVkYWI3NWQ4Yjg0ZjUxODQ2ODAzMGI2YjAzMTg5NGNmODQxYzNjNjJmY2I5MTJiMjlhZjgyMGY0ZDkxYyJ9\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/account/0x1dD983d148cF394338501a309521551913622909?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"account",
+								"0x1dD983d148cF394338501a309521551913622909"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account Secret",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"test@test.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/account/secret?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"account",
+								"secret"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
 							]
 						}
 					},
@@ -424,174 +507,6 @@
 							"path": [
 								"account",
 								"query"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Update Account Detail",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "AMB_TOKEN {{userToken}}"
-							},
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"fullName\": \"Mystery Man\",\n\t\"email\": \"test@test.com\",\n\t\"timeZone\": \"Asia/Tokyo\",\n\t\"token\": \"eyJpZERhdGEiOnsiY3JlYXRlZEJ5IjoiMHgyQTUyMTM5ZGUxMjNjOWZhMjY1QzIwNjc3MmQxNjA2ZTMyNkNDMDQ0IiwidmFsaWRVbnRpbCI6MTYwMDAwMDAwMH0sInNpZ25hdHVyZSI6IjB4YTU5MTE3ODMwZjdhY2M4MjIwMjZkMjMwNWIyYjJmOGNhMTIyOWIzMTNmNDFjMjVkZDM3YjhhNjhlNmIwZDViZDYwNzc2NjVkYWI3NWQ4Yjg0ZjUxODQ2ODAzMGI2YjAzMTg5NGNmODQxYzNjNjJmY2I5MTJiMjlhZjgyMGY0ZDkxYyJ9\"\n}"
-						},
-						"url": {
-							"raw": "{{url}}/account/detail/0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8?",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"account",
-								"detail",
-								"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "5",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Account Detail Secret",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "AMB_TOKEN {{userToken}}"
-							},
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"email\": \"test@test.com\"\n}"
-						},
-						"url": {
-							"raw": "{{url}}/account/detail/secret?",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"account",
-								"detail",
-								"secret"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "5",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Account Detail",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "AMB_TOKEN {{userToken}}"
-							},
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"email\": \"test@test.com\"\n}"
-						},
-						"url": {
-							"raw": "{{url}}/account/detail/0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8?",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"account",
-								"detail",
-								"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "5",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Account Permissions",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "AMB_TOKEN {{userToken}}"
-							},
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"email\": \"test@test.com\"\n}"
-						},
-						"url": {
-							"raw": "{{url}}/account/permissions/0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8?",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"account",
-								"permissions",
-								"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8"
-							],
-							"query": [
-								{
-									"key": "limit",
-									"value": "5",
-									"disabled": true
-								}
 							]
 						}
 					},
