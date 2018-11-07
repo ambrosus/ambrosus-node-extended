@@ -3,7 +3,7 @@ import { inject } from 'inversify';
 import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { APIQuery, APIResponse } from '../model';
+import { APIQuery, APIResponse, APIResponseMeta } from '../model';
 import { EventService } from '../service/event.service';
 import { getParamValue } from '../util/helpers';
 import { BaseController } from './base.controller';
@@ -29,7 +29,7 @@ export class EventController extends BaseController {
   public async getEvent(@requestParam('eventId') eventId: string): Promise<APIResponse> {
     try {
       const result = await this.eventService.getEvent(eventId);
-      const apiResponse = new APIResponse(result);
+      const apiResponse = APIResponse.fromSingleResult(result);
       return apiResponse;
     } catch (err) {
       return super.handleError(err);
@@ -41,6 +41,7 @@ export class EventController extends BaseController {
     try {
       const result = await this.eventService.getEventExists(eventId);
       const apiResponse = new APIResponse();
+      apiResponse.meta = new APIResponseMeta(200);
       apiResponse.meta.exists = result;
       return apiResponse;
     } catch (err) {
@@ -59,6 +60,28 @@ export class EventController extends BaseController {
     }
   }
 
+  @httpPost('/search')
+  public async search(req: Request): Promise<APIResponse> {
+    try {
+      const result = await this.eventService.searchEvents(APIQuery.fromRequest(req));
+      const apiResponse = APIResponse.fromMongoPagedResult(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
+    }
+  }
+
+  @httpGet('/lookup/types')
+  public async getEventTypes(req: Request): Promise<APIResponse> {
+    try {
+      const result = await this.eventService.getEventDistinctField('content.data.type');
+      const apiResponse = APIResponse.fromSingleResult(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
+    }
+  }
+
   @httpPost('/latest/type')
   public async latestType(req: Request): Promise<APIResponse> {
     try {
@@ -69,7 +92,7 @@ export class EventController extends BaseController {
         type,
         APIQuery.fromRequest(req)
       );
-      const apiResponse = new APIResponse(result);
+      const apiResponse = APIResponse.fromSingleResult(result);
       return apiResponse;
     } catch (err) {
       return super.handleError(err);

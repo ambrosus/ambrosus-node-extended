@@ -9,10 +9,12 @@ import { BundleController } from './controller/bundle.controller';
 import { EventController } from './controller/event.controller';
 import { GraphQLController } from './controller/graphql.controller';
 import { OrganizationController } from './controller/organization.controller';
+import { OrganizationRequestController } from './controller/organization-request.controller';
 import { RootController } from './controller/root.controller';
 import { DBClient } from './database/client';
 import {
   AccountRepository,
+  AccountDetailRepository,
   AssetRepository,
   BundleRepository,
   EventRepository,
@@ -42,6 +44,36 @@ iocContainer
   .to(DBClient)
   .inSingletonScope();
 
+// repositories
+iocContainer
+  .bind<AccountRepository>(TYPE.AccountRepository)
+  .to(AccountRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<AccountDetailRepository>(TYPE.AccountDetailRepository)
+  .to(AccountDetailRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<AssetRepository>(TYPE.AssetRepository)
+  .to(AssetRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<EventRepository>(TYPE.EventRepository)
+  .to(EventRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<BundleRepository>(TYPE.BundleRepository)
+  .to(BundleRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<OrganizationRepository>(TYPE.OrganizationRepository)
+  .to(OrganizationRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<OrganizationRequestRepository>(TYPE.OrganizationRequestRepository)
+  .to(OrganizationRequestRepository)
+  .inSingletonScope();
+
 // controllers
 iocContainer.bind<RootController>(TYPE.RootController).to(RootController);
 iocContainer.bind<GraphQLController>(TYPE.GraphQLController).to(GraphQLController);
@@ -51,6 +83,9 @@ iocContainer.bind<EventController>(TYPE.EventController).to(EventController);
 iocContainer.bind<BundleController>(TYPE.BundleController).to(BundleController);
 iocContainer.bind<AnalyticsController>(TYPE.AnalyticsController).to(AnalyticsController);
 iocContainer.bind<OrganizationController>(TYPE.OrganizationController).to(OrganizationController);
+iocContainer
+  .bind<OrganizationRequestController>(TYPE.OrganizationRequestController)
+  .to(OrganizationRequestController);
 
 // services
 iocContainer.bind<AuthService>(TYPE.AuthService).to(AuthService);
@@ -62,16 +97,6 @@ iocContainer.bind<EventService>(TYPE.EventService).to(EventService);
 iocContainer.bind<BundleService>(TYPE.BundleService).to(BundleService);
 iocContainer.bind<AnalyticsService>(TYPE.AnalyticsService).to(AnalyticsService);
 iocContainer.bind<OrganizationService>(TYPE.OrganizationService).to(OrganizationService);
-
-// repositories
-iocContainer.bind<AccountRepository>(TYPE.AccountRepository).to(AccountRepository);
-iocContainer.bind<AssetRepository>(TYPE.AssetRepository).to(AssetRepository);
-iocContainer.bind<EventRepository>(TYPE.EventRepository).to(EventRepository);
-iocContainer.bind<BundleRepository>(TYPE.BundleRepository).to(BundleRepository);
-iocContainer.bind<OrganizationRepository>(TYPE.OrganizationRepository).to(OrganizationRepository);
-iocContainer
-  .bind<OrganizationRequestRepository>(TYPE.OrganizationRequestRepository)
-  .to(OrganizationRequestRepository);
 
 // middleware
 iocContainer.bind<AuthorizedMiddleware>(MIDDLEWARE.Authorized).to(AuthorizedMiddleware);

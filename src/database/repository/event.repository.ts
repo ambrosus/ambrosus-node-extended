@@ -11,28 +11,54 @@ export class EventRepository extends BaseRepository<Event> {
     super(client, 'events');
   }
 
-  get timestampField(): any {
+  get paginatedField(): string {
     return 'content.idData.timestamp';
   }
 
-  public queryEvents(apiQuery: APIQuery, accessLevel: number): Promise<MongoPagedResult> {
-    apiQuery.query = {
-      ...apiQuery.query,
-      ...{
-        accessLevel: { $lte: accessLevel },
-      },
-    };
-    return this.find(apiQuery);
+  get paginatedAscending(): boolean {
+    return false;
   }
 
   public queryEvent(apiQuery: APIQuery, accessLevel: number): Promise<Event> {
     apiQuery.query = {
       ...apiQuery.query,
       ...{
-        accessLevel: { $lte: accessLevel },
+        'content.idData.accessLevel': { $lte: accessLevel },
       },
     };
+    apiQuery.fields = {
+      repository: 0,
+    };
     return this.findOne(apiQuery);
+  }
+
+  public queryEvents(apiQuery: APIQuery, accessLevel: number): Promise<MongoPagedResult> {
+    apiQuery.query = {
+      ...apiQuery.query,
+      ...{
+        'content.idData.accessLevel': { $lte: accessLevel },
+      },
+    };
+    apiQuery.fields = {
+      repository: 0,
+    };
+    return this.find(apiQuery);
+  }
+
+  public searchEvents(apiQuery: APIQuery, accessLevel: number): Promise<MongoPagedResult> {
+    apiQuery.query = {
+      ...apiQuery.query,
+      ...{
+        'content.idData.accessLevel': { $lte: accessLevel },
+      },
+    };
+    apiQuery.fields = {
+      eventId: 1,
+      'content.idData': 1,
+      'content.data': 1,
+      'content.metadata': 1,
+    };
+    return this.search(apiQuery);
   }
 
   public assetEventsOfType(
@@ -66,7 +92,9 @@ export class EventRepository extends BaseRepository<Event> {
         },
       },
     ];
-
+    apiQuery.fields = {
+      repository: 0,
+    };
     return super.aggregate(apiQuery);
   }
 }

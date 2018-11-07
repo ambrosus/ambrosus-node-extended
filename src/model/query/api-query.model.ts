@@ -16,6 +16,8 @@ export interface IAPIPagination {
 
 export interface IAPIQuery {
   query: object;
+  search: string;
+  fields: object;
 }
 
 @injectable()
@@ -30,6 +32,7 @@ export class APIQuery implements IAPIQuery {
       }
       apiQuery.query = getMongoFilter(query);
     }
+    apiQuery.search = getParamValue(req, 'search');
     apiQuery.limit = +getParamValue(req, 'limit') || +config.paginationDefault;
     apiQuery.next = getParamValue(req, 'next');
     apiQuery.previous = getParamValue(req, 'previous');
@@ -49,7 +52,7 @@ export class APIQuery implements IAPIQuery {
       },
       next: {
         in: ['body', 'query'],
-        isBase64: true,
+        // isBase64: true,
         optional: true,
         errorMessage: 'Next must be a base64 encoded string',
       },
@@ -63,34 +66,23 @@ export class APIQuery implements IAPIQuery {
   }
 
   public query;
+  public search;
   public limit: number;
   public next: string;
   public previous: string;
   public paginationField: string;
   public sortAscending: boolean;
-  private blacklistedFields: object;
+  public fields: object;
 
   constructor(_query?: object) {
     this.query = _query;
-    this.blacklistedFields = {
-      _id: 0,
-      repository: 0,
-    };
+    this.fields = {};
   }
 
-  public exludeFields(...fields) {
-    this.blacklistedFields = {
-      ...[this.blacklistedFields],
-      fields,
+  public addToQuery(addition: object) {
+    this.query = {
+      ...this.query,
+      ...addition,
     };
-  }
-
-  get projection(): any {
-    return {
-      projection: this.fields,
-    };
-  }
-  get fields(): any {
-    return this.blacklistedFields;
   }
 }

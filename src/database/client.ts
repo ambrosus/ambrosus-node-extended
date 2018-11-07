@@ -4,11 +4,14 @@ import * as querystring from 'querystring';
 
 import { config } from '../config';
 import { ConnectionError } from '../model';
+import { EventEmitter } from 'events';
 
 @injectable()
 export class DBClient {
   public db: Db;
+  public events: EventEmitter;
   constructor() {
+    this.events = new EventEmitter();
     const connStr = this.getConnUrl();
     const dbName = config.db.dbName;
 
@@ -20,6 +23,7 @@ export class DBClient {
           throw new ConnectionError(err.message);
         }
         this.db = client.db(dbName);
+        this.events.emit('dbConnected');
       }
     );
   }

@@ -2,14 +2,14 @@ import { NextFunction, Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
 import { interfaces } from 'inversify-express-utils';
 
-import { TYPE } from '../../constant';
-import { ILogger } from '../../interface/logger.inferface';
-import { Account, UserPrincipal } from '../../model';
-import { AccountService } from '../../service/account.service';
-import { AuthService } from '../../service/auth.service';
+import { TYPE } from '../constant';
+import { ILogger } from '../interface/logger.inferface';
+import { Account, UserPrincipal } from '../model';
+import { AccountService } from '../service/account.service';
+import { AuthService } from '../service/auth.service';
 
 @injectable()
-export class AMBAuthProvider implements interfaces.AuthProvider {
+export class AMBAccountProvider implements interfaces.AuthProvider {
   @inject(TYPE.AuthService)
   private authService: AuthService;
 

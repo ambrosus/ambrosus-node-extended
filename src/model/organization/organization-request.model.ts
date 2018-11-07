@@ -2,7 +2,6 @@ import { Request } from 'express';
 import { ValidationSchema } from 'express-validator/check';
 import { injectable } from 'inversify';
 import web3 = require('web3');
-
 import { getTimestamp } from '../../util/helpers';
 
 export interface IOrganizationRequest {
@@ -17,13 +16,12 @@ export interface IOrganizationRequest {
 @injectable()
 export class OrganizationRequest implements IOrganizationRequest {
   public static fromRequest(req: Request) {
-    const orgRequest = new OrganizationRequest();
-    orgRequest.title = req.body.title;
-    orgRequest.address = req.body.address;
-    orgRequest.email = req.body.email;
-    orgRequest.message = req.body.message;
-    orgRequest.createdOn = getTimestamp();
-    return orgRequest;
+    const organizationRequest = new OrganizationRequest();
+    organizationRequest.title = req.body.title;
+    organizationRequest.address = req.body.address;
+    organizationRequest.email = req.body.email;
+    organizationRequest.message = req.body.message;
+    return organizationRequest;
   }
 
   public static validationSchema(): ValidationSchema {
@@ -70,4 +68,8 @@ export class OrganizationRequest implements IOrganizationRequest {
   public email: string;
   public message: string;
   public createdOn: number;
+
+  public setCreationTimestamp() {
+    this.createdOn = getTimestamp();
+  }
 }

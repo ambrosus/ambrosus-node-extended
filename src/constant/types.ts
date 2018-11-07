@@ -11,6 +11,7 @@ export const TYPE: any = {
   EventController: Symbol.for('EventController'),
   BundleController: Symbol.for('BundleController'),
   OrganizationController: Symbol.for('OrganizationController'),
+  OrganizationRequestController: Symbol.for('OrganizationRequestController'),
 
   AuthService: Symbol.for('AuthService'),
   Web3Service: Symbol.for('Web3Service'),
@@ -24,6 +25,7 @@ export const TYPE: any = {
   OrganizationService: Symbol.for('OrganizationService'),
 
   AccountRepository: Symbol.for('AccountRepository'),
+  AccountDetailRepository: Symbol.for('AccountDetailRepository'),
   AssetRepository: Symbol.for('AssetRepository'),
   EventRepository: Symbol.for('EventRepository'),
   BundleRepository: Symbol.for('BundleRepository'),

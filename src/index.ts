@@ -9,14 +9,14 @@ import { config } from './config';
 import { TYPE } from './constant/types';
 import { iocContainer } from './inversify.config';
 import { LoggerService } from './service/logger.service';
-import { AMBAuthProvider } from './util/auth/auth.provider';
+import { AMBAccountProvider } from './middleware/amb-account.provider';
 
 const server = new InversifyExpressServer(
   iocContainer,
   undefined,
   undefined,
   undefined,
-  AMBAuthProvider
+  AMBAccountProvider
 );
 
 const logger = iocContainer.get<LoggerService>(TYPE.LoggerService);

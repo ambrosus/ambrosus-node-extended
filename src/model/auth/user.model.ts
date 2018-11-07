@@ -1,6 +1,7 @@
 import { injectable } from 'inversify';
 
 import { Account, AuthToken } from '../';
+import { timestampToDateString } from '../../util/helpers/datetime.helper';
 
 export interface IUser {
   account: Account;
@@ -28,6 +29,18 @@ export class User implements IUser {
     return this.account && this.authToken && this.authToken.isValid();
   }
 
+  public notAuthorizedReason(): string {
+    if (!this.account) {
+      return 'Account not found';
+    }
+    if (!this.authToken) {
+      return 'Token not found';
+    }
+    if (!this.authToken.isValid()) {
+      return `Token expired on: ${timestampToDateString(this.authToken.validUntil)}`;
+    }
+  }
+
   public isValid() {
     return this.account && this.authToken && this.authToken.isValid();
   }
@@ -38,5 +51,13 @@ export class User implements IUser {
 
   get accessLevel(): number {
     return this.account.accessLevel;
+  }
+
+  get organizationId(): number {
+    return this.account.organization;
+  }
+
+  get isSuperAdmin(): boolean {
+    return this.hasPermission('super_account');
   }
 }
