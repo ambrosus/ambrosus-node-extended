@@ -66,7 +66,6 @@ export class AccountController extends BaseController {
     @requestParam('address') address: string,
     req: Request
   ): Promise<APIResponse> {
-    console.log(req.body);
     try {
       const result = await this.accountService.updateAccountDetail(
         address,

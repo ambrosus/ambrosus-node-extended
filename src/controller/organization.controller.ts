@@ -87,19 +87,18 @@ export class OrganizationController extends BaseController {
   }
 
   @httpPut(
-    '/:owner',
-    param('owner').custom(value => web3.utils.isAddress(value)),
-    ...checkSchema(Organization.validationSchema()),
-    MIDDLEWARE.ValidateRequest,
-    MIDDLEWARE.NodeAdmin
+    '/:organizationId',
+    param('organizationId')
+      .isInt()
+      .toInt()
   )
   public async updateOrganization(
-    @requestParam('owner') owner: string,
+    @requestParam('organizationId') organizationId: number,
     @request() req: Request
   ): Promise<APIResponse> {
     try {
       const result = await this.organizationService.updateOrganization(
-        owner,
+        organizationId,
         Organization.fromRequestForUpdate(req)
       );
       const apiResponse = APIResponse.fromSingleResult(result);

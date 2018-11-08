@@ -6,6 +6,7 @@ import { TYPE } from '../constant';
 import { ILogger } from '../interface/logger.inferface';
 import { Account, UserPrincipal, AuthToken } from '../model';
 import { AccountService } from '../service/account.service';
+import { OrganizationService } from '../service/organization.service';
 import { AuthService } from '../service/auth.service';
 import * as Sentry from '@sentry/node';
 
@@ -16,6 +17,9 @@ export class AMBAccountProvider implements interfaces.AuthProvider {
 
   @inject(TYPE.AccountService)
   private accountService: AccountService;
+
+  @inject(TYPE.OrganizationService)
+  private organizationService: OrganizationService;
 
   @inject(TYPE.LoggerService)
   private logger: ILogger;
@@ -32,9 +36,13 @@ export class AMBAccountProvider implements interfaces.AuthProvider {
     try {
       const authToken: AuthToken = this.authService.getAuthToken(authorization);
       const account: Account = await this.accountService.getAccountForAuth(authToken.createdBy);
+      const organization = await this.organizationService.getOrganizationForAuth(
+        account.organization
+      );
+
       user.authToken = authToken;
       user.account = account;
-      this.logger.debug(`auth succeeded`);
+      user.organization = organization;
 
       Sentry.configureScope(scope => {
         scope.setUser({
@@ -43,6 +51,7 @@ export class AMBAccountProvider implements interfaces.AuthProvider {
           valid: authToken.validUntil,
         });
       });
+      this.logger.debug(`auth succeeded`);
     } catch (error) {
       this.logger.warn(`auth failed: ${error}`);
     }

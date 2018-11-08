@@ -4,7 +4,6 @@ import { TYPE } from '../../constant';
 import { Account, APIQuery, MongoPagedResult, UserPrincipal, AmbrosusError } from '../../model';
 import { DBClient } from '../client';
 import { BaseRepository } from './base.repository';
-import { NoUndefinedVariables } from 'graphql/validation/rules/NoUndefinedVariables';
 
 @injectable()
 export class AccountRepository extends BaseRepository<Account> {

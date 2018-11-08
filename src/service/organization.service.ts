@@ -32,7 +32,7 @@ export class OrganizationService {
     return this.organizationRepository.find(apiQuery);
   }
 
-  public getOrganization(organizationId: number): Promise<Organization> {
+  public async getOrganization(organizationId: number): Promise<Organization> {
     if (
       !this.user.hasPermission(Permission.super_account) &&
       organizationId !== this.user.organizationId
@@ -41,6 +41,11 @@ export class OrganizationService {
     }
     const apiQuery = new APIQuery({ organizationId });
     return this.organizationRepository.findOne(apiQuery);
+  }
+
+  public getOrganizationForAuth(organizationId: number): Promise<Organization> {
+    const apiQuery = new APIQuery({ organizationId });
+    return this.organizationRepository.getOrganizationForAuthorization(apiQuery);
   }
 
   public getOrganizationAccounts(organizationId: number): Promise<MongoPagedResult> {
@@ -86,11 +91,20 @@ export class OrganizationService {
   }
 
   public async updateOrganization(
-    owner: string,
+    organizationId: number,
     organization: Organization
   ): Promise<Organization> {
+    console.log(this.user.organizationId);
+    console.log(organizationId);
+    console.log(this.user.isOrganizationOwner());
+    if (
+      !this.user.hasPermission(Permission.super_account) &&
+      !(this.user.organizationId === organizationId && this.user.isOrganizationOwner())
+    ) {
+      throw new PermissionError('You account has insufficient permissions to perform this task');
+    }
     organization.setMutationTimestamp(this.user.address);
-    const apiQuery = new APIQuery({ owner });
+    const apiQuery = new APIQuery({ organizationId });
     return this.organizationRepository.update(apiQuery, organization);
   }
 
