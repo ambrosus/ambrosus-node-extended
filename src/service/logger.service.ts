@@ -3,6 +3,7 @@ import { createLogger, format, transports } from 'winston';
 
 import { config } from '../config';
 import { ILogger } from '../interface/logger.inferface';
+import * as Sentry from '@sentry/node';
 
 @injectable()
 export class LoggerService implements ILogger {
@@ -43,6 +44,11 @@ export class LoggerService implements ILogger {
 
   public error(message: string, ...args: any[]): void {
     this.log('error', message, args);
+  }
+
+  public captureError(error: Error, ...args: any[]): void {
+    Sentry.captureException(error);
+    this.log('error', error.message, args);
   }
 
   private log(level: string, message: string, args: any[]): void {

@@ -5,6 +5,7 @@ import * as querystring from 'querystring';
 import { config } from '../config';
 import { ConnectionError } from '../model';
 import { EventEmitter } from 'events';
+import * as Sentry from '@sentry/node';
 
 @injectable()
 export class DBClient {
@@ -20,6 +21,7 @@ export class DBClient {
       { useNewUrlParser: true },
       (err, client) => {
         if (err) {
+          Sentry.captureException(err);
           throw new ConnectionError(err.message);
         }
         this.db = client.db(dbName);

@@ -12,10 +12,12 @@ import { LoggerService } from './service/logger.service';
 import { AMBAccountProvider } from './middleware/amb-account.provider';
 import * as Sentry from '@sentry/node';
 
-Sentry.init({
-  dsn: config.sentryDsn,
-  environment: process.env.NODE_ENV,
-});
+if (config.sentryDsn) {
+  Sentry.init({
+    dsn: config.sentryDsn,
+    environment: process.env.NODE_ENV,
+  });
+}
 
 const server = new InversifyExpressServer(
   iocContainer,
@@ -36,6 +38,7 @@ server.setConfig(app => {
       extended: true,
     })
   );
+  app.use(bodyParser.json());
   app.use(morgan('combined'));
   app.use(cors());
   app.use((req, res, next) => {
