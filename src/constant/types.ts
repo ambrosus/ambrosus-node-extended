@@ -13,6 +13,9 @@ export const TYPE: any = {
   OrganizationController: Symbol.for('OrganizationController'),
   OrganizationRequestController: Symbol.for('OrganizationRequestController'),
 
+  MetricController: Symbol.for('MetricController'),
+  HealthController: Symbol.for('HealthController'),
+
   AuthService: Symbol.for('AuthService'),
   Web3Service: Symbol.for('Web3Service'),
   LoggerService: Symbol.for('LoggerService'),

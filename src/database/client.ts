@@ -11,6 +11,7 @@ import * as Sentry from '@sentry/node';
 export class DBClient {
   public db: Db;
   public events: EventEmitter;
+  public connected: boolean;
   constructor() {
     this.events = new EventEmitter();
     const connStr = this.getConnUrl();
@@ -25,6 +26,7 @@ export class DBClient {
           throw new ConnectionError(err.message);
         }
         this.db = client.db(dbName);
+        this.connected = true;
         this.events.emit('dbConnected');
       }
     );

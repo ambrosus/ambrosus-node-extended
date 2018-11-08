@@ -4,6 +4,6 @@ import { controller, httpGet } from 'inversify-express-utils';
 export class RootController {
   @httpGet('/')
   public get(): string {
-    return '<h1>Welcome to the Hermes extended API</h1>';
+    return '<h1>Hermes extended API</h1>';
   }
 }
