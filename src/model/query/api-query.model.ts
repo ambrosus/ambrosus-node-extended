@@ -77,6 +77,7 @@ export class APIQuery implements IAPIQuery {
   constructor(_query?: object) {
     this.query = _query;
     this.fields = {};
+    this.limit = +config.paginationDefault;
   }
 
   public addToQuery(addition: object) {

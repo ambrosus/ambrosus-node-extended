@@ -2,6 +2,7 @@ import { injectable } from 'inversify';
 
 import { Account, AuthToken } from '../';
 import { timestampToDateString } from '../../util/helpers/datetime.helper';
+import * as _ from 'lodash';
 
 export interface IUser {
   account: Account;
@@ -23,6 +24,10 @@ export class User implements IUser {
 
   public hasPermission(permission: string): boolean {
     return this.account.permissions.indexOf(permission) > -1;
+  }
+
+  public hasAnyPermission(...permission): boolean {
+    return _.intersection(this.account.permissions, permission).length > 0;
   }
 
   public isAuthorized(): boolean {

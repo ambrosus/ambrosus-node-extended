@@ -50,6 +50,24 @@ export class OrganizationController extends BaseController {
     }
   }
 
+  @httpGet(
+    '/:organizationId/accounts',
+    param('organizationId')
+      .isInt()
+      .toInt()
+  )
+  public async getOrganizationAccounts(
+    @requestParam('organizationId') organizationId: number
+  ): Promise<APIResponse> {
+    try {
+      const result = await this.organizationService.getOrganizationAccounts(organizationId);
+      const apiResponse = APIResponse.fromMongoPagedResult(result);
+      return apiResponse;
+    } catch (err) {
+      return super.handleError(err);
+    }
+  }
+
   @httpPost(
     '/',
     ...checkSchema(Organization.validationSchema()),

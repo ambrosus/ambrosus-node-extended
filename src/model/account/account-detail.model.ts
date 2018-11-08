@@ -29,6 +29,7 @@ export class AccountDetail extends Account implements IAccountDetail {
     accountDetail.email = req.body.email;
     accountDetail.token = req.body.token;
     accountDetail.timeZone = req.body.timeZone;
+    console.log(accountDetail);
     return accountDetail;
   }
 
