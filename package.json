@@ -21,6 +21,7 @@
     "src"
   ],
   "dependencies": {
+    "@sentry/node": "^4.3.0",
     "base64url": "^3.0.0",
     "chai": "^4.2.0",
     "cors": "^2.8.4",

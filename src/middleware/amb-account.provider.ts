@@ -4,9 +4,10 @@ import { interfaces } from 'inversify-express-utils';
 
 import { TYPE } from '../constant';
 import { ILogger } from '../interface/logger.inferface';
-import { Account, UserPrincipal } from '../model';
+import { Account, UserPrincipal, AuthToken } from '../model';
 import { AccountService } from '../service/account.service';
 import { AuthService } from '../service/auth.service';
+import * as Sentry from '@sentry/node';
 
 @injectable()
 export class AMBAccountProvider implements interfaces.AuthProvider {
@@ -29,11 +30,19 @@ export class AMBAccountProvider implements interfaces.AuthProvider {
 
     const user = new UserPrincipal();
     try {
-      const authToken = this.authService.getAuthToken(authorization);
+      const authToken: AuthToken = this.authService.getAuthToken(authorization);
       const account: Account = await this.accountService.getAccountForAuth(authToken.createdBy);
       user.authToken = authToken;
       user.account = account;
       this.logger.debug(`auth succeeded`);
+
+      Sentry.configureScope(scope => {
+        scope.setUser({
+          organizationId: account.organization,
+          address: account.address,
+          valid: authToken.validUntil,
+        });
+      });
     } catch (error) {
       this.logger.warn(`auth failed: ${error}`);
     }

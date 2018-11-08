@@ -47,6 +47,7 @@ export class AccountController extends BaseController {
     MIDDLEWARE.Authorized
   )
   public async getAccount(@requestParam('address') address: string): Promise<APIResponse> {
+    throw new Error('Broke!');
     try {
       const result = await this.accountService.getAccount(address);
       const apiResponse = APIResponse.fromSingleResult(result);
