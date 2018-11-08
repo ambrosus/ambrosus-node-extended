@@ -10,6 +10,14 @@ import { TYPE } from './constant/types';
 import { iocContainer } from './inversify.config';
 import { LoggerService } from './service/logger.service';
 import { AMBAccountProvider } from './middleware/amb-account.provider';
+import * as Sentry from '@sentry/node';
+
+if (config.sentryDsn) {
+  Sentry.init({
+    dsn: config.sentryDsn,
+    environment: process.env.NODE_ENV,
+  });
+}
 
 const server = new InversifyExpressServer(
   iocContainer,
@@ -22,6 +30,8 @@ const server = new InversifyExpressServer(
 const logger = iocContainer.get<LoggerService>(TYPE.LoggerService);
 
 server.setConfig(app => {
+  app.use(Sentry.Handlers.requestHandler());
+  app.use(Sentry.Handlers.errorHandler());
   app.set('json spaces', 2);
   app.use(
     bodyParser.urlencoded({
@@ -29,7 +39,6 @@ server.setConfig(app => {
     })
   );
   app.use(bodyParser.json());
-  // app.use(helmet());
   app.use(morgan('combined'));
   app.use(cors());
   app.use((req, res, next) => {
@@ -41,8 +50,8 @@ server.setConfig(app => {
 
 server.setErrorConfig(app => {
   app.use((err, req, res, next) => {
-    // Unhandled exceptions only
-    res.status(500).send({ reason: err.message });
+    Sentry.captureException(err);
+    res.status(500).send({ error: err.message });
   });
 });
 

@@ -11,6 +11,8 @@ import { GraphQLController } from './controller/graphql.controller';
 import { OrganizationController } from './controller/organization.controller';
 import { OrganizationRequestController } from './controller/organization-request.controller';
 import { RootController } from './controller/root.controller';
+import { MetricController } from './controller/metric.controller';
+import { HealthController } from './controller/health.controller';
 import { DBClient } from './database/client';
 import {
   AccountRepository,
@@ -86,6 +88,9 @@ iocContainer.bind<OrganizationController>(TYPE.OrganizationController).to(Organi
 iocContainer
   .bind<OrganizationRequestController>(TYPE.OrganizationRequestController)
   .to(OrganizationRequestController);
+
+iocContainer.bind<MetricController>(TYPE.MetricController).to(MetricController);
+iocContainer.bind<HealthController>(TYPE.HealthController).to(HealthController);
 
 // services
 iocContainer.bind<AuthService>(TYPE.AuthService).to(AuthService);

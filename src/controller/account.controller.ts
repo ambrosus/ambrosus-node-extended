@@ -8,7 +8,6 @@ import {
   httpPut,
   request,
   requestParam,
-  response,
   requestBody
 } from 'inversify-express-utils';
 import web3 = require('web3');
@@ -58,14 +57,14 @@ export class AccountController extends BaseController {
 
   @httpPut(
     '/:address',
-    param('address').custom(value => web3.utils.isAddress(value)),
+        param('address').custom(value => web3.utils.isAddress(value)),
     ...checkSchema(AccountDetail.validationSchema()),
     MIDDLEWARE.ValidateRequest,
     MIDDLEWARE.Authorized
   )
   public async updateAccountDetail(
     @requestParam('address') address: string,
-    @request() req: Request
+    req: Request
   ): Promise<APIResponse> {
     try {
       const result = await this.accountService.updateAccountDetail(
@@ -85,8 +84,7 @@ export class AccountController extends BaseController {
     MIDDLEWARE.ValidateRequest
   )
   public async getAccountExists(
-    @requestParam('address') address: string,
-    @response() res: Response
+    @requestParam('address') address: string
   ): Promise<APIResponse> {
     try {
       const result = await this.accountService.getAccountExists(address);

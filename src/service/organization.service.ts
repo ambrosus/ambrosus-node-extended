@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 
-import { TYPE } from '../constant/types';
+import { TYPE, Permission } from '../constant/';
 import { OrganizationRepository, OrganizationRequestRepository } from '../database/repository';
 import {
   APIQuery,
@@ -10,9 +10,9 @@ import {
   Organization,
   OrganizationRequest,
   UserPrincipal,
+  PermissionError,
 } from '../model';
 import { AccountService } from '../service/account.service';
-import { assertWrappingType } from 'graphql';
 
 @injectable()
 export class OrganizationService {
@@ -26,24 +26,52 @@ export class OrganizationService {
   ) {}
 
   public getOrganizations(apiQuery: APIQuery): Promise<MongoPagedResult> {
+    if (!this.user.hasPermission(Permission.super_account)) {
+      throw new PermissionError('You account has insufficient permissions to perform this task');
+    }
     return this.organizationRepository.find(apiQuery);
   }
 
-  public getOrganization(organizationId: number): Promise<Organization> {
+  public async getOrganization(organizationId: number): Promise<Organization> {
+    if (
+      !this.user.hasPermission(Permission.super_account) &&
+      organizationId !== this.user.organizationId
+    ) {
+      throw new PermissionError('You account has insufficient permissions to perform this task');
+    }
     const apiQuery = new APIQuery({ organizationId });
     return this.organizationRepository.findOne(apiQuery);
   }
 
+  public getOrganizationForAuth(organizationId: number): Promise<Organization> {
+    const apiQuery = new APIQuery({ organizationId });
+    return this.organizationRepository.getOrganizationForAuthorization(apiQuery);
+  }
+
+  public getOrganizationAccounts(organizationId: number): Promise<MongoPagedResult> {
+    return this.accountService.getAccountsByOrganization(organizationId);
+  }
+
   public getOrganizationRequests(apiQuery: APIQuery): Promise<MongoPagedResult> {
+    if (!this.user.hasPermission(Permission.super_account)) {
+      throw new PermissionError('You account has insufficient permissions to perform this task');
+    }
     return this.organizationRequestRepository.find(apiQuery);
   }
 
   public getOrganizationRequest(address: string): Promise<OrganizationRequest> {
+    if (!this.user.hasPermission(Permission.super_account)) {
+      throw new PermissionError('You account has insufficient permissions to perform this task');
+    }
     const apiQuery = new APIQuery({ address });
     return this.organizationRequestRepository.findOne(apiQuery);
   }
 
   public async createOrganization(organization: Organization): Promise<any> {
+    if (!this.user.hasPermission(Permission.super_account)) {
+      throw new PermissionError('You account has insufficient permissions to perform this task');
+    }
+
     if (!(await this.accountService.getAccountExists(organization.owner))) {
       throw new NotFoundError('Organization owner must have an account');
     }
@@ -63,15 +91,28 @@ export class OrganizationService {
   }
 
   public async updateOrganization(
-    owner: string,
+    organizationId: number,
     organization: Organization
   ): Promise<Organization> {
+    console.log(this.user.organizationId);
+    console.log(organizationId);
+    console.log(this.user.isOrganizationOwner());
+    if (
+      !this.user.hasPermission(Permission.super_account) &&
+      !(this.user.organizationId === organizationId && this.user.isOrganizationOwner())
+    ) {
+      throw new PermissionError('You account has insufficient permissions to perform this task');
+    }
     organization.setMutationTimestamp(this.user.address);
-    const apiQuery = new APIQuery({ owner });
+    const apiQuery = new APIQuery({ organizationId });
     return this.organizationRepository.update(apiQuery, organization);
   }
 
   public async createOrganizationRequest(organizationRequest: OrganizationRequest): Promise<any> {
+    if (!this.user.hasPermission(Permission.super_account)) {
+      throw new PermissionError('You account has insufficient permissions to perform this task');
+    }
+
     if (
       await this.organizationRequestRepository.existsOR(
         organizationRequest,

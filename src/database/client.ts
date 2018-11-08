@@ -5,11 +5,13 @@ import * as querystring from 'querystring';
 import { config } from '../config';
 import { ConnectionError } from '../model';
 import { EventEmitter } from 'events';
+import * as Sentry from '@sentry/node';
 
 @injectable()
 export class DBClient {
   public db: Db;
   public events: EventEmitter;
+  public connected: boolean;
   constructor() {
     this.events = new EventEmitter();
     const connStr = this.getConnUrl();
@@ -20,9 +22,11 @@ export class DBClient {
       { useNewUrlParser: true },
       (err, client) => {
         if (err) {
+          Sentry.captureException(err);
           throw new ConnectionError(err.message);
         }
         this.db = client.db(dbName);
+        this.connected = true;
         this.events.emit('dbConnected');
       }
     );

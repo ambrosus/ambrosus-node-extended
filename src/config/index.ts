@@ -2,6 +2,7 @@ export const config: any = {
   port: process.env.PORT || 3000,
   paginationMax: process.env.PAGINATION_MAX || 50,
   paginationDefault: process.env.PAGINATION_DEFAULT || 10,
+  sentryDsn: process.env.SENTRY_DSN,
   db: {
     hosts: process.env.MONGO_HOSTS || 'localhost:27017',
     dbName: process.env.MONGO_DB_NAME || 'hermes',

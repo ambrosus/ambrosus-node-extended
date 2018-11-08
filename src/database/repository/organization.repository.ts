@@ -1,10 +1,9 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPE } from '../../constant';
-import { Organization } from '../../model';
+import { Organization, APIQuery } from '../../model';
 import { DBClient } from '../client';
 import { BaseRepository } from './base.repository';
-import { join } from 'path';
 
 @injectable()
 export class OrganizationRepository extends BaseRepository<Organization> {
@@ -24,6 +23,10 @@ export class OrganizationRepository extends BaseRepository<Organization> {
 
   get paginatedAscending(): boolean {
     return false;
+  }
+
+  public getOrganizationForAuthorization(apiQuery: APIQuery): Promise<Organization> {
+    return super.findOne(apiQuery);
   }
 
   public async getNewOrganizationIdentifier(): Promise<number> {

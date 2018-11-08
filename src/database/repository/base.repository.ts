@@ -9,6 +9,7 @@ import { ILogger } from '../../interface/logger.inferface';
 import { APIQuery, ConnectionError, MongoPagedResult } from '../../model';
 import { DBClient } from '../client';
 import { getTimestamp } from '../../util/helpers';
+import { RepositoryError } from '../../model/error/repository.error';
 
 @injectable()
 export class BaseRepository<T> {
@@ -51,9 +52,13 @@ export class BaseRepository<T> {
       item:          ${JSON.stringify(item)}
       `
     );
-
-    const result: InsertOneWriteOpResult = await this.collection.insertOne(item);
-    return !!result.result.ok;
+    try {
+      const result: InsertOneWriteOpResult = await this.collection.insertOne(item);
+      return !!result.result.ok;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
   }
 
   public async update(apiQuery: APIQuery, item: T, create: boolean = false): Promise<T> {
@@ -66,23 +71,34 @@ export class BaseRepository<T> {
       `
     );
 
-    const result = await this.collection.findOneAndUpdate(
-      apiQuery.query,
-      { $set: item },
-      {
-        returnOriginal: false,
-        upsert: create,
-      }
-    );
-    return result.value;
+    try {
+      const result = await this.collection.findOneAndUpdate(
+        apiQuery.query,
+        { $set: item },
+        {
+          returnOriginal: false,
+          upsert: create,
+        }
+      );
+      return result.value;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
   }
 
   public delete(id: string): Promise<boolean> {
     throw new Error('Method not implemented.');
   }
 
-  public count(query: object): Promise<number> {
-    return this.collection.countDocuments(query);
+  public async count(query: object): Promise<number> {
+    try {
+      const result = await this.collection.countDocuments(query);
+      return result;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
   }
 
   // TODO: Add accessLevel to aggregates
@@ -92,7 +108,7 @@ export class BaseRepository<T> {
       `
       ################ aggregatePaging ################
       collection      ${this.collectionName}:
-      aggregation:    ${JSON.stringify(apiQuery.query)}
+      aggregation:    ${JSON.stringify(apiQuery.query, null, 2)}
       paginatedField: ${this.paginatedField}
       sortAscending:  ${this.paginatedAscending}
       limit:          ${apiQuery.limit}
@@ -100,16 +116,20 @@ export class BaseRepository<T> {
       previous:       ${apiQuery.previous}
       `
     );
-
-    const result = await MongoPaging.aggregate(this.collection, {
-      aggregation: apiQuery.query,
-      paginatedField: this.paginatedField,
-      paginatedAscending: this.paginatedAscending,
-      limit: apiQuery.limit,
-      next: apiQuery.next,
-      previous: apiQuery.previous,
-    });
-    return result;
+    try {
+      const result = await MongoPaging.aggregate(this.collection, {
+        aggregation: apiQuery.query,
+        paginatedField: this.paginatedField,
+        paginatedAscending: this.paginatedAscending,
+        limit: apiQuery.limit,
+        next: apiQuery.next,
+        previous: apiQuery.previous,
+      });
+      return result;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
   }
 
   public async aggregate(apiQuery: APIQuery): Promise<any> {
@@ -117,25 +137,35 @@ export class BaseRepository<T> {
       `
       ################ aggregate ################
       collection      ${this.collectionName}:
-      aggregation:    ${JSON.stringify(apiQuery.query)}
+      aggregation:    ${JSON.stringify(apiQuery.query, null, 2)}
       `
     );
 
-    const result = await this.collection.aggregate(apiQuery.query).toArray();
-    return result;
+    try {
+      const result = await this.collection.aggregate(apiQuery.query).toArray();
+      return result;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
   }
 
   public async exists(apiQuery: APIQuery): Promise<boolean> {
     this.logger.debug(
       `exists for ${this.collectionName}:
-      ${JSON.stringify(apiQuery)}`
+      ${JSON.stringify(apiQuery, null, 2)}`
     );
-    const result = await this.collection
-      .find(apiQuery.query, { _id: 1 })
-      .limit(1)
-      .toArray();
+    try {
+      const result = await this.collection
+        .find(apiQuery.query, { _id: 1 })
+        .limit(1)
+        .toArray();
 
-    return result.length > 0;
+      return result.length > 0;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
   }
 
   public async existsOR(obj, ...fields): Promise<boolean> {
@@ -146,12 +176,17 @@ export class BaseRepository<T> {
       `existsOR for ${this.collectionName}:
       ${JSON.stringify(qor)}`
     );
-    const result = await this.collection
-      .find({ $or: qor }, { _id: 1 })
-      .limit(1)
-      .toArray();
+    try {
+      const result = await this.collection
+        .find({ $or: qor }, { _id: 1 })
+        .limit(1)
+        .toArray();
 
-    return result.length > 0;
+      return result.length > 0;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
   }
 
   public async distinct(field: string): Promise<any> {
@@ -162,8 +197,13 @@ export class BaseRepository<T> {
       field:          ${field}
       `
     );
-    const result = await this.collection.distinct(field);
-    return result;
+    try {
+      const result = await this.collection.distinct(field);
+      return result;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
   }
 
   public async search(apiQuery: APIQuery): Promise<MongoPagedResult> {
@@ -171,9 +211,9 @@ export class BaseRepository<T> {
       `
       ################ search ################
       collection      ${this.collectionName}:
-      search:         ${JSON.stringify(apiQuery.search)}
-      query:          ${JSON.stringify(apiQuery.query)}
-      fields:         ${JSON.stringify(apiQuery.fields)}
+      search:         ${JSON.stringify(apiQuery.search, null, 2)}
+      query:          ${JSON.stringify(apiQuery.query, null, 2)}
+      fields:         ${JSON.stringify(apiQuery.fields, null, 2)}
       paginatedField: ${this.paginatedField}
       sortAscending:  ${this.paginatedAscending}
       limit:          ${apiQuery.limit}
@@ -182,14 +222,19 @@ export class BaseRepository<T> {
       `
     );
 
-    const result = await MongoPaging.search(this.collection, apiQuery.search, {
-      query: apiQuery.query,
-      fields: apiQuery.fields,
-      limit: apiQuery.limit,
-      next: apiQuery.next,
-      previous: apiQuery.previous,
-    });
-    return result;
+    try {
+      const result = await MongoPaging.search(this.collection, apiQuery.search, {
+        query: apiQuery.query,
+        fields: apiQuery.fields,
+        limit: apiQuery.limit,
+        next: apiQuery.next,
+        previous: apiQuery.previous,
+      });
+      return result;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
   }
 
   public async find(apiQuery: APIQuery): Promise<MongoPagedResult> {
@@ -197,8 +242,8 @@ export class BaseRepository<T> {
       `
       ################ find ################
       collection      ${this.collectionName}:
-      query:          ${JSON.stringify(apiQuery.query)}
-      fields:         ${JSON.stringify(apiQuery.fields)}
+      query:          ${JSON.stringify(apiQuery.query, null, 2)}
+      fields:         ${JSON.stringify(apiQuery.fields, null, 2)}
       paginatedField: ${this.paginatedField}
       sortAscending:  ${this.paginatedAscending}
       limit:          ${apiQuery.limit}
@@ -207,16 +252,22 @@ export class BaseRepository<T> {
       `
     );
 
-    const result = await MongoPaging.find(this.collection, {
-      query: apiQuery.query,
-      fields: { projection: apiQuery.fields },
-      paginatedField: this.paginatedField,
-      sortAscending: this.paginatedAscending,
-      limit: apiQuery.limit,
-      next: apiQuery.next,
-      previous: apiQuery.previous,
-    });
-    return result;
+    try {
+      const result = await MongoPaging.find(this.collection, {
+        query: apiQuery.query,
+        fields: { projection: apiQuery.fields },
+        paginatedField: this.paginatedField,
+        sortAscending: this.paginatedAscending,
+        limit: apiQuery.limit,
+        next: apiQuery.next,
+        previous: apiQuery.previous,
+      });
+
+      return result;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
   }
 
   public async findOne(apiQuery: APIQuery): Promise<T> {
@@ -224,16 +275,21 @@ export class BaseRepository<T> {
       `
       ################ findOne ################
       collection      ${this.collectionName}:
-      query:          ${JSON.stringify(apiQuery.query)}
-      fields:         ${JSON.stringify(apiQuery.fields)}
+      query:          ${JSON.stringify(apiQuery.query, null, 2)}
+      fields:         ${JSON.stringify(apiQuery.fields, null, 2)}
       `
     );
-    const result = await this.collection
-      .find(apiQuery.query, { projection: apiQuery.fields })
-      .limit(1)
-      .toArray();
+    try {
+      const result = await this.collection
+        .find(apiQuery.query, { projection: apiQuery.fields })
+        .limit(1)
+        .toArray();
 
-    return result[0] || undefined;
+      return result[0] || undefined;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
   }
 
   public async findOneOrCreate(apiQuery: APIQuery, createUser: string): Promise<T> {
@@ -241,18 +297,23 @@ export class BaseRepository<T> {
       `
       ################ findOneOrCreate ################
       collection      ${this.collectionName}:
-      query:          ${JSON.stringify(apiQuery.query)}
-      fields:         ${JSON.stringify(apiQuery.fields)}
+      query:          ${JSON.stringify(apiQuery.query, null, 2)}
+      fields:         ${JSON.stringify(apiQuery.fields, null, 2)}
       `
     );
-    const result = await this.collection.findOneAndUpdate(
-      apiQuery.query,
-      { $setOnInsert: { createdOn: getTimestamp(), createdBy: createUser } },
-      {
-        upsert: true,
-        returnOriginal: false,
-      }
-    );
-    return result.value;
+    try {
+      const result = await this.collection.findOneAndUpdate(
+        apiQuery.query,
+        { $setOnInsert: { createdOn: getTimestamp(), createdBy: createUser } },
+        {
+          upsert: true,
+          returnOriginal: false,
+        }
+      );
+      return result.value;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
   }
 }

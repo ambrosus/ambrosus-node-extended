@@ -1,13 +1,15 @@
 import { injectable } from 'inversify';
 
-import { Account, AuthToken } from '../';
+import { Account, AuthToken, Organization } from '../';
 import { timestampToDateString } from '../../util/helpers/datetime.helper';
+import * as _ from 'lodash';
 
 export interface IUser {
   account: Account;
   authToken: AuthToken;
-
+  organization: Organization;
   isAuthorized(): boolean;
+  isOrganizationOwner(): boolean;
   hasRole(role: string): boolean;
   hasPermission(permission: string): boolean;
 }
@@ -16,6 +18,7 @@ export interface IUser {
 export class User implements IUser {
   public account: Account;
   public authToken: AuthToken;
+  public organization: Organization;
 
   public hasRole(role: string): boolean {
     return false;
@@ -25,8 +28,16 @@ export class User implements IUser {
     return this.account.permissions.indexOf(permission) > -1;
   }
 
+  public hasAnyPermission(...permission): boolean {
+    return _.intersection(this.account.permissions, permission).length > 0;
+  }
+
   public isAuthorized(): boolean {
     return this.account && this.authToken && this.authToken.isValid();
+  }
+
+  public isOrganizationOwner(): boolean {
+    return this.account.address === this.organization.owner;
   }
 
   public notAuthorizedReason(): string {

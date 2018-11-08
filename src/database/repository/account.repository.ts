@@ -4,7 +4,6 @@ import { TYPE } from '../../constant';
 import { Account, APIQuery, MongoPagedResult, UserPrincipal, AmbrosusError } from '../../model';
 import { DBClient } from '../client';
 import { BaseRepository } from './base.repository';
-import { NoUndefinedVariables } from 'graphql/validation/rules/NoUndefinedVariables';
 
 @injectable()
 export class AccountRepository extends BaseRepository<Account> {
@@ -43,6 +42,7 @@ export class AccountRepository extends BaseRepository<Account> {
   ): Promise<Account> {
     const pipeline = this.getJoinPipeline(apiQuery.query, organizationId, accessLevel, superAdmin);
     apiQuery.query = pipeline;
+
     const result = await super.aggregate(apiQuery);
     if (result && result.length === 1) {
       return result[0];
@@ -60,6 +60,7 @@ export class AccountRepository extends BaseRepository<Account> {
     superAdmin: boolean = false
   ) {
     const pipeline = [];
+
     pipeline.push({
       $lookup: {
         from: 'accountDetail',
@@ -68,6 +69,7 @@ export class AccountRepository extends BaseRepository<Account> {
         as: 'accountDetail',
       },
     });
+
     let matches = {};
     if (superAdmin) {
       matches = match || {};
@@ -81,11 +83,13 @@ export class AccountRepository extends BaseRepository<Account> {
     pipeline.push({
       $match: matches,
     });
+
     pipeline.push({
       $replaceRoot: {
         newRoot: { $mergeObjects: [{ $arrayElemAt: ['$accountDetail', 0] }, '$$ROOT'] },
       },
     });
+
     pipeline.push({
       $project: {
         accountDetail: 0,
