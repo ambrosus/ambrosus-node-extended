@@ -70,7 +70,6 @@ export class BaseRepository<T> {
       item:          ${JSON.stringify(item)}
       `
     );
-    
     try {
       const result = await this.collection.findOneAndUpdate(
         apiQuery.query,
