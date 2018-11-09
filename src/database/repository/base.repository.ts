@@ -38,7 +38,7 @@ export class BaseRepository<T> {
   }
 
   get collection(): any {
-    if (!this.client) {
+    if (!this.client.db) {
       throw new ConnectionError('Database client not initialized');
     }
     return this.client.db.collection(this.collectionName);
