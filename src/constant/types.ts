@@ -12,6 +12,7 @@ export const TYPE: any = {
   BundleController: Symbol.for('BundleController'),
   OrganizationController: Symbol.for('OrganizationController'),
   OrganizationRequestController: Symbol.for('OrganizationRequestController'),
+  OrganizationInviteController: Symbol.for('OrganizationInviteController'),
 
   MetricController: Symbol.for('MetricController'),
   HealthController: Symbol.for('HealthController'),

@@ -16,13 +16,13 @@ export class AuthorizedMiddleware extends BaseMiddleware {
 
     const user = this.httpContext.user as UserPrincipal;
 
-    if (!user.isAuthorized()) {
+    if (!user || !user.isAuthorized()) {
       this.logger.debug(`Unauthorized login attempt => ${req.url}`);
       this.logger.debug(`Token `);
       const errorResponse = new APIResponse();
       errorResponse.meta = new APIResponseMeta(401);
       errorResponse.meta.error = 'AuthenticationError';
-      errorResponse.meta.error_message = `Unauthorized: ${user.notAuthorizedReason()}`;
+      errorResponse.meta.error_message = `Unauthorized ${user ? user.notAuthorizedReason() : ''}`;
       errorResponse.data = undefined;
       errorResponse.pagination = undefined;
       return res.status(errorResponse.meta.code).json(errorResponse);

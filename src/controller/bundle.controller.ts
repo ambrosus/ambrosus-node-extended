@@ -18,8 +18,7 @@ export class BundleController extends BaseController {
   public async getBundles(req: Request): Promise<APIResponse> {
     try {
       const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
-      const apiResponse = APIResponse.fromMongoPagedResult(result);
-      return apiResponse;
+      return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -29,8 +28,7 @@ export class BundleController extends BaseController {
   public async getBundle(@requestParam('bundleId') bundleId: string): Promise<APIResponse> {
     try {
       const result = await this.bundleService.getBundle(bundleId);
-      const apiResponse = APIResponse.fromSingleResult(result);
-      return apiResponse;
+      return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -40,10 +38,7 @@ export class BundleController extends BaseController {
   public async getBundleExists(@requestParam('bundleId') bundleId: string): Promise<APIResponse> {
     try {
       const result = await this.bundleService.getBundleExists(bundleId);
-      const apiResponse = new APIResponse();
-      apiResponse.meta = new APIResponseMeta(200);
-      apiResponse.meta.exists = result;
-      return apiResponse;
+      return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -53,8 +48,7 @@ export class BundleController extends BaseController {
   public async queryBundles(req: Request): Promise<APIResponse> {
     try {
       const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
-      const apiResponse = APIResponse.fromMongoPagedResult(result);
-      return apiResponse;
+      return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
       return super.handleError(err);
     }

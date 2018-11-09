@@ -17,8 +17,7 @@ export class AssetController extends BaseController {
   public async getAssets(req: Request): Promise<APIResponse> {
     try {
       const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
-      const apiResponse = APIResponse.fromMongoPagedResult(result);
-      return apiResponse;
+      return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -28,8 +27,7 @@ export class AssetController extends BaseController {
   public async get(@requestParam('assetId') assetId: string): Promise<APIResponse> {
     try {
       const result = await this.assetService.getAsset(assetId);
-      const apiResponse = APIResponse.fromSingleResult(result);
-      return apiResponse;
+      return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -39,10 +37,7 @@ export class AssetController extends BaseController {
   public async getAssetExists(@requestParam('assetId') assetId: string): Promise<APIResponse> {
     try {
       const result = await this.assetService.getAssetExists(assetId);
-      const apiResponse = new APIResponse();
-      apiResponse.meta = new APIResponseMeta(200);
-      apiResponse.meta.exists = result;
-      return apiResponse;
+      return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -52,8 +47,7 @@ export class AssetController extends BaseController {
   public async query(req: Request): Promise<APIResponse> {
     try {
       const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
-      const apiResponse = APIResponse.fromMongoPagedResult(result);
-      return apiResponse;
+      return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
       return super.handleError(err);
     }

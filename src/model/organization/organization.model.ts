@@ -32,10 +32,18 @@ export class Organization implements IOrganization {
 
   public static fromRequestForUpdate(req: Request) {
     const organization = new Organization();
-    organization.title = req.body.title;
-    organization.timeZone = req.body.timeZone;
-    organization.active = req.body.active;
-    organization.legalAddress = req.body.legalAddress;
+    if (req.body.title) {
+      organization.title = req.body.title;
+    }
+    if (req.body.timeZone) {
+      organization.timeZone = req.body.timeZone;
+    }
+    if (req.body.active) {
+      organization.active = req.body.active;
+    }
+    if (req.body.legalAddress) {
+      organization.legalAddress = req.body.legalAddress;
+    }
     return organization;
   }
 

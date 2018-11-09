@@ -13,6 +13,7 @@ import {
   PermissionError,
 } from '../model';
 import { AccountService } from '../service/account.service';
+import { OrganizationInvite } from '../model/organization/organization-invite.model';
 
 @injectable()
 export class OrganizationService {
@@ -128,6 +129,10 @@ export class OrganizationService {
       throw new ExistsError('An account already exists with this address');
     }
 
+    if (await this.accountService.getAccountExistsForEmail(organizationRequest.email)) {
+      throw new ExistsError('An account already exists with this email');
+    }
+
     if (await this.organizationRepository.existsOR(organizationRequest, 'title')) {
       throw new ExistsError('An organization already exists with that title');
     }
@@ -135,5 +140,14 @@ export class OrganizationService {
     organizationRequest.setCreationTimestamp();
 
     return this.organizationRequestRepository.create(organizationRequest);
+  }
+
+  public async createOrganizationInvite(organizationInvite: OrganizationInvite): Promise<any> {
+    if (!this.user.hasPermission(Permission.super_account)) {
+      throw new PermissionError('You account has insufficient permissions to perform this task');
+    }
+
+    console.log(organizationInvite);
+    return '';
   }
 }

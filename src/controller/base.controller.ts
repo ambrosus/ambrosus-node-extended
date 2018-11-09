@@ -4,12 +4,11 @@ import { injectable } from 'inversify';
 @injectable()
 export class BaseController {
   protected handleError(err) {
-    const errorResponse = new APIResponse();
-    errorResponse.meta = new APIResponseMeta(err.code);
-    errorResponse.meta.error = err.name;
-    errorResponse.meta.error_message = err.message;
-    errorResponse.data = undefined;
-    errorResponse.pagination = undefined;
-    return errorResponse;
+    const meta = new APIResponseMeta();
+    meta.code = err.code;
+    meta.error_type = err.name;
+    meta.error_message = err.message;
+
+    return new APIResponse(undefined, meta, undefined);
   }
 }

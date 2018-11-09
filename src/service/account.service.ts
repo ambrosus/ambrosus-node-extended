@@ -25,6 +25,10 @@ export class AccountService {
     return this.accountRepository.existsOR({ address }, 'address');
   }
 
+  public getAccountExistsForEmail(email: string) {
+    return this.accountDetailRepository.existsOR({ email }, 'email');
+  }
+
   public getAccounts(apiQuery: APIQuery): Promise<MongoPagedResult> {
     if (!this.user.hasPermission(Permission.super_account)) {
       throw new PermissionError('You account has insufficient permissions to perform this task');

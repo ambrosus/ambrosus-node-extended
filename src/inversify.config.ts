@@ -10,6 +10,7 @@ import { EventController } from './controller/event.controller';
 import { GraphQLController } from './controller/graphql.controller';
 import { OrganizationController } from './controller/organization.controller';
 import { OrganizationRequestController } from './controller/organization-request.controller';
+import { OrganizationInviteController } from './controller/organization-invite.controller';
 import { RootController } from './controller/root.controller';
 import { MetricController } from './controller/metric.controller';
 import { HealthController } from './controller/health.controller';
@@ -88,7 +89,9 @@ iocContainer.bind<OrganizationController>(TYPE.OrganizationController).to(Organi
 iocContainer
   .bind<OrganizationRequestController>(TYPE.OrganizationRequestController)
   .to(OrganizationRequestController);
-
+iocContainer
+  .bind<OrganizationInviteController>(TYPE.OrganizationInviteController)
+  .to(OrganizationInviteController);
 iocContainer.bind<MetricController>(TYPE.MetricController).to(MetricController);
 iocContainer.bind<HealthController>(TYPE.HealthController).to(HealthController);
 
