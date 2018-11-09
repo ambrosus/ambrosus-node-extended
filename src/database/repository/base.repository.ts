@@ -38,7 +38,7 @@ export class BaseRepository<T> {
   }
 
   get collection(): any {
-    if (!this.client) {
+    if (!this.client.db) {
       throw new ConnectionError('Database client not initialized');
     }
     return this.client.db.collection(this.collectionName);
@@ -70,13 +70,11 @@ export class BaseRepository<T> {
       item:          ${JSON.stringify(item)}
       `
     );
-
     try {
       const result = await this.collection.findOneAndUpdate(
         apiQuery.query,
         { $set: item },
         {
-          returnOriginal: false,
           upsert: create,
         }
       );
