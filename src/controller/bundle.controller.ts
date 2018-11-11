@@ -4,10 +4,11 @@ import { inject } from 'inversify';
 import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { APIQuery, APIResponse, APIResponseMeta } from '../model';
+import { ILogger } from '../interface/logger.inferface';
+import { APIQuery, APIResponse } from '../model';
 import { BundleService } from '../service/bundle.service';
 import { BaseController } from './base.controller';
-import { ILogger } from '../interface/logger.inferface';
+
 @controller('/bundle', MIDDLEWARE.Authorized)
 export class BundleController extends BaseController {
   constructor(

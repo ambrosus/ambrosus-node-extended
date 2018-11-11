@@ -1,14 +1,15 @@
 import { Request } from 'express';
 import { checkSchema } from 'express-validator/check';
+import * as HttpStatus from 'http-status-codes';
 import { inject } from 'inversify';
 import { controller, httpGet, httpPost, request, requestParam } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
+import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse, APIResponseMeta, OrganizationRequest } from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
-import * as HttpStatus from 'http-status-codes';
-import { ILogger } from '../interface/logger.inferface';
+
 @controller('/organization/request', MIDDLEWARE.Authorized)
 export class OrganizationRequestController extends BaseController {
   constructor(

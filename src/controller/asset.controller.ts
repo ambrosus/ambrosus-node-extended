@@ -3,10 +3,11 @@ import { inject } from 'inversify';
 import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { APIQuery, APIResponse, APIResponseMeta } from '../model';
+import { ILogger } from '../interface/logger.inferface';
+import { APIQuery, APIResponse } from '../model';
 import { AssetService } from '../service/asset.service';
 import { BaseController } from './base.controller';
-import { ILogger } from '../interface/logger.inferface';
+
 @controller('/asset', MIDDLEWARE.Authorized)
 export class AssetController extends BaseController {
   constructor(

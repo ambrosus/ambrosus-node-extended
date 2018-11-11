@@ -1,7 +1,9 @@
-import { APIResponseMeta, APIResponse } from '../model';
-import { inject, injectable, unmanaged } from 'inversify';
+import { inject, injectable } from 'inversify';
+
+import { TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
-import { MIDDLEWARE, TYPE } from '../constant/types';
+import { APIResponse, APIResponseMeta } from '../model';
+
 @injectable()
 export class BaseController {
   constructor(@inject(TYPE.LoggerService) protected logger: ILogger) {}

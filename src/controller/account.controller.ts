@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { checkSchema, param, body } from 'express-validator/check';
+import { Request } from 'express';
+import { body, checkSchema, param } from 'express-validator/check';
 import { inject } from 'inversify';
 import {
   controller,
@@ -7,16 +7,16 @@ import {
   httpPost,
   httpPut,
   request,
-  requestParam,
   requestBody,
+  requestParam,
 } from 'inversify-express-utils';
 import web3 = require('web3');
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { APIQuery, APIResponse, APIResponseMeta, AccountDetail } from '../model';
+import { ILogger } from '../interface/logger.inferface';
+import { AccountDetail, APIQuery, APIResponse } from '../model';
 import { AccountService } from '../service/account.service';
 import { BaseController } from './base.controller';
-import { ILogger } from '../interface/logger.inferface';
 
 @controller('/account')
 export class AccountController extends BaseController {

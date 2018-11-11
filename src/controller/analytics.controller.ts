@@ -3,10 +3,11 @@ import { inject } from 'inversify';
 import { controller, httpGet, requestParam } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
+import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse } from '../model';
 import { AnalyticsService } from '../service/analytics.service';
 import { BaseController } from './base.controller';
-import { ILogger } from '../interface/logger.inferface';
+
 @controller('/analytics', MIDDLEWARE.Authorized)
 export class AnalyticsController extends BaseController {
   constructor(

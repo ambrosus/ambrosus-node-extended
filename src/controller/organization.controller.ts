@@ -1,5 +1,6 @@
 import { Request } from 'express';
 import { checkSchema, param } from 'express-validator/check';
+import * as HttpStatus from 'http-status-codes';
 import { inject } from 'inversify';
 import {
   controller,
@@ -11,11 +12,11 @@ import {
 } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
+import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse, APIResponseMeta, Organization } from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
-import * as HttpStatus from 'http-status-codes';
-import { ILogger } from '../interface/logger.inferface';
+
 @controller('/organization', MIDDLEWARE.Authorized)
 export class OrganizationController extends BaseController {
   constructor(

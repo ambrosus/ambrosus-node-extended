@@ -1,29 +1,13 @@
-import { Request, Response } from 'express';
-import { checkSchema, param, body } from 'express-validator/check';
+import { Request } from 'express';
+import { body } from 'express-validator/check';
 import { inject } from 'inversify';
-import {
-  controller,
-  httpGet,
-  httpPost,
-  request,
-  requestParam,
-  httpPut,
-  requestBody,
-} from 'inversify-express-utils';
-import web3 = require('web3');
+import { controller, httpGet, httpPost, requestBody } from 'inversify-express-utils';
+
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import {
-  APIQuery,
-  APIResponse,
-  APIResponseMeta,
-  Organization,
-  OrganizationRequest,
-  OrganizationInvite,
-} from '../model';
+import { ILogger } from '../interface/logger.inferface';
+import { APIQuery, APIResponse } from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
-import * as HttpStatus from 'http-status-codes';
-import { ILogger } from '../interface/logger.inferface';
 
 @controller('/organization/invite', MIDDLEWARE.Authorized)
 export class OrganizationInviteController extends BaseController {
