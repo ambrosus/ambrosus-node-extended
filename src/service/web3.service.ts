@@ -5,7 +5,7 @@ import { config } from '../config';
 import { TYPE } from '../constant/types';
 import { AuthenticationError, ValidationError } from '../model';
 import { ILogger } from '../interface/logger.inferface';
-import { matchHexOfLength } from '../util/helpers';
+import { matchHexOfLength } from '../util';
 
 @injectable()
 export class Web3Service {

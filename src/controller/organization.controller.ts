@@ -1,32 +1,35 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { checkSchema, param } from 'express-validator/check';
 import { inject } from 'inversify';
 import {
   controller,
   httpGet,
   httpPost,
+  httpPut,
   request,
   requestParam,
-  httpPut,
 } from 'inversify-express-utils';
-import web3 = require('web3');
+
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { APIQuery, APIResponse, APIResponseMeta, Organization } from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
-
+import * as HttpStatus from 'http-status-codes';
+import { ILogger } from '../interface/logger.inferface';
 @controller('/organization', MIDDLEWARE.Authorized)
 export class OrganizationController extends BaseController {
-  constructor(@inject(TYPE.OrganizationService) private organizationService: OrganizationService) {
-    super();
+  constructor(
+    @inject(TYPE.OrganizationService) private organizationService: OrganizationService,
+    @inject(TYPE.LoggerService) protected logger: ILogger
+  ) {
+    super(logger);
   }
 
   @httpGet('/', MIDDLEWARE.NodeAdmin)
   public async getOrganizations(req: Request): Promise<APIResponse> {
     try {
       const result = await this.organizationService.getOrganizations(APIQuery.fromRequest(req));
-      const apiResponse = APIResponse.fromMongoPagedResult(result);
-      return apiResponse;
+      return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -43,8 +46,7 @@ export class OrganizationController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const result = await this.organizationService.getOrganization(organizationId);
-      const apiResponse = APIResponse.fromSingleResult(result);
-      return apiResponse;
+      return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -61,8 +63,7 @@ export class OrganizationController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const result = await this.organizationService.getOrganizationAccounts(organizationId);
-      const apiResponse = APIResponse.fromMongoPagedResult(result);
-      return apiResponse;
+      return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -76,11 +77,9 @@ export class OrganizationController extends BaseController {
   )
   public async createOrganization(@request() req: Request): Promise<APIResponse> {
     try {
-      const apiResponse = new APIResponse();
       await this.organizationService.createOrganization(Organization.fromRequest(req));
-      apiResponse.meta = new APIResponseMeta(200);
-      apiResponse.meta.message = 'Organization created';
-      return apiResponse;
+      const meta = new APIResponseMeta(HttpStatus.CREATED, 'Organization created');
+      return APIResponse.withMeta(meta);
     } catch (err) {
       return super.handleError(err);
     }
@@ -101,8 +100,7 @@ export class OrganizationController extends BaseController {
         organizationId,
         Organization.fromRequestForUpdate(req)
       );
-      const apiResponse = APIResponse.fromSingleResult(result);
-      return apiResponse;
+      return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
     }

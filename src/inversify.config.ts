@@ -23,6 +23,7 @@ import {
   EventRepository,
   OrganizationRepository,
   OrganizationRequestRepository,
+  OrganizationInviteRepository,
 } from './database/repository';
 import { GraphQLSchema, IGraphQLResolver, IGraphQLSchema, IGraphQLType } from './graphql';
 import { AccountResolver, AssetResolver, BundleResolver, EventResolver } from './graphql/resolver';
@@ -75,6 +76,10 @@ iocContainer
 iocContainer
   .bind<OrganizationRequestRepository>(TYPE.OrganizationRequestRepository)
   .to(OrganizationRequestRepository)
+  .inSingletonScope();
+  iocContainer
+  .bind<OrganizationInviteRepository>(TYPE.OrganizationInviteRepository)
+  .to(OrganizationInviteRepository)
   .inSingletonScope();
 
 // controllers

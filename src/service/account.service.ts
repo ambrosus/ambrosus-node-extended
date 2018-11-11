@@ -29,6 +29,10 @@ export class AccountService {
     return this.accountDetailRepository.existsOR({ email }, 'email');
   }
 
+  public getAccountDetail(apiQuery: APIQuery) {
+    return this.accountDetailRepository.findOne(apiQuery);
+  }
+
   public getAccounts(apiQuery: APIQuery): Promise<MongoPagedResult> {
     if (!this.user.hasPermission(Permission.super_account)) {
       throw new PermissionError('You account has insufficient permissions to perform this task');
@@ -98,7 +102,7 @@ export class AccountService {
     return this.getAccount(address);
   }
 
-  public getAccountForAuth(address: string): Promise<Account> {
+  public getAccountForAuth(address: string): Promise<AccountDetail> {
     const apiQuery = new APIQuery({ address });
     return this.accountRepository.getAccountForAuthorization(apiQuery);
   }

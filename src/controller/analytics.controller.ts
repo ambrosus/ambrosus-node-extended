@@ -6,11 +6,14 @@ import { MIDDLEWARE, TYPE } from '../constant/types';
 import { APIQuery, APIResponse } from '../model';
 import { AnalyticsService } from '../service/analytics.service';
 import { BaseController } from './base.controller';
-
+import { ILogger } from '../interface/logger.inferface';
 @controller('/analytics', MIDDLEWARE.Authorized)
 export class AnalyticsController extends BaseController {
-  constructor(@inject(TYPE.AnalyticsService) private analyticsService: AnalyticsService) {
-    super();
+  constructor(
+    @inject(TYPE.AnalyticsService) private analyticsService: AnalyticsService,
+    @inject(TYPE.LoggerService) protected logger: ILogger
+  ) {
+    super(logger);
   }
 
   @httpGet('/:collection/count')
@@ -42,7 +45,7 @@ export class AnalyticsController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.countByDate(collection, date);
-      return  APIResponse.fromSingleResult({ count });
+      return APIResponse.fromSingleResult({ count });
     } catch (err) {
       return super.handleError(err);
     }

@@ -16,11 +16,15 @@ import { MIDDLEWARE, TYPE } from '../constant/types';
 import { APIQuery, APIResponse, APIResponseMeta, AccountDetail } from '../model';
 import { AccountService } from '../service/account.service';
 import { BaseController } from './base.controller';
+import { ILogger } from '../interface/logger.inferface';
 
 @controller('/account')
 export class AccountController extends BaseController {
-  constructor(@inject(TYPE.AccountService) private accountService: AccountService) {
-    super();
+  constructor(
+    @inject(TYPE.AccountService) private accountService: AccountService,
+    @inject(TYPE.LoggerService) protected logger: ILogger
+  ) {
+    super(logger);
   }
 
   @httpGet(

@@ -6,11 +6,14 @@ import { MIDDLEWARE, TYPE } from '../constant/types';
 import { APIQuery, APIResponse, APIResponseMeta } from '../model';
 import { AssetService } from '../service/asset.service';
 import { BaseController } from './base.controller';
-
+import { ILogger } from '../interface/logger.inferface';
 @controller('/asset', MIDDLEWARE.Authorized)
 export class AssetController extends BaseController {
-  constructor(@inject(TYPE.AssetService) private assetService: AssetService) {
-    super();
+  constructor(
+    @inject(TYPE.AssetService) private assetService: AssetService,
+    @inject(TYPE.LoggerService) protected logger: ILogger
+  ) {
+    super(logger);
   }
 
   @httpGet('/')

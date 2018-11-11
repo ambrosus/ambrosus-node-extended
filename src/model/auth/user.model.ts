@@ -1,11 +1,12 @@
 import { injectable } from 'inversify';
 
 import { Account, AuthToken, Organization } from '../';
-import { timestampToDateString } from '../../util/helpers/datetime.helper';
+import { timestampToDateString } from '../../util';
 import * as _ from 'lodash';
+import { AccountDetail } from '../account';
 
 export interface IUser {
-  account: Account;
+  account: AccountDetail;
   authToken: AuthToken;
   organization: Organization;
   isAuthorized(): boolean;
@@ -16,7 +17,7 @@ export interface IUser {
 
 @injectable()
 export class User implements IUser {
-  public account: Account;
+  public account: AccountDetail;
   public authToken: AuthToken;
   public organization: Organization;
 
@@ -70,5 +71,9 @@ export class User implements IUser {
 
   get isSuperAdmin(): boolean {
     return this.hasPermission('super_account');
+  }
+
+  get name(): string {
+    return this.account.fullName;
   }
 }

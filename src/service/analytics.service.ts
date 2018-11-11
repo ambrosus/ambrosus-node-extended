@@ -18,7 +18,7 @@ import {
   getTimestampSubHours,
   getTimestampSubWeeks,
   isValidDate,
-} from '../util/helpers';
+} from '../util';
 
 @injectable()
 export class AnalyticsService {

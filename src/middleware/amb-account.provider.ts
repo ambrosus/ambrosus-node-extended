@@ -4,7 +4,7 @@ import { interfaces } from 'inversify-express-utils';
 
 import { TYPE } from '../constant';
 import { ILogger } from '../interface/logger.inferface';
-import { Account, UserPrincipal, AuthToken } from '../model';
+import { Account, UserPrincipal, AuthToken, AccountDetail } from '../model';
 import { AccountService } from '../service/account.service';
 import { OrganizationService } from '../service/organization.service';
 import { AuthService } from '../service/auth.service';
@@ -39,7 +39,9 @@ export class AMBAccountProvider implements interfaces.AuthProvider {
     const user = new UserPrincipal();
     try {
       const authToken: AuthToken = this.authService.getAuthToken(authorization);
-      const account: Account = await this.accountService.getAccountForAuth(authToken.createdBy);
+      const account: AccountDetail = await this.accountService.getAccountForAuth(
+        authToken.createdBy
+      );
       const organization = await this.organizationService.getOrganizationForAuth(
         account.organization
       );

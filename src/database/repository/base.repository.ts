@@ -8,7 +8,7 @@ import { TYPE } from '../../constant';
 import { ILogger } from '../../interface/logger.inferface';
 import { APIQuery, ConnectionError, MongoPagedResult } from '../../model';
 import { DBClient } from '../client';
-import { getTimestamp } from '../../util/helpers';
+import { getTimestamp } from '../../util';
 import { RepositoryError } from '../../model/error/repository.error';
 
 @injectable()
@@ -55,6 +55,23 @@ export class BaseRepository<T> {
     try {
       const result: InsertOneWriteOpResult = await this.collection.insertOne(item);
       return !!result.result.ok;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
+  }
+
+  public async createBulk(item: T[]): Promise<any> {
+    this.logger.debug(
+      `
+      ################ createBulk ################
+      collection      ${this.collectionName}:
+      item:          ${JSON.stringify(item)}
+      `
+    );
+    try {
+      const result = await this.collection.insertMany(item);
+      return result;
     } catch (err) {
       this.logger.captureError(err);
       throw new RepositoryError(err.message);
@@ -282,6 +299,13 @@ export class BaseRepository<T> {
         .find(apiQuery.query, { projection: apiQuery.fields })
         .limit(1)
         .toArray();
+
+    this.logger.debug(
+      `
+      ${JSON.stringify(result, null, 2)}
+      ################ result ################
+      `
+    );
 
       return result[0] || undefined;
     } catch (err) {

@@ -18,7 +18,8 @@ export class APIResponseMeta implements IAPIResponseMeta {
   public error_type: string;
   public error_message: string;
 
-  constructor(_code?: number) {
+  constructor(_code: number, _message?: string) {
     this.code = _code;
+    this.message = _message;
   }
 }

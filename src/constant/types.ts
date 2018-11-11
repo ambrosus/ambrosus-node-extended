@@ -35,6 +35,7 @@ export const TYPE: any = {
   BundleRepository: Symbol.for('BundleRepository'),
   OrganizationRepository: Symbol.for('OrganizationRepository'),
   OrganizationRequestRepository: Symbol.for('OrganizationRequestRepository'),
+  OrganizationInviteRepository: Symbol.for('OrganizationInviteRepository'),
 
   GraphQLSchema: Symbol.for('GraphQLSchema'),
   GraphQLType: Symbol.for('GraphQLType'),

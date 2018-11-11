@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { ValidationSchema } from 'express-validator/check';
 import { injectable } from 'inversify';
 
-import { getTimestamp } from '../../util/helpers';
+import { getTimestamp } from '../../util';
 import { Account } from './account.model';
 
 export interface IAccountDetail {

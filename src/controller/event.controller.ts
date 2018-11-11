@@ -5,13 +5,16 @@ import { controller, httpGet, httpPost, requestParam } from 'inversify-express-u
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { APIQuery, APIResponse, APIResponseMeta } from '../model';
 import { EventService } from '../service/event.service';
-import { getParamValue } from '../util/helpers';
+import { getParamValue } from '../util';
 import { BaseController } from './base.controller';
-
+import { ILogger } from '../interface/logger.inferface';
 @controller('/event', MIDDLEWARE.Authorized)
 export class EventController extends BaseController {
-  constructor(@inject(TYPE.EventService) private eventService: EventService) {
-    super();
+  constructor(
+    @inject(TYPE.EventService) private eventService: EventService,
+    @inject(TYPE.LoggerService) protected logger: ILogger
+  ) {
+    super(logger);
   }
 
   @httpGet('/')

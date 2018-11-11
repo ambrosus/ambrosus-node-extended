@@ -7,11 +7,14 @@ import { MIDDLEWARE, TYPE } from '../constant/types';
 import { APIQuery, APIResponse, APIResponseMeta } from '../model';
 import { BundleService } from '../service/bundle.service';
 import { BaseController } from './base.controller';
-
+import { ILogger } from '../interface/logger.inferface';
 @controller('/bundle', MIDDLEWARE.Authorized)
 export class BundleController extends BaseController {
-  constructor(@inject(TYPE.BundleService) private bundleService: BundleService) {
-    super();
+  constructor(
+    @inject(TYPE.BundleService) private bundleService: BundleService,
+    @inject(TYPE.LoggerService) protected logger: ILogger
+  ) {
+    super(logger);
   }
 
   @httpGet('/')

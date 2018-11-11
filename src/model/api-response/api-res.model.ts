@@ -4,6 +4,7 @@ import { MongoPagedResult } from '../query/mongo-paged-result.model';
 import { APIResponseMeta } from './api-res-meta.model';
 import { APIResponsePagination } from './api-res-pagination.model';
 import { HttpResponseMessage, HttpContent, JsonContent } from 'inversify-express-utils';
+import * as HttpStatus from 'http-status-codes';
 
 export interface IAPIResponse {
   meta: APIResponseMeta;
@@ -15,14 +16,12 @@ export interface IAPIResponse {
 export class APIResponse extends HttpResponseMessage {
   public static fromMongoPagedResult(mongoPagedResult: MongoPagedResult): APIResponse {
     const pagination = APIResponsePagination.fromMongoPagedResult(mongoPagedResult);
-    const meta = new APIResponseMeta();
+    const meta = new APIResponseMeta(HttpStatus.OK);
     let data = undefined;
     if (mongoPagedResult.results) {
-      meta.code = 200;
       meta.count = mongoPagedResult.results.length;
       data = mongoPagedResult.results;
     } else {
-      meta.code = 400;
       meta.message = 'No results found';
       data = [];
     }
@@ -30,24 +29,19 @@ export class APIResponse extends HttpResponseMessage {
   }
 
   public static fromSingleResult(result: any): APIResponse {
-    const meta = new APIResponseMeta();
+    const meta = new APIResponseMeta(HttpStatus.OK);
     let data = undefined;
 
     if (result) {
-      meta.code = 200;
       data = result;
     } else {
-      meta.code = 400;
       meta.message = 'No results found';
       data = {};
     }
     return new APIResponse(data, meta);
   }
 
-  public static withMeta(code: number, message?: string): APIResponse {
-    const meta = new APIResponseMeta();
-    meta.code = code;
-    meta.message = message;
+  public static withMeta(meta: APIResponseMeta): APIResponse {
     return new APIResponse(undefined, meta);
   }
 

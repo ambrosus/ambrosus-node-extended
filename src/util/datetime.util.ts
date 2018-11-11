@@ -35,3 +35,8 @@ export const getTimestampSubWeeks = w =>
   moment()
     .subtract(w, 'w')
     .unix();
+
+export const getTimestampAddDays = d =>
+  moment()
+    .add(d, 'd')
+    .unix();
