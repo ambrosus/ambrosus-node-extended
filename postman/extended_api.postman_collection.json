@@ -215,12 +215,12 @@
 			]
 		},
 		{
-			"name": "Org Requests",
+			"name": "Organization Requests",
 			"item": [
 				{
-					"name": "Get Org Requests",
+					"name": "Create Org Request",
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Authorization",
@@ -236,7 +236,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0xc0ffee254729296a45a3885639AC7E10F9d54979\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
+							"raw": "{\n\t\"title\": \"Conor's test4\",\n\t\"address\": \"0x6bCa8E9744052C45AdB6a8Db010A43bd933475Aa\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
 						},
 						"url": {
 							"raw": "{{url}}/organization/request?",
@@ -301,9 +301,9 @@
 					"response": []
 				},
 				{
-					"name": "Create Org Request",
+					"name": "Get Org Requests",
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
@@ -319,7 +319,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"Conor's test2\",\n\t\"address\": \"0xc0ffee254729296a45a3885639AC7E10F9d54979\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
+							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0xc0ffee254729296a45a3885639AC7E10F9d54979\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
 						},
 						"url": {
 							"raw": "{{url}}/organization/request?",
@@ -329,6 +329,135 @@
 							"path": [
 								"organization",
 								"request"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Organization Invites",
+			"item": [
+				{
+					"name": "Get Organization Invites",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook@ambrosus.com\",\n\t\t\"conor.seabrook2@ambrosus.com\",\n\t\t\"conor.seabrook3@ambrosus.com\",\n\t\t\"conor.seabrook4@ambrosus.com\",\n\t\t\"conor.seabrook5@ambrosus.com\"\n\t\t]\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/organization/invite?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization",
+								"invite"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Org Invite Bulk",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook@ambrosus.com\",\n\t\t\"conor.seabrook2@ambrosus.com\",\n\t\t\"conor.seabrook3@ambrosus.com\",\n\t\t\"conor.seabrook4@ambrosus.com\",\n\t\t\"conor.seabrook5@ambrosus.com\"\n\t\t]\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/organization/invite?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization",
+								"invite"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resend Invite Bulk",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook@ambrosus.com\"\n\t\t]\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/organization/invite/resend?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization",
+								"invite",
+								"resend"
 							],
 							"query": [
 								{
@@ -396,13 +525,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/account/0xc6319be58fED2eD1FB35e14E5392D6539be6B50D",
+							"raw": "{{url}}/account/0x2A52139de123c9fa265C206772d1606e326CC044",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"account",
-								"0xc6319be58fED2eD1FB35e14E5392D6539be6B50D"
+								"0x2A52139de123c9fa265C206772d1606e326CC044"
 							]
 						}
 					},
@@ -456,7 +585,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"fullName\": \"Number 5\",\n\t\"email\": \"test@tessft.com\",\n\t\"timeZone\": \"Asia/Tokyo\",\n\t\"token\": \"eyJpZERhdGEiOnsiY3JlYXRlZEJ5IjoiMHgyQTUyMTM5ZGUxMjNjOWZhMjY1QzIwNjc3MmQxNjA2ZTMyNkNDMDQ0IiwidmFsaWRVbnRpbCI6MTYwMDAwMDAwMH0sInNpZ25hdHVyZSI6IjB4YTU5MTE3ODMwZjdhY2M4MjIwMjZkMjMwNWIyYjJmOGNhMTIyOWIzMTNmNDFjMjVkZDM3YjhhNjhlNmIwZDViZDYwNzc2NjVkYWI3NWQ4Yjg0ZjUxODQ2ODAzMGI2YjAzMTg5NGNmODQxYzNjNjJmY2I5MTJiMjlhZjgyMGY0ZDkxYyJ9\"\n}"
+							"raw": "{\n\t\"email\": \"test@tessft.comd\"\n}"
 						},
 						"url": {
 							"raw": "{{url}}/account/0x2A52139de123c9fa265C206772d1606e326CC044?",
