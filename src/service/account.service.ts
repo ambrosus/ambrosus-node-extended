@@ -77,7 +77,7 @@ export class AccountService {
 
   public getAccounts(apiQuery: APIQuery): Promise<MongoPagedResult> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError('Your account has insufficient permissions to perform this task');
+      throw new PermissionError();
     }
     return this.accountRepository.getAccounts(
       apiQuery,
@@ -93,7 +93,7 @@ export class AccountService {
       !this.user.hasAnyPermission(Permission.manage_accounts) &&
       !(this.user.address === address)
     ) {
-      throw new PermissionError('Your account has insufficient permissions to perform this task');
+      throw new PermissionError();
     }
 
     const apiQuery = new APIQuery({ address });
@@ -113,7 +113,7 @@ export class AccountService {
         this.user.organizationId === organizationId
       )
     ) {
-      throw new PermissionError('Your account has insufficient permissions to perform this task');
+      throw new PermissionError();
     }
     const apiQuery = new APIQuery({ organization: organizationId });
     return this.accountRepository.getAccounts(
@@ -133,7 +133,7 @@ export class AccountService {
     // First check if the current user can access this account
     const currentAccount = await this.getAccount(address);
     if (!currentAccount) {
-      throw new PermissionError('Your account has insufficient permissions to perform this task');
+      throw new PermissionError();
     }
 
     // Update accountDetail collection
