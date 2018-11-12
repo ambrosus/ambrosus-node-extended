@@ -43,6 +43,19 @@ export class OrganizationRequestController extends BaseController {
     }
   }
 
+  @httpGet('/:address/approve', MIDDLEWARE.Authorized, MIDDLEWARE.NodeAdmin)
+  public async organizationRequestApprove(
+    @requestParam('address') address: string
+  ): Promise<APIResponse> {
+    try {
+      await this.organizationService.organizationRequestApprove(address);
+      const meta = new APIResponseMeta(HttpStatus.CREATED, 'Organization request approved');
+      return APIResponse.withMeta(meta);
+    } catch (err) {
+      return super.handleError(err);
+    }
+  }
+
   @httpPost('/', ...checkSchema(OrganizationRequest.validationSchema()), MIDDLEWARE.ValidateRequest)
   public async createOrganizationReguest(@request() req: Request): Promise<APIResponse> {
     try {

@@ -12,6 +12,8 @@ export class DBClient {
   public db: Db;
   public events: EventEmitter;
   public connected: boolean;
+  public mongoClient: MongoClient;
+
   constructor() {
     this.events = new EventEmitter();
     const connStr = this.getConnUrl();
@@ -25,6 +27,7 @@ export class DBClient {
           Sentry.captureException(err);
           throw new ConnectionError(err.message);
         }
+        this.mongoClient = client;
         this.db = client.db(dbName);
         this.connected = true;
         this.events.emit('dbConnected');
