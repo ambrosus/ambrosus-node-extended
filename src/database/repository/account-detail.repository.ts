@@ -24,12 +24,4 @@ export class AccountDetailRepository extends BaseRepository<AccountDetail> {
   get paginatedAscending(): boolean {
     return false;
   }
-
-  public async deleteExpired() {
-    const apiQuery = new APIQuery({ validUntil: { $lte: getTimestamp() } });
-    const invites = await this.collection.find(apiQuery);
-    for (const invite of invites) {
-      console.log(invite);
-    }
-  }
 }

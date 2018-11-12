@@ -269,6 +269,8 @@ export class OrganizationService {
       invite.createdBy
     );
 
+    await this.organizationInviteRepository.deleteOne(apiQuery);
+
     return address;
   }
 }
