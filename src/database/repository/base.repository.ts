@@ -1,7 +1,12 @@
 import { inject, injectable, unmanaged } from 'inversify';
 import * as _ from 'lodash';
 import * as MongoPaging from 'mongo-cursor-pagination';
-import { InsertOneWriteOpResult, DeleteWriteOpResultObject, InsertWriteOpResult } from 'mongodb';
+import {
+  InsertOneWriteOpResult,
+  DeleteWriteOpResultObject,
+  InsertWriteOpResult,
+  ClientSession,
+} from 'mongodb';
 
 import { config } from '../../config';
 import { TYPE } from '../../constant';
@@ -44,7 +49,11 @@ export class BaseRepository<T> {
     return this.client.db.collection(this.collectionName);
   }
 
-  public async create(item: T): Promise<boolean> {
+  public createSession(): ClientSession {
+    return this.client.mongoClient.startSession();
+  }
+
+  public async create(item: T): Promise<InsertOneWriteOpResult> {
     this.logger.debug(
       `
       ################ create ################
@@ -54,7 +63,7 @@ export class BaseRepository<T> {
     );
     try {
       const result: InsertOneWriteOpResult = await this.collection.insertOne(item);
-      return !!result.result.ok;
+      return result;
     } catch (err) {
       this.logger.captureError(err);
       throw new RepositoryError(err.message);

@@ -5,6 +5,7 @@ import { AccountDetail, APIQuery, MongoPagedResult } from '../../model';
 import { DBClient } from '../client';
 import { BaseRepository } from './base.repository';
 import { EventEmitter } from 'events';
+import { getTimestamp } from '../../util';
 
 @injectable()
 export class AccountDetailRepository extends BaseRepository<AccountDetail> {
