@@ -3,7 +3,7 @@ import { inject, injectable } from 'inversify';
 import { DeleteWriteOpResultObject, InsertOneWriteOpResult } from 'mongodb';
 
 import { config } from '../config';
-import { Permission, TYPE, TEMPLATE_ORGANIZATION_APPROVAL } from '../constant/';
+import { Permission, TYPE, TEMPLATE_ORGANIZATION_APPROVAL, TEMPLATE_ORGANIZATION_DISAPPROVAL } from '../constant/';
 
 import {
   OrganizationInviteRepository,
@@ -199,7 +199,7 @@ export class OrganizationService {
       this.user.address
     );
 
-    // Remvoe organization request
+    // Remove organization request
     await this.deleteOrganizationRequest(address);
 
     const url = `${config.dashboardUrl}/login`;
@@ -223,7 +223,17 @@ export class OrganizationService {
       throw new NotFoundError('Organization request not found.');
     }
 
-    return undefined;
+    // Remove organization request
+    await this.deleteOrganizationRequest(address);
+
+    // Send email
+    sendEmail(
+      config.email.from,
+      organizationRequest.email,
+      'Your organization request was not been approved',
+      TEMPLATE_ORGANIZATION_DISAPPROVAL
+    );
+
   }
   //#endregion
 
