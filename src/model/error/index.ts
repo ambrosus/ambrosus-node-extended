@@ -6,3 +6,5 @@ export * from './permission.error';
 export * from './validation.error';
 export * from './ambrosus.error';
 export * from './exists.error';
+export * from './invalid.error';
+export * from './expired.error';

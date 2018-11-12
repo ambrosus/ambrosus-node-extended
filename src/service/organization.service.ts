@@ -1,4 +1,5 @@
 import { inject, injectable } from 'inversify';
+import { DeleteWriteOpResultObject } from 'mongodb';
 
 import { config } from '../config';
 import { Permission, TYPE } from '../constant/';
@@ -11,6 +12,8 @@ import { ILogger } from '../interface/logger.inferface';
 import {
   APIQuery,
   ExistsError,
+  ExpiredError,
+  InvalidError,
   MongoPagedResult,
   NotFoundError,
   Organization,
@@ -20,7 +23,8 @@ import {
 } from '../model';
 import { OrganizationInvite } from '../model/organization/organization-invite.model';
 import { AccountService } from '../service/account.service';
-import { sendEmail } from '../util';
+import { getTimestamp, sendEmail } from '../util';
+import { CreateError } from '../model/error/create.error';
 
 @injectable()
 export class OrganizationService {
@@ -38,7 +42,7 @@ export class OrganizationService {
 
   public getOrganizations(apiQuery: APIQuery): Promise<MongoPagedResult> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError('You account has insufficient permissions to perform this task');
+      throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
     return this.organizationRepository.find(apiQuery);
   }
@@ -48,7 +52,7 @@ export class OrganizationService {
       !this.user.hasPermission(Permission.super_account) &&
       organizationId !== this.user.organizationId
     ) {
-      throw new PermissionError('You account has insufficient permissions to perform this task');
+      throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
     const apiQuery = new APIQuery({ organizationId });
     return this.organizationRepository.findOne(apiQuery);
@@ -65,14 +69,14 @@ export class OrganizationService {
 
   public getOrganizationRequests(apiQuery: APIQuery): Promise<MongoPagedResult> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError('You account has insufficient permissions to perform this task');
+      throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
     return this.organizationRequestRepository.find(apiQuery);
   }
 
   public getOrganizationRequest(address: string): Promise<OrganizationRequest> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError('You account has insufficient permissions to perform this task');
+      throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
     const apiQuery = new APIQuery({ address });
     return this.organizationRequestRepository.findOne(apiQuery);
@@ -80,7 +84,7 @@ export class OrganizationService {
 
   public async createOrganization(organization: Organization): Promise<any> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError('You account has insufficient permissions to perform this task');
+      throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
 
     if (!(await this.accountService.getAccountExists(organization.owner))) {
@@ -109,7 +113,7 @@ export class OrganizationService {
       !this.user.hasPermission(Permission.super_account) &&
       !(this.user.organizationId === organizationId && this.user.isOrganizationOwner())
     ) {
-      throw new PermissionError('You account has insufficient permissions to perform this task');
+      throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
     organization.setMutationTimestamp(this.user.address);
     const apiQuery = new APIQuery({ organizationId });
@@ -118,7 +122,7 @@ export class OrganizationService {
 
   public async createOrganizationRequest(organizationRequest: OrganizationRequest): Promise<any> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError('You account has insufficient permissions to perform this task');
+      throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
 
     if (
@@ -151,14 +155,14 @@ export class OrganizationService {
 
   public getOrganizationInvites(apiQuery: APIQuery): Promise<MongoPagedResult> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError('You account has insufficient permissions to perform this task');
+      throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
     return this.organizationInviteRepository.find(apiQuery);
   }
 
   public async createOrganizationInvites(emails: string[]): Promise<any> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError('You account has insufficient permissions to perform this task');
+      throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
 
     const failed = [];
@@ -190,7 +194,7 @@ export class OrganizationService {
 
   public async resendOrganizationInviteEmails(emails: string[]): Promise<any> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError('You account has insufficient permissions to perform this task');
+      throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
     const failed = [];
     const success = [];
@@ -208,7 +212,7 @@ export class OrganizationService {
 
   public async sendOrganizationInviteEmail(email: string) {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError('You account has insufficient permissions to perform this task');
+      throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
     try {
       const apiQuery = new APIQuery({ to: email });
@@ -227,5 +231,45 @@ export class OrganizationService {
     } catch (error) {
       throw error;
     }
+  }
+
+  public async organizationInviteExists(inviteId: string): Promise<boolean> {
+    const apiQuery = new APIQuery({ inviteId });
+    const invite = await this.organizationInviteRepository.findOne(apiQuery);
+    if (!invite) {
+      throw new InvalidError('Invite not found');
+    }
+    if (!invite.validUntil || invite.validUntil <= getTimestamp()) {
+      throw new ExpiredError('Invite has expired');
+    }
+    return true;
+  }
+
+  public async deleteOrganizationInvite(inviteId: string): Promise<DeleteWriteOpResultObject> {
+    const apiQuery = new APIQuery({ inviteId });
+    return this.organizationInviteRepository.deleteOne(apiQuery);
+  }
+
+  public async acceptOrganizationInvite(inviteId: string, address: string) {
+    const apiQuery = new APIQuery({ inviteId });
+    const invite = await this.organizationInviteRepository.findOne(apiQuery);
+    if (!invite) {
+      throw new InvalidError('Invite not found');
+    }
+    if (!invite.validUntil || invite.validUntil <= getTimestamp()) {
+      throw new ExpiredError('Invite has expired');
+    }
+
+    await this.accountService.createAccount(
+      address,
+      1,
+      invite.organizationId,
+      [Permission.create_asset, Permission.create_event],
+      invite.to,
+      undefined,
+      invite.createdBy
+    );
+
+    return address;
   }
 }

@@ -28,8 +28,8 @@ export class APIResponse extends HttpResponseMessage {
     return new APIResponse(data, meta, pagination);
   }
 
-  public static fromSingleResult(result: any): APIResponse {
-    const meta = new APIResponseMeta(HttpStatus.OK);
+  public static fromSingleResult(result: any, extraMeta?: object): APIResponse {
+    let meta = new APIResponseMeta(HttpStatus.OK);
     let data = undefined;
 
     if (result) {
@@ -37,6 +37,9 @@ export class APIResponse extends HttpResponseMessage {
     } else {
       meta.message = 'No results found';
       data = {};
+    }
+    if (extraMeta) {
+      meta = { ...meta, ...extraMeta };
     }
     return new APIResponse(data, meta);
   }

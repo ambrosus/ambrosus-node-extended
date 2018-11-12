@@ -16,15 +16,29 @@ import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
 import { AccountDetail, APIQuery, APIResponse } from '../model';
 import { AccountService } from '../service/account.service';
+import { Web3Service } from '../service/web3.service';
 import { BaseController } from './base.controller';
 
 @controller('/account')
 export class AccountController extends BaseController {
   constructor(
     @inject(TYPE.AccountService) private accountService: AccountService,
+    @inject(TYPE.Web3Service) private web3Service: Web3Service,
     @inject(TYPE.LoggerService) protected logger: ILogger
   ) {
     super(logger);
+  }
+  @httpGet(
+    '/keyPair',
+    MIDDLEWARE.NodeAdmin
+  )
+  public async getKeyPair(): Promise<APIResponse> {
+    try {
+      const result = await this.web3Service.createKeyPair();
+      return APIResponse.fromSingleResult(result);
+    } catch (err) {
+      return super.handleError(err);
+    }
   }
 
   @httpGet(

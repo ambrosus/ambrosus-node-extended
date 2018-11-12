@@ -1,16 +1,18 @@
 import { inject, injectable } from 'inversify';
 
-import { TYPE, Permission } from '../constant/';
-import { AccountRepository, AccountDetailRepository } from '../database/repository';
+import { Permission, TYPE } from '../constant/';
+import { AccountDetailRepository, AccountRepository } from '../database/repository';
+import { ILogger } from '../interface/logger.inferface';
 import {
   Account,
+  AccountDetail,
   APIQuery,
   MongoPagedResult,
-  UserPrincipal,
-  AccountDetail,
-  NotFoundError,
   PermissionError,
+  UserPrincipal,
+  ExistsError,
 } from '../model';
+import { getTimestamp } from '../util';
 
 @injectable()
 export class AccountService {
@@ -18,8 +20,48 @@ export class AccountService {
     @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
     @inject(TYPE.AccountRepository) private readonly accountRepository: AccountRepository,
     @inject(TYPE.AccountDetailRepository)
-    private readonly accountDetailRepository: AccountDetailRepository
+    private readonly accountDetailRepository: AccountDetailRepository,
+    @inject(TYPE.LoggerService) private readonly logger: ILogger
   ) {}
+
+  public async createAccount(
+    address: string,
+    accessLevel: number,
+    organizationId: number,
+    permissions: string[],
+    email: string,
+    fullName: string,
+    createdBy: string
+  ) {
+    if (await this.getAccountExists(address)) {
+      throw new ExistsError('An account already exists with this address');
+    }
+    if (await this.getAccountExistsForEmail(email)) {
+      throw new ExistsError('An account already exists with this email');
+    }
+    const newAccount = new Account();
+    newAccount.address = address;
+    newAccount.accessLevel = accessLevel;
+    newAccount.organization = organizationId;
+    newAccount.permissions = permissions;
+    newAccount.registeredBy = createdBy;
+    newAccount.registeredOn = getTimestamp();
+
+    const newAccountDetail = new AccountDetail();
+    newAccountDetail.address = address;
+    newAccountDetail.email = email;
+    newAccountDetail.fullName = fullName;
+    newAccountDetail.createdBy = createdBy;
+    newAccountDetail.createdOn = getTimestamp();
+
+    try {
+      await this.accountRepository.create(newAccount);
+      await this.accountDetailRepository.create(newAccountDetail);
+    } catch (error) {
+      this.logger.captureError(error);
+      throw error;
+    }
+  }
 
   public getAccountExists(address: string) {
     return this.accountRepository.existsOR({ address }, 'address');
@@ -35,7 +77,7 @@ export class AccountService {
 
   public getAccounts(apiQuery: APIQuery): Promise<MongoPagedResult> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError('You account has insufficient permissions to perform this task');
+      throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
     return this.accountRepository.getAccounts(
       apiQuery,
@@ -51,7 +93,7 @@ export class AccountService {
       !this.user.hasAnyPermission(Permission.manage_accounts) &&
       !(this.user.address === address)
     ) {
-      throw new PermissionError('You account has insufficient permissions to perform this task');
+      throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
 
     const apiQuery = new APIQuery({ address });
@@ -71,9 +113,9 @@ export class AccountService {
         this.user.organizationId === organizationId
       )
     ) {
-      throw new PermissionError('You account has insufficient permissions to perform this task');
+      throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
-    const apiQuery = new APIQuery({organization: organizationId});
+    const apiQuery = new APIQuery({ organization: organizationId });
     return this.accountRepository.getAccounts(
       apiQuery,
       this.user.organizationId,
@@ -91,7 +133,7 @@ export class AccountService {
     // First check if the current user can access this account
     const currentAccount = await this.getAccount(address);
     if (!currentAccount) {
-      throw new PermissionError('You account has insufficient permissions to perform this task');
+      throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
 
     // Update accountDetail collection

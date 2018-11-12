@@ -1,7 +1,7 @@
 import { inject, injectable, unmanaged } from 'inversify';
 import * as _ from 'lodash';
 import * as MongoPaging from 'mongo-cursor-pagination';
-import { InsertOneWriteOpResult } from 'mongodb';
+import { InsertOneWriteOpResult, DeleteWriteOpResultObject, InsertWriteOpResult } from 'mongodb';
 
 import { config } from '../../config';
 import { TYPE } from '../../constant';
@@ -61,7 +61,7 @@ export class BaseRepository<T> {
     }
   }
 
-  public async createBulk(item: T[]): Promise<any> {
+  public async createBulk(item: T[]): Promise<number> {
     this.logger.debug(
       `
       ################ createBulk ################
@@ -70,8 +70,8 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result = await this.collection.insertMany(item);
-      return result;
+      const result: InsertWriteOpResult = await this.collection.insertMany(item);
+      return result.result.n;
     } catch (err) {
       this.logger.captureError(err);
       throw new RepositoryError(err.message);
@@ -102,8 +102,22 @@ export class BaseRepository<T> {
     }
   }
 
-  public delete(id: string): Promise<boolean> {
-    throw new Error('Method not implemented.');
+  public async deleteOne(apiQuery: APIQuery): Promise<DeleteWriteOpResultObject> {
+    this.logger.debug(
+      `
+      ################ deleteOne ################
+      collection      ${this.collectionName}:
+      query:          ${JSON.stringify(apiQuery.query, null, 2)}
+      `
+    );
+
+    try {
+      const result: DeleteWriteOpResultObject = await this.collection.deleteOne(apiQuery.query);
+      return result;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
   }
 
   public async count(query: object): Promise<number> {
@@ -300,12 +314,12 @@ export class BaseRepository<T> {
         .limit(1)
         .toArray();
 
-    this.logger.debug(
-      `
+      this.logger.debug(
+        `
       ${JSON.stringify(result, null, 2)}
       ################ result ################
       `
-    );
+      );
 
       return result[0] || undefined;
     } catch (err) {

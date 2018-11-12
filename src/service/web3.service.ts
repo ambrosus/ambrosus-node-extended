@@ -24,6 +24,10 @@ export class Web3Service {
     this.web3.setProvider(config.web3.rpc);
   }
 
+  public createKeyPair() {
+    return this.web3.eth.accounts.create(this.web3.utils.randomHex(32));
+  }
+
   public sign(data) {
     const { signature } = this.web3.eth.accounts.sign(
       this.serializeForHashing(data),

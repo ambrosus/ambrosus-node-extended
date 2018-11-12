@@ -150,7 +150,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"owner\": \"0x2FdB262f0716666Eb0CE32509DB19bE38e58Cd28\",\n\t\"title\": \"ACME ANVIL CO\",\n\t\"timeZone\": \"Australia/Sydney\",\n\t\"legalAddress\": \"1234 Bondi Beach\",\n\t\"active\": true\n}"
+							"raw": "{\n\t\"owner\": \"0x2FdB262f0716666Eb0CE32509DB19bE38e58Cd28\",\n\t\"title\": \"Lazar's emporium of uncanny goods\",\n\t\"timeZone\": \"Australia/Sydney\",\n\t\"legalAddress\": \"1234 Bondi Beach\",\n\t\"active\": true\n}"
 						},
 						"url": {
 							"raw": "{{url}}/organization?",
@@ -349,7 +349,7 @@
 				{
 					"name": "Get Organization Invites",
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
@@ -406,7 +406,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook@ambrosus.com\",\n\t\t\"conor.seabrook2@ambrosus.com\",\n\t\t\"conor.seabrook3@ambrosus.com\",\n\t\t\"conor.seabrook4@ambrosus.com\",\n\t\t\"conor.seabrook5@ambrosus.com\"\n\t\t]\n}\n"
+							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook+test1@ambrosus.com\"\n\t\t]\n}\n"
 						},
 						"url": {
 							"raw": "{{url}}/organization/invite?",
@@ -458,6 +458,134 @@
 								"organization",
 								"invite",
 								"resend"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invite Exists/Valid",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook@ambrosus.com\"\n\t\t]\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/organization/invite/ca07bd5e83cb41ef92f05903820b2199/exists?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization",
+								"invite",
+								"ca07bd5e83cb41ef92f05903820b2199",
+								"exists"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept Invitation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"address\": \"0x203C394e59915f85B9c222f6E15ce1FFF699559E\"\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/organization/invite/614f36f7a40842cb923fb2efeecac008/accept?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization",
+								"invite",
+								"614f36f7a40842cb923fb2efeecac008",
+								"accept"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Invitation",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/organization/invite/ca07bd5e83cb41ef92f05903820b2199?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization",
+								"invite",
+								"ca07bd5e83cb41ef92f05903820b2199"
 							],
 							"query": [
 								{
@@ -585,7 +713,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"test@tessft.comd\"\n}"
+							"raw": "{\n\t\"email\": \"conor.seabrook@ambrosus.com\",\n\t\"fullName\" : \"Conor Seabrook\"\n}"
 						},
 						"url": {
 							"raw": "{{url}}/account/0x2A52139de123c9fa265C206772d1606e326CC044?",

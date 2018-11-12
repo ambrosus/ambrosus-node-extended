@@ -43,15 +43,13 @@ server.setConfig(app => {
   app.use(cors());
   app.use((req, res, next) => {
     res.set('cache-control', 'no-store');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT ');
     next();
   });
 });
-
 server.setErrorConfig(app => {
   app.use((err, req, res, next) => {
     Sentry.captureException(err);
-    res.status(500).send({ error: err.message });
+    res.status(err.code).send({ error: err.message });
   });
 });
 
