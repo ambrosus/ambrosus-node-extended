@@ -153,10 +153,12 @@ export class OrganizationService {
     return this.organizationRequestRepository.create(organizationRequest);
   }
 
-  public getOrganizationInvites(apiQuery: APIQuery): Promise<MongoPagedResult> {
+  public async getOrganizationInvites(apiQuery: APIQuery): Promise<MongoPagedResult> {
     if (!this.user.hasPermission(Permission.super_account)) {
       throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
+    await this.organizationInviteRepository.deleteExpired();
+
     return this.organizationInviteRepository.find(apiQuery);
   }
 
@@ -164,6 +166,7 @@ export class OrganizationService {
     if (!this.user.hasPermission(Permission.super_account)) {
       throw new PermissionError('Your account has insufficient permissions to perform this task');
     }
+    await this.organizationInviteRepository.deleteExpired();
 
     const failed = [];
     const success = [];
@@ -234,13 +237,12 @@ export class OrganizationService {
   }
 
   public async organizationInviteExists(inviteId: string): Promise<boolean> {
+    await this.organizationInviteRepository.deleteExpired();
+
     const apiQuery = new APIQuery({ inviteId });
     const invite = await this.organizationInviteRepository.findOne(apiQuery);
     if (!invite) {
       throw new InvalidError('Invite not found');
-    }
-    if (!invite.validUntil || invite.validUntil <= getTimestamp()) {
-      throw new ExpiredError('Invite has expired');
     }
     return true;
   }
@@ -251,15 +253,12 @@ export class OrganizationService {
   }
 
   public async acceptOrganizationInvite(inviteId: string, address: string) {
+    await this.organizationInviteRepository.deleteExpired();
     const apiQuery = new APIQuery({ inviteId });
     const invite = await this.organizationInviteRepository.findOne(apiQuery);
     if (!invite) {
       throw new InvalidError('Invite not found');
     }
-    if (!invite.validUntil || invite.validUntil <= getTimestamp()) {
-      throw new ExpiredError('Invite has expired');
-    }
-
     await this.accountService.createAccount(
       address,
       1,

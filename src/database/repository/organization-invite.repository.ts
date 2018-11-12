@@ -1,9 +1,11 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPE } from '../../constant';
-import { OrganizationInvite } from '../../model';
+import { APIQuery, OrganizationInvite } from '../../model';
+import { getTimestamp } from '../../util';
 import { DBClient } from '../client';
 import { BaseRepository } from './base.repository';
+import { assertWrappingType } from 'graphql';
 
 @injectable()
 export class OrganizationInviteRepository extends BaseRepository<OrganizationInvite> {
@@ -17,5 +19,15 @@ export class OrganizationInviteRepository extends BaseRepository<OrganizationInv
 
   get paginatedAscending(): boolean {
     return false;
+  }
+
+  public async deleteExpired() {
+    const apiQuery = new APIQuery({ validUntil: { $lte: getTimestamp() } });
+    const invites = await this.collection
+      .find(apiQuery.query, { projection: { inviteId: 1 } })
+      .toArray();
+    for (const invite of invites) {
+      await super.deleteOne(new APIQuery({inviteId: invite.inviteId}));
+    }
   }
 }

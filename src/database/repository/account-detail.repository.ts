@@ -5,6 +5,7 @@ import { AccountDetail, APIQuery, MongoPagedResult } from '../../model';
 import { DBClient } from '../client';
 import { BaseRepository } from './base.repository';
 import { EventEmitter } from 'events';
+import { getTimestamp } from '../../util';
 
 @injectable()
 export class AccountDetailRepository extends BaseRepository<AccountDetail> {
@@ -22,5 +23,13 @@ export class AccountDetailRepository extends BaseRepository<AccountDetail> {
 
   get paginatedAscending(): boolean {
     return false;
+  }
+
+  public async deleteExpired() {
+    const apiQuery = new APIQuery({ validUntil: { $lte: getTimestamp() } });
+    const invites = await this.collection.find(apiQuery);
+    for (const invite of invites) {
+      console.log(invite);
+    }
   }
 }
