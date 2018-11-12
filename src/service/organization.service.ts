@@ -3,8 +3,12 @@ import { inject, injectable } from 'inversify';
 import { DeleteWriteOpResultObject, InsertOneWriteOpResult } from 'mongodb';
 
 import { config } from '../config';
-import { Permission, TYPE, TEMPLATE_ORGANIZATION_APPROVAL, TEMPLATE_ORGANIZATION_DISAPPROVAL } from '../constant/';
-
+import {
+  Permission,
+  TEMPLATE_ORGANIZATION_APPROVAL,
+  TEMPLATE_ORGANIZATION_DISAPPROVAL,
+  TYPE,
+} from '../constant/';
 import {
   OrganizationInviteRepository,
   OrganizationRepository,
@@ -22,10 +26,10 @@ import {
   PermissionError,
   UserPrincipal,
 } from '../model';
+import { CreateError } from '../model/error/create.error';
 import { OrganizationInvite } from '../model/organization/organization-invite.model';
 import { AccountService } from '../service/account.service';
 import { sendEmail } from '../util';
-import { CreateError } from '../model/error/create.error';
 
 //#endregion
 
@@ -233,7 +237,6 @@ export class OrganizationService {
       'Your organization request was not been approved',
       TEMPLATE_ORGANIZATION_DISAPPROVAL
     );
-
   }
   //#endregion
 
