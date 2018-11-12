@@ -1,7 +1,7 @@
 //#region Imports
 import { inject, injectable } from 'inversify';
 import { DeleteWriteOpResultObject, InsertOneWriteOpResult } from 'mongodb';
-
+import * as sgMail from '@sendgrid/mail';
 import { config } from '../config';
 import {
   Permission,
@@ -317,6 +317,19 @@ export class OrganizationService {
         organizationInvite.subject,
         organizationInvite.html
       );
+      // const msg = {
+      //   to: organizationInvite.to,
+      //   from: config.email.from,
+      //   subject: organizationInvite.subject,
+      //   templateId: 'd-0f9b5646779e4e41a62e682f659c3350',
+      //   dynamic_template_data: {
+      //     subject: organizationInvite.subject,
+      //     test_1: 'quick brown fox',
+      //     test_2: ' the lazy dog',
+      //   },
+      // };
+      // sgMail.send(msg);
+
       organizationInvite.sent = true;
       await this.organizationInviteRepository.update(apiQuery, organizationInvite);
     } catch (error) {

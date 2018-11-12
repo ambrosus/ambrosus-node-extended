@@ -11,6 +11,11 @@ import { iocContainer } from './inversify.config';
 import { LoggerService } from './service/logger.service';
 import { AMBAccountProvider } from './middleware/amb-account.provider';
 import * as Sentry from '@sentry/node';
+import * as sgMail from '@sendgrid/mail';
+
+if (config.email.api) {
+  sgMail.setApiKey(config.email.api);
+}
 
 if (config.sentryDsn) {
   Sentry.init({

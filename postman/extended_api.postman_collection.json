@@ -236,7 +236,48 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"Conor's test4\",\n\t\"address\": \"0x6bCa8E9744052C45AdB6a8Db010A43bd933475Aa\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
+							"raw": "{\n\t\"title\": \"Conor wants an org, org.\",\n\t\"address\": \"0x203C394e59915f85B9c222f6E15ce1FFF699559E\",\n\t\"email\": \"conor.seabrook+testOrgRequest1@ambrosus.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/organization/request?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization",
+								"request"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Org Requests",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0xc0ffee254729296a45a3885639AC7E10F9d54979\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
 						},
 						"url": {
 							"raw": "{{url}}/organization/request?",
@@ -301,7 +342,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Org Requests",
+					"name": "Approve Org Request",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -313,22 +354,67 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0xc0ffee254729296a45a3885639AC7E10F9d54979\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
+							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8\",\n\t\"email\": \"testETWT@test.com\"\n}"
 						},
 						"url": {
-							"raw": "{{url}}/organization/request?",
+							"raw": "{{url}}/organization/request/0x203C394e59915f85B9c222f6E15ce1FFF699559E/approve?",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"organization",
-								"request"
+								"request",
+								"0x203C394e59915f85B9c222f6E15ce1FFF699559E",
+								"approve"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refuse Org Request",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8\",\n\t\"email\": \"testETWT@test.com\"\n}"
+						},
+						"url": {
+							"raw": "{{url}}/organization/request/0x203C394e59915f85B9c222f6E15ce1FFF699559E/refuse?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization",
+								"request",
+								"0x203C394e59915f85B9c222f6E15ce1FFF699559E",
+								"refuse"
 							],
 							"query": [
 								{
@@ -406,7 +492,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook+test1@ambrosus.com\"\n\t\t]\n}\n"
+							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook+test1@ambrosus.com\",\n\t\t\"conor.seabrook+test2@ambrosus.com\",\n\t\t\"conor.seabrook+test3@ambrosus.com\",\n\t\t\"conor.seabrook+test4@ambrosus.com\",\n\t\t\"conor.seabrook+test5@ambrosus.com\"\n\t\t]\n}\n"
 						},
 						"url": {
 							"raw": "{{url}}/organization/invite?",
@@ -447,7 +533,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook@ambrosus.com\"\n\t\t]\n}\n"
+							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook+test1@ambrosus.com\",\n\t\t\"conor.seabrook+test2@ambrosus.com\",\n\t\t\"conor.seabrook+test3@ambrosus.com\",\n\t\t\"conor.seabrook+test4@ambrosus.com\",\n\t\t\"conor.seabrook+test5@ambrosus.com\"\n\t\t]\n}\n"
 						},
 						"url": {
 							"raw": "{{url}}/organization/invite/resend?",
@@ -492,14 +578,14 @@
 							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook@ambrosus.com\"\n\t\t]\n}\n"
 						},
 						"url": {
-							"raw": "{{url}}/organization/invite/ca07bd5e83cb41ef92f05903820b2199/exists?",
+							"raw": "{{url}}/organization/invite/6af084827edc4215b7a1234994972e61/exists?",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"organization",
 								"invite",
-								"ca07bd5e83cb41ef92f05903820b2199",
+								"6af084827edc4215b7a1234994972e61",
 								"exists"
 							],
 							"query": [
@@ -535,14 +621,14 @@
 							"raw": "{\n\t\"address\": \"0x203C394e59915f85B9c222f6E15ce1FFF699559E\"\n}\n"
 						},
 						"url": {
-							"raw": "{{url}}/organization/invite/614f36f7a40842cb923fb2efeecac008/accept?",
+							"raw": "{{url}}/organization/invite/0b13b1eb365a416696a970f52bd2287c/accept?",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"organization",
 								"invite",
-								"614f36f7a40842cb923fb2efeecac008",
+								"0b13b1eb365a416696a970f52bd2287c",
 								"accept"
 							],
 							"query": [
