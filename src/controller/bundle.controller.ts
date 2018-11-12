@@ -4,22 +4,25 @@ import { inject } from 'inversify';
 import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { APIQuery, APIResponse, APIResponseMeta } from '../model';
+import { ILogger } from '../interface/logger.inferface';
+import { APIQuery, APIResponse } from '../model';
 import { BundleService } from '../service/bundle.service';
 import { BaseController } from './base.controller';
 
 @controller('/bundle', MIDDLEWARE.Authorized)
 export class BundleController extends BaseController {
-  constructor(@inject(TYPE.BundleService) private bundleService: BundleService) {
-    super();
+  constructor(
+    @inject(TYPE.BundleService) private bundleService: BundleService,
+    @inject(TYPE.LoggerService) protected logger: ILogger
+  ) {
+    super(logger);
   }
 
   @httpGet('/')
   public async getBundles(req: Request): Promise<APIResponse> {
     try {
       const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
-      const apiResponse = APIResponse.fromMongoPagedResult(result);
-      return apiResponse;
+      return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -29,8 +32,7 @@ export class BundleController extends BaseController {
   public async getBundle(@requestParam('bundleId') bundleId: string): Promise<APIResponse> {
     try {
       const result = await this.bundleService.getBundle(bundleId);
-      const apiResponse = APIResponse.fromSingleResult(result);
-      return apiResponse;
+      return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -40,10 +42,7 @@ export class BundleController extends BaseController {
   public async getBundleExists(@requestParam('bundleId') bundleId: string): Promise<APIResponse> {
     try {
       const result = await this.bundleService.getBundleExists(bundleId);
-      const apiResponse = new APIResponse();
-      apiResponse.meta = new APIResponseMeta(200);
-      apiResponse.meta.exists = result;
-      return apiResponse;
+      return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -53,8 +52,7 @@ export class BundleController extends BaseController {
   public async queryBundles(req: Request): Promise<APIResponse> {
     try {
       const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
-      const apiResponse = APIResponse.fromMongoPagedResult(result);
-      return apiResponse;
+      return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
       return super.handleError(err);
     }

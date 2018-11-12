@@ -1,9 +1,10 @@
-// Based on https://www.instagram.com/developer/endpoints/
 import { injectable } from 'inversify';
 
 import { MongoPagedResult } from '../query/mongo-paged-result.model';
 import { APIResponseMeta } from './api-res-meta.model';
 import { APIResponsePagination } from './api-res-pagination.model';
+import { HttpResponseMessage, HttpContent, JsonContent } from 'inversify-express-utils';
+import * as HttpStatus from 'http-status-codes';
 
 export interface IAPIResponse {
   meta: APIResponseMeta;
@@ -12,30 +13,47 @@ export interface IAPIResponse {
 }
 
 @injectable()
-export class APIResponse implements IAPIResponse {
+export class APIResponse extends HttpResponseMessage {
   public static fromMongoPagedResult(mongoPagedResult: MongoPagedResult): APIResponse {
-    const apiResponse = new APIResponse();
-
-    apiResponse.pagination = APIResponsePagination.fromMongoPagedResult(mongoPagedResult);
-    apiResponse.data = mongoPagedResult.results || [];
-    apiResponse.meta = new APIResponseMeta(200);
-    apiResponse.meta.count = apiResponse.data.length;
-    return apiResponse;
-  }
-
-  public static fromSingleResult(result: any): APIResponse {
-    const apiResponse = new APIResponse();
-    if (result) {
-      apiResponse.data = result;
-      apiResponse.meta = new APIResponseMeta(200);
+    const pagination = APIResponsePagination.fromMongoPagedResult(mongoPagedResult);
+    const meta = new APIResponseMeta(HttpStatus.OK);
+    let data = undefined;
+    if (mongoPagedResult.results) {
+      meta.count = mongoPagedResult.results.length;
+      data = mongoPagedResult.results;
     } else {
-      apiResponse.meta = new APIResponseMeta(400);
-      apiResponse.meta.message = 'No results found';
+      meta.message = 'No results found';
+      data = [];
     }
-    return apiResponse;
+    return new APIResponse(data, meta, pagination);
   }
 
-  public meta: any;
-  public data: any;
-  public pagination: any;
+  public static fromSingleResult(result: any, extraMeta?: object): APIResponse {
+    let meta = new APIResponseMeta(HttpStatus.OK);
+    let data = undefined;
+
+    if (result) {
+      data = result;
+    } else {
+      meta.message = 'No results found';
+      data = {};
+    }
+    if (extraMeta) {
+      meta = { ...meta, ...extraMeta };
+    }
+    return new APIResponse(data, meta);
+  }
+
+  public static withMeta(meta: APIResponseMeta): APIResponse {
+    return new APIResponse(undefined, meta);
+  }
+
+  constructor(_data: any, _meta: APIResponseMeta, _pagination?: APIResponsePagination) {
+    super(_meta.code);
+    this.content = new JsonContent({
+      data: _data,
+      meta: _meta,
+      pagination: _pagination,
+    });
+  }
 }

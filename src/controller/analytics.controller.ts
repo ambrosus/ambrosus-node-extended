@@ -3,23 +3,25 @@ import { inject } from 'inversify';
 import { controller, httpGet, requestParam } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
+import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse } from '../model';
 import { AnalyticsService } from '../service/analytics.service';
 import { BaseController } from './base.controller';
 
 @controller('/analytics', MIDDLEWARE.Authorized)
 export class AnalyticsController extends BaseController {
-  constructor(@inject(TYPE.AnalyticsService) private analyticsService: AnalyticsService) {
-    super();
+  constructor(
+    @inject(TYPE.AnalyticsService) private analyticsService: AnalyticsService,
+    @inject(TYPE.LoggerService) protected logger: ILogger
+  ) {
+    super(logger);
   }
 
   @httpGet('/:collection/count')
   public async getCount(@requestParam('collection') collection: string): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.count(collection);
-      const apiResponse = APIResponse.fromSingleResult({ count });
-      apiResponse.meta['collection'] = collection;
-      return apiResponse;
+      return APIResponse.fromSingleResult({ count });
     } catch (err) {
       return super.handleError(err);
     }
@@ -31,9 +33,7 @@ export class AnalyticsController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.countByMonthToDate(collection);
-      const apiResponse = APIResponse.fromSingleResult({ count });
-      apiResponse.meta['collection'] = collection;
-      return apiResponse;
+      return APIResponse.fromSingleResult({ count });
     } catch (err) {
       return super.handleError(err);
     }
@@ -46,9 +46,7 @@ export class AnalyticsController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.countByDate(collection, date);
-      const apiResponse = APIResponse.fromSingleResult({ count });
-      apiResponse.meta['collection'] = collection;
-      return apiResponse;
+      return APIResponse.fromSingleResult({ count });
     } catch (err) {
       return super.handleError(err);
     }
@@ -62,9 +60,7 @@ export class AnalyticsController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.countByDateRange(collection, start, end);
-      const apiResponse = APIResponse.fromSingleResult({ count });
-      apiResponse.meta['collection'] = collection;
-      return apiResponse;
+      return APIResponse.fromSingleResult({ count });
     } catch (err) {
       return super.handleError(err);
     }
@@ -77,9 +73,7 @@ export class AnalyticsController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.countByRollingHours(collection, hours);
-      const apiResponse = APIResponse.fromSingleResult({ count });
-      apiResponse.meta['collection'] = collection;
-      return apiResponse;
+      return APIResponse.fromSingleResult({ count });
     } catch (err) {
       return super.handleError(err);
     }
@@ -92,9 +86,7 @@ export class AnalyticsController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.countByRollingDays(collection, days);
-      const apiResponse = APIResponse.fromSingleResult({ count });
-      apiResponse.meta['collection'] = collection;
-      return apiResponse;
+      return APIResponse.fromSingleResult({ count });
     } catch (err) {
       return super.handleError(err);
     }
@@ -110,9 +102,7 @@ export class AnalyticsController extends BaseController {
         collection,
         APIQuery.fromRequest(req)
       );
-      const apiResponse = APIResponse.fromSingleResult({ count });
-      apiResponse.meta['collection'] = collection;
-      return apiResponse;
+      return APIResponse.fromSingleResult({ count });
     } catch (err) {
       return super.handleError(err);
     }
@@ -128,9 +118,7 @@ export class AnalyticsController extends BaseController {
         collection,
         APIQuery.fromRequest(req)
       );
-      const apiResponse = APIResponse.fromSingleResult({ count });
-      apiResponse.meta['collection'] = collection;
-      return apiResponse;
+      return APIResponse.fromSingleResult({ count });
     } catch (err) {
       return super.handleError(err);
     }

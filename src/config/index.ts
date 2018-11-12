@@ -3,6 +3,9 @@ export const config: any = {
   paginationMax: process.env.PAGINATION_MAX || 50,
   paginationDefault: process.env.PAGINATION_DEFAULT || 10,
   sentryDsn: process.env.SENTRY_DSN,
+  dashboardUrl: process.env.DASHBOARD_URL,
+  encryptionKey: process.env.ENCRYPTION_KEY,
+
   db: {
     hosts: process.env.MONGO_HOSTS || 'localhost:27017',
     dbName: process.env.MONGO_DB_NAME || 'hermes',
@@ -18,5 +21,9 @@ export const config: any = {
   },
   logging: {
     level: process.env.LOG_LEVEL || 'debug',
+  },
+  email: {
+    api: process.env.EMAIL_API_KEY,
+    from: process.env.EMAIL_FROM,
   },
 };

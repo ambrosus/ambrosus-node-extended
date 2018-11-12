@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { ValidationSchema } from 'express-validator/check';
 import { injectable } from 'inversify';
 
-import { getTimestamp } from '../../util/helpers';
+import { getTimestamp } from '../../util';
 import { Account } from './account.model';
 
 export interface IAccountDetail {
@@ -25,10 +25,18 @@ export interface IAccountDetail {
 export class AccountDetail extends Account implements IAccountDetail {
   public static fromRequestForUpdate(req: Request) {
     const accountDetail = new AccountDetail();
-    accountDetail.fullName = req.body.fullName;
-    accountDetail.email = req.body.email;
-    accountDetail.token = req.body.token;
-    accountDetail.timeZone = req.body.timeZone;
+    if (req.body.fullName) {
+      accountDetail.fullName = req.body.fullName;
+    }
+    if (req.body.email) {
+      accountDetail.email = req.body.email;
+    }
+    if (req.body.token) {
+      accountDetail.token = req.body.token;
+    }
+    if (req.body.timeZone) {
+      accountDetail.timeZone = req.body.timeZone;
+    }
     return accountDetail;
   }
 

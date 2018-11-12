@@ -1,17 +1,22 @@
 import { Request } from 'express';
 import { checkSchema } from 'express-validator/check';
+import * as HttpStatus from 'http-status-codes';
 import { inject } from 'inversify';
 import { controller, httpGet, httpPost, request, requestParam } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
+import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse, APIResponseMeta, OrganizationRequest } from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
 
-@controller('/organization/request')
+@controller('/organization/request', MIDDLEWARE.Authorized)
 export class OrganizationRequestController extends BaseController {
-  constructor(@inject(TYPE.OrganizationService) private organizationService: OrganizationService) {
-    super();
+  constructor(
+    @inject(TYPE.OrganizationService) private organizationService: OrganizationService,
+    @inject(TYPE.LoggerService) protected logger: ILogger
+  ) {
+    super(logger);
   }
 
   @httpGet('/', MIDDLEWARE.Authorized, MIDDLEWARE.NodeAdmin)
@@ -20,8 +25,7 @@ export class OrganizationRequestController extends BaseController {
       const result = await this.organizationService.getOrganizationRequests(
         APIQuery.fromRequest(req)
       );
-      const apiResponse = APIResponse.fromMongoPagedResult(result);
-      return apiResponse;
+      return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -33,8 +37,7 @@ export class OrganizationRequestController extends BaseController {
   ): Promise<APIResponse> {
     try {
       const result = await this.organizationService.getOrganizationRequest(address);
-      const apiResponse = APIResponse.fromSingleResult(result);
-      return apiResponse;
+      return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -43,13 +46,11 @@ export class OrganizationRequestController extends BaseController {
   @httpPost('/', ...checkSchema(OrganizationRequest.validationSchema()), MIDDLEWARE.ValidateRequest)
   public async createOrganizationReguest(@request() req: Request): Promise<APIResponse> {
     try {
-      const apiResponse = new APIResponse();
       await this.organizationService.createOrganizationRequest(
         OrganizationRequest.fromRequest(req)
       );
-      apiResponse.meta = new APIResponseMeta(200);
-      apiResponse.meta.message = 'Organization request created';
-      return apiResponse;
+      const meta = new APIResponseMeta(HttpStatus.CREATED, 'Organization request created');
+      return APIResponse.withMeta(meta);
     } catch (err) {
       return super.handleError(err);
     }

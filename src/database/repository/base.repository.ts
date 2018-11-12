@@ -1,14 +1,14 @@
 import { inject, injectable, unmanaged } from 'inversify';
 import * as _ from 'lodash';
 import * as MongoPaging from 'mongo-cursor-pagination';
-import { InsertOneWriteOpResult } from 'mongodb';
+import { InsertOneWriteOpResult, DeleteWriteOpResultObject, InsertWriteOpResult } from 'mongodb';
 
 import { config } from '../../config';
 import { TYPE } from '../../constant';
 import { ILogger } from '../../interface/logger.inferface';
 import { APIQuery, ConnectionError, MongoPagedResult } from '../../model';
 import { DBClient } from '../client';
-import { getTimestamp } from '../../util/helpers';
+import { getTimestamp } from '../../util';
 import { RepositoryError } from '../../model/error/repository.error';
 
 @injectable()
@@ -61,6 +61,23 @@ export class BaseRepository<T> {
     }
   }
 
+  public async createBulk(item: T[]): Promise<number> {
+    this.logger.debug(
+      `
+      ################ createBulk ################
+      collection      ${this.collectionName}:
+      item:          ${JSON.stringify(item)}
+      `
+    );
+    try {
+      const result: InsertWriteOpResult = await this.collection.insertMany(item);
+      return result.result.n;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
+  }
+
   public async update(apiQuery: APIQuery, item: T, create: boolean = false): Promise<T> {
     this.logger.debug(
       `
@@ -85,8 +102,22 @@ export class BaseRepository<T> {
     }
   }
 
-  public delete(id: string): Promise<boolean> {
-    throw new Error('Method not implemented.');
+  public async deleteOne(apiQuery: APIQuery): Promise<DeleteWriteOpResultObject> {
+    this.logger.debug(
+      `
+      ################ deleteOne ################
+      collection      ${this.collectionName}:
+      query:          ${JSON.stringify(apiQuery.query, null, 2)}
+      `
+    );
+
+    try {
+      const result: DeleteWriteOpResultObject = await this.collection.deleteOne(apiQuery.query);
+      return result;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err.message);
+    }
   }
 
   public async count(query: object): Promise<number> {
@@ -282,6 +313,13 @@ export class BaseRepository<T> {
         .find(apiQuery.query, { projection: apiQuery.fields })
         .limit(1)
         .toArray();
+
+      this.logger.debug(
+        `
+      ${JSON.stringify(result, null, 2)}
+      ################ result ################
+      `
+      );
 
       return result[0] || undefined;
     } catch (err) {

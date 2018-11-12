@@ -10,6 +10,7 @@ import { EventController } from './controller/event.controller';
 import { GraphQLController } from './controller/graphql.controller';
 import { OrganizationController } from './controller/organization.controller';
 import { OrganizationRequestController } from './controller/organization-request.controller';
+import { OrganizationInviteController } from './controller/organization-invite.controller';
 import { RootController } from './controller/root.controller';
 import { MetricController } from './controller/metric.controller';
 import { HealthController } from './controller/health.controller';
@@ -22,6 +23,7 @@ import {
   EventRepository,
   OrganizationRepository,
   OrganizationRequestRepository,
+  OrganizationInviteRepository,
 } from './database/repository';
 import { GraphQLSchema, IGraphQLResolver, IGraphQLSchema, IGraphQLType } from './graphql';
 import { AccountResolver, AssetResolver, BundleResolver, EventResolver } from './graphql/resolver';
@@ -75,6 +77,10 @@ iocContainer
   .bind<OrganizationRequestRepository>(TYPE.OrganizationRequestRepository)
   .to(OrganizationRequestRepository)
   .inSingletonScope();
+  iocContainer
+  .bind<OrganizationInviteRepository>(TYPE.OrganizationInviteRepository)
+  .to(OrganizationInviteRepository)
+  .inSingletonScope();
 
 // controllers
 iocContainer.bind<RootController>(TYPE.RootController).to(RootController);
@@ -88,7 +94,9 @@ iocContainer.bind<OrganizationController>(TYPE.OrganizationController).to(Organi
 iocContainer
   .bind<OrganizationRequestController>(TYPE.OrganizationRequestController)
   .to(OrganizationRequestController);
-
+iocContainer
+  .bind<OrganizationInviteController>(TYPE.OrganizationInviteController)
+  .to(OrganizationInviteController);
 iocContainer.bind<MetricController>(TYPE.MetricController).to(MetricController);
 iocContainer.bind<HealthController>(TYPE.HealthController).to(HealthController);
 

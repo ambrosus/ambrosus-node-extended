@@ -5,7 +5,7 @@ import { config } from '../config';
 import { TYPE } from '../constant/types';
 import { AuthenticationError, ValidationError } from '../model';
 import { ILogger } from '../interface/logger.inferface';
-import { matchHexOfLength } from '../util/helpers';
+import { matchHexOfLength } from '../util';
 
 @injectable()
 export class Web3Service {
@@ -22,6 +22,10 @@ export class Web3Service {
     this.web3.eth.accounts.wallet.add(this.w3Account);
     this.web3.eth.defaultAccount = this.w3Account.address;
     this.web3.setProvider(config.web3.rpc);
+  }
+
+  public createKeyPair() {
+    return this.web3.eth.accounts.create(this.web3.utils.randomHex(32));
   }
 
   public sign(data) {

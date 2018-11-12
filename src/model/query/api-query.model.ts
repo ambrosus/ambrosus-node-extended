@@ -3,7 +3,7 @@ import { ValidationSchema } from 'express-validator/check';
 import { injectable } from 'inversify';
 
 import { config } from '../../config';
-import { getMongoFilter, getParamValue, validateOperators } from '../../util/helpers';
+import { getMongoFilter, getParamValue, validateOperators } from '../../util';
 import { ValidationError } from '../error';
 
 export interface IAPIPagination {

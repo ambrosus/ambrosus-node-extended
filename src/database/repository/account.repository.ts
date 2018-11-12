@@ -1,7 +1,14 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPE } from '../../constant';
-import { Account, APIQuery, MongoPagedResult, UserPrincipal, AmbrosusError } from '../../model';
+import {
+  Account,
+  APIQuery,
+  MongoPagedResult,
+  UserPrincipal,
+  AmbrosusError,
+  AccountDetail,
+} from '../../model';
 import { DBClient } from '../client';
 import { BaseRepository } from './base.repository';
 
@@ -19,8 +26,47 @@ export class AccountRepository extends BaseRepository<Account> {
     return false;
   }
 
-  public getAccountForAuthorization(apiQuery: APIQuery): Promise<Account> {
-    return super.findOne(apiQuery);
+  public async getAccountForAuthorization(apiQuery: APIQuery): Promise<AccountDetail> {
+    const pipeline = [
+      {
+        $lookup: {
+          from: 'accountDetail',
+          localField: 'address',
+          foreignField: 'address',
+          as: 'accountDetail',
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              {
+                $arrayElemAt: ['$accountDetail', 0],
+              },
+              '$$ROOT',
+            ],
+          },
+        },
+      },
+      {
+        $match: apiQuery.query,
+      },
+      {
+        $project: {
+          accountDetail: 0,
+          token: 0,
+        },
+      },
+    ];
+    apiQuery.query = pipeline;
+    const result = await super.aggregate(apiQuery);
+    if (result && result.length === 1) {
+      return result[0];
+    }
+    if (result && result.length > 1) {
+      throw new AmbrosusError('Single get query returned more than one object', 400);
+    }
+    return undefined;
   }
 
   public async getAccounts(

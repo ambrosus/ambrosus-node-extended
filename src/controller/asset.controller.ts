@@ -3,22 +3,25 @@ import { inject } from 'inversify';
 import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { APIQuery, APIResponse, APIResponseMeta } from '../model';
+import { ILogger } from '../interface/logger.inferface';
+import { APIQuery, APIResponse } from '../model';
 import { AssetService } from '../service/asset.service';
 import { BaseController } from './base.controller';
 
 @controller('/asset', MIDDLEWARE.Authorized)
 export class AssetController extends BaseController {
-  constructor(@inject(TYPE.AssetService) private assetService: AssetService) {
-    super();
+  constructor(
+    @inject(TYPE.AssetService) private assetService: AssetService,
+    @inject(TYPE.LoggerService) protected logger: ILogger
+  ) {
+    super(logger);
   }
 
   @httpGet('/')
   public async getAssets(req: Request): Promise<APIResponse> {
     try {
       const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
-      const apiResponse = APIResponse.fromMongoPagedResult(result);
-      return apiResponse;
+      return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -28,8 +31,7 @@ export class AssetController extends BaseController {
   public async get(@requestParam('assetId') assetId: string): Promise<APIResponse> {
     try {
       const result = await this.assetService.getAsset(assetId);
-      const apiResponse = APIResponse.fromSingleResult(result);
-      return apiResponse;
+      return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -39,10 +41,7 @@ export class AssetController extends BaseController {
   public async getAssetExists(@requestParam('assetId') assetId: string): Promise<APIResponse> {
     try {
       const result = await this.assetService.getAssetExists(assetId);
-      const apiResponse = new APIResponse();
-      apiResponse.meta = new APIResponseMeta(200);
-      apiResponse.meta.exists = result;
-      return apiResponse;
+      return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -52,8 +51,7 @@ export class AssetController extends BaseController {
   public async query(req: Request): Promise<APIResponse> {
     try {
       const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
-      const apiResponse = APIResponse.fromMongoPagedResult(result);
-      return apiResponse;
+      return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
       return super.handleError(err);
     }

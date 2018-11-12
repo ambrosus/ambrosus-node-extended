@@ -3,23 +3,26 @@ import { inject } from 'inversify';
 import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { APIQuery, APIResponse, APIResponseMeta } from '../model';
+import { ILogger } from '../interface/logger.inferface';
+import { APIQuery, APIResponse } from '../model';
 import { EventService } from '../service/event.service';
-import { getParamValue } from '../util/helpers';
+import { getParamValue } from '../util';
 import { BaseController } from './base.controller';
 
 @controller('/event', MIDDLEWARE.Authorized)
 export class EventController extends BaseController {
-  constructor(@inject(TYPE.EventService) private eventService: EventService) {
-    super();
+  constructor(
+    @inject(TYPE.EventService) private eventService: EventService,
+    @inject(TYPE.LoggerService) protected logger: ILogger
+  ) {
+    super(logger);
   }
 
   @httpGet('/')
   public async getEvents(req: Request): Promise<APIResponse> {
     try {
       const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
-      const apiResponse = APIResponse.fromMongoPagedResult(result);
-      return apiResponse;
+      return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -29,8 +32,7 @@ export class EventController extends BaseController {
   public async getEvent(@requestParam('eventId') eventId: string): Promise<APIResponse> {
     try {
       const result = await this.eventService.getEvent(eventId);
-      const apiResponse = APIResponse.fromSingleResult(result);
-      return apiResponse;
+      return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -40,10 +42,7 @@ export class EventController extends BaseController {
   public async getEventExists(@requestParam('eventId') eventId: string): Promise<APIResponse> {
     try {
       const result = await this.eventService.getEventExists(eventId);
-      const apiResponse = new APIResponse();
-      apiResponse.meta = new APIResponseMeta(200);
-      apiResponse.meta.exists = result;
-      return apiResponse;
+      return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -53,8 +52,7 @@ export class EventController extends BaseController {
   public async queryEvents(req: Request): Promise<APIResponse> {
     try {
       const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
-      const apiResponse = APIResponse.fromMongoPagedResult(result);
-      return apiResponse;
+      return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -64,8 +62,7 @@ export class EventController extends BaseController {
   public async search(req: Request): Promise<APIResponse> {
     try {
       const result = await this.eventService.searchEvents(APIQuery.fromRequest(req));
-      const apiResponse = APIResponse.fromMongoPagedResult(result);
-      return apiResponse;
+      return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -75,8 +72,7 @@ export class EventController extends BaseController {
   public async getEventTypes(req: Request): Promise<APIResponse> {
     try {
       const result = await this.eventService.getEventDistinctField('content.data.type');
-      const apiResponse = APIResponse.fromSingleResult(result);
-      return apiResponse;
+      return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
     }
@@ -92,8 +88,7 @@ export class EventController extends BaseController {
         type,
         APIQuery.fromRequest(req)
       );
-      const apiResponse = APIResponse.fromSingleResult(result);
-      return apiResponse;
+      return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
     }

@@ -6,7 +6,7 @@ import { inject } from 'inversify';
 import { BaseHttpController, controller, httpGet, httpPost } from 'inversify-express-utils';
 import * as url from 'url';
 
-import { TYPE, MIDDLEWARE } from '../constant/types';
+import { MIDDLEWARE, TYPE } from '../constant/types';
 import { IGraphQLSchema } from '../graphql';
 
 @controller('/graphql', MIDDLEWARE.Authorized)

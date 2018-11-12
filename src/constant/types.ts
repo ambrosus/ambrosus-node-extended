@@ -12,6 +12,7 @@ export const TYPE: any = {
   BundleController: Symbol.for('BundleController'),
   OrganizationController: Symbol.for('OrganizationController'),
   OrganizationRequestController: Symbol.for('OrganizationRequestController'),
+  OrganizationInviteController: Symbol.for('OrganizationInviteController'),
 
   MetricController: Symbol.for('MetricController'),
   HealthController: Symbol.for('HealthController'),
@@ -34,6 +35,7 @@ export const TYPE: any = {
   BundleRepository: Symbol.for('BundleRepository'),
   OrganizationRepository: Symbol.for('OrganizationRepository'),
   OrganizationRequestRepository: Symbol.for('OrganizationRequestRepository'),
+  OrganizationInviteRepository: Symbol.for('OrganizationInviteRepository'),
 
   GraphQLSchema: Symbol.for('GraphQLSchema'),
   GraphQLType: Symbol.for('GraphQLType'),

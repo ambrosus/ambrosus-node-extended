@@ -1,15 +1,20 @@
-import { APIResponseMeta, APIResponse } from '../model';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
+
+import { TYPE } from '../constant/types';
+import { ILogger } from '../interface/logger.inferface';
+import { APIResponse, APIResponseMeta } from '../model';
 
 @injectable()
 export class BaseController {
+  constructor(@inject(TYPE.LoggerService) protected logger: ILogger) {}
   protected handleError(err) {
-    const errorResponse = new APIResponse();
-    errorResponse.meta = new APIResponseMeta(err.code);
-    errorResponse.meta.error = err.name;
-    errorResponse.meta.error_message = err.message;
-    errorResponse.data = undefined;
-    errorResponse.pagination = undefined;
-    return errorResponse;
+    const meta = new APIResponseMeta(err.code);
+    meta.code = err.code;
+    meta.error_type = err.name;
+    meta.error_message = err.message;
+
+    this.logger.debug(err.stack);
+
+    return new APIResponse(undefined, meta, undefined);
   }
 }
