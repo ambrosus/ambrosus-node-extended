@@ -30,6 +30,7 @@ import { CreateError } from '../model/error/create.error';
 import { OrganizationInvite } from '../model/organization/organization-invite.model';
 import { AccountService } from '../service/account.service';
 import { sendEmail } from '../util';
+import * as slug from 'slug';
 
 //#endregion
 
@@ -210,7 +211,7 @@ export class OrganizationService {
 
     // Send email
     sendEmail(
-      config.email.from,
+      `no-reply@${slug(this.user.organization.title || 'dashboard')}.com`,
       organizationRequest.email,
       `Your organization request has been approved`,
       TEMPLATE_ORGANIZATION_APPROVAL.replace(/@url/g, url)
@@ -232,7 +233,7 @@ export class OrganizationService {
 
     // Send email
     sendEmail(
-      config.email.from,
+      `no-reply@${slug(this.user.organization.title || 'dashboard')}.com`,
       organizationRequest.email,
       'Your organization request was not been approved',
       TEMPLATE_ORGANIZATION_DISAPPROVAL
@@ -312,7 +313,7 @@ export class OrganizationService {
         throw new Error('No invite found for email.');
       }
       sendEmail(
-        config.email.from,
+        `no-reply@${slug(this.user.organization.title || 'dashboard')}.com`,
         organizationInvite.to,
         organizationInvite.subject,
         organizationInvite.html
