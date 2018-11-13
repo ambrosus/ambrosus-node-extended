@@ -24,6 +24,5 @@ export const config: any = {
   },
   email: {
     api: process.env.EMAIL_API_KEY,
-    from: process.env.EMAIL_FROM,
   },
 };
