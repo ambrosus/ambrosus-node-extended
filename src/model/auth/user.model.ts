@@ -26,7 +26,7 @@ export class User implements IUser {
   }
 
   public hasPermission(permission: string): boolean {
-    return this.account.permissions.indexOf(permission) > -1;
+    return this.account ? this.account.permissions.indexOf(permission) > -1 : false;
   }
 
   public hasAnyPermission(...permission): boolean {
@@ -58,15 +58,15 @@ export class User implements IUser {
   }
 
   get address(): string {
-    return this.account.address;
+    return this.account ? this.account.address : undefined;
   }
 
   get accessLevel(): number {
-    return this.account.accessLevel;
+    return this.account ?  this.account.accessLevel : undefined;
   }
 
   get organizationId(): number {
-    return this.account.organization;
+    return this.account ?  this.account.organization : undefined;
   }
 
   get isSuperAdmin(): boolean {
@@ -74,6 +74,6 @@ export class User implements IUser {
   }
 
   get name(): string {
-    return this.account.fullName;
+    return this.account ?  this.account.fullName : undefined;
   }
 }

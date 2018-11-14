@@ -15,6 +15,7 @@ import { APIQuery, ConnectionError, MongoPagedResult } from '../../model';
 import { DBClient } from '../client';
 import { getTimestamp } from '../../util';
 import { RepositoryError } from '../../model/error/repository.error';
+import { results } from 'inversify-express-utils';
 
 @injectable()
 export class BaseRepository<T> {
@@ -47,10 +48,6 @@ export class BaseRepository<T> {
       throw new ConnectionError('Database client not initialized');
     }
     return this.client.db.collection(this.collectionName);
-  }
-
-  public createSession(): ClientSession {
-    return this.client.mongoClient.startSession();
   }
 
   public async create(item: T): Promise<InsertOneWriteOpResult> {
@@ -193,6 +190,9 @@ export class BaseRepository<T> {
       `exists for ${this.collectionName}:
       ${JSON.stringify(apiQuery, null, 2)}`
     );
+    if (!apiQuery.query.keys.length) {
+      throw new RepositoryError('Invalid query for exists');
+    }
     try {
       const result = await this.collection
         .find(apiQuery.query, { _id: 1 })
@@ -207,9 +207,21 @@ export class BaseRepository<T> {
   }
 
   public async existsOR(obj, ...fields): Promise<boolean> {
-    const qor = _.map(fields, field => {
-      return { [field]: obj[field] };
-    });
+    const qor = _.reduce(
+      fields,
+      (rv, field) => {
+        if (obj.hasOwnProperty(field)) {
+          rv.push({ [field]: obj[field] });
+        }
+        return rv;
+      },
+      []
+    );
+
+    if (!qor.length) {
+      throw new RepositoryError('Invalid query for existsOR');
+    }
+
     this.logger.debug(
       `existsOR for ${this.collectionName}:
       ${JSON.stringify(qor)}`
@@ -290,10 +302,13 @@ export class BaseRepository<T> {
       `
     );
 
+    const projection = Object.keys(apiQuery.fields).length
+      ? { projection: apiQuery.fields }
+      : undefined;
     try {
       const result = await MongoPaging.find(this.collection, {
         query: apiQuery.query,
-        fields: { projection: apiQuery.fields },
+        fields: projection,
         paginatedField: this.paginatedField,
         sortAscending: this.paginatedAscending,
         limit: apiQuery.limit,

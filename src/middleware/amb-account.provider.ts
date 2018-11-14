@@ -38,24 +38,27 @@ export class AMBAccountProvider implements interfaces.AuthProvider {
 
     const user = new UserPrincipal();
     try {
-      const authToken: AuthToken = this.authService.getAuthToken(authorization);
-      const account: AccountDetail = await this.accountService.getAccountForAuth(
-        authToken.createdBy
-      );
-      const organization = await this.organizationService.getOrganizationForAuth(
-        account.organization
-      );
+      const userScope = {};
+      user.authToken = this.authService.getAuthToken(authorization);
 
-      user.authToken = authToken;
-      user.account = account;
-      user.organization = organization;
+      if (user.authToken && user.authToken.createdBy) {
+        user.account = await this.accountService.getAccountForAuth(user.authToken.createdBy);
+        userScope['token:validUntil'] = user.authToken.validUntil;
+        userScope['token:createdBy'] = user.authToken.createdBy;
+      }
+      if (user.account && user.account.organization) {
+        user.organization = await this.organizationService.getOrganizationForAuth(
+          user.account.organization
+        );
+        userScope['account:address'] = user.account.address;
+        userScope['organization:id'] = user.account.organization;
+      }
 
+      if (user.organization) {
+        userScope['organization:title'] = user.organization.title;
+      }
       Sentry.configureScope(scope => {
-        scope.setUser({
-          organizationId: account.organization,
-          address: account.address,
-          valid: authToken.validUntil,
-        });
+        scope.setUser(userScope);
       });
       this.logger.debug(`auth succeeded`);
     } catch (error) {

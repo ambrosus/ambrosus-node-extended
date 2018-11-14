@@ -27,6 +27,7 @@ export const TYPE: any = {
   BundleService: Symbol.for('BundleService'),
   AnalyticsService: Symbol.for('AnalyticsService'),
   OrganizationService: Symbol.for('OrganizationService'),
+  EmailService: Symbol.for('EmailService'),
 
   AccountRepository: Symbol.for('AccountRepository'),
   AccountDetailRepository: Symbol.for('AccountDetailRepository'),
