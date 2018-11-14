@@ -29,8 +29,8 @@ import {
 import { CreateError } from '../model/error/create.error';
 import { OrganizationInvite } from '../model/organization/organization-invite.model';
 import { AccountService } from '../service/account.service';
+import { EmailService } from '../service/email.service';
 import { sendEmail } from '../util';
-import * as slug from 'slug';
 
 //#endregion
 
@@ -46,6 +46,7 @@ export class OrganizationService {
     @inject(TYPE.OrganizationInviteRepository)
     private readonly organizationInviteRepository: OrganizationInviteRepository,
     @inject(TYPE.AccountService) private readonly accountService: AccountService,
+    @inject(TYPE.EmailService) private readonly emailService: EmailService,
     @inject(TYPE.LoggerService) private readonly logger: ILogger
   ) {}
   //#endregion
@@ -210,12 +211,12 @@ export class OrganizationService {
     const url = `${config.dashboardUrl}/login`;
 
     // Send email
-    sendEmail(
-      `no-reply@${slug(this.user.organization.title || 'dashboard')}.com`,
-      organizationRequest.email,
-      `Your organization request has been approved`,
-      TEMPLATE_ORGANIZATION_APPROVAL.replace(/@url/g, url)
-    );
+    // sendEmail(
+    //   `no-reply@${slug(this.user.organization.title || 'dashboard')}.com`,
+    //   organizationRequest.email,
+    //   `Your organization request has been approved`,
+    //   TEMPLATE_ORGANIZATION_APPROVAL.replace(/@url/g, url)
+    // );
   }
 
   public async organizationRequestRefuse(address: string) {
@@ -232,12 +233,12 @@ export class OrganizationService {
     await this.deleteOrganizationRequest(address);
 
     // Send email
-    sendEmail(
-      `no-reply@${slug(this.user.organization.title || 'dashboard')}.com`,
-      organizationRequest.email,
-      'Your organization request was not been approved',
-      TEMPLATE_ORGANIZATION_DISAPPROVAL
-    );
+    // sendEmail(
+    //   `no-reply@${slug(this.user.organization.title || 'dashboard')}.com`,
+    //   organizationRequest.email,
+    //   'Your organization request was not been approved',
+    //   TEMPLATE_ORGANIZATION_DISAPPROVAL
+    // );
   }
   //#endregion
 
@@ -266,15 +267,15 @@ export class OrganizationService {
         this.logger.debug(`${email} is being used by another account`);
         continue;
       }
-      if (await this.organizationInviteRepository.existsOR(organizationInvite, 'to')) {
+      if (await this.organizationInviteRepository.existsOR(organizationInvite, 'email')) {
         failed.push({ email, reason: 'An invite already exists with this email.' });
         this.logger.debug(`An invite for ${email} already exists.`);
         continue;
       }
       try {
         await this.organizationInviteRepository.create(organizationInvite);
-        await this.sendOrganizationInviteEmail(organizationInvite.to);
-        success.push(organizationInvite.to);
+        await this.emailService.sendInvitation(organizationInvite);
+        success.push(organizationInvite.email);
       } catch (error) {
         failed.push({ email, reason: error.message });
         this.logger.debug(`An invite for ${email} already exists.`);
@@ -284,7 +285,7 @@ export class OrganizationService {
     return { sent: success, errors: failed };
   }
 
-  public async resendOrganizationInviteEmails(emails: string[]): Promise<any> {
+  public async resendOrganizationInvites(emails: string[]): Promise<any> {
     if (!this.user.hasPermission(Permission.super_account)) {
       throw new PermissionError();
     }
@@ -292,7 +293,13 @@ export class OrganizationService {
     const success = [];
     for (const email of emails) {
       try {
-        await this.sendOrganizationInviteEmail(email);
+        const apiQuery = new APIQuery({ email });
+        const organizationInvite = await this.organizationInviteRepository.findOne(apiQuery);
+        if (!organizationInvite) {
+          throw new Error('No invite found for email.');
+        }
+        await this.emailService.sendInvitation(organizationInvite);
+        await this.organizationInviteRepository.update(apiQuery, organizationInvite);
         success.push(email);
       } catch (error) {
         failed.push({ email, reason: error.message });
@@ -302,49 +309,13 @@ export class OrganizationService {
     return { sent: success, errors: failed };
   }
 
-  public async sendOrganizationInviteEmail(email: string) {
-    if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError();
-    }
-    try {
-      const apiQuery = new APIQuery({ to: email });
-      const organizationInvite = await this.organizationInviteRepository.findOne(apiQuery);
-      if (!organizationInvite) {
-        throw new Error('No invite found for email.');
-      }
-      sendEmail(
-        `no-reply@${slug(this.user.organization.title || 'dashboard')}.com`,
-        organizationInvite.to,
-        organizationInvite.subject,
-        organizationInvite.html
-      );
-      // const msg = {
-      //   to: organizationInvite.to,
-      //   from: config.email.from,
-      //   subject: organizationInvite.subject,
-      //   templateId: 'd-0f9b5646779e4e41a62e682f659c3350',
-      //   dynamic_template_data: {
-      //     subject: organizationInvite.subject,
-      //     test_1: 'quick brown fox',
-      //     test_2: ' the lazy dog',
-      //   },
-      // };
-      // sgMail.send(msg);
-
-      organizationInvite.sent = true;
-      await this.organizationInviteRepository.update(apiQuery, organizationInvite);
-    } catch (error) {
-      throw error;
-    }
-  }
-
   public async organizationInviteExists(inviteId: string): Promise<boolean> {
     await this.organizationInviteRepository.deleteExpired();
 
     const apiQuery = new APIQuery({ inviteId });
     const invite = await this.organizationInviteRepository.findOne(apiQuery);
     if (!invite) {
-      throw new InvalidError('Invite not found.');
+      throw new Error('Invite not found.');
     }
     return true;
   }
@@ -366,7 +337,7 @@ export class OrganizationService {
       1,
       invite.organizationId,
       [Permission.create_asset, Permission.create_event],
-      invite.to,
+      invite.email,
       undefined,
       invite.createdBy
     );

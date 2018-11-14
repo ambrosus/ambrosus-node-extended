@@ -12,7 +12,7 @@ export class OrganizationRequestRepository extends BaseRepository<OrganizationRe
   }
 
   get paginatedField(): string {
-    return 'createdOn';
+    return '_id';
   }
 
   get paginatedAscending(): boolean {

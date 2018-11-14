@@ -10,7 +10,7 @@ import { APIQuery, APIResponse, APIResponseMeta, OrganizationRequest } from '../
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
 
-@controller('/organization/request', MIDDLEWARE.Authorized)
+@controller('/organization/request')
 export class OrganizationRequestController extends BaseController {
   constructor(
     @inject(TYPE.OrganizationService) private organizationService: OrganizationService,

@@ -37,6 +37,8 @@ import { AuthService } from './service/auth.service';
 import { BundleService } from './service/bundle.service';
 import { EventService } from './service/event.service';
 import { LoggerService } from './service/logger.service';
+import { EmailService } from './service/email.service';
+
 import { OrganizationService } from './service/organization.service';
 import { Web3Service } from './service/web3.service';
 
@@ -77,7 +79,7 @@ iocContainer
   .bind<OrganizationRequestRepository>(TYPE.OrganizationRequestRepository)
   .to(OrganizationRequestRepository)
   .inSingletonScope();
-  iocContainer
+iocContainer
   .bind<OrganizationInviteRepository>(TYPE.OrganizationInviteRepository)
   .to(OrganizationInviteRepository)
   .inSingletonScope();
@@ -110,6 +112,7 @@ iocContainer.bind<EventService>(TYPE.EventService).to(EventService);
 iocContainer.bind<BundleService>(TYPE.BundleService).to(BundleService);
 iocContainer.bind<AnalyticsService>(TYPE.AnalyticsService).to(AnalyticsService);
 iocContainer.bind<OrganizationService>(TYPE.OrganizationService).to(OrganizationService);
+iocContainer.bind<EmailService>(TYPE.EmailService).to(EmailService);
 
 // middleware
 iocContainer.bind<AuthorizedMiddleware>(MIDDLEWARE.Authorized).to(AuthorizedMiddleware);

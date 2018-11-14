@@ -22,7 +22,7 @@ export class AuthorizedMiddleware extends BaseMiddleware {
       this.logger.debug(`Token `);
       const meta: APIResponseMeta = new APIResponseMeta(HttpStatus.UNAUTHORIZED);
       meta.error_type = 'AuthenticationError';
-      meta.error_message = `Unauthorized ${user ? user.notAuthorizedReason() : ''}`;
+      meta.error_message = `Unauthorized: ${user ? user.notAuthorizedReason() : ''}`;
 
       return res.status(meta.code).json({ meta });
     }

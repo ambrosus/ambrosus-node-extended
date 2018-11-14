@@ -7,6 +7,8 @@ import { ConnectionError } from '../model';
 import { EventEmitter } from 'events';
 import * as Sentry from '@sentry/node';
 
+type DBClientProvider = () => Promise<DBClient>;
+
 @injectable()
 export class DBClient {
   public db: Db;

@@ -115,7 +115,7 @@ export class OrganizationInviteController extends BaseController {
   )
   public async resendOrganizationInviteEmails(@requestBody() reqBody: any): Promise<APIResponse> {
     try {
-      const result = await this.organizationService.resendOrganizationInviteEmails(reqBody.email);
+      const result = await this.organizationService.resendOrganizationInvites(reqBody.email);
       return APIResponse.fromSingleResult(result);
     } catch (err) {
       return super.handleError(err);
