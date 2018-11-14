@@ -17,10 +17,18 @@ export interface IOrganizationRequest {
 export class OrganizationRequest implements IOrganizationRequest {
   public static fromRequest(req: Request) {
     const organizationRequest = new OrganizationRequest();
-    organizationRequest.title = req.body.title;
-    organizationRequest.address = req.body.address;
-    organizationRequest.email = req.body.email;
-    organizationRequest.message = req.body.message;
+    if (undefined !== req.body['title']) {
+      organizationRequest.title = req.body.title;
+    }
+    if (undefined !== req.body['address']) {
+      organizationRequest.address = req.body.address;
+    }
+    if (undefined !== req.body['email']) {
+      organizationRequest.email = req.body.email;
+    }
+    if (undefined !== req.body['message']) {
+      organizationRequest.message = req.body.message;
+    }
     return organizationRequest;
   }
 
@@ -30,8 +38,8 @@ export class OrganizationRequest implements IOrganizationRequest {
         in: ['body'],
         optional: true,
         isLength: {
-          errorMessage: 'Organization title may not exceed 200 characters',
-          options: { max: 200 },
+          errorMessage: 'Organization title may not exceed 100 characters',
+          options: { max: 100 },
         },
       },
       address: {
