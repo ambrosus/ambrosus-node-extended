@@ -25,16 +25,16 @@ export interface IAccountDetail {
 export class AccountDetail extends Account implements IAccountDetail {
   public static fromRequestForUpdate(req: Request) {
     const accountDetail = new AccountDetail();
-    if (req.body.fullName) {
+    if (undefined !== req.body['fullName']) {
       accountDetail.fullName = req.body.fullName;
     }
-    if (req.body.email) {
+    if (undefined !== req.body['email']) {
       accountDetail.email = req.body.email;
     }
-    if (req.body.token) {
+    if (undefined !== req.body['token']) {
       accountDetail.token = req.body.token;
     }
-    if (req.body.timeZone) {
+    if (undefined !== req.body['timeZone']) {
       accountDetail.timeZone = req.body.timeZone;
     }
     return accountDetail;

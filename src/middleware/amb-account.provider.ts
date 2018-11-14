@@ -60,6 +60,7 @@ export class AMBAccountProvider implements interfaces.AuthProvider {
       Sentry.configureScope(scope => {
         scope.setUser(userScope);
       });
+      console.log(user);
       this.logger.debug(`auth succeeded`);
     } catch (error) {
       this.logger.warn(`auth failed: ${error}`);

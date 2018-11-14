@@ -24,5 +24,9 @@ export const config: any = {
   },
   email: {
     api: process.env.EMAIL_API_KEY,
+    defaultFrom: process.env.EMAIL_DEFAULT_FROM || 'no-reply@ambrosus.com',
+    templateIdInvite: process.env.EMAIL_TMPL_ID_INVITE,
+    templateIdOrgReqApprove: process.env.EMAIL_TMPL_ID_ORGREQ_APPROVE,
+    templateIdOrgReqRefuse: process.env.EMAIL_TMPL_ID_ORGREQ_REFUSE,
   },
 };

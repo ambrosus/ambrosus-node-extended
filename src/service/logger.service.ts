@@ -48,7 +48,7 @@ export class LoggerService implements ILogger {
 
   public captureError(error: Error, ...args: any[]): void {
     Sentry.captureException(error);
-    this.log('error', error.message, args);
+    this.log('error', error.message, [error.stack]);
   }
 
   private log(level: string, message: string, args: any[]): void {

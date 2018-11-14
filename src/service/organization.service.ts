@@ -1,14 +1,8 @@
 //#region Imports
 import { inject, injectable } from 'inversify';
 import { DeleteWriteOpResultObject, InsertOneWriteOpResult } from 'mongodb';
-import * as sgMail from '@sendgrid/mail';
-import { config } from '../config';
-import {
-  Permission,
-  TEMPLATE_ORGANIZATION_APPROVAL,
-  TEMPLATE_ORGANIZATION_DISAPPROVAL,
-  TYPE,
-} from '../constant/';
+
+import { Permission, TYPE } from '../constant/';
 import {
   OrganizationInviteRepository,
   OrganizationRepository,
@@ -30,7 +24,6 @@ import { CreateError } from '../model/error/create.error';
 import { OrganizationInvite } from '../model/organization/organization-invite.model';
 import { AccountService } from '../service/account.service';
 import { EmailService } from '../service/email.service';
-import { sendEmail } from '../util';
 
 //#endregion
 
@@ -205,18 +198,11 @@ export class OrganizationService {
       this.user.address
     );
 
+    // Send email
+    await this.emailService.sendOrganizationRequestApproval(organizationRequest);
+
     // Remove organization request
     await this.deleteOrganizationRequest(address);
-
-    const url = `${config.dashboardUrl}/login`;
-
-    // Send email
-    // sendEmail(
-    //   `no-reply@${slug(this.user.organization.title || 'dashboard')}.com`,
-    //   organizationRequest.email,
-    //   `Your organization request has been approved`,
-    //   TEMPLATE_ORGANIZATION_APPROVAL.replace(/@url/g, url)
-    // );
   }
 
   public async organizationRequestRefuse(address: string) {
@@ -229,16 +215,11 @@ export class OrganizationService {
       throw new NotFoundError('Organization request not found.');
     }
 
+    // Send email
+    await this.emailService.sendOrganizationRequestRefuse(organizationRequest);
+
     // Remove organization request
     await this.deleteOrganizationRequest(address);
-
-    // Send email
-    // sendEmail(
-    //   `no-reply@${slug(this.user.organization.title || 'dashboard')}.com`,
-    //   organizationRequest.email,
-    //   'Your organization request was not been approved',
-    //   TEMPLATE_ORGANIZATION_DISAPPROVAL
-    // );
   }
   //#endregion
 

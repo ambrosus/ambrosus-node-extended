@@ -64,16 +64,16 @@ export class Organization implements IOrganization {
         in: ['body'],
         optional: true,
         isLength: {
-          errorMessage: 'title may not exceed 200 characters',
-          options: { max: 200 },
+          errorMessage: 'title may not exceed 100 characters',
+          options: { max: 100 },
         },
       },
       timeZone: {
         in: ['body'],
         optional: true,
         isLength: {
-          errorMessage: 'Time zone may not exceed 200 characters',
-          options: { max: 200 },
+          errorMessage: 'Time zone may not exceed 50 characters',
+          options: { max: 50 },
         },
       },
       active: {
