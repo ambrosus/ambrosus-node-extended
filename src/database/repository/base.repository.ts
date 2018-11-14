@@ -98,6 +98,7 @@ export class BaseRepository<T> {
         apiQuery.query,
         { $set: item },
         {
+          returnOriginal: false,
           upsert: create,
         }
       );

@@ -3,6 +3,7 @@ import { injectable } from 'inversify';
 import { ValidationSchema } from 'express-validator/check';
 import web3 = require('web3');
 import { getTimestamp } from '../../util';
+import { controller } from 'inversify-express-utils';
 
 export interface IOrganization {
   _id: string;
@@ -32,26 +33,26 @@ export class Organization implements IOrganization {
 
   public static fromRequestForUpdate(req: Request) {
     const organization = new Organization();
-    if (req.body.title) {
+    if (undefined !== req.body['title']) {
       organization.title = req.body.title;
     }
-    if (req.body.timeZone) {
+    if (undefined !== req.body['timeZone']) {
       organization.timeZone = req.body.timeZone;
     }
-    if (req.body.active) {
+    if (undefined !== req.body['active']) {
       organization.active = req.body.active;
     }
-    if (req.body.legalAddress) {
+    if (undefined !== req.body['legalAddress']) {
       organization.legalAddress = req.body.legalAddress;
     }
     return organization;
   }
 
-  public static validationSchema(): ValidationSchema {
+  public static validationSchema(update: boolean = false): ValidationSchema {
     return {
       owner: {
         in: ['body'],
-        optional: false,
+        optional: update ? true : false,
         custom: {
           options: (value, { req, location, path }) => {
             return web3.utils.isAddress(value);
@@ -63,23 +64,24 @@ export class Organization implements IOrganization {
         in: ['body'],
         optional: true,
         isLength: {
-          errorMessage: 'title may not exceed 200 characters',
-          options: { max: 200 },
+          errorMessage: 'title may not exceed 100 characters',
+          options: { max: 100 },
         },
       },
       timeZone: {
         in: ['body'],
         optional: true,
         isLength: {
-          errorMessage: 'Time zone may not exceed 200 characters',
-          options: { max: 200 },
+          errorMessage: 'Time zone may not exceed 50 characters',
+          options: { max: 50 },
         },
       },
       active: {
         in: ['body'],
-        optional: false,
+        optional: update ? true : false,
         errorMessage: 'Invalid value',
         isBoolean: true,
+        toBoolean: true,
       },
       legalAddress: {
         in: ['body'],

@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { checkSchema, param } from 'express-validator/check';
+import { checkSchema, param, body } from 'express-validator/check';
 import * as HttpStatus from 'http-status-codes';
 import { inject } from 'inversify';
 import {
@@ -90,7 +90,10 @@ export class OrganizationController extends BaseController {
     '/:organizationId',
     param('organizationId')
       .isInt()
-      .toInt()
+      .toInt(),
+    ...checkSchema(Organization.validationSchema(true)),
+    MIDDLEWARE.ValidateRequest,
+    MIDDLEWARE.NodeAdmin
   )
   public async updateOrganization(
     @requestParam('organizationId') organizationId: number,

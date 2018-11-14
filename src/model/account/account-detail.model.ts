@@ -25,16 +25,16 @@ export interface IAccountDetail {
 export class AccountDetail extends Account implements IAccountDetail {
   public static fromRequestForUpdate(req: Request) {
     const accountDetail = new AccountDetail();
-    if (req.body.fullName) {
+    if (undefined !== req.body['fullName']) {
       accountDetail.fullName = req.body.fullName;
     }
-    if (req.body.email) {
+    if (undefined !== req.body['email']) {
       accountDetail.email = req.body.email;
     }
-    if (req.body.token) {
+    if (undefined !== req.body['token']) {
       accountDetail.token = req.body.token;
     }
-    if (req.body.timeZone) {
+    if (undefined !== req.body['timeZone']) {
       accountDetail.timeZone = req.body.timeZone;
     }
     return accountDetail;
@@ -46,8 +46,8 @@ export class AccountDetail extends Account implements IAccountDetail {
         in: ['body'],
         optional: true,
         isLength: {
-          errorMessage: 'Full name may not exceed 200 characters',
-          options: { max: 200 },
+          errorMessage: 'Full name may not exceed 100 characters',
+          options: { max: 100 },
         },
       },
       email: {
@@ -65,8 +65,8 @@ export class AccountDetail extends Account implements IAccountDetail {
         in: ['body'],
         optional: true,
         isLength: {
-          errorMessage: 'Message may not exceed 1024 characters',
-          options: { max: 1024 },
+          errorMessage: 'Timezone may not exceed 50 characters',
+          options: { max: 50 },
         },
       },
     };
