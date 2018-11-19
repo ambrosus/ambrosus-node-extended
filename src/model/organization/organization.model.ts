@@ -6,17 +6,17 @@ import { getTimestamp } from '../../util';
 import { controller } from 'inversify-express-utils';
 
 export interface IOrganization {
-  _id: string;
+  _id?: string;
   organizationId: number;
   owner: string;
-  title: string;
-  timeZone: string;
+  title?: string;
+  timeZone?: string;
   active: boolean;
-  legalAddress: string;
-  createdBy: string;
-  createdOn: number;
-  modifiedBy: string;
-  modifiedOn: number;
+  legalAddress?: string;
+  createdBy?: string;
+  createdOn?: number;
+  modifiedBy?: string;
+  modifiedOn?: number;
 }
 
 @injectable()
@@ -94,17 +94,17 @@ export class Organization implements IOrganization {
     };
   }
 
-  public _id: string;
+  public _id?: string;
   public organizationId: number;
   public owner: string;
-  public title: string;
-  public timeZone: string;
+  public title?: string;
+  public timeZone?: string;
   public active: boolean;
-  public legalAddress: string;
-  public createdBy: string;
-  public createdOn: number;
-  public modifiedBy: string;
-  public modifiedOn: number;
+  public legalAddress?: string;
+  public createdBy?: string;
+  public createdOn?: number;
+  public modifiedBy?: string;
+  public modifiedOn?: number;
 
   public setCreationTimestamp(address: string) {
     this.createdOn = getTimestamp();

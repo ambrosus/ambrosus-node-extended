@@ -27,7 +27,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0xc0ffee254729296a45a3885639AC7E10F9d54979\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{url}}/organization?",
@@ -67,7 +67,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0xc0ffee254729296a45a3885639AC7E10F9d54979\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{url}}/organization/27?",
@@ -108,7 +108,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0xc0ffee254729296a45a3885639AC7E10F9d54979\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{url}}/organization/27/accounts?",
@@ -150,7 +150,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"owner\": \"0x2FdB262f0716666Eb0CE32509DB19bE38e58Cd28\",\n\t\"title\": \"Lazar's emporium of uncanny goods\",\n\t\"timeZone\": \"Australia/Sydney\",\n\t\"legalAddress\": \"1234 Bondi Beach\",\n\t\"active\": true\n}"
+							"raw": "{\n\t\"owner\": \"0x2A52139de123c9fa265C206772d1606e326CC044\",\n\t\"title\": \"Fast eddies musical chairs\",\n\t\"timeZone\": \"Australia/Sydney\",\n\t\"legalAddress\": \"1234 Bondi Beach\",\n\t\"active\": true\n}"
 						},
 						"url": {
 							"raw": "{{url}}/organization?",
@@ -190,16 +190,16 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"Bando Chemical Industries 111\",\n\t\"timeZone\": \"Asia/Tokyo\",\n\t\"legalAddress\": \"104-0031 Kyobashi MID Bldg., 13-10, Kyobashi 2-chome, Chuo-ku, Tokyo\",\n\t\"active\": \"true\"\n}"
+							"raw": "{\n\t\"active\": true,\n\t\"title\": \"Conor's cool organization\"\n}"
 						},
 						"url": {
-							"raw": "{{url}}/organization/27?",
+							"raw": "{{url}}/organization/18?",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"organization",
-								"27"
+								"18"
 							],
 							"query": [
 								{
@@ -277,7 +277,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0xc0ffee254729296a45a3885639AC7E10F9d54979\",\n\t\"email\": \"testETWT@test.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{url}}/organization/request?",
@@ -287,6 +287,48 @@
 							"path": [
 								"organization",
 								"request"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Org Requests Refused",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/organization/request/refused?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"organization",
+								"request",
+								"refused"
 							],
 							"query": [
 								{
@@ -318,7 +360,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8\",\n\t\"email\": \"testETWT@test.com\"\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{url}}/organization/request/0xc0ffee254729296a45a3885639AC7E10F9d54979?",
@@ -360,7 +402,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8\",\n\t\"email\": \"testETWT@test.com\"\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{url}}/organization/request/0x203C394e59915f85B9c222f6E15ce1FFF699559E/approve?",
@@ -403,7 +445,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"Conor's test\",\n\t\"address\": \"0x8575FC91c647133Aa3Bc3A087B2F63de51ED68C8\",\n\t\"email\": \"testETWT@test.com\"\n}"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{url}}/organization/request/0x203C394e59915f85B9c222f6E15ce1FFF699559E/refuse?",
@@ -451,7 +493,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook@ambrosus.com\",\n\t\t\"conor.seabrook2@ambrosus.com\",\n\t\t\"conor.seabrook3@ambrosus.com\",\n\t\t\"conor.seabrook4@ambrosus.com\",\n\t\t\"conor.seabrook5@ambrosus.com\"\n\t\t]\n}\n"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{url}}/organization/invite?",
@@ -533,7 +575,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook+test1@ambrosus.com\",\n\t\t\"conor.seabrook+test2@ambrosus.com\",\n\t\t\"conor.seabrook+test3@ambrosus.com\",\n\t\t\"conor.seabrook+test4@ambrosus.com\",\n\t\t\"conor.seabrook+test5@ambrosus.com\"\n\t\t]\n}\n"
+							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook+test1@ambrosus.com\"\n\t\t]\n}\n"
 						},
 						"url": {
 							"raw": "{{url}}/organization/invite/resend?",
@@ -575,17 +617,17 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook@ambrosus.com\"\n\t\t]\n}\n"
+							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/organization/invite/6af084827edc4215b7a1234994972e61/exists?",
+							"raw": "{{url}}/organization/invite/75217052010a494183d9f577712d6ad9/exists?",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"organization",
 								"invite",
-								"6af084827edc4215b7a1234994972e61",
+								"75217052010a494183d9f577712d6ad9",
 								"exists"
 							],
 							"query": [
@@ -1826,7 +1868,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"query\": [{\n\t\t\"field\": \"content.data.type\",\n\t\t\"value\": \"ambrosus.asset.info\",\n\t\t\"operator\": \"equal\"\n\t},\n\t{\n\t\t\"field\": \"content.data.name\",\n\t\t\"value\": \"cow\",\n\t\t\"operator\": \"contains\"\n\t}],\n\t\"limit\": 10\n}\n"
+							"raw": ""
 						},
 						"url": {
 							"raw": "{{url}}/event/lookup/types",

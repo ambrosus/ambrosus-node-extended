@@ -11,6 +11,7 @@ export interface IOrganizationRequest {
   email: string;
   message: string;
   createdOn: number;
+  refused: boolean;
 }
 
 @injectable()
@@ -75,6 +76,7 @@ export class OrganizationRequest implements IOrganizationRequest {
   public email: string;
   public message: string;
   public createdOn: number;
+  public refused: boolean;
 
   public setCreationTimestamp() {
     this.createdOn = getTimestamp();
