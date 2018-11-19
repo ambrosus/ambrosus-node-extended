@@ -77,7 +77,7 @@ export class OrganizationRequest implements IOrganizationRequest {
   public message: string;
   public createdOn: number;
   public refused: boolean;
-  
+
   public setCreationTimestamp() {
     this.createdOn = getTimestamp();
   }
