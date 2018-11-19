@@ -31,6 +31,18 @@ export class OrganizationRequestController extends BaseController {
     }
   }
 
+  @httpGet('/refused', MIDDLEWARE.Authorized, MIDDLEWARE.NodeAdmin)
+  public async getOrganizationReguestsRefused(req: Request): Promise<APIResponse> {
+    try {
+      const result = await this.organizationService.getOrganizationRequestsRefused(
+        APIQuery.fromRequest(req)
+      );
+      return APIResponse.fromMongoPagedResult(result);
+    } catch (err) {
+      return super.handleError(err);
+    }
+  }
+
   @httpGet('/:address', MIDDLEWARE.Authorized, MIDDLEWARE.NodeAdmin)
   public async getOrganizationReguest(
     @requestParam('address') address: string

@@ -116,6 +116,15 @@ export class OrganizationService {
     if (!this.user.hasPermission(Permission.super_account)) {
       throw new PermissionError();
     }
+    apiQuery.addToQuery({refused: {$ne: true}});
+    return this.organizationRequestRepository.find(apiQuery);
+  }
+
+  public getOrganizationRequestsRefused(apiQuery: APIQuery): Promise<MongoPagedResult> {
+    if (!this.user.hasPermission(Permission.super_account)) {
+      throw new PermissionError();
+    }
+    apiQuery.addToQuery({refused: true});
     return this.organizationRequestRepository.find(apiQuery);
   }
 
@@ -218,8 +227,10 @@ export class OrganizationService {
     // Send email
     await this.emailService.sendOrganizationRequestRefuse(organizationRequest);
 
-    // Remove organization request
-    await this.deleteOrganizationRequest(address);
+    // Mark organization request refused
+    organizationRequest.refused = true;
+    const apiQuery = new APIQuery({ address });
+    await this.organizationRequestRepository.update(apiQuery, organizationRequest);
   }
   //#endregion
 

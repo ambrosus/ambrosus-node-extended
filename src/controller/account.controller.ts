@@ -29,8 +29,7 @@ export class AccountController extends BaseController {
     super(logger);
   }
   @httpGet(
-    '/keyPair',
-    MIDDLEWARE.NodeAdmin
+    '/keyPair'
   )
   public async getKeyPair(): Promise<APIResponse> {
     try {
