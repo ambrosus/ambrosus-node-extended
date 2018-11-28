@@ -25,7 +25,7 @@ export class OrganizationInviteRepository extends BaseRepository<OrganizationInv
     await this.getConnection();
 
     const apiQuery = new APIQuery({ validUntil: { $lte: getTimestamp() } });
-    const invites = this.collection
+    const invites = await this.collection
       .find(apiQuery.query, { projection: { inviteId: 1 } })
       .toArray();
     for (const invite of invites) {
