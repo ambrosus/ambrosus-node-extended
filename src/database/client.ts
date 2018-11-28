@@ -20,9 +20,7 @@ export class DBClient {
 
   constructor(
     @inject(TYPE.LoggerService) private logger: LoggerService
-  ) {
-    this.connect();
-  }
+  ) { }
 
   public async getConnection(): Promise<Db> {
     if (this.connected) { return this.db; }

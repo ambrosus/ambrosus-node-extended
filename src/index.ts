@@ -34,8 +34,8 @@ const server = new InversifyExpressServer(
 );
 
 const logger = iocContainer.get<LoggerService>(TYPE.LoggerService);
-// start database connection
 const db: DBClient = iocContainer.get<DBClient>(TYPE.DBClient);
+db.getConnection().then();
 
 server.setConfig(app => {
   app.use(Sentry.Handlers.requestHandler());
