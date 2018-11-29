@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { body } from 'express-validator/check';
 import * as HttpStatus from 'http-status-codes';
 import { inject } from 'inversify';
@@ -17,8 +17,12 @@ import { APIQuery, APIResponse, APIResponseMeta } from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
 
-@controller('/organization/invite')
+@controller(
+  '/organization/invite',
+  MIDDLEWARE.Context
+)
 export class OrganizationInviteController extends BaseController {
+
   constructor(
     @inject(TYPE.OrganizationService) private organizationService: OrganizationService,
     @inject(TYPE.LoggerService) protected logger: ILogger
@@ -26,27 +30,32 @@ export class OrganizationInviteController extends BaseController {
     super(logger);
   }
 
-  @httpGet('/', MIDDLEWARE.Authorized, MIDDLEWARE.NodeAdmin)
-  public async getOrganizationInvites(req: Request): Promise<APIResponse> {
+  @httpGet(
+    '/',
+    MIDDLEWARE.Authorized,
+    MIDDLEWARE.NodeAdmin
+  )
+  public async getOrganizationInvites(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       const result = await this.organizationService.getOrganizationInvites(
         APIQuery.fromRequest(req)
       );
       return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
   @httpGet('/:inviteId/exists')
   public async getOrganizationInviteVerification(
-    @requestParam('inviteId') inviteId: string
+    @requestParam('inviteId') inviteId: string,
+    req: Request, res: Response, next: NextFunction
   ): Promise<APIResponse> {
     try {
       const result = await this.organizationService.organizationInviteExists(inviteId);
       return APIResponse.fromSingleResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
@@ -57,22 +66,24 @@ export class OrganizationInviteController extends BaseController {
   )
   public async acceptOrganizationInvite(
     @requestParam('inviteId') inviteId: string,
-    @requestBody() invite: any
+    @requestBody() invite: any,
+    req: Request, res: Response, next: NextFunction
   ): Promise<APIResponse> {
     try {
       const result = await this.organizationService.acceptOrganizationInvite(
         inviteId,
         invite.address
       );
-      return APIResponse.fromSingleResult(result, {message: 'Account created'});
+      return APIResponse.fromSingleResult(result, { message: 'Account created' });
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
   @httpDelete('/:inviteId', MIDDLEWARE.Authorized, MIDDLEWARE.NodeAdmin)
   public async deleteOrganizationInvite(
-    @requestParam('inviteId') inviteId: string
+    @requestParam('inviteId') inviteId: string,
+    req: Request, res: Response, next: NextFunction
   ): Promise<APIResponse> {
     try {
       const deleteOp = await this.organizationService.deleteOrganizationInvite(inviteId);
@@ -84,7 +95,7 @@ export class OrganizationInviteController extends BaseController {
       meta['deleted'] = deleteOp.result.n;
       return APIResponse.withMeta(meta);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
@@ -96,12 +107,15 @@ export class OrganizationInviteController extends BaseController {
     MIDDLEWARE.Authorized,
     MIDDLEWARE.NodeAdmin
   )
-  public async createOrganizationInvite(@requestBody() reqBody: any): Promise<APIResponse> {
+  public async createOrganizationInvite(
+    @requestBody() reqBody: any,
+    req: Request, res: Response, next: NextFunction
+  ): Promise<APIResponse> {
     try {
       const result = await this.organizationService.createOrganizationInvites(reqBody.email);
       return APIResponse.fromSingleResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
@@ -113,12 +127,15 @@ export class OrganizationInviteController extends BaseController {
     MIDDLEWARE.Authorized,
     MIDDLEWARE.NodeAdmin
   )
-  public async resendOrganizationInviteEmails(@requestBody() reqBody: any): Promise<APIResponse> {
+  public async resendOrganizationInviteEmails(
+    @requestBody() reqBody: any,
+    req: Request, res: Response, next: NextFunction
+  ): Promise<APIResponse> {
     try {
       const result = await this.organizationService.resendOrganizationInvites(reqBody.email);
       return APIResponse.fromSingleResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 }

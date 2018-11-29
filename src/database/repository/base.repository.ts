@@ -14,7 +14,8 @@ import { ILogger } from '../../interface/logger.inferface';
 import { APIQuery, MongoPagedResult } from '../../model';
 import { DBClient } from '../client';
 import { getTimestamp } from '../../util';
-import { RepositoryError } from '../../model/error/repository.error';
+
+import { RepositoryError } from '../../errors';
 
 @injectable()
 export class BaseRepository<T> {
@@ -38,11 +39,11 @@ export class BaseRepository<T> {
   }
 
   get paginatedField(): string {
-    throw new Error('paginatedField getter must be overridden!');
+    throw new RepositoryError({ reason: 'paginatedField getter must be overridden!' });
   }
 
   get paginatedAscending(): boolean {
-    throw new Error('paginatedAscending getter must be overridden!');
+    throw new RepositoryError({ reason: 'paginatedAscending getter must be overridden!' });
   }
 
   public async getConnection() {
@@ -65,7 +66,7 @@ export class BaseRepository<T> {
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
@@ -84,7 +85,7 @@ export class BaseRepository<T> {
       return result.result.n;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
@@ -111,7 +112,7 @@ export class BaseRepository<T> {
       return result.value;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
@@ -131,7 +132,7 @@ export class BaseRepository<T> {
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
@@ -143,7 +144,7 @@ export class BaseRepository<T> {
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
@@ -176,7 +177,7 @@ export class BaseRepository<T> {
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
@@ -196,7 +197,7 @@ export class BaseRepository<T> {
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
@@ -208,8 +209,9 @@ export class BaseRepository<T> {
       ${JSON.stringify(apiQuery, null, 2)}`
     );
     if (!apiQuery.query.keys.length) {
-      throw new RepositoryError('Invalid query for exists');
+      throw new RepositoryError({ reason: 'Invalid query for exists' });
     }
+
     try {
       const result = await this.collection
         .find(apiQuery.query, { _id: 1 })
@@ -219,7 +221,7 @@ export class BaseRepository<T> {
       return result.length > 0;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
@@ -238,7 +240,7 @@ export class BaseRepository<T> {
     );
 
     if (!qor.length) {
-      throw new RepositoryError('Invalid query for existsOR');
+      throw new RepositoryError({ reason: 'Invalid query for existsOR' });
     }
 
     this.logger.debug(
@@ -254,7 +256,7 @@ export class BaseRepository<T> {
       return result.length > 0;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
@@ -273,7 +275,7 @@ export class BaseRepository<T> {
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
@@ -306,7 +308,7 @@ export class BaseRepository<T> {
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
@@ -344,7 +346,7 @@ export class BaseRepository<T> {
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
@@ -375,7 +377,7 @@ export class BaseRepository<T> {
       return result[0] || undefined;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
@@ -402,7 +404,7 @@ export class BaseRepository<T> {
       return result.value;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 }

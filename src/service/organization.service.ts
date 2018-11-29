@@ -11,19 +11,16 @@ import {
 import { ILogger } from '../interface/logger.inferface';
 import {
   APIQuery,
-  ExistsError,
-  InvalidError,
   MongoPagedResult,
-  NotFoundError,
   Organization,
   OrganizationRequest,
-  PermissionError,
   UserPrincipal,
 } from '../model';
-import { CreateError } from '../model/error/create.error';
 import { OrganizationInvite } from '../model/organization/organization-invite.model';
 import { AccountService } from '../service/account.service';
 import { EmailService } from '../service/email.service';
+
+import { ExistsError, ValidationError, NotFoundError, PermissionError, CreateError } from '../errors';
 
 //#endregion
 
@@ -41,14 +38,15 @@ export class OrganizationService {
     @inject(TYPE.AccountService) private readonly accountService: AccountService,
     @inject(TYPE.EmailService) private readonly emailService: EmailService,
     @inject(TYPE.LoggerService) private readonly logger: ILogger
-  ) {}
+  ) { }
   //#endregion
 
   //#region Organization
   public getOrganizations(apiQuery: APIQuery): Promise<MongoPagedResult> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
+
     return this.organizationRepository.find(apiQuery);
   }
 
@@ -57,8 +55,9 @@ export class OrganizationService {
       !this.user.hasPermission(Permission.super_account) &&
       organizationId !== this.user.organizationId
     ) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
+
     const apiQuery = new APIQuery({ organizationId });
     return this.organizationRepository.findOne(apiQuery);
   }
@@ -74,19 +73,19 @@ export class OrganizationService {
 
   public async createOrganization(organization: Organization): Promise<any> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
 
     if (await this.accountService.getAccountExists(organization.owner)) {
-      throw new NotFoundError('Organization owner already has an account');
+      throw new NotFoundError({ reason: 'Organization owner already has an account' });
     }
 
     if (await this.organizationRepository.existsOR(organization, 'title')) {
-      throw new ExistsError('An organization already exists with that title.');
+      throw new ExistsError({ reason: 'An organization already exists with that title.' });
     }
 
     if (await this.organizationRepository.existsOR(organization, 'owner')) {
-      throw new ExistsError('An organization already exists with that owner.');
+      throw new ExistsError({ reason: 'An organization already exists with that owner.' });
     }
 
     organization.setCreationTimestamp(this.user.address);
@@ -103,8 +102,9 @@ export class OrganizationService {
       !this.user.hasPermission(Permission.super_account) &&
       !(this.user.organizationId === organizationId && this.user.isOrganizationOwner())
     ) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
+
     organization.setMutationTimestamp(this.user.address);
     const apiQuery = new APIQuery({ organizationId });
     return this.organizationRepository.update(apiQuery, organization);
@@ -114,31 +114,34 @@ export class OrganizationService {
   //#region Organization Request
   public getOrganizationRequests(apiQuery: APIQuery): Promise<MongoPagedResult> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
-    apiQuery.addToQuery({refused: {$ne: true}});
+
+    apiQuery.addToQuery({ refused: { $ne: true } });
     return this.organizationRequestRepository.find(apiQuery);
   }
 
   public getOrganizationRequestsRefused(apiQuery: APIQuery): Promise<MongoPagedResult> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
-    apiQuery.addToQuery({refused: true});
+
+    apiQuery.addToQuery({ refused: true });
     return this.organizationRequestRepository.find(apiQuery);
   }
 
   public getOrganizationRequest(address: string): Promise<OrganizationRequest> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
+
     const apiQuery = new APIQuery({ address });
     return this.organizationRequestRepository.findOne(apiQuery);
   }
 
   public async createOrganizationRequest(organizationRequest: OrganizationRequest): Promise<any> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
 
     if (
@@ -149,19 +152,19 @@ export class OrganizationService {
         'title'
       )
     ) {
-      throw new ExistsError('An organization request already exists.');
+      throw new ExistsError({ reason: 'An organization request already exists.' });
     }
 
     if (await this.accountService.getAccountExists(organizationRequest.address)) {
-      throw new ExistsError('An account already exists with this address.');
+      throw new ExistsError({ reason: 'An account already exists with this address.' });
     }
 
     if (await this.accountService.getAccountExistsForEmail(organizationRequest.email)) {
-      throw new ExistsError('An account already exists with this email.');
+      throw new ExistsError({ reason: 'An account already exists with this email.' });
     }
 
     if (await this.organizationRepository.existsOR(organizationRequest, 'title')) {
-      throw new ExistsError('An organization already exists with that title.');
+      throw new ExistsError({ reason: 'An organization already exists with that title.' });
     }
 
     organizationRequest.setCreationTimestamp();
@@ -176,12 +179,13 @@ export class OrganizationService {
 
   public async organizationRequestApprove(address: string) {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
+
     let newOrganizationId;
     const organizationRequest = await this.getOrganizationRequest(address);
     if (!organizationRequest) {
-      throw new NotFoundError('Organization request not found.');
+      throw new NotFoundError({ reason: 'Organization request not found.' });
     }
 
     // Create organization
@@ -192,7 +196,7 @@ export class OrganizationService {
 
     const result: InsertOneWriteOpResult = await this.createOrganization(newOrganization);
     if (!result.ops[0]) {
-      throw new CreateError('Organization');
+      throw new CreateError({ reason: 'Organization' });
     }
     newOrganizationId = result.ops[0].organizationId;
 
@@ -216,12 +220,12 @@ export class OrganizationService {
 
   public async organizationRequestRefuse(address: string) {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
 
     const organizationRequest = await this.getOrganizationRequest(address);
     if (!organizationRequest) {
-      throw new NotFoundError('Organization request not found.');
+      throw new NotFoundError({ reason: 'Organization request not found.' });
     }
 
     // Send email
@@ -237,7 +241,7 @@ export class OrganizationService {
   //#region Organization Invite
   public async getOrganizationInvites(apiQuery: APIQuery): Promise<MongoPagedResult> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
     await this.organizationInviteRepository.deleteExpired();
 
@@ -246,7 +250,7 @@ export class OrganizationService {
 
   public async createOrganizationInvites(emails: string[]): Promise<any> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
     await this.organizationInviteRepository.deleteExpired();
 
@@ -279,7 +283,7 @@ export class OrganizationService {
 
   public async resendOrganizationInvites(emails: string[]): Promise<any> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
     const failed = [];
     const success = [];
@@ -288,7 +292,7 @@ export class OrganizationService {
         const apiQuery = new APIQuery({ email });
         const organizationInvite = await this.organizationInviteRepository.findOne(apiQuery);
         if (!organizationInvite) {
-          throw new Error('No invite found for email.');
+          throw new NotFoundError({ reason: 'No invite found for email.' });
         }
         await this.emailService.sendInvitation(organizationInvite);
         await this.organizationInviteRepository.update(apiQuery, organizationInvite);
@@ -307,7 +311,7 @@ export class OrganizationService {
     const apiQuery = new APIQuery({ inviteId });
     const invite = await this.organizationInviteRepository.findOne(apiQuery);
     if (!invite) {
-      throw new Error('Invite not found.');
+      throw new NotFoundError({ reason: 'Invite not found.' });
     }
     return true;
   }
@@ -322,7 +326,7 @@ export class OrganizationService {
     const apiQuery = new APIQuery({ inviteId });
     const invite = await this.organizationInviteRepository.findOne(apiQuery);
     if (!invite) {
-      throw new InvalidError('Invite not found.');
+      throw new ValidationError({ reason: 'Invite not found.' });
     }
     await this.accountService.createAccount(
       address,

@@ -9,6 +9,7 @@ import { getTimestamp } from '../../util';
 
 @injectable()
 export class AccountDetailRepository extends BaseRepository<AccountDetail> {
+
   constructor(@inject(TYPE.DBClient) protected client: DBClient) {
     super(client, 'accountDetail');
 

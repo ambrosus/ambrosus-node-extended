@@ -9,7 +9,11 @@ import * as url from 'url';
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { IGraphQLSchema } from '../graphql';
 
-@controller('/graphql', MIDDLEWARE.Authorized)
+@controller(
+  '/graphql',
+  MIDDLEWARE.Context,
+  MIDDLEWARE.Authorized
+)
 export class GraphQLController extends BaseHttpController {
   constructor(@inject(TYPE.GraphQLSchema) private graphQL: IGraphQLSchema) {
     super();

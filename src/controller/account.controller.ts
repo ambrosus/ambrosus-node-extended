@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { body, checkSchema, param } from 'express-validator/check';
 import { inject } from 'inversify';
 import {
@@ -19,8 +19,12 @@ import { AccountService } from '../service/account.service';
 import { Web3Service } from '../service/web3.service';
 import { BaseController } from './base.controller';
 
-@controller('/account')
+@controller(
+  '/account',
+  MIDDLEWARE.Context
+)
 export class AccountController extends BaseController {
+
   constructor(
     @inject(TYPE.AccountService) private accountService: AccountService,
     @inject(TYPE.Web3Service) private web3Service: Web3Service,
@@ -28,15 +32,16 @@ export class AccountController extends BaseController {
   ) {
     super(logger);
   }
+
   @httpGet(
     '/keyPair'
   )
-  public async getKeyPair(): Promise<APIResponse> {
+  public async getKeyPair(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       const result = await this.web3Service.createKeyPair();
       return APIResponse.fromSingleResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
@@ -46,12 +51,12 @@ export class AccountController extends BaseController {
     MIDDLEWARE.ValidateRequest,
     MIDDLEWARE.Authorized
   )
-  public async getAccounts(@request() req: Request): Promise<APIResponse> {
+  public async getAccounts(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
       return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
@@ -61,12 +66,14 @@ export class AccountController extends BaseController {
     MIDDLEWARE.ValidateRequest,
     MIDDLEWARE.Authorized
   )
-  public async getAccount(@requestParam('address') address: string): Promise<APIResponse> {
+  public async getAccount(
+    @requestParam('address') address: string, req: Request, res: Response, next: NextFunction
+  ): Promise<APIResponse> {
     try {
       const result = await this.accountService.getAccount(address);
       return APIResponse.fromSingleResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
@@ -78,8 +85,7 @@ export class AccountController extends BaseController {
     MIDDLEWARE.Authorized
   )
   public async updateAccountDetail(
-    @requestParam('address') address: string,
-    req: Request
+    @requestParam('address') address: string, req: Request, res: Response, next: NextFunction
   ): Promise<APIResponse> {
     try {
       const result = await this.accountService.updateAccountDetail(
@@ -88,7 +94,7 @@ export class AccountController extends BaseController {
       );
       return APIResponse.fromSingleResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
@@ -97,12 +103,14 @@ export class AccountController extends BaseController {
     param('address').custom(value => web3.utils.isAddress(value)),
     MIDDLEWARE.ValidateRequest
   )
-  public async getAccountExists(@requestParam('address') address: string): Promise<APIResponse> {
+  public async getAccountExists(
+    @requestParam('address') address: string, req: Request, res: Response, next: NextFunction
+  ): Promise<APIResponse> {
     try {
       const result = await this.accountService.getAccountExists(address);
       return APIResponse.fromSingleResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
@@ -112,22 +120,28 @@ export class AccountController extends BaseController {
     MIDDLEWARE.ValidateRequest,
     MIDDLEWARE.Authorized
   )
-  public async queryAccounts(req: Request): Promise<APIResponse> {
+  public async queryAccounts(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
       return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
-  @httpPost('/secret', body('email').isEmail(), MIDDLEWARE.ValidateRequest)
-  public async getEncryptedSecretByEmail(@requestBody() acc: AccountDetail): Promise<APIResponse> {
+  @httpPost(
+    '/secret',
+    body('email').isEmail(),
+    MIDDLEWARE.ValidateRequest
+  )
+  public async getEncryptedSecretByEmail(
+    @requestBody() acc: AccountDetail, req: Request, res: Response, next: NextFunction
+  ): Promise<APIResponse> {
     try {
       const result = await this.accountService.getAccountEncryptedToken(acc.email);
       return APIResponse.fromSingleResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 }

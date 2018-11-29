@@ -1,27 +1,23 @@
-import * as express from 'express';
-import { validationResult } from 'express-validator/check';
+import * as Ajv from 'ajv';
+import { Request, Response, NextFunction } from 'express';
+import { isObjectId } from '../validation/ajv.validator';
+import { ValidationError } from '../errors';
 
-import { APIResponse, APIResponseMeta } from '../model';
-import * as HttpStatus from 'http-status-codes';
-import { Http } from '@sentry/node/dist/integrations';
+export const validate = schema => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const ajv = new Ajv({ allErrors: true });
+    ajv.addKeyword('isObjectId', {
+      async: true,
+      type: 'string',
+      validate: isObjectId,
+    });
 
-function validateRequestMiddleware(
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) {
-  const errorFormatter = ({ location, msg, param, value, nestedErrors }) => {
-    return `${param}: ${msg}`;
+    const test = ajv.compile(schema);
+    try {
+      await test(req.body);
+      next();
+    } catch (e) {
+      next(new ValidationError(e));
+    }
   };
-  const errors = validationResult(req).formatWith(errorFormatter);
-  if (!errors.isEmpty()) {
-    const meta = new APIResponseMeta(HttpStatus.UNPROCESSABLE_ENTITY);
-    meta.error_type = 'ValidationError';
-    meta.error_message = 'Incorrect data sent to the server';
-    meta['validation_error_details'] = errors.array();
-    return res.status(meta.code).json({meta});
-  }
-  return next();
-}
-
-export const ValidateRequestMiddleware = validateRequestMiddleware;
+};

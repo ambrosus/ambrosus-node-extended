@@ -3,39 +3,41 @@ import { inject, injectable } from 'inversify';
 
 import { TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
-import { AuthToken, ValidationError } from '../model';
+import { AuthToken } from '../model';
 import { Web3Service } from './web3.service';
+
+import { ValidationError } from '../errors';
 
 @injectable()
 export class AuthService {
   constructor(
     @inject(TYPE.Web3Service) private web3Service: Web3Service,
     @inject(TYPE.LoggerService) private logger: ILogger
-  ) {}
+  ) { }
 
   public getAuthToken(authHeader: string): AuthToken {
     if (!authHeader) {
       this.logger.debug('getAuthToken: missing authentication header');
-      throw new ValidationError('Invalid token', 400);
+      throw new ValidationError({ reason: 'Invalid token' });
     }
 
     const [type, token] = authHeader.split(' ');
 
     if (type !== 'AMB_TOKEN') {
       this.logger.debug('getAuthToken: AMB_TOKEN not found in authentication header');
-      throw new ValidationError('Invalid token', 400);
+      throw new ValidationError({ reason: 'Invalid token' });
     }
 
     const decoded = this.decode(token);
     if (decoded === undefined) {
       this.logger.debug('getAuthToken: failed to decode AMB_TOKEN');
-      throw new ValidationError('Invalid token', 400);
+      throw new ValidationError({ reason: 'Invalid token' });
     }
 
     const { signature, idData } = decoded;
     if (!this.web3Service.validateSignature(idData.createdBy, signature, idData)) {
       this.logger.debug('getAuthToken: failed to validate signature');
-      throw new ValidationError('Invalid token', 400);
+      throw new ValidationError({ reason: 'Invalid token' });
     }
 
     const authToken = new AuthToken();

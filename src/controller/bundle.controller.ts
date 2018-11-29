@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { checkSchema } from 'express-validator/check';
 import { inject } from 'inversify';
 import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
@@ -9,7 +9,11 @@ import { APIQuery, APIResponse } from '../model';
 import { BundleService } from '../service/bundle.service';
 import { BaseController } from './base.controller';
 
-@controller('/bundle', MIDDLEWARE.Authorized)
+@controller(
+  '/bundle',
+  MIDDLEWARE.Context,
+  MIDDLEWARE.Authorized
+)
 export class BundleController extends BaseController {
   constructor(
     @inject(TYPE.BundleService) private bundleService: BundleService,
@@ -19,42 +23,50 @@ export class BundleController extends BaseController {
   }
 
   @httpGet('/')
-  public async getBundles(req: Request): Promise<APIResponse> {
+  public async getBundles(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
       return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
   @httpGet('/:bundleId')
-  public async getBundle(@requestParam('bundleId') bundleId: string): Promise<APIResponse> {
+  public async getBundle(
+    @requestParam('bundleId') bundleId: string, req: Request, res: Response, next: NextFunction
+  ): Promise<APIResponse> {
     try {
       const result = await this.bundleService.getBundle(bundleId);
       return APIResponse.fromSingleResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
   @httpGet('/exists/:bundleId')
-  public async getBundleExists(@requestParam('bundleId') bundleId: string): Promise<APIResponse> {
+  public async getBundleExists(
+    @requestParam('bundleId') bundleId: string, req: Request, res: Response, next: NextFunction
+  ): Promise<APIResponse> {
     try {
       const result = await this.bundleService.getBundleExists(bundleId);
       return APIResponse.fromSingleResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
-  @httpPost('/query', ...checkSchema(APIQuery.validationSchema()), MIDDLEWARE.ValidateRequest)
-  public async queryBundles(req: Request): Promise<APIResponse> {
+  @httpPost(
+    '/query',
+    ...checkSchema(APIQuery.validationSchema()),
+    MIDDLEWARE.ValidateRequest
+  )
+  public async queryBundles(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
       return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 }

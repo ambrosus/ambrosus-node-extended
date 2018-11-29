@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { checkSchema } from 'express-validator/check';
 import * as HttpStatus from 'http-status-codes';
 import { inject } from 'inversify';
@@ -10,8 +10,12 @@ import { APIQuery, APIResponse, APIResponseMeta, OrganizationRequest } from '../
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
 
-@controller('/organization/request')
+@controller(
+  '/organization/request',
+  MIDDLEWARE.Context
+)
 export class OrganizationRequestController extends BaseController {
+
   constructor(
     @inject(TYPE.OrganizationService) private organizationService: OrganizationService,
     @inject(TYPE.LoggerService) protected logger: ILogger
@@ -19,45 +23,63 @@ export class OrganizationRequestController extends BaseController {
     super(logger);
   }
 
-  @httpGet('/', MIDDLEWARE.Authorized, MIDDLEWARE.NodeAdmin)
-  public async getOrganizationReguests(req: Request): Promise<APIResponse> {
+  @httpGet(
+    '/',
+    MIDDLEWARE.Authorized,
+    MIDDLEWARE.NodeAdmin
+  )
+  public async getOrganizationReguests(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       const result = await this.organizationService.getOrganizationRequests(
         APIQuery.fromRequest(req)
       );
       return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
-  @httpGet('/refused', MIDDLEWARE.Authorized, MIDDLEWARE.NodeAdmin)
-  public async getOrganizationReguestsRefused(req: Request): Promise<APIResponse> {
+  @httpGet(
+    '/refused',
+    MIDDLEWARE.Authorized,
+    MIDDLEWARE.NodeAdmin
+  )
+  public async getOrganizationReguestsRefused(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       const result = await this.organizationService.getOrganizationRequestsRefused(
         APIQuery.fromRequest(req)
       );
       return APIResponse.fromMongoPagedResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
-  @httpGet('/:address', MIDDLEWARE.Authorized, MIDDLEWARE.NodeAdmin)
+  @httpGet(
+    '/:address',
+    MIDDLEWARE.Authorized,
+    MIDDLEWARE.NodeAdmin
+  )
   public async getOrganizationReguest(
-    @requestParam('address') address: string
+    @requestParam('address') address: string,
+    req: Request, res: Response, next: NextFunction
   ): Promise<APIResponse> {
     try {
       const result = await this.organizationService.getOrganizationRequest(address);
       return APIResponse.fromSingleResult(result);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
-  @httpGet('/:address/approve', MIDDLEWARE.Authorized, MIDDLEWARE.NodeAdmin)
+  @httpGet(
+    '/:address/approve',
+    MIDDLEWARE.Authorized,
+    MIDDLEWARE.NodeAdmin
+  )
   public async organizationRequestApprove(
-    @requestParam('address') address: string
+    @requestParam('address') address: string,
+    req: Request, res: Response, next: NextFunction
   ): Promise<APIResponse> {
     try {
       await this.organizationService.organizationRequestApprove(address);
@@ -67,13 +89,18 @@ export class OrganizationRequestController extends BaseController {
       );
       return APIResponse.withMeta(meta);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
-  @httpGet('/:address/refuse', MIDDLEWARE.Authorized, MIDDLEWARE.NodeAdmin)
+  @httpGet(
+    '/:address/refuse',
+    MIDDLEWARE.Authorized,
+    MIDDLEWARE.NodeAdmin
+  )
   public async organizationRequestRefuse(
-    @requestParam('address') address: string
+    @requestParam('address') address: string,
+    req: Request, res: Response, next: NextFunction
   ): Promise<APIResponse> {
     try {
       await this.organizationService.organizationRequestRefuse(address);
@@ -83,12 +110,16 @@ export class OrganizationRequestController extends BaseController {
       );
       return APIResponse.withMeta(meta);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 
-  @httpPost('/', ...checkSchema(OrganizationRequest.validationSchema()), MIDDLEWARE.ValidateRequest)
-  public async createOrganizationReguest(@request() req: Request): Promise<APIResponse> {
+  @httpPost(
+    '/',
+    ...checkSchema(OrganizationRequest.validationSchema()),
+    MIDDLEWARE.ValidateRequest
+  )
+  public async createOrganizationReguest(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       await this.organizationService.createOrganizationRequest(
         OrganizationRequest.fromRequest(req)
@@ -96,7 +127,7 @@ export class OrganizationRequestController extends BaseController {
       const meta = new APIResponseMeta(HttpStatus.CREATED, 'Organization request created');
       return APIResponse.withMeta(meta);
     } catch (err) {
-      return super.handleError(err);
+      next(err);
     }
   }
 }

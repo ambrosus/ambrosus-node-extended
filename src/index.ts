@@ -13,6 +13,7 @@ import { AMBAccountProvider } from './middleware/amb-account.provider';
 import * as Sentry from '@sentry/node';
 import * as sgMail from '@sendgrid/mail';
 import { DBClient } from './database/client';
+import { expressErrorHandler } from './middleware/expressErrorHandler.middleware';
 
 if (config.email.api) {
   sgMail.setApiKey(config.email.api);
@@ -53,12 +54,37 @@ server.setConfig(app => {
     res.set('cache-control', 'no-store');
     next();
   });
-});
-server.setErrorConfig(app => {
-  app.use((err, req, res, next) => {
-    Sentry.captureException(err);
-    res.status(err.code).send({ error: err.message });
+  app.on('error', (err: any) => {
+    switch (err.code) {
+      case 'EACCES':
+        logger.error(`${config.port} requires elevated privileges`);
+        process.exit(1);
+        break;
+
+      case 'EADDRINUSE':
+        logger.error(`${config.port} is already in use`);
+        process.exit(1);
+        break;
+
+      default:
+        throw err;
+    }
   });
+});
+
+server.setErrorConfig(app => {
+  app.use(expressErrorHandler);
+});
+
+// Server errors
+process.on('unhandledRejection', err => {
+  logger.warn('unhandledRejection event: ', err);
+  process.exit(1);
+});
+
+process.on('uncaughtException', err => {
+  logger.warn('uncaughtException event: ', err);
+  process.exit(1);
 });
 
 const app_server = server.build();

@@ -8,11 +8,11 @@ import {
   AccountDetail,
   APIQuery,
   MongoPagedResult,
-  PermissionError,
   UserPrincipal,
-  ExistsError,
 } from '../model';
 import { getTimestamp } from '../util';
+
+import { ExistsError, PermissionError } from '../errors';
 
 @injectable()
 export class AccountService {
@@ -22,7 +22,7 @@ export class AccountService {
     @inject(TYPE.AccountDetailRepository)
     private readonly accountDetailRepository: AccountDetailRepository,
     @inject(TYPE.LoggerService) private readonly logger: ILogger
-  ) {}
+  ) { }
 
   public async createAccount(
     address: string,
@@ -34,11 +34,12 @@ export class AccountService {
     createdBy: string
   ) {
     if (await this.getAccountExists(address)) {
-      throw new ExistsError('An account already exists with this address');
+      throw new ExistsError({ reason: 'An account already exists with this address' });
     }
     if (await this.getAccountExistsForEmail(email)) {
-      throw new ExistsError('An account already exists with this email');
+      throw new ExistsError({ reason: 'An account already exists with this email' });
     }
+
     const newAccount = new Account();
     newAccount.address = address;
     newAccount.accessLevel = accessLevel;
@@ -77,8 +78,9 @@ export class AccountService {
 
   public getAccounts(apiQuery: APIQuery): Promise<MongoPagedResult> {
     if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
+
     return this.accountRepository.getAccounts(
       apiQuery,
       this.user.organizationId,
@@ -93,7 +95,7 @@ export class AccountService {
       !this.user.hasAnyPermission(Permission.manage_accounts) &&
       !(this.user.address === address)
     ) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
 
     const apiQuery = new APIQuery({ address });
@@ -113,8 +115,9 @@ export class AccountService {
         this.user.organizationId === organizationId
       )
     ) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
+
     const apiQuery = new APIQuery({ organization: organizationId });
     return this.accountRepository.getAccounts(
       apiQuery,
@@ -133,7 +136,7 @@ export class AccountService {
     // First check if the current user can access this account
     const currentAccount = await this.getAccount(address);
     if (!currentAccount) {
-      throw new PermissionError();
+      throw new PermissionError({ reason: 'Unauthorized' });
     }
 
     // Update accountDetail collection

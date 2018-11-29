@@ -6,7 +6,8 @@ import { APIResponse, APIResponseMeta } from '../model';
 
 @injectable()
 export class BaseController {
-  constructor(@inject(TYPE.LoggerService) protected logger: ILogger) {}
+  constructor(@inject(TYPE.LoggerService) protected logger: ILogger) { }
+
   protected handleError(err) {
     const meta = new APIResponseMeta(err.code);
     meta.code = err.code;
