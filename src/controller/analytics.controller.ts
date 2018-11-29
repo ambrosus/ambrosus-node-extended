@@ -7,11 +7,12 @@ import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse } from '../model';
 import { AnalyticsService } from '../service/analytics.service';
 import { BaseController } from './base.controller';
+import { authorize } from '../middleware/authorize.middleware';
 
 @controller(
   '/analytics',
   MIDDLEWARE.Context,
-  MIDDLEWARE.Authorized
+  authorize()
 )
 export class AnalyticsController extends BaseController {
 
@@ -24,7 +25,8 @@ export class AnalyticsController extends BaseController {
 
   @httpGet('/:collection/count')
   public async getCount(
-    @requestParam('collection') collection: string, req: Request, res: Response, next: NextFunction
+    @requestParam('collection') collection: string,
+    req: Request, res: Response, next: NextFunction
   ): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.count(collection);
@@ -36,7 +38,8 @@ export class AnalyticsController extends BaseController {
 
   @httpGet('/:collection/count/mtd')
   public async getCountByMonthToDate(
-    @requestParam('collection') collection: string, req: Request, res: Response, next: NextFunction
+    @requestParam('collection') collection: string,
+    req: Request, res: Response, next: NextFunction
   ): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.countByMonthToDate(collection);

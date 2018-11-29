@@ -7,11 +7,12 @@ import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse } from '../model';
 import { AssetService } from '../service/asset.service';
 import { BaseController } from './base.controller';
+import { authorize } from '../middleware/authorize.middleware';
 
 @controller(
   '/asset',
   MIDDLEWARE.Context,
-  MIDDLEWARE.Authorized
+  authorize()
 )
 export class AssetController extends BaseController {
   constructor(
@@ -33,7 +34,8 @@ export class AssetController extends BaseController {
 
   @httpGet('/:assetId')
   public async get(
-    @requestParam('assetId') assetId: string, req: Request, res: Response, next: NextFunction
+    @requestParam('assetId') assetId: string,
+    req: Request, res: Response, next: NextFunction
   ): Promise<APIResponse> {
     try {
       const result = await this.assetService.getAsset(assetId);
@@ -45,7 +47,8 @@ export class AssetController extends BaseController {
 
   @httpGet('/exists/:assetId')
   public async getAssetExists(
-    @requestParam('assetId') assetId: string, req: Request, res: Response, next: NextFunction
+    @requestParam('assetId') assetId: string,
+    req: Request, res: Response, next: NextFunction
   ): Promise<APIResponse> {
     try {
       const result = await this.assetService.getAssetExists(assetId);

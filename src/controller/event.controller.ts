@@ -8,11 +8,12 @@ import { APIQuery, APIResponse } from '../model';
 import { EventService } from '../service/event.service';
 import { getParamValue } from '../util';
 import { BaseController } from './base.controller';
+import { authorize } from '../middleware/authorize.middleware';
 
 @controller(
   '/event',
   MIDDLEWARE.Context,
-  MIDDLEWARE.Authorized
+  authorize()
 )
 export class EventController extends BaseController {
 
@@ -35,7 +36,8 @@ export class EventController extends BaseController {
 
   @httpGet('/:eventId')
   public async getEvent(
-    @requestParam('eventId') eventId: string, req: Request, res: Response, next: NextFunction
+    @requestParam('eventId') eventId: string,
+    req: Request, res: Response, next: NextFunction
   ): Promise<APIResponse> {
     try {
       const result = await this.eventService.getEvent(eventId);
@@ -47,7 +49,8 @@ export class EventController extends BaseController {
 
   @httpGet('/exists/:eventId')
   public async getEventExists(
-    @requestParam('eventId') eventId: string, req: Request, res: Response, next: NextFunction
+    @requestParam('eventId') eventId: string,
+    req: Request, res: Response, next: NextFunction
   ): Promise<APIResponse> {
     try {
       const result = await this.eventService.getEventExists(eventId);

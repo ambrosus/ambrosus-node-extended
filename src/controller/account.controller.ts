@@ -18,6 +18,7 @@ import { AccountDetail, APIQuery, APIResponse } from '../model';
 import { AccountService } from '../service/account.service';
 import { Web3Service } from '../service/web3.service';
 import { BaseController } from './base.controller';
+import { authorize } from '../middleware/authorize.middleware';
 
 @controller(
   '/account',
@@ -47,9 +48,9 @@ export class AccountController extends BaseController {
 
   @httpGet(
     '/',
+    authorize('super_account', 'manage_accounts'),
     ...checkSchema(APIQuery.validationSchema()),
-    MIDDLEWARE.ValidateRequest,
-    MIDDLEWARE.Authorized
+    MIDDLEWARE.ValidateRequest
   )
   public async getAccounts(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
@@ -62,9 +63,9 @@ export class AccountController extends BaseController {
 
   @httpGet(
     '/:address',
+    authorize(),
     param('address').custom(value => web3.utils.isAddress(value)),
-    MIDDLEWARE.ValidateRequest,
-    MIDDLEWARE.Authorized
+    MIDDLEWARE.ValidateRequest
   )
   public async getAccount(
     @requestParam('address') address: string, req: Request, res: Response, next: NextFunction
@@ -79,10 +80,10 @@ export class AccountController extends BaseController {
 
   @httpPut(
     '/:address',
+    authorize(),
     param('address').custom(value => web3.utils.isAddress(value)),
     ...checkSchema(AccountDetail.validationSchema()),
-    MIDDLEWARE.ValidateRequest,
-    MIDDLEWARE.Authorized
+    MIDDLEWARE.ValidateRequest
   )
   public async updateAccountDetail(
     @requestParam('address') address: string, req: Request, res: Response, next: NextFunction
@@ -116,9 +117,9 @@ export class AccountController extends BaseController {
 
   @httpPost(
     '/query',
+    authorize('super_account', 'manage_accounts'),
     ...checkSchema(APIQuery.validationSchema()),
-    MIDDLEWARE.ValidateRequest,
-    MIDDLEWARE.Authorized
+    MIDDLEWARE.ValidateRequest
   )
   public async queryAccounts(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {

@@ -16,6 +16,7 @@ import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse, APIResponseMeta } from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
+import { authorize } from '../middleware/authorize.middleware';
 
 @controller(
   '/organization/invite',
@@ -32,7 +33,7 @@ export class OrganizationInviteController extends BaseController {
 
   @httpGet(
     '/',
-    MIDDLEWARE.Authorized,
+    authorize('super_account'),
     MIDDLEWARE.NodeAdmin
   )
   public async getOrganizationInvites(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
@@ -61,6 +62,7 @@ export class OrganizationInviteController extends BaseController {
 
   @httpPost(
     '/:inviteId/accept',
+    authorize('super_account'),
     body('address').custom(value => web3.utils.isAddress(value)),
     MIDDLEWARE.ValidateRequest
   )
@@ -80,7 +82,10 @@ export class OrganizationInviteController extends BaseController {
     }
   }
 
-  @httpDelete('/:inviteId', MIDDLEWARE.Authorized, MIDDLEWARE.NodeAdmin)
+  @httpDelete(
+    '/:inviteId',
+    authorize('super_account')
+  )
   public async deleteOrganizationInvite(
     @requestParam('inviteId') inviteId: string,
     req: Request, res: Response, next: NextFunction
@@ -101,11 +106,10 @@ export class OrganizationInviteController extends BaseController {
 
   @httpPost(
     '/',
+    authorize('super_account'),
     body('email').isArray(),
     body('email.*').isEmail(),
-    MIDDLEWARE.ValidateRequest,
-    MIDDLEWARE.Authorized,
-    MIDDLEWARE.NodeAdmin
+    MIDDLEWARE.ValidateRequest
   )
   public async createOrganizationInvite(
     @requestBody() reqBody: any,
@@ -121,11 +125,10 @@ export class OrganizationInviteController extends BaseController {
 
   @httpPost(
     '/resend',
+    authorize('super_account'),
     body('email').isArray(),
     body('email.*').isEmail(),
-    MIDDLEWARE.ValidateRequest,
-    MIDDLEWARE.Authorized,
-    MIDDLEWARE.NodeAdmin
+    MIDDLEWARE.ValidateRequest
   )
   public async resendOrganizationInviteEmails(
     @requestBody() reqBody: any,

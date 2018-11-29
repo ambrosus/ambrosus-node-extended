@@ -8,13 +8,15 @@ import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse } from '../model';
 import { BundleService } from '../service/bundle.service';
 import { BaseController } from './base.controller';
+import { authorize } from '../middleware/authorize.middleware';
 
 @controller(
   '/bundle',
   MIDDLEWARE.Context,
-  MIDDLEWARE.Authorized
+  authorize()
 )
 export class BundleController extends BaseController {
+
   constructor(
     @inject(TYPE.BundleService) private bundleService: BundleService,
     @inject(TYPE.LoggerService) protected logger: ILogger
@@ -34,7 +36,8 @@ export class BundleController extends BaseController {
 
   @httpGet('/:bundleId')
   public async getBundle(
-    @requestParam('bundleId') bundleId: string, req: Request, res: Response, next: NextFunction
+    @requestParam('bundleId') bundleId: string,
+    req: Request, res: Response, next: NextFunction
   ): Promise<APIResponse> {
     try {
       const result = await this.bundleService.getBundle(bundleId);
@@ -46,7 +49,8 @@ export class BundleController extends BaseController {
 
   @httpGet('/exists/:bundleId')
   public async getBundleExists(
-    @requestParam('bundleId') bundleId: string, req: Request, res: Response, next: NextFunction
+    @requestParam('bundleId') bundleId: string,
+    req: Request, res: Response, next: NextFunction
   ): Promise<APIResponse> {
     try {
       const result = await this.bundleService.getBundleExists(bundleId);

@@ -9,6 +9,7 @@ import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse, APIResponseMeta, OrganizationRequest } from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
+import { authorize } from '../middleware/authorize.middleware';
 
 @controller(
   '/organization/request',
@@ -25,8 +26,7 @@ export class OrganizationRequestController extends BaseController {
 
   @httpGet(
     '/',
-    MIDDLEWARE.Authorized,
-    MIDDLEWARE.NodeAdmin
+    authorize('super_account')
   )
   public async getOrganizationReguests(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
@@ -41,8 +41,7 @@ export class OrganizationRequestController extends BaseController {
 
   @httpGet(
     '/refused',
-    MIDDLEWARE.Authorized,
-    MIDDLEWARE.NodeAdmin
+    authorize('super_account')
   )
   public async getOrganizationReguestsRefused(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
@@ -57,8 +56,7 @@ export class OrganizationRequestController extends BaseController {
 
   @httpGet(
     '/:address',
-    MIDDLEWARE.Authorized,
-    MIDDLEWARE.NodeAdmin
+    authorize('super_account')
   )
   public async getOrganizationReguest(
     @requestParam('address') address: string,
@@ -74,8 +72,7 @@ export class OrganizationRequestController extends BaseController {
 
   @httpGet(
     '/:address/approve',
-    MIDDLEWARE.Authorized,
-    MIDDLEWARE.NodeAdmin
+    authorize('super_account')
   )
   public async organizationRequestApprove(
     @requestParam('address') address: string,
@@ -95,8 +92,7 @@ export class OrganizationRequestController extends BaseController {
 
   @httpGet(
     '/:address/refuse',
-    MIDDLEWARE.Authorized,
-    MIDDLEWARE.NodeAdmin
+    authorize('super_account')
   )
   public async organizationRequestRefuse(
     @requestParam('address') address: string,

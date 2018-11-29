@@ -16,11 +16,12 @@ import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse, APIResponseMeta, Organization } from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
+import { authorize } from '../middleware/authorize.middleware';
 
 @controller(
   '/organization',
   MIDDLEWARE.Context,
-  MIDDLEWARE.Authorized
+  authorize()
 )
 export class OrganizationController extends BaseController {
 
@@ -33,7 +34,7 @@ export class OrganizationController extends BaseController {
 
   @httpGet(
     '/',
-    MIDDLEWARE.NodeAdmin
+    authorize('super_account')
   )
   public async getOrganizations(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
@@ -64,6 +65,7 @@ export class OrganizationController extends BaseController {
 
   @httpGet(
     '/:organizationId/accounts',
+    authorize('manage_accounts'),
     param('organizationId')
       .isInt()
       .toInt()
@@ -82,9 +84,9 @@ export class OrganizationController extends BaseController {
 
   @httpPost(
     '/',
+    authorize('super_account'),
     ...checkSchema(Organization.validationSchema()),
-    MIDDLEWARE.ValidateRequest,
-    MIDDLEWARE.NodeAdmin
+    MIDDLEWARE.ValidateRequest
   )
   public async createOrganization(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
@@ -98,12 +100,12 @@ export class OrganizationController extends BaseController {
 
   @httpPut(
     '/:organizationId',
+    authorize('manage_accounts'),
     param('organizationId')
       .isInt()
       .toInt(),
     ...checkSchema(Organization.validationSchema(true)),
-    MIDDLEWARE.ValidateRequest,
-    MIDDLEWARE.NodeAdmin
+    MIDDLEWARE.ValidateRequest
   )
   public async updateOrganization(
     @requestParam('organizationId') organizationId: number,
