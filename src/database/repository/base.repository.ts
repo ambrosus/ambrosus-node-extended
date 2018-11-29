@@ -5,20 +5,22 @@ import {
   InsertOneWriteOpResult,
   DeleteWriteOpResultObject,
   InsertWriteOpResult,
-  ClientSession,
+  Db,
 } from 'mongodb';
 
 import { config } from '../../config';
 import { TYPE } from '../../constant';
 import { ILogger } from '../../interface/logger.inferface';
-import { APIQuery, ConnectionError, MongoPagedResult } from '../../model';
+import { APIQuery, MongoPagedResult } from '../../model';
 import { DBClient } from '../client';
 import { getTimestamp } from '../../util';
 import { RepositoryError } from '../../model/error/repository.error';
-import { results } from 'inversify-express-utils';
 
 @injectable()
 export class BaseRepository<T> {
+  public db: Db;
+  public collection: any;
+
   @inject(TYPE.LoggerService)
   public logger: ILogger;
 
@@ -43,14 +45,14 @@ export class BaseRepository<T> {
     throw new Error('paginatedAscending getter must be overridden!');
   }
 
-  get collection(): any {
-    if (!this.client.db) {
-      throw new ConnectionError('Database client not initialized');
-    }
-    return this.client.db.collection(this.collectionName);
+  public async getConnection() {
+    this.db = await this.client.getConnection();
+    this.collection = this.db.collection(this.collectionName);
   }
 
   public async create(item: T): Promise<InsertOneWriteOpResult> {
+    await this.getConnection();
+
     this.logger.debug(
       `
       ################ create ################
@@ -68,6 +70,8 @@ export class BaseRepository<T> {
   }
 
   public async createBulk(item: T[]): Promise<number> {
+    await this.getConnection();
+
     this.logger.debug(
       `
       ################ createBulk ################
@@ -85,6 +89,8 @@ export class BaseRepository<T> {
   }
 
   public async update(apiQuery: APIQuery, item: T, create: boolean = false): Promise<T> {
+    await this.getConnection();
+
     this.logger.debug(
       `
       ################ update ################
@@ -110,6 +116,8 @@ export class BaseRepository<T> {
   }
 
   public async deleteOne(apiQuery: APIQuery): Promise<DeleteWriteOpResultObject> {
+    await this.getConnection();
+
     this.logger.debug(
       `
       ################ deleteOne ################
@@ -128,6 +136,8 @@ export class BaseRepository<T> {
   }
 
   public async count(query: object): Promise<number> {
+    await this.getConnection();
+
     try {
       const result = await this.collection.countDocuments(query);
       return result;
@@ -140,6 +150,8 @@ export class BaseRepository<T> {
   // TODO: Add accessLevel to aggregates
   // FIXME: Aggregation isn't returning the correct data with paging b/c a limit to the pipeline.
   public async aggregatePaging(apiQuery: APIQuery): Promise<MongoPagedResult> {
+    await this.getConnection();
+
     this.logger.debug(
       `
       ################ aggregatePaging ################
@@ -169,6 +181,8 @@ export class BaseRepository<T> {
   }
 
   public async aggregate(apiQuery: APIQuery): Promise<any> {
+    await this.getConnection();
+
     this.logger.debug(
       `
       ################ aggregate ################
@@ -187,6 +201,8 @@ export class BaseRepository<T> {
   }
 
   public async exists(apiQuery: APIQuery): Promise<boolean> {
+    await this.getConnection();
+
     this.logger.debug(
       `exists for ${this.collectionName}:
       ${JSON.stringify(apiQuery, null, 2)}`
@@ -208,6 +224,8 @@ export class BaseRepository<T> {
   }
 
   public async existsOR(obj, ...fields): Promise<boolean> {
+    await this.getConnection();
+
     const qor = _.reduce(
       fields,
       (rv, field) => {
@@ -241,6 +259,8 @@ export class BaseRepository<T> {
   }
 
   public async distinct(field: string): Promise<any> {
+    await this.getConnection();
+
     this.logger.debug(
       `
       ################ distinct ################
@@ -258,6 +278,8 @@ export class BaseRepository<T> {
   }
 
   public async search(apiQuery: APIQuery): Promise<MongoPagedResult> {
+    await this.getConnection();
+
     this.logger.debug(
       `
       ################ search ################
@@ -289,6 +311,8 @@ export class BaseRepository<T> {
   }
 
   public async find(apiQuery: APIQuery): Promise<MongoPagedResult> {
+    await this.getConnection();
+
     this.logger.debug(
       `
       ################ find ################
@@ -325,6 +349,8 @@ export class BaseRepository<T> {
   }
 
   public async findOne(apiQuery: APIQuery): Promise<T> {
+    await this.getConnection();
+
     this.logger.debug(
       `
       ################ findOne ################
@@ -354,6 +380,8 @@ export class BaseRepository<T> {
   }
 
   public async findOneOrCreate(apiQuery: APIQuery, createUser: string): Promise<T> {
+    await this.getConnection();
+
     this.logger.debug(
       `
       ################ findOneOrCreate ################

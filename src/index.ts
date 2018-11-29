@@ -12,6 +12,7 @@ import { LoggerService } from './service/logger.service';
 import { AMBAccountProvider } from './middleware/amb-account.provider';
 import * as Sentry from '@sentry/node';
 import * as sgMail from '@sendgrid/mail';
+import { DBClient } from './database/client';
 
 if (config.email.api) {
   sgMail.setApiKey(config.email.api);
@@ -33,6 +34,8 @@ const server = new InversifyExpressServer(
 );
 
 const logger = iocContainer.get<LoggerService>(TYPE.LoggerService);
+const db: DBClient = iocContainer.get<DBClient>(TYPE.DBClient);
+db.getConnection().then();
 
 server.setConfig(app => {
   app.use(Sentry.Handlers.requestHandler());
