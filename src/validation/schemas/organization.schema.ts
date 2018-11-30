@@ -1,5 +1,76 @@
 /* tslint:disable */
 export const organizationSchema = {
+    organizationCreate: {
+        "$async": true,
+        "title": "Organization create",
+        "type": "object",
+        "properties": {
+            "owner": {
+                "type": "string",
+                "isAddress": ''
+            },
+            "title": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 100
+            },
+            "timeZone": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 50
+            },
+            "active": {
+                "type": "boolean"
+            },
+            "legalAddress": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 255
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "owner",
+            "active"
+        ]
+    },
+    organizationUpdate: {
+        "$async": true,
+        "title": "Organization create",
+        "type": "object",
+        "properties": {
+            "owner": {
+                "type": "string",
+                "isAddress": ''
+            },
+            "title": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 100
+            },
+            "timeZone": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 50
+            },
+            "active": {
+                "type": "boolean"
+            },
+            "legalAddress": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 255
+            },
+            "organizationId": {
+                "type": "integer",
+                "minimum": 1
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "organizationId"
+        ]
+    },
     organizationInvites: {
         "$async": true,
         "title": "Organization invite",

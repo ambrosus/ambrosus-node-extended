@@ -27,7 +27,22 @@ export const utilSchema = {
         },
         "additionalProperties": false,
         "required": [
-            "address"
+            "email"
+        ]
+    },
+    organizationId: {
+        "$async": true,
+        "title": "Organization Id",
+        "type": "object",
+        "properties": {
+            "organizationId": {
+                "type": "integer",
+                "minimum": 1
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "organizationId"
         ]
     }
 }

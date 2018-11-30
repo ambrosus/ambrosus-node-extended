@@ -40,31 +40,6 @@ export class APIQuery implements IAPIQuery {
     return apiQuery;
   }
 
-  public static validationSchema(): ValidationSchema {
-    return {
-      limit: {
-        in: ['body', 'query'],
-        isInt: {
-          options: { min: 1 },
-        },
-        optional: true,
-        errorMessage: 'Limit must be a numeric value > 0',
-      },
-      next: {
-        in: ['body', 'query'],
-        // isBase64: true,
-        optional: true,
-        errorMessage: 'Next must be a base64 encoded string',
-      },
-      previous: {
-        in: ['body', 'query'],
-        isBase64: true,
-        optional: true,
-        errorMessage: 'Previous must be a base64 encoded string',
-      },
-    };
-  }
-
   public query;
   public search;
   public limit: number;

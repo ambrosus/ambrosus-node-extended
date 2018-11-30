@@ -17,6 +17,8 @@ import { APIQuery, APIResponse, APIResponseMeta, Organization } from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
+import { validate } from '../middleware';
+import { utilSchema, organizationSchema } from '../validation';
 
 @controller(
   '/organization',
@@ -47,9 +49,7 @@ export class OrganizationController extends BaseController {
 
   @httpGet(
     '/:organizationId',
-    param('organizationId')
-      .isInt()
-      .toInt()
+    validate(utilSchema.organizationId, { paramsOnly: true })
   )
   public async getOrganization(
     @requestParam('organizationId') organizationId: number,
@@ -66,9 +66,7 @@ export class OrganizationController extends BaseController {
   @httpGet(
     '/:organizationId/accounts',
     authorize('manage_accounts'),
-    param('organizationId')
-      .isInt()
-      .toInt()
+    validate(utilSchema.organizationId, { paramsOnly: true })
   )
   public async getOrganizationAccounts(
     @requestParam('organizationId') organizationId: number,
@@ -85,7 +83,7 @@ export class OrganizationController extends BaseController {
   @httpPost(
     '/',
     authorize('super_account'),
-    ...checkSchema(Organization.validationSchema())
+    validate(organizationSchema.organizationCreate)
   )
   public async createOrganization(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
@@ -100,10 +98,7 @@ export class OrganizationController extends BaseController {
   @httpPut(
     '/:organizationId',
     authorize('manage_accounts'),
-    param('organizationId')
-      .isInt()
-      .toInt(),
-    ...checkSchema(Organization.validationSchema(true))
+    validate(organizationSchema.organizationUpdate, { params: true })
   )
   public async updateOrganization(
     @requestParam('organizationId') organizationId: number,
