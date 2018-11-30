@@ -9,6 +9,8 @@ import { EventService } from '../service/event.service';
 import { getParamValue } from '../util';
 import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
+import { validate } from '../middleware';
+import { querySchema } from '../validation';
 
 @controller(
   '/event',
@@ -24,7 +26,9 @@ export class EventController extends BaseController {
     super(logger);
   }
 
-  @httpGet('/')
+  @httpGet(
+    '/'
+  )
   public async getEvents(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
@@ -34,7 +38,9 @@ export class EventController extends BaseController {
     }
   }
 
-  @httpGet('/:eventId')
+  @httpGet(
+    '/:eventId'
+  )
   public async getEvent(
     @requestParam('eventId') eventId: string,
     req: Request, res: Response, next: NextFunction
@@ -47,7 +53,9 @@ export class EventController extends BaseController {
     }
   }
 
-  @httpGet('/exists/:eventId')
+  @httpGet(
+    '/exists/:eventId'
+  )
   public async getEventExists(
     @requestParam('eventId') eventId: string,
     req: Request, res: Response, next: NextFunction
@@ -60,7 +68,10 @@ export class EventController extends BaseController {
     }
   }
 
-  @httpPost('/query')
+  @httpPost(
+    '/query',
+    validate(querySchema)
+  )
   public async queryEvents(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
@@ -70,7 +81,9 @@ export class EventController extends BaseController {
     }
   }
 
-  @httpPost('/search')
+  @httpPost(
+    '/search'
+  )
   public async search(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       const result = await this.eventService.searchEvents(APIQuery.fromRequest(req));
@@ -80,7 +93,9 @@ export class EventController extends BaseController {
     }
   }
 
-  @httpGet('/lookup/types')
+  @httpGet(
+    '/lookup/types'
+  )
   public async getEventTypes(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       const result = await this.eventService.getEventDistinctField('content.data.type');
@@ -90,7 +105,9 @@ export class EventController extends BaseController {
     }
   }
 
-  @httpPost('/latest/type')
+  @httpPost(
+    '/latest/type'
+  )
   public async latestType(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       const assets = getParamValue(req, 'assets');

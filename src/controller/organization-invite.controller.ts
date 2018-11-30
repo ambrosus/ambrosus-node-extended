@@ -17,6 +17,8 @@ import { APIQuery, APIResponse, APIResponseMeta } from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
+import { validate } from '../middleware';
+import { utilSchema, organizationSchema } from '../validation';
 
 @controller(
   '/organization/invite',
@@ -46,7 +48,9 @@ export class OrganizationInviteController extends BaseController {
     }
   }
 
-  @httpGet('/:inviteId/exists')
+  @httpGet(
+    '/:inviteId/exists'
+  )
   public async getOrganizationInviteVerification(
     @requestParam('inviteId') inviteId: string,
     req: Request, res: Response, next: NextFunction
@@ -62,7 +66,7 @@ export class OrganizationInviteController extends BaseController {
   @httpPost(
     '/:inviteId/accept',
     authorize('super_account'),
-    body('address').custom(value => web3.utils.isAddress(value))
+    validate(utilSchema.address)
   )
   public async acceptOrganizationInvite(
     @requestParam('inviteId') inviteId: string,
@@ -105,8 +109,7 @@ export class OrganizationInviteController extends BaseController {
   @httpPost(
     '/',
     authorize('super_account'),
-    body('email').isArray(),
-    body('email.*').isEmail()
+    validate(organizationSchema.organizationInvites)
   )
   public async createOrganizationInvite(
     @requestBody() reqBody: any,
@@ -123,8 +126,7 @@ export class OrganizationInviteController extends BaseController {
   @httpPost(
     '/resend',
     authorize('super_account'),
-    body('email').isArray(),
-    body('email.*').isEmail()
+    validate(organizationSchema.organizationInvites)
   )
   public async resendOrganizationInviteEmails(
     @requestBody() reqBody: any,

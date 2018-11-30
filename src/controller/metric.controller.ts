@@ -9,7 +9,9 @@ export class MetricController {
     Prometheus.collectDefaultMetrics({ timeout: 10000 });
   }
 
-  @httpGet('/')
+  @httpGet(
+    '/'
+  )
   public get(@response() res: express.Response) {
     res.set('Content-Type', Prometheus.register.contentType);
     res.end(Prometheus.register.metrics());

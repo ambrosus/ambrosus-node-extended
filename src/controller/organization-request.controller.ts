@@ -10,6 +10,8 @@ import { APIQuery, APIResponse, APIResponseMeta, OrganizationRequest } from '../
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
+import { validate } from '../middleware';
+import { organizationSchema } from '../validation';
 
 @controller(
   '/organization/request',
@@ -112,7 +114,7 @@ export class OrganizationRequestController extends BaseController {
 
   @httpPost(
     '/',
-    ...checkSchema(OrganizationRequest.validationSchema())
+    validate(organizationSchema.organizationRequest)
   )
   public async createOrganizationReguest(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {

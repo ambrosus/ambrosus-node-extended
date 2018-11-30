@@ -23,7 +23,9 @@ export class AnalyticsController extends BaseController {
     super(logger);
   }
 
-  @httpGet('/:collection/count')
+  @httpGet(
+    '/:collection/count'
+  )
   public async getCount(
     @requestParam('collection') collection: string,
     req: Request, res: Response, next: NextFunction
@@ -36,7 +38,9 @@ export class AnalyticsController extends BaseController {
     }
   }
 
-  @httpGet('/:collection/count/mtd')
+  @httpGet(
+    '/:collection/count/mtd'
+  )
   public async getCountByMonthToDate(
     @requestParam('collection') collection: string,
     req: Request, res: Response, next: NextFunction
@@ -49,7 +53,9 @@ export class AnalyticsController extends BaseController {
     }
   }
 
-  @httpGet('/:collection/count/date/:date')
+  @httpGet(
+    '/:collection/count/date/:date'
+  )
   public async getCountByDate(
     @requestParam('collection') collection: string,
     @requestParam('date') date: string,
@@ -63,7 +69,9 @@ export class AnalyticsController extends BaseController {
     }
   }
 
-  @httpGet('/:collection/count/daterange/:start/:end')
+  @httpGet(
+    '/:collection/count/daterange/:start/:end'
+  )
   public async getCountByDateRange(
     @requestParam('collection') collection: string,
     @requestParam('start') start: string,
@@ -78,7 +86,9 @@ export class AnalyticsController extends BaseController {
     }
   }
 
-  @httpGet('/:collection/count/rolling/hours/:hours')
+  @httpGet(
+    '/:collection/count/rolling/hours/:hours'
+  )
   public async getCountByRollingHours(
     @requestParam('collection') collection: string,
     @requestParam('hours') hours: number,
@@ -92,7 +102,9 @@ export class AnalyticsController extends BaseController {
     }
   }
 
-  @httpGet('/:collection/count/rolling/days/:days')
+  @httpGet(
+    '/:collection/count/rolling/days/:days'
+  )
   public async getCountByRollingDays(
     @requestParam('collection') collection: string,
     @requestParam('days') days: number,
@@ -106,7 +118,9 @@ export class AnalyticsController extends BaseController {
     }
   }
 
-  @httpGet('/:collection/timeseries/day')
+  @httpGet(
+    '/:collection/timeseries/day'
+  )
   public async getTimeSeriesDay(
     @requestParam('collection') collection: string,
     req: Request, res: Response, next: NextFunction
@@ -122,7 +136,9 @@ export class AnalyticsController extends BaseController {
     }
   }
 
-  @httpGet('/:collection/timeseries/month')
+  @httpGet(
+    '/:collection/timeseries/month'
+  )
   public async getTimeSeriesMonth(
     @requestParam('collection') collection: string,
     req: Request, res: Response, next: NextFunction

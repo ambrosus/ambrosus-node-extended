@@ -10,7 +10,9 @@ export class HealthController {
 
   constructor(@inject(TYPE.DBClient) protected client: DBClient) { }
 
-  @httpGet('/')
+  @httpGet(
+    '/'
+  )
   public get(@response() res: express.Response) {
     let status = 200;
     if (!this.client.connected) {

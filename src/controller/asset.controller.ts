@@ -8,6 +8,8 @@ import { APIQuery, APIResponse } from '../model';
 import { AssetService } from '../service/asset.service';
 import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
+import { validate } from '../middleware';
+import { querySchema } from '../validation';
 
 @controller(
   '/asset',
@@ -15,6 +17,7 @@ import { authorize } from '../middleware/authorize.middleware';
   authorize()
 )
 export class AssetController extends BaseController {
+
   constructor(
     @inject(TYPE.AssetService) private assetService: AssetService,
     @inject(TYPE.LoggerService) protected logger: ILogger
@@ -22,7 +25,9 @@ export class AssetController extends BaseController {
     super(logger);
   }
 
-  @httpGet('/')
+  @httpGet(
+    '/'
+  )
   public async getAssets(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
@@ -32,7 +37,9 @@ export class AssetController extends BaseController {
     }
   }
 
-  @httpGet('/:assetId')
+  @httpGet(
+    '/:assetId'
+  )
   public async get(
     @requestParam('assetId') assetId: string,
     req: Request, res: Response, next: NextFunction
@@ -45,7 +52,9 @@ export class AssetController extends BaseController {
     }
   }
 
-  @httpGet('/exists/:assetId')
+  @httpGet(
+    '/exists/:assetId'
+  )
   public async getAssetExists(
     @requestParam('assetId') assetId: string,
     req: Request, res: Response, next: NextFunction
@@ -58,7 +67,10 @@ export class AssetController extends BaseController {
     }
   }
 
-  @httpPost('/query')
+  @httpPost(
+    '/query',
+    validate(querySchema)
+  )
   public async query(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
       const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
