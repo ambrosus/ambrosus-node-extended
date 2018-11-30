@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/ambrosus/ambrosus-node-extended.svg?branch=master)](https://travis-ci.com/ambrosus/ambrosus-node-extended)
+[![Build Status](https://travis-ci.com/ambrosus/ambrosus-node-extended.svg?token=AfPzyRpxxoxpf6Nq7Csp&branch=master)](https://travis-ci.com/ambrosus/ambrosus-node-extended)
 
 # Hermes Extended API   
 
