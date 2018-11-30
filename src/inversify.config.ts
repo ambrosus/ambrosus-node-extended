@@ -1,4 +1,3 @@
-import { RequestHandler } from 'express';
 import { Container, interfaces } from 'inversify';
 
 import { MIDDLEWARE, TYPE } from './constant/types';

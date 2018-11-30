@@ -1,4 +1,3 @@
-export * from './error';
 export * from './api-response';
 export * from './query';
 export * from './account';

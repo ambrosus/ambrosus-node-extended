@@ -11,9 +11,10 @@ export class ContextMiddleware extends BaseMiddleware {
 
     const user = this.httpContext.user as UserPrincipal;
 
-    this.bind<UserPrincipal>(TYPE.UserPrincipal)
-      .toDynamicValue((context: interfaces.Context) => user);
+    this.bind<UserPrincipal>(TYPE.UserPrincipal).toDynamicValue(
+      (context: interfaces.Context) => user
+    );
 
-    return next();
+    next();
   }
 }

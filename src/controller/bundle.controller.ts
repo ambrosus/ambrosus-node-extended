@@ -62,8 +62,7 @@ export class BundleController extends BaseController {
 
   @httpPost(
     '/query',
-    ...checkSchema(APIQuery.validationSchema()),
-    MIDDLEWARE.ValidateRequest
+    ...checkSchema(APIQuery.validationSchema())
   )
   public async queryBundles(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {

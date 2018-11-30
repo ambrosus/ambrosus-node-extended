@@ -85,8 +85,7 @@ export class OrganizationController extends BaseController {
   @httpPost(
     '/',
     authorize('super_account'),
-    ...checkSchema(Organization.validationSchema()),
-    MIDDLEWARE.ValidateRequest
+    ...checkSchema(Organization.validationSchema())
   )
   public async createOrganization(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
@@ -104,8 +103,7 @@ export class OrganizationController extends BaseController {
     param('organizationId')
       .isInt()
       .toInt(),
-    ...checkSchema(Organization.validationSchema(true)),
-    MIDDLEWARE.ValidateRequest
+    ...checkSchema(Organization.validationSchema(true))
   )
   public async updateOrganization(
     @requestParam('organizationId') organizationId: number,

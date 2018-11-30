@@ -47,6 +47,4 @@ export const TYPE: any = {
 
 export const MIDDLEWARE: any = {
   Context: Symbol.for('Context'),
-
-  ValidateRequest: Symbol.for('ValidateRequestMiddleware'),
 };

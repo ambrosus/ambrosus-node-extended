@@ -112,8 +112,7 @@ export class OrganizationRequestController extends BaseController {
 
   @httpPost(
     '/',
-    ...checkSchema(OrganizationRequest.validationSchema()),
-    MIDDLEWARE.ValidateRequest
+    ...checkSchema(OrganizationRequest.validationSchema())
   )
   public async createOrganizationReguest(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {

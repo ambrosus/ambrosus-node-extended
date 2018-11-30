@@ -3,11 +3,12 @@ import { Db, MongoClient } from 'mongodb';
 import * as querystring from 'querystring';
 
 import { config } from '../config';
-import { ConnectionError } from '../model';
 import { EventEmitter } from 'events';
 import * as Sentry from '@sentry/node';
 import { TYPE } from '../constant';
 import { LoggerService } from '../service/logger.service';
+
+import { ConnectionError } from '../errors';
 
 type DBClientProvider = () => Promise<DBClient>;
 

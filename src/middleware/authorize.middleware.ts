@@ -7,7 +7,7 @@ import { UserPrincipal } from '../model';
 export const authorize = (...args) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const user: UserPrincipal = iocContainer.get<UserPrincipal>(TYPE.UserPrincipal);
+      const user = iocContainer.get<UserPrincipal>(TYPE.UserPrincipal);
 
       if (!user || !user.isAuthorized()) {
         throw new PermissionError({ reason: 'Unauthorized' });

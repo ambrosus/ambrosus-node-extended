@@ -2,9 +2,9 @@ import { iocContainer } from '../inversify.config';
 import { TYPE } from '../constant/types';
 import { LoggerService } from '../service/logger.service';
 import * as Sentry from '@sentry/node';
-import { Request, Response, NextFunction } from 'express';
+import { ILogger } from '../interface/logger.inferface';
 
-const logger: LoggerService = iocContainer.get<LoggerService>(TYPE.LoggerService);
+const logger: ILogger = iocContainer.get<LoggerService>(TYPE.LoggerService);
 
 const createMessage = error => {
   let title: any = '';
@@ -28,6 +28,12 @@ const createMessage = error => {
       break;
     case 'isObjectId':
       message = 'is invalid reference ObjectId';
+      break;
+    case 'isBase64':
+      message = 'must be a base64 encoded string';
+      break;
+    case 'isAddress':
+      message = 'must be a valid address';
       break;
     case 'additionalProperties':
       message = 'Invalid properties';
@@ -60,7 +66,7 @@ const getErrorMessages = (err: any = {}) => {
   return messages.join(', ');
 };
 
-export const expressErrorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+export const expressErrorHandler = (err, req, res, next) => {
   let status;
 
   Sentry.captureException(err);

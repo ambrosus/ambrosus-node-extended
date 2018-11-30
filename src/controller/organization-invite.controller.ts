@@ -33,8 +33,7 @@ export class OrganizationInviteController extends BaseController {
 
   @httpGet(
     '/',
-    authorize('super_account'),
-    MIDDLEWARE.NodeAdmin
+    authorize('super_account')
   )
   public async getOrganizationInvites(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {
@@ -63,8 +62,7 @@ export class OrganizationInviteController extends BaseController {
   @httpPost(
     '/:inviteId/accept',
     authorize('super_account'),
-    body('address').custom(value => web3.utils.isAddress(value)),
-    MIDDLEWARE.ValidateRequest
+    body('address').custom(value => web3.utils.isAddress(value))
   )
   public async acceptOrganizationInvite(
     @requestParam('inviteId') inviteId: string,
@@ -108,8 +106,7 @@ export class OrganizationInviteController extends BaseController {
     '/',
     authorize('super_account'),
     body('email').isArray(),
-    body('email.*').isEmail(),
-    MIDDLEWARE.ValidateRequest
+    body('email.*').isEmail()
   )
   public async createOrganizationInvite(
     @requestBody() reqBody: any,
@@ -127,8 +124,7 @@ export class OrganizationInviteController extends BaseController {
     '/resend',
     authorize('super_account'),
     body('email').isArray(),
-    body('email.*').isEmail(),
-    MIDDLEWARE.ValidateRequest
+    body('email.*').isEmail()
   )
   public async resendOrganizationInviteEmails(
     @requestBody() reqBody: any,

@@ -1,9 +1,11 @@
 import * as Ajv from 'ajv';
 import { Request, Response, NextFunction } from 'express';
-import { isObjectId } from '../validation/ajv.validator';
 import { ValidationError } from '../errors';
+import { isBase64, isObjectId, isAddress } from '../validation';
 
-export const validate = schema => {
+export const validate = (
+  schema, options?: { params?: boolean, paramsOnly?: boolean, queryParams?: boolean, queryParamsOnly?: boolean }
+) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const ajv = new Ajv({ allErrors: true });
     ajv.addKeyword('isObjectId', {
@@ -11,10 +13,35 @@ export const validate = schema => {
       type: 'string',
       validate: isObjectId,
     });
+    ajv.addKeyword('isBase64', {
+      async: true,
+      type: 'string',
+      validate: isBase64,
+    });
+    ajv.addKeyword('isAddress', {
+      async: true,
+      type: 'string',
+      validate: isAddress,
+    });
+
+    let data = req.body;
+
+    if (options.params) {
+      Object.assign(data, req.params);
+    }
+    if (options.queryParams) {
+      Object.assign(data, req.query);
+    }
+    if (options.paramsOnly) {
+      data = req.params;
+    }
+    if (options.queryParamsOnly) {
+      data = req.query;
+    }
 
     const test = ajv.compile(schema);
     try {
-      await test(req.body);
+      await test(data);
       next();
     } catch (e) {
       next(new ValidationError(e));

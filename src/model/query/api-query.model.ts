@@ -4,7 +4,7 @@ import { injectable } from 'inversify';
 
 import { config } from '../../config';
 import { getMongoFilter, getParamValue, validateOperators } from '../../util';
-import { ValidationError } from '../error';
+import { ValidationError } from '../../errors';
 
 export interface IAPIPagination {
   limit: number;
@@ -28,7 +28,7 @@ export class APIQuery implements IAPIQuery {
     if (query) {
       const errors = validateOperators(query);
       if (errors.length) {
-        throw new ValidationError('bad operators found in query', 400);
+        throw new ValidationError({ reason: 'bad operators found in query' });
       }
       apiQuery.query = getMongoFilter(query);
     }
