@@ -4,8 +4,6 @@ import { LoggerService } from '../service/logger.service';
 import * as Sentry from '@sentry/node';
 import { ILogger } from '../interface/logger.inferface';
 
-const logger: ILogger = iocContainer.get<LoggerService>(TYPE.LoggerService);
-
 const createMessage = error => {
   let title: any = '';
   if (error.dataPath) {
@@ -46,6 +44,8 @@ const createMessage = error => {
 };
 
 const getErrorMessages = (err: any = {}) => {
+  const logger: ILogger = iocContainer.get<LoggerService>(TYPE.LoggerService);
+
   err.error = err.error || {};
   if (err.name === 'MongoError') {
     err.error.reason = err.code === 11000 ? 'There was a duplicate key error' : 'Database error';

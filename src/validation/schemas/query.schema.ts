@@ -4,6 +4,13 @@ export const querySchema = {
     "title": "Query schema",
     "type": "object",
     "properties": {
+        "query": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "object"
+            }
+        },
         "limit": {
             "type": "integer",
             "minimum": 1

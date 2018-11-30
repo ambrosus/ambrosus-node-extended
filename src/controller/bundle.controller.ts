@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { checkSchema } from 'express-validator/check';
 import { inject } from 'inversify';
 import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
 

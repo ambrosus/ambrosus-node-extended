@@ -36,7 +36,7 @@ export const organizationSchema = {
     },
     organizationUpdate: {
         "$async": true,
-        "title": "Organization create",
+        "title": "Organization update",
         "type": "object",
         "properties": {
             "owner": {
@@ -86,7 +86,10 @@ export const organizationSchema = {
                 }
             }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "required": [
+            "email"
+        ]
     },
     organizationRequest: {
         "$async": true,

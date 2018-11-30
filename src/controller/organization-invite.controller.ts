@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { body } from 'express-validator/check';
 import * as HttpStatus from 'http-status-codes';
 import { inject } from 'inversify';
 import {

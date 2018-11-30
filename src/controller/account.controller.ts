@@ -1,12 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { body, checkSchema, param } from 'express-validator/check';
 import { inject } from 'inversify';
 import {
   controller,
   httpGet,
   httpPost,
   httpPut,
-  request,
   requestBody,
   requestParam,
 } from 'inversify-express-utils';
@@ -51,7 +49,7 @@ export class AccountController extends BaseController {
   @httpGet(
     '/',
     authorize('super_account', 'manage_accounts'),
-    validate(querySchema)
+    validate(querySchema, { queryParamsOnly: true })
   )
   public async getAccounts(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
     try {

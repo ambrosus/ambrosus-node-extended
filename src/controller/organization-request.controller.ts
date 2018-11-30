@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { checkSchema } from 'express-validator/check';
 import * as HttpStatus from 'http-status-codes';
 import { inject } from 'inversify';
 import { controller, httpGet, httpPost, request, requestParam } from 'inversify-express-utils';
@@ -11,7 +10,7 @@ import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
 import { validate } from '../middleware';
-import { organizationSchema } from '../validation';
+import { organizationSchema, utilSchema } from '../validation';
 
 @controller(
   '/organization/request',
@@ -58,7 +57,8 @@ export class OrganizationRequestController extends BaseController {
 
   @httpGet(
     '/:address',
-    authorize('super_account')
+    authorize('super_account'),
+    validate(utilSchema.address, { paramsOnly: true })
   )
   public async getOrganizationReguest(
     @requestParam('address') address: string,
@@ -74,7 +74,8 @@ export class OrganizationRequestController extends BaseController {
 
   @httpGet(
     '/:address/approve',
-    authorize('super_account')
+    authorize('super_account'),
+    validate(utilSchema.address, { paramsOnly: true })
   )
   public async organizationRequestApprove(
     @requestParam('address') address: string,
@@ -94,7 +95,8 @@ export class OrganizationRequestController extends BaseController {
 
   @httpGet(
     '/:address/refuse',
-    authorize('super_account')
+    authorize('super_account'),
+    validate(utilSchema.address, { paramsOnly: true })
   )
   public async organizationRequestRefuse(
     @requestParam('address') address: string,
