@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/ambrosus/ambrosus-node-extended.svg?branch=master)](https://travis-ci.com/ambrosus/ambrosus-node-extended)
+
 # Hermes Extended API   
 
 Additional querying capabilities which consists of both REST and GraphQL APIs.
