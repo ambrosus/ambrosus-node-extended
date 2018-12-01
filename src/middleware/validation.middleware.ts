@@ -37,12 +37,14 @@ export const validate = (
       Object.keys(req.params).map(prop => {
         data[prop] = Number(req.params[prop]) || req.params[prop];
       });
+      req.params = data;
     }
     if (options.queryParamsOnly) {
       data = {};
       Object.keys(req.query).map(prop => {
         data[prop] = Number(req.query[prop]) || req.query[prop];
       });
+      req.query = data;
     }
 
     const test = ajv.compile(schema);
