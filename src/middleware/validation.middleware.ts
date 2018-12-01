@@ -33,15 +33,20 @@ export const validate = (
       Object.assign(data, req.query);
     }
     if (options.paramsOnly) {
-      data = req.params;
+      data = {};
+      Object.keys(req.params).map(prop => {
+        data[prop] = Number(req.params[prop]) || req.params[prop];
+      });
     }
     if (options.queryParamsOnly) {
-      data = req.query;
+      data = {};
+      Object.keys(req.query).map(prop => {
+        data[prop] = Number(req.query[prop]) || req.query[prop];
+      });
     }
 
     const test = ajv.compile(schema);
     try {
-      console.log(data);
       await test(data);
       next();
     } catch (e) {
