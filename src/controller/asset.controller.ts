@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 import { inject } from 'inversify';
 import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
 
@@ -28,55 +28,37 @@ export class AssetController extends BaseController {
   @httpGet(
     '/'
   )
-  public async getAssets(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
-    try {
-      const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
-      return APIResponse.fromMongoPagedResult(result);
-    } catch (err) {
-      next(err);
-    }
+  public async getAssets(req: Request): Promise<APIResponse> {
+    const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(result);
   }
 
   @httpGet(
     '/:assetId'
   )
   public async get(
-    @requestParam('assetId') assetId: string,
-    req: Request, res: Response, next: NextFunction
+    @requestParam('assetId') assetId: string
   ): Promise<APIResponse> {
-    try {
-      const result = await this.assetService.getAsset(assetId);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+    const result = await this.assetService.getAsset(assetId);
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpGet(
     '/exists/:assetId'
   )
   public async getAssetExists(
-    @requestParam('assetId') assetId: string,
-    req: Request, res: Response, next: NextFunction
+    @requestParam('assetId') assetId: string
   ): Promise<APIResponse> {
-    try {
-      const result = await this.assetService.getAssetExists(assetId);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+    const result = await this.assetService.getAssetExists(assetId);
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpPost(
     '/query',
     validate(querySchema)
   )
-  public async query(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
-    try {
-      const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
-      return APIResponse.fromMongoPagedResult(result);
-    } catch (err) {
-      next(err);
-    }
+  public async query(req: Request): Promise<APIResponse> {
+    const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(result);
   }
 }

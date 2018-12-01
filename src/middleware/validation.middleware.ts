@@ -41,6 +41,7 @@ export const validate = (
 
     const test = ajv.compile(schema);
     try {
+      console.log(data);
       await test(data);
       next();
     } catch (e) {

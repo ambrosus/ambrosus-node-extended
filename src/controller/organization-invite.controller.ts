@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 import * as HttpStatus from 'http-status-codes';
 import { inject } from 'inversify';
 import {
@@ -9,7 +9,6 @@ import {
   requestBody,
   requestParam,
 } from 'inversify-express-utils';
-import web3 = require('web3');
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse, APIResponseMeta } from '../model';
@@ -36,30 +35,21 @@ export class OrganizationInviteController extends BaseController {
     '/',
     authorize('super_account')
   )
-  public async getOrganizationInvites(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
-    try {
-      const result = await this.organizationService.getOrganizationInvites(
-        APIQuery.fromRequest(req)
-      );
-      return APIResponse.fromMongoPagedResult(result);
-    } catch (err) {
-      next(err);
-    }
+  public async getOrganizationInvites(req: Request): Promise<APIResponse> {
+    const result = await this.organizationService.getOrganizationInvites(
+      APIQuery.fromRequest(req)
+    );
+    return APIResponse.fromMongoPagedResult(result);
   }
 
   @httpGet(
     '/:inviteId/exists'
   )
   public async getOrganizationInviteVerification(
-    @requestParam('inviteId') inviteId: string,
-    req: Request, res: Response, next: NextFunction
+    @requestParam('inviteId') inviteId: string
   ): Promise<APIResponse> {
-    try {
-      const result = await this.organizationService.organizationInviteExists(inviteId);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+    const result = await this.organizationService.organizationInviteExists(inviteId);
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpPost(
@@ -69,18 +59,13 @@ export class OrganizationInviteController extends BaseController {
   )
   public async acceptOrganizationInvite(
     @requestParam('inviteId') inviteId: string,
-    @requestBody() invite: any,
-    req: Request, res: Response, next: NextFunction
+    @requestBody() invite: any
   ): Promise<APIResponse> {
-    try {
-      const result = await this.organizationService.acceptOrganizationInvite(
-        inviteId,
-        invite.address
-      );
-      return APIResponse.fromSingleResult(result, { message: 'Account created' });
-    } catch (err) {
-      next(err);
-    }
+    const result = await this.organizationService.acceptOrganizationInvite(
+      inviteId,
+      invite.address
+    );
+    return APIResponse.fromSingleResult(result, { message: 'Account created' });
   }
 
   @httpDelete(
@@ -88,21 +73,16 @@ export class OrganizationInviteController extends BaseController {
     authorize('super_account')
   )
   public async deleteOrganizationInvite(
-    @requestParam('inviteId') inviteId: string,
-    req: Request, res: Response, next: NextFunction
+    @requestParam('inviteId') inviteId: string
   ): Promise<APIResponse> {
-    try {
-      const deleteOp = await this.organizationService.deleteOrganizationInvite(inviteId);
+    const deleteOp = await this.organizationService.deleteOrganizationInvite(inviteId);
 
-      const meta = new APIResponseMeta(
-        HttpStatus.OK,
-        deleteOp.result.n > 0 ? 'Delete successful' : 'Nothing to delete'
-      );
-      meta['deleted'] = deleteOp.result.n;
-      return APIResponse.withMeta(meta);
-    } catch (err) {
-      next(err);
-    }
+    const meta = new APIResponseMeta(
+      HttpStatus.OK,
+      deleteOp.result.n > 0 ? 'Delete successful' : 'Nothing to delete'
+    );
+    meta['deleted'] = deleteOp.result.n;
+    return APIResponse.withMeta(meta);
   }
 
   @httpPost(
@@ -111,15 +91,10 @@ export class OrganizationInviteController extends BaseController {
     validate(organizationSchema.organizationInvites)
   )
   public async createOrganizationInvite(
-    @requestBody() reqBody: any,
-    req: Request, res: Response, next: NextFunction
+    @requestBody() reqBody: any
   ): Promise<APIResponse> {
-    try {
-      const result = await this.organizationService.createOrganizationInvites(reqBody.email);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+    const result = await this.organizationService.createOrganizationInvites(reqBody.email);
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpPost(
@@ -128,14 +103,9 @@ export class OrganizationInviteController extends BaseController {
     validate(organizationSchema.organizationInvites)
   )
   public async resendOrganizationInviteEmails(
-    @requestBody() reqBody: any,
-    req: Request, res: Response, next: NextFunction
+    @requestBody() reqBody: any
   ): Promise<APIResponse> {
-    try {
-      const result = await this.organizationService.resendOrganizationInvites(reqBody.email);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+    const result = await this.organizationService.resendOrganizationInvites(reqBody.email);
+    return APIResponse.fromSingleResult(result);
   }
 }

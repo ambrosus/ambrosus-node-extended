@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 import { inject } from 'inversify';
 import { controller, httpGet, requestParam } from 'inversify-express-utils';
 
@@ -27,30 +27,20 @@ export class AnalyticsController extends BaseController {
     '/:collection/count'
   )
   public async getCount(
-    @requestParam('collection') collection: string,
-    req: Request, res: Response, next: NextFunction
+    @requestParam('collection') collection: string
   ): Promise<APIResponse> {
-    try {
-      const count = await this.analyticsService.count(collection);
-      return APIResponse.fromSingleResult({ count });
-    } catch (err) {
-      next(err);
-    }
+    const count = await this.analyticsService.count(collection);
+    return APIResponse.fromSingleResult({ count });
   }
 
   @httpGet(
     '/:collection/count/mtd'
   )
   public async getCountByMonthToDate(
-    @requestParam('collection') collection: string,
-    req: Request, res: Response, next: NextFunction
+    @requestParam('collection') collection: string
   ): Promise<APIResponse> {
-    try {
-      const count = await this.analyticsService.countByMonthToDate(collection);
-      return APIResponse.fromSingleResult({ count });
-    } catch (err) {
-      next(err);
-    }
+    const count = await this.analyticsService.countByMonthToDate(collection);
+    return APIResponse.fromSingleResult({ count });
   }
 
   @httpGet(
@@ -58,15 +48,10 @@ export class AnalyticsController extends BaseController {
   )
   public async getCountByDate(
     @requestParam('collection') collection: string,
-    @requestParam('date') date: string,
-    req: Request, res: Response, next: NextFunction
+    @requestParam('date') date: string
   ): Promise<APIResponse> {
-    try {
-      const count = await this.analyticsService.countByDate(collection, date);
-      return APIResponse.fromSingleResult({ count });
-    } catch (err) {
-      next(err);
-    }
+    const count = await this.analyticsService.countByDate(collection, date);
+    return APIResponse.fromSingleResult({ count });
   }
 
   @httpGet(
@@ -75,15 +60,10 @@ export class AnalyticsController extends BaseController {
   public async getCountByDateRange(
     @requestParam('collection') collection: string,
     @requestParam('start') start: string,
-    @requestParam('end') end: string,
-    req: Request, res: Response, next: NextFunction
+    @requestParam('end') end: string
   ): Promise<APIResponse> {
-    try {
-      const count = await this.analyticsService.countByDateRange(collection, start, end);
-      return APIResponse.fromSingleResult({ count });
-    } catch (err) {
-      next(err);
-    }
+    const count = await this.analyticsService.countByDateRange(collection, start, end);
+    return APIResponse.fromSingleResult({ count });
   }
 
   @httpGet(
@@ -91,15 +71,10 @@ export class AnalyticsController extends BaseController {
   )
   public async getCountByRollingHours(
     @requestParam('collection') collection: string,
-    @requestParam('hours') hours: number,
-    req: Request, res: Response, next: NextFunction
+    @requestParam('hours') hours: number
   ): Promise<APIResponse> {
-    try {
-      const count = await this.analyticsService.countByRollingHours(collection, hours);
-      return APIResponse.fromSingleResult({ count });
-    } catch (err) {
-      next(err);
-    }
+    const count = await this.analyticsService.countByRollingHours(collection, hours);
+    return APIResponse.fromSingleResult({ count });
   }
 
   @httpGet(
@@ -107,15 +82,10 @@ export class AnalyticsController extends BaseController {
   )
   public async getCountByRollingDays(
     @requestParam('collection') collection: string,
-    @requestParam('days') days: number,
-    req: Request, res: Response, next: NextFunction
+    @requestParam('days') days: number
   ): Promise<APIResponse> {
-    try {
-      const count = await this.analyticsService.countByRollingDays(collection, days);
-      return APIResponse.fromSingleResult({ count });
-    } catch (err) {
-      next(err);
-    }
+    const count = await this.analyticsService.countByRollingDays(collection, days);
+    return APIResponse.fromSingleResult({ count });
   }
 
   @httpGet(
@@ -123,17 +93,13 @@ export class AnalyticsController extends BaseController {
   )
   public async getTimeSeriesDay(
     @requestParam('collection') collection: string,
-    req: Request, res: Response, next: NextFunction
+    req: Request
   ): Promise<APIResponse> {
-    try {
-      const count = await this.analyticsService.timeSeriesDay(
-        collection,
-        APIQuery.fromRequest(req)
-      );
-      return APIResponse.fromSingleResult({ count });
-    } catch (err) {
-      next(err);
-    }
+    const count = await this.analyticsService.timeSeriesDay(
+      collection,
+      APIQuery.fromRequest(req)
+    );
+    return APIResponse.fromSingleResult({ count });
   }
 
   @httpGet(
@@ -141,16 +107,12 @@ export class AnalyticsController extends BaseController {
   )
   public async getTimeSeriesMonth(
     @requestParam('collection') collection: string,
-    req: Request, res: Response, next: NextFunction
+    req: Request
   ): Promise<APIResponse> {
-    try {
-      const count = await this.analyticsService.timeSeriesMonth(
-        collection,
-        APIQuery.fromRequest(req)
-      );
-      return APIResponse.fromSingleResult({ count });
-    } catch (err) {
-      next(err);
-    }
+    const count = await this.analyticsService.timeSeriesMonth(
+      collection,
+      APIQuery.fromRequest(req)
+    );
+    return APIResponse.fromSingleResult({ count });
   }
 }

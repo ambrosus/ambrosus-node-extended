@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 import { inject } from 'inversify';
 import {
   controller,
@@ -8,7 +8,6 @@ import {
   requestBody,
   requestParam,
 } from 'inversify-express-utils';
-import web3 = require('web3');
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
@@ -37,13 +36,9 @@ export class AccountController extends BaseController {
   @httpGet(
     '/keyPair'
   )
-  public async getKeyPair(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
-    try {
-      const result = await this.web3Service.createKeyPair();
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+  public async getKeyPair(): Promise<APIResponse> {
+    const result = await this.web3Service.createKeyPair();
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpGet(
@@ -51,13 +46,9 @@ export class AccountController extends BaseController {
     authorize('super_account', 'manage_accounts'),
     validate(querySchema, { queryParamsOnly: true })
   )
-  public async getAccounts(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
-    try {
-      const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
-      return APIResponse.fromMongoPagedResult(result);
-    } catch (err) {
-      next(err);
-    }
+  public async getAccounts(req: Request): Promise<APIResponse> {
+    const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(result);
   }
 
   @httpGet(
@@ -66,14 +57,10 @@ export class AccountController extends BaseController {
     validate(utilSchema.address, { paramsOnly: true })
   )
   public async getAccount(
-    @requestParam('address') address: string, req: Request, res: Response, next: NextFunction
+    @requestParam('address') address: string
   ): Promise<APIResponse> {
-    try {
-      const result = await this.accountService.getAccount(address);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+    const result = await this.accountService.getAccount(address);
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpPut(
@@ -82,17 +69,13 @@ export class AccountController extends BaseController {
     validate(accountSchema.accountDetails, { params: true })
   )
   public async updateAccountDetail(
-    @requestParam('address') address: string, req: Request, res: Response, next: NextFunction
+    @requestParam('address') address: string, req: Request
   ): Promise<APIResponse> {
-    try {
-      const result = await this.accountService.updateAccountDetail(
-        address,
-        AccountDetail.fromRequestForUpdate(req)
-      );
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+    const result = await this.accountService.updateAccountDetail(
+      address,
+      AccountDetail.fromRequestForUpdate(req)
+    );
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpGet(
@@ -100,14 +83,10 @@ export class AccountController extends BaseController {
     validate(utilSchema.address, { paramsOnly: true })
   )
   public async getAccountExists(
-    @requestParam('address') address: string, req: Request, res: Response, next: NextFunction
+    @requestParam('address') address: string
   ): Promise<APIResponse> {
-    try {
-      const result = await this.accountService.getAccountExists(address);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+    const result = await this.accountService.getAccountExists(address);
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpPost(
@@ -115,13 +94,9 @@ export class AccountController extends BaseController {
     authorize('super_account', 'manage_accounts'),
     validate(querySchema)
   )
-  public async queryAccounts(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
-    try {
-      const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
-      return APIResponse.fromMongoPagedResult(result);
-    } catch (err) {
-      next(err);
-    }
+  public async queryAccounts(req: Request): Promise<APIResponse> {
+    const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(result);
   }
 
   @httpPost(
@@ -129,13 +104,9 @@ export class AccountController extends BaseController {
     validate(utilSchema.email)
   )
   public async getEncryptedSecretByEmail(
-    @requestBody() acc: AccountDetail, req: Request, res: Response, next: NextFunction
+    @requestBody() acc: AccountDetail
   ): Promise<APIResponse> {
-    try {
-      const result = await this.accountService.getAccountEncryptedToken(acc.email);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+    const result = await this.accountService.getAccountEncryptedToken(acc.email);
+    return APIResponse.fromSingleResult(result);
   }
 }

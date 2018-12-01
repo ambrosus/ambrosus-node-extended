@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 import { inject } from 'inversify';
 import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
 
@@ -29,97 +29,67 @@ export class EventController extends BaseController {
   @httpGet(
     '/'
   )
-  public async getEvents(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
-    try {
-      const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
-      return APIResponse.fromMongoPagedResult(result);
-    } catch (err) {
-      next(err);
-    }
+  public async getEvents(req: Request): Promise<APIResponse> {
+    const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(result);
   }
 
   @httpGet(
     '/:eventId'
   )
   public async getEvent(
-    @requestParam('eventId') eventId: string,
-    req: Request, res: Response, next: NextFunction
+    @requestParam('eventId') eventId: string
   ): Promise<APIResponse> {
-    try {
-      const result = await this.eventService.getEvent(eventId);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+    const result = await this.eventService.getEvent(eventId);
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpGet(
     '/exists/:eventId'
   )
   public async getEventExists(
-    @requestParam('eventId') eventId: string,
-    req: Request, res: Response, next: NextFunction
+    @requestParam('eventId') eventId: string
   ): Promise<APIResponse> {
-    try {
-      const result = await this.eventService.getEventExists(eventId);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+    const result = await this.eventService.getEventExists(eventId);
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpPost(
     '/query',
     validate(querySchema)
   )
-  public async queryEvents(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
-    try {
-      const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
-      return APIResponse.fromMongoPagedResult(result);
-    } catch (err) {
-      next(err);
-    }
+  public async queryEvents(req: Request): Promise<APIResponse> {
+    const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(result);
   }
 
   @httpPost(
     '/search'
   )
-  public async search(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
-    try {
-      const result = await this.eventService.searchEvents(APIQuery.fromRequest(req));
-      return APIResponse.fromMongoPagedResult(result);
-    } catch (err) {
-      next(err);
-    }
+  public async search(req: Request): Promise<APIResponse> {
+    const result = await this.eventService.searchEvents(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(result);
   }
 
   @httpGet(
     '/lookup/types'
   )
-  public async getEventTypes(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
-    try {
-      const result = await this.eventService.getEventDistinctField('content.data.type');
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+  public async getEventTypes(): Promise<APIResponse> {
+    const result = await this.eventService.getEventDistinctField('content.data.type');
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpPost(
     '/latest/type'
   )
-  public async latestType(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
-    try {
-      const assets = getParamValue(req, 'assets');
-      const type = getParamValue(req, 'type');
-      const result = await this.eventService.getLatestAssetEventsOfType(
-        assets,
-        type,
-        APIQuery.fromRequest(req)
-      );
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+  public async latestType(req: Request): Promise<APIResponse> {
+    const assets = getParamValue(req, 'assets');
+    const type = getParamValue(req, 'type');
+    const result = await this.eventService.getLatestAssetEventsOfType(
+      assets,
+      type,
+      APIQuery.fromRequest(req)
+    );
+    return APIResponse.fromSingleResult(result);
   }
 }

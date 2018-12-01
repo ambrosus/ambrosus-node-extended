@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 import { inject } from 'inversify';
 import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
 
@@ -28,55 +28,37 @@ export class BundleController extends BaseController {
   @httpGet(
     '/'
   )
-  public async getBundles(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
-    try {
-      const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
-      return APIResponse.fromMongoPagedResult(result);
-    } catch (err) {
-      next(err);
-    }
+  public async getBundles(req: Request): Promise<APIResponse> {
+    const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(result);
   }
 
   @httpGet(
     '/:bundleId'
   )
   public async getBundle(
-    @requestParam('bundleId') bundleId: string,
-    req: Request, res: Response, next: NextFunction
+    @requestParam('bundleId') bundleId: string
   ): Promise<APIResponse> {
-    try {
-      const result = await this.bundleService.getBundle(bundleId);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+    const result = await this.bundleService.getBundle(bundleId);
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpGet(
     '/exists/:bundleId'
   )
   public async getBundleExists(
-    @requestParam('bundleId') bundleId: string,
-    req: Request, res: Response, next: NextFunction
+    @requestParam('bundleId') bundleId: string
   ): Promise<APIResponse> {
-    try {
-      const result = await this.bundleService.getBundleExists(bundleId);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      next(err);
-    }
+    const result = await this.bundleService.getBundleExists(bundleId);
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpPost(
     '/query',
     validate(querySchema)
   )
-  public async queryBundles(req: Request, res: Response, next: NextFunction): Promise<APIResponse> {
-    try {
-      const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
-      return APIResponse.fromMongoPagedResult(result);
-    } catch (err) {
-      next(err);
-    }
+  public async queryBundles(req: Request): Promise<APIResponse> {
+    const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(result);
   }
 }
