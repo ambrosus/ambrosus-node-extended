@@ -1,9 +1,6 @@
 import { Request } from 'express';
 import { injectable } from 'inversify';
-import { ValidationSchema } from 'express-validator/check';
-import web3 = require('web3');
 import { getTimestamp } from '../../util';
-import { controller } from 'inversify-express-utils';
 
 export interface IOrganization {
   _id?: string;

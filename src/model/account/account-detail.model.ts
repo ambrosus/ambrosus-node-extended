@@ -1,5 +1,4 @@
 import { Request } from 'express';
-import { ValidationSchema } from 'express-validator/check';
 import { injectable } from 'inversify';
 
 import { getTimestamp } from '../../util';
