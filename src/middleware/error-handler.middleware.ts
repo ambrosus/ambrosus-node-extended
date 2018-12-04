@@ -68,6 +68,7 @@ const getErrorMessages = (err: any = {}) => {
 
 export const expressErrorHandler = (err, req, res, next) => {
   let status;
+  const logger: ILogger = iocContainer.get<LoggerService>(TYPE.LoggerService);
 
   Sentry.captureException(err);
 
@@ -101,6 +102,7 @@ export const expressErrorHandler = (err, req, res, next) => {
     case 'DeveloperError':
       status = 500;
       message = `Error occured`;
+      logger.error('Developer error: ', err);
       break;
     default:
       status = 500;
