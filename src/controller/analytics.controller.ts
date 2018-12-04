@@ -1,12 +1,18 @@
 import { Request } from 'express';
 import { inject } from 'inversify';
-import { controller, httpGet, requestParam } from 'inversify-express-utils';
+import {
+  controller,
+  httpGet,
+  requestParam,
+  queryParam
+} from 'inversify-express-utils';
 
-import { MIDDLEWARE, TYPE } from '../constant/types';
+import { MIDDLEWARE, TYPE, TimeSeriesGroupBy, timeSeriesGroupFromString } from '../constant';
 import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse } from '../model';
 import { AnalyticsService } from '../service/analytics.service';
 import { BaseController } from './base.controller';
+import { query } from 'winston';
 
 @controller('/analytics', MIDDLEWARE.Authorized)
 export class AnalyticsController extends BaseController {
@@ -18,7 +24,9 @@ export class AnalyticsController extends BaseController {
   }
 
   @httpGet('/:collection/count')
-  public async getCount(@requestParam('collection') collection: string): Promise<APIResponse> {
+  public async getCount(
+    @requestParam('collection') collection: string
+  ): Promise<APIResponse> {
     try {
       const count = await this.analyticsService.count(collection);
       return APIResponse.fromSingleResult({ count });
@@ -59,7 +67,11 @@ export class AnalyticsController extends BaseController {
     @requestParam('end') end: string
   ): Promise<APIResponse> {
     try {
-      const count = await this.analyticsService.countByDateRange(collection, start, end);
+      const count = await this.analyticsService.countByDateRange(
+        collection,
+        start,
+        end
+      );
       return APIResponse.fromSingleResult({ count });
     } catch (err) {
       return super.handleError(err);
@@ -72,7 +84,10 @@ export class AnalyticsController extends BaseController {
     @requestParam('hours') hours: number
   ): Promise<APIResponse> {
     try {
-      const count = await this.analyticsService.countByRollingHours(collection, hours);
+      const count = await this.analyticsService.countByRollingHours(
+        collection,
+        hours
+      );
       return APIResponse.fromSingleResult({ count });
     } catch (err) {
       return super.handleError(err);
@@ -85,22 +100,9 @@ export class AnalyticsController extends BaseController {
     @requestParam('days') days: number
   ): Promise<APIResponse> {
     try {
-      const count = await this.analyticsService.countByRollingDays(collection, days);
-      return APIResponse.fromSingleResult({ count });
-    } catch (err) {
-      return super.handleError(err);
-    }
-  }
-
-  @httpGet('/:collection/timeseries/day')
-  public async getTimeSeriesDay(
-    @requestParam('collection') collection: string,
-    req: Request
-  ): Promise<APIResponse> {
-    try {
-      const count = await this.analyticsService.timeSeriesDay(
+      const count = await this.analyticsService.countByRollingDays(
         collection,
-        APIQuery.fromRequest(req)
+        days
       );
       return APIResponse.fromSingleResult({ count });
     } catch (err) {
@@ -108,15 +110,40 @@ export class AnalyticsController extends BaseController {
     }
   }
 
-  @httpGet('/:collection/timeseries/month')
-  public async getTimeSeriesMonth(
+  @httpGet('/:collection/timeseries/hour/:start/:end/')
+  public async getTimeSeriesHour(
     @requestParam('collection') collection: string,
-    req: Request
+    @requestParam('start') start: string,
+    @requestParam('end') end: string
   ): Promise<APIResponse> {
     try {
-      const count = await this.analyticsService.timeSeriesMonth(
+      const count = await this.analyticsService.countTimeSeries(
         collection,
-        APIQuery.fromRequest(req)
+        TimeSeriesGroupBy.HOUR,
+        start,
+        end
+      );
+      return APIResponse.fromSingleResult({ count });
+    } catch (err) {
+      return super.handleError(err);
+    }
+  }
+
+  @httpGet('/:collection/count/timeseries')
+  public async getTimeSeries(
+    @requestParam('collection') collection: string,
+    @queryParam('group') group: string,
+    @queryParam('start') start: string,
+    @queryParam('end') end: string
+  ): Promise<APIResponse> {
+    try {
+      const groupBy = timeSeriesGroupFromString(group);
+
+      const count = await this.analyticsService.countTimeSeries(
+        collection,
+        groupBy,
+        +start,
+        +end
       );
       return APIResponse.fromSingleResult({ count });
     } catch (err) {

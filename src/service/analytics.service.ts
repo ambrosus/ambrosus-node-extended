@@ -1,11 +1,11 @@
 import { inject, injectable } from 'inversify';
 
-import { TYPE } from '../constant/types';
+import { TYPE, TimeSeriesGroupBy } from '../constant';
 import {
   AccountRepository,
   AssetRepository,
   BundleRepository,
-  EventRepository,
+  EventRepository
 } from '../database/repository';
 import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, NotFoundError, ValidationError } from '../model';
@@ -17,7 +17,7 @@ import {
   getTimestampSubDays,
   getTimestampSubHours,
   getTimestampSubWeeks,
-  isValidDate,
+  isValidDate
 } from '../util';
 
 @injectable()
@@ -39,8 +39,7 @@ export class AnalyticsService {
   }
 
   public countQuery(collection: string, apiQuery: APIQuery): Promise<number> {
-    this.logger.debug(`countQuery ${this[collection]}: ${JSON.stringify(apiQuery)}`);
-    return this[collection].count(apiQuery.query);
+    return this[collection].count(apiQuery);
   }
 
   public countByMonthToDate(collection: string): Promise<number> {
@@ -58,7 +57,11 @@ export class AnalyticsService {
     return this.countForDateRange(collection, start, end);
   }
 
-  public countByDateRange(collection: string, startDate: string, endDate: string): Promise<number> {
+  public countByDateRange(
+    collection: string,
+    startDate: string,
+    endDate: string
+  ): Promise<number> {
     if (!isValidDate(startDate)) {
       throw new ValidationError(`Invalid date string: ${startDate}`, 400);
     }
@@ -70,7 +73,10 @@ export class AnalyticsService {
     return this.countForDateRange(collection, start, end);
   }
 
-  public countByRollingHours(collection: string, hours: number): Promise<number> {
+  public countByRollingHours(
+    collection: string,
+    hours: number
+  ): Promise<number> {
     const start: number = getTimestampSubHours(hours);
     const end: number = getTimestamp();
     return this.countForDateRange(collection, start, end);
@@ -82,95 +88,68 @@ export class AnalyticsService {
     return this.countForDateRange(collection, start, end);
   }
 
-  public countByRollingWeeks(collection: string, weeks: number): Promise<number> {
+  public countByRollingWeeks(
+    collection: string,
+    weeks: number
+  ): Promise<number> {
     const start: number = getTimestampSubWeeks(weeks);
     const end: number = getTimestamp();
     return this.countForDateRange(collection, start, end);
   }
 
-  public timeSeriesDay(collection, apiQuery: APIQuery): Promise<any> {
-    apiQuery.query = [
-      {
-        $match: {
-          [this[collection].timestampField]: { $lte: getTimestamp() },
-        },
-      },
-      {
-        $group: {
-          _id: {
-            $dateToString: {
-              format: '%Y-%m-%d',
-              date: {
-                $toDate: {
-                  $multiply: [1000, { $toLong: `$${this[collection].timestampField}` }],
-                },
-              },
-            },
-          },
-          count: {
-            $sum: 1.0,
-          },
-        },
-      },
-      {
-        $project: {
-          _id: 0.0,
-          date: '$_id',
-          count: 1.0,
-        },
-      },
-      {
-        $sort: {
-          date: -1.0,
-        },
-      },
-    ];
-    return this[collection].aggregate(apiQuery);
-  }
-
-  public timeSeriesMonth(collection, apiQuery: APIQuery): Promise<any> {
-    apiQuery.query = [
-      {
-        $match: {
-          [this[collection].timestampField]: { $lte: getTimestamp() },
-        },
-      },
-      {
-        $group: {
-          _id: {
-            $dateToString: {
-              format: '%Y-%m',
-              date: {
-                $toDate: {
-                  $multiply: [1000, { $toLong: `$${this[collection].timestampField}` }],
-                },
-              },
-            },
-          },
-          count: {
-            $sum: 1.0,
-          },
-        },
-      },
-      {
-        $project: {
-          _id: 0.0,
-          date: '$_id',
-          count: 1.0,
-        },
-      },
-      {
-        $sort: {
-          date: -1.0,
-        },
-      },
-    ];
-    return this[collection].aggregate(apiQuery);
-  }
-
-  private countForDateRange(collection: string, start: number, end: number): Promise<number> {
+  public countTimeSeries(collection, groupBy, start, end) {
     const apiQuery = new APIQuery();
-    apiQuery.query = { [this[collection].timestampField]: { $gte: start, $lte: end } };
+    apiQuery.query = [
+      {
+        $match: {
+          [this[collection].timestampField]: { $gte: start, $lte: end },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: {
+              format: groupBy,
+              date: {
+                $toDate: {
+                  $multiply: [
+                    1000,
+                    { $toLong: `$${this[collection].timestampField}` },
+                  ],
+                },
+              },
+            },
+          },
+          count: {
+            $sum: 1.0,
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0.0,
+          date: '$_id',
+          count: 1.0,
+        },
+      },
+      {
+        $sort: {
+          date: -1.0,
+        },
+      },
+    ];
+    return this[collection].aggregate(apiQuery);
+  }
+
+  private countForDateRange(
+    collection: string,
+    start: number,
+    end: number
+  ): Promise<number> {
+    const apiQuery = new APIQuery();
+    apiQuery.query = {
+      [this[collection].timestampField]: { $gte: start, $lte: end },
+    };
     return this.countQuery(collection, apiQuery);
   }
 }

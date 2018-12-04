@@ -11,6 +11,10 @@ export class AssetRepository extends BaseRepository<Asset> {
     super(client, 'assets');
   }
 
+  get timestampField(): string {
+    return 'content.idData.timestamp';
+  }
+
   get paginatedField(): string {
     return 'content.idData.timestamp';
   }

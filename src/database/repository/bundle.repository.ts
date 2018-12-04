@@ -11,6 +11,10 @@ export class BundleRepository extends BaseRepository<Bundle> {
     super(client, 'bundles');
   }
 
+  get timestampField(): string {
+    return 'content.idData.timestamp';
+  }
+
   get paginatedField(): string {
     return '_id';
   }
