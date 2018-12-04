@@ -47,13 +47,17 @@ export class BaseRepository<T> {
     throw new DeveloperError({ reason: 'paginatedAscending getter must be overridden!' });
   }
 
-  public async getConnection() {
+  public async getCollection() {
+    if (this.collection) {
+      return this.collection;
+    }
     this.db = await this.client.getConnection();
     this.collection = this.db.collection(this.collectionName);
+    return this.collection;
   }
 
   public async create(item: T): Promise<InsertOneWriteOpResult> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -63,7 +67,7 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result: InsertOneWriteOpResult = await this.collection.insertOne(item);
+      const result: InsertOneWriteOpResult = await collection.insertOne(item);
       return result;
     } catch (err) {
       this.logger.captureError(err);
@@ -72,7 +76,7 @@ export class BaseRepository<T> {
   }
 
   public async createBulk(item: T[]): Promise<number> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -82,7 +86,7 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result: InsertWriteOpResult = await this.collection.insertMany(item);
+      const result: InsertWriteOpResult = await collection.insertMany(item);
       return result.result.n;
     } catch (err) {
       this.logger.captureError(err);
@@ -91,7 +95,7 @@ export class BaseRepository<T> {
   }
 
   public async update(apiQuery: APIQuery, item: T, create: boolean = false): Promise<T> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -102,7 +106,7 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result = await this.collection.findOneAndUpdate(
+      const result = await collection.findOneAndUpdate(
         apiQuery.query,
         { $set: item },
         {
@@ -118,7 +122,7 @@ export class BaseRepository<T> {
   }
 
   public async deleteOne(apiQuery: APIQuery): Promise<DeleteWriteOpResultObject> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -129,7 +133,7 @@ export class BaseRepository<T> {
     );
 
     try {
-      const result: DeleteWriteOpResultObject = await this.collection.deleteOne(apiQuery.query);
+      const result: DeleteWriteOpResultObject = await collection.deleteOne(apiQuery.query);
       return result;
     } catch (err) {
       this.logger.captureError(err);
@@ -138,10 +142,10 @@ export class BaseRepository<T> {
   }
 
   public async count(query: object): Promise<number> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     try {
-      const result = await this.collection.countDocuments(query);
+      const result = await collection.countDocuments(query);
       return result;
     } catch (err) {
       this.logger.captureError(err);
@@ -152,7 +156,7 @@ export class BaseRepository<T> {
   // TODO: Add accessLevel to aggregates
   // FIXME: Aggregation isn't returning the correct data with paging b/c a limit to the pipeline.
   public async aggregatePaging(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -167,7 +171,7 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result = await MongoPaging.aggregate(this.collection, {
+      const result = await MongoPaging.aggregate(collection, {
         aggregation: apiQuery.query,
         paginatedField: this.paginatedField,
         paginatedAscending: this.paginatedAscending,
@@ -183,7 +187,7 @@ export class BaseRepository<T> {
   }
 
   public async aggregate(apiQuery: APIQuery): Promise<any> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -194,7 +198,7 @@ export class BaseRepository<T> {
     );
 
     try {
-      const result = await this.collection.aggregate(apiQuery.query).toArray();
+      const result = await collection.aggregate(apiQuery.query).toArray();
       return result;
     } catch (err) {
       this.logger.captureError(err);
@@ -203,7 +207,7 @@ export class BaseRepository<T> {
   }
 
   public async exists(apiQuery: APIQuery): Promise<boolean> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `exists for ${this.collectionName}:
@@ -214,7 +218,7 @@ export class BaseRepository<T> {
     }
 
     try {
-      const result = await this.collection
+      const result = await collection
         .find(apiQuery.query, { _id: 1 })
         .limit(1)
         .toArray();
@@ -227,7 +231,7 @@ export class BaseRepository<T> {
   }
 
   public async existsOR(obj, ...fields): Promise<boolean> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     const qor = _.reduce(
       fields,
@@ -249,7 +253,7 @@ export class BaseRepository<T> {
       ${JSON.stringify(qor)}`
     );
     try {
-      const result = await this.collection
+      const result = await collection
         .find({ $or: qor }, { _id: 1 })
         .limit(1)
         .toArray();
@@ -262,7 +266,7 @@ export class BaseRepository<T> {
   }
 
   public async distinct(field: string): Promise<any> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -272,7 +276,7 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result = await this.collection.distinct(field);
+      const result = await collection.distinct(field);
       return result;
     } catch (err) {
       this.logger.captureError(err);
@@ -281,7 +285,7 @@ export class BaseRepository<T> {
   }
 
   public async search(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -299,7 +303,7 @@ export class BaseRepository<T> {
     );
 
     try {
-      const result = await MongoPaging.search(this.collection, apiQuery.search, {
+      const result = await MongoPaging.search(collection, apiQuery.search, {
         query: apiQuery.query,
         fields: apiQuery.fields,
         limit: apiQuery.limit,
@@ -314,7 +318,7 @@ export class BaseRepository<T> {
   }
 
   public async find(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -334,7 +338,7 @@ export class BaseRepository<T> {
       ? { projection: apiQuery.fields }
       : undefined;
     try {
-      const result = await MongoPaging.find(this.collection, {
+      const result = await MongoPaging.find(collection, {
         query: apiQuery.query,
         fields: projection,
         paginatedField: this.paginatedField,
@@ -352,7 +356,7 @@ export class BaseRepository<T> {
   }
 
   public async findOne(apiQuery: APIQuery): Promise<T> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -363,7 +367,7 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result = await this.collection
+      const result = await collection
         .find(apiQuery.query, { projection: apiQuery.fields })
         .limit(1)
         .toArray();
@@ -383,7 +387,7 @@ export class BaseRepository<T> {
   }
 
   public async findOneOrCreate(apiQuery: APIQuery, createUser: string): Promise<T> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -394,7 +398,7 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result = await this.collection.findOneAndUpdate(
+      const result = await collection.findOneAndUpdate(
         apiQuery.query,
         { $setOnInsert: { createdOn: getTimestamp(), createdBy: createUser } },
         {
