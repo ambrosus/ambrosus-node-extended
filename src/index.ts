@@ -13,7 +13,7 @@ import { AMBAccountProvider } from './middleware/amb-account.provider';
 import * as Sentry from '@sentry/node';
 import * as sgMail from '@sendgrid/mail';
 import { DBClient } from './database/client';
-import { expressErrorHandler } from './middleware';
+import { errorHandler } from './middleware';
 
 if (config.email.api) {
   sgMail.setApiKey(config.email.api);
@@ -73,7 +73,7 @@ server.setConfig(app => {
 });
 
 server.setErrorConfig(app => {
-  app.use(expressErrorHandler);
+  app.use(errorHandler);
 });
 
 // Server errors

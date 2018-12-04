@@ -66,7 +66,7 @@ const getErrorMessages = (err: any = {}) => {
   return messages.join(', ');
 };
 
-export const expressErrorHandler = (err, req, res, next) => {
+export const errorHandler = (err, req, res, next) => {
   let status;
   const logger: ILogger = iocContainer.get<LoggerService>(TYPE.LoggerService);
 
