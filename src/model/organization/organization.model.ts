@@ -1,9 +1,6 @@
 import { Request } from 'express';
 import { injectable } from 'inversify';
-import { ValidationSchema } from 'express-validator/check';
-import web3 = require('web3');
 import { getTimestamp } from '../../util';
-import { controller } from 'inversify-express-utils';
 
 export interface IOrganization {
   _id?: string;
@@ -46,52 +43,6 @@ export class Organization implements IOrganization {
       organization.legalAddress = req.body.legalAddress;
     }
     return organization;
-  }
-
-  public static validationSchema(update: boolean = false): ValidationSchema {
-    return {
-      owner: {
-        in: ['body'],
-        optional: update ? true : false,
-        custom: {
-          options: (value, { req, location, path }) => {
-            return web3.utils.isAddress(value);
-          },
-          errorMessage: 'Invalid public key address',
-        },
-      },
-      title: {
-        in: ['body'],
-        optional: true,
-        isLength: {
-          errorMessage: 'title may not exceed 100 characters',
-          options: { max: 100 },
-        },
-      },
-      timeZone: {
-        in: ['body'],
-        optional: true,
-        isLength: {
-          errorMessage: 'Time zone may not exceed 50 characters',
-          options: { max: 50 },
-        },
-      },
-      active: {
-        in: ['body'],
-        optional: update ? true : false,
-        errorMessage: 'Invalid value',
-        isBoolean: true,
-        toBoolean: true,
-      },
-      legalAddress: {
-        in: ['body'],
-        optional: true,
-        isLength: {
-          errorMessage: 'Legal address may not exceed 255 characters',
-          options: { max: 255 },
-        },
-      },
-    };
   }
 
   public _id?: string;

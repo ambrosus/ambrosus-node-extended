@@ -1,16 +1,13 @@
 import { Request } from 'express';
-import { body, checkSchema, param } from 'express-validator/check';
 import { inject } from 'inversify';
 import {
   controller,
   httpGet,
   httpPost,
   httpPut,
-  request,
   requestBody,
   requestParam,
 } from 'inversify-express-utils';
-import web3 = require('web3');
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
@@ -18,9 +15,16 @@ import { AccountDetail, APIQuery, APIResponse } from '../model';
 import { AccountService } from '../service/account.service';
 import { Web3Service } from '../service/web3.service';
 import { BaseController } from './base.controller';
+import { authorize } from '../middleware/authorize.middleware';
+import { validate } from '../middleware';
+import { querySchema, utilSchema, accountSchema } from '../validation/schemas';
 
-@controller('/account')
+@controller(
+  '/account',
+  MIDDLEWARE.Context
+)
 export class AccountController extends BaseController {
+
   constructor(
     @inject(TYPE.AccountService) private accountService: AccountService,
     @inject(TYPE.Web3Service) private web3Service: Web3Service,
@@ -28,106 +32,81 @@ export class AccountController extends BaseController {
   ) {
     super(logger);
   }
+
   @httpGet(
     '/keyPair'
   )
   public async getKeyPair(): Promise<APIResponse> {
-    try {
-      const result = await this.web3Service.createKeyPair();
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      return super.handleError(err);
-    }
+    const result = await this.web3Service.createKeyPair();
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpGet(
     '/',
-    ...checkSchema(APIQuery.validationSchema()),
-    MIDDLEWARE.ValidateRequest,
-    MIDDLEWARE.Authorized
+    authorize('super_account', 'manage_accounts'),
+    validate(querySchema, { queryParamsOnly: true })
   )
-  public async getAccounts(@request() req: Request): Promise<APIResponse> {
-    try {
-      const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
-      return APIResponse.fromMongoPagedResult(result);
-    } catch (err) {
-      return super.handleError(err);
-    }
+  public async getAccounts(req: Request): Promise<APIResponse> {
+    const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(result);
   }
 
   @httpGet(
     '/:address',
-    param('address').custom(value => web3.utils.isAddress(value)),
-    MIDDLEWARE.ValidateRequest,
-    MIDDLEWARE.Authorized
+    authorize(),
+    validate(utilSchema.address, { paramsOnly: true })
   )
-  public async getAccount(@requestParam('address') address: string): Promise<APIResponse> {
-    try {
-      const result = await this.accountService.getAccount(address);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      return super.handleError(err);
-    }
+  public async getAccount(
+    @requestParam('address') address: string
+  ): Promise<APIResponse> {
+    const result = await this.accountService.getAccount(address);
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpPut(
     '/:address',
-    param('address').custom(value => web3.utils.isAddress(value)),
-    ...checkSchema(AccountDetail.validationSchema()),
-    MIDDLEWARE.ValidateRequest,
-    MIDDLEWARE.Authorized
+    authorize(),
+    validate(accountSchema.accountDetails, { params: true })
   )
   public async updateAccountDetail(
-    @requestParam('address') address: string,
-    req: Request
+    @requestParam('address') address: string, req: Request
   ): Promise<APIResponse> {
-    try {
-      const result = await this.accountService.updateAccountDetail(
-        address,
-        AccountDetail.fromRequestForUpdate(req)
-      );
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      return super.handleError(err);
-    }
+    const result = await this.accountService.updateAccountDetail(
+      address,
+      AccountDetail.fromRequestForUpdate(req)
+    );
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpGet(
     '/:address/exists',
-    param('address').custom(value => web3.utils.isAddress(value)),
-    MIDDLEWARE.ValidateRequest
+    validate(utilSchema.address, { paramsOnly: true })
   )
-  public async getAccountExists(@requestParam('address') address: string): Promise<APIResponse> {
-    try {
-      const result = await this.accountService.getAccountExists(address);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      return super.handleError(err);
-    }
+  public async getAccountExists(
+    @requestParam('address') address: string
+  ): Promise<APIResponse> {
+    const result = await this.accountService.getAccountExists(address);
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpPost(
     '/query',
-    ...checkSchema(APIQuery.validationSchema()),
-    MIDDLEWARE.ValidateRequest,
-    MIDDLEWARE.Authorized
+    authorize('super_account', 'manage_accounts'),
+    validate(querySchema)
   )
   public async queryAccounts(req: Request): Promise<APIResponse> {
-    try {
-      const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
-      return APIResponse.fromMongoPagedResult(result);
-    } catch (err) {
-      return super.handleError(err);
-    }
+    const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(result);
   }
 
-  @httpPost('/secret', body('email').isEmail(), MIDDLEWARE.ValidateRequest)
-  public async getEncryptedSecretByEmail(@requestBody() acc: AccountDetail): Promise<APIResponse> {
-    try {
-      const result = await this.accountService.getAccountEncryptedToken(acc.email);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      return super.handleError(err);
-    }
+  @httpPost(
+    '/secret',
+    validate(utilSchema.email)
+  )
+  public async getEncryptedSecretByEmail(
+    @requestBody() acc: AccountDetail
+  ): Promise<APIResponse> {
+    const result = await this.accountService.getAccountEncryptedToken(acc.email);
+    return APIResponse.fromSingleResult(result);
   }
 }

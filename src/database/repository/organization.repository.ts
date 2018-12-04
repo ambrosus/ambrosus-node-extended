@@ -30,7 +30,7 @@ export class OrganizationRepository extends BaseRepository<Organization> {
   }
 
   public async getNewOrganizationIdentifier(): Promise<number> {
-    await this.getConnection();
+    await this.client.getConnection();
 
     const result = await this.client.db
       .collection('identityCounter')

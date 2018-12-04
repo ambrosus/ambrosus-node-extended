@@ -3,18 +3,20 @@ import web3 = require('web3');
 
 import { config } from '../config';
 import { TYPE } from '../constant/types';
-import { AuthenticationError, ValidationError } from '../model';
 import { ILogger } from '../interface/logger.inferface';
 import { matchHexOfLength } from '../util';
+
+import { ValidationError, AuthenticationError } from '../errors';
 
 @injectable()
 export class Web3Service {
   private web3;
   private w3Account;
   private privateKey = config.web3.privateKey;
+
   constructor(@inject(TYPE.LoggerService) public logger: ILogger) {
     if (!matchHexOfLength(this.privateKey, 64)) {
-      throw new ValidationError('Invalid private key format', 400);
+      throw new ValidationError({ reason: 'Invalid private key format' });
     }
 
     this.web3 = new web3();
@@ -41,7 +43,7 @@ export class Web3Service {
     try {
       return this.web3.eth.accounts.privateKeyToAccount(secret).address;
     } catch (_e) {
-      throw new AuthenticationError('Invalid secret.');
+      throw new AuthenticationError({ reason: 'Invalid secret.' });
     }
   }
 

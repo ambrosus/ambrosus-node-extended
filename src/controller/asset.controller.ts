@@ -7,9 +7,17 @@ import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse } from '../model';
 import { AssetService } from '../service/asset.service';
 import { BaseController } from './base.controller';
+import { authorize } from '../middleware/authorize.middleware';
+import { validate } from '../middleware';
+import { querySchema } from '../validation';
 
-@controller('/asset', MIDDLEWARE.Authorized)
+@controller(
+  '/asset',
+  MIDDLEWARE.Context,
+  authorize()
+)
 export class AssetController extends BaseController {
+
   constructor(
     @inject(TYPE.AssetService) private assetService: AssetService,
     @inject(TYPE.LoggerService) protected logger: ILogger
@@ -17,43 +25,40 @@ export class AssetController extends BaseController {
     super(logger);
   }
 
-  @httpGet('/')
+  @httpGet(
+    '/'
+  )
   public async getAssets(req: Request): Promise<APIResponse> {
-    try {
-      const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
-      return APIResponse.fromMongoPagedResult(result);
-    } catch (err) {
-      return super.handleError(err);
-    }
+    const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(result);
   }
 
-  @httpGet('/:assetId')
-  public async get(@requestParam('assetId') assetId: string): Promise<APIResponse> {
-    try {
-      const result = await this.assetService.getAsset(assetId);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      return super.handleError(err);
-    }
+  @httpGet(
+    '/:assetId'
+  )
+  public async get(
+    @requestParam('assetId') assetId: string
+  ): Promise<APIResponse> {
+    const result = await this.assetService.getAsset(assetId);
+    return APIResponse.fromSingleResult(result);
   }
 
-  @httpGet('/exists/:assetId')
-  public async getAssetExists(@requestParam('assetId') assetId: string): Promise<APIResponse> {
-    try {
-      const result = await this.assetService.getAssetExists(assetId);
-      return APIResponse.fromSingleResult(result);
-    } catch (err) {
-      return super.handleError(err);
-    }
+  @httpGet(
+    '/exists/:assetId'
+  )
+  public async getAssetExists(
+    @requestParam('assetId') assetId: string
+  ): Promise<APIResponse> {
+    const result = await this.assetService.getAssetExists(assetId);
+    return APIResponse.fromSingleResult(result);
   }
 
-  @httpPost('/query')
+  @httpPost(
+    '/query',
+    validate(querySchema)
+  )
   public async query(req: Request): Promise<APIResponse> {
-    try {
-      const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
-      return APIResponse.fromMongoPagedResult(result);
-    } catch (err) {
-      return super.handleError(err);
-    }
+    const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(result);
   }
 }

@@ -7,9 +7,12 @@ import { DBClient } from '../database/client';
 
 @controller('/health')
 export class HealthController {
-  constructor(@inject(TYPE.DBClient) protected client: DBClient) {}
 
-  @httpGet('/')
+  constructor(@inject(TYPE.DBClient) protected client: DBClient) { }
+
+  @httpGet(
+    '/'
+  )
   public get(@response() res: express.Response) {
     let status = 200;
     if (!this.client.connected) {

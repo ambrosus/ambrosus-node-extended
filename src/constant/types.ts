@@ -46,7 +46,5 @@ export const TYPE: any = {
 };
 
 export const MIDDLEWARE: any = {
-  Authorized: Symbol.for('AuthorizedMiddleware'),
-  ValidateRequest: Symbol.for('ValidateRequestMiddleware'),
-  NodeAdmin: Symbol.for('NodeAdminMiddleware'),
+  Context: Symbol.for('Context'),
 };

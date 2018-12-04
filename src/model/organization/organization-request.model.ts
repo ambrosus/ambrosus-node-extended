@@ -1,7 +1,5 @@
 import { Request } from 'express';
-import { ValidationSchema } from 'express-validator/check';
 import { injectable } from 'inversify';
-import web3 = require('web3');
 import { getTimestamp } from '../../util';
 
 export interface IOrganizationRequest {
@@ -31,43 +29,6 @@ export class OrganizationRequest implements IOrganizationRequest {
       organizationRequest.message = req.body.message;
     }
     return organizationRequest;
-  }
-
-  public static validationSchema(): ValidationSchema {
-    return {
-      title: {
-        in: ['body'],
-        optional: true,
-        isLength: {
-          errorMessage: 'Organization title may not exceed 100 characters',
-          options: { max: 100 },
-        },
-      },
-      address: {
-        in: ['body'],
-        optional: false,
-        custom: {
-          options: (value, { req, location, path }) => {
-            return web3.utils.isAddress(value);
-          },
-          errorMessage: 'Invalid public key address',
-        },
-      },
-      email: {
-        in: ['body'],
-        optional: false,
-        errorMessage: 'Invalid email format',
-        isEmail: true,
-      },
-      message: {
-        in: ['body'],
-        optional: true,
-        isLength: {
-          errorMessage: 'Message may not exceed 1024 characters',
-          options: { max: 1024 },
-        },
-      },
-    };
   }
 
   public _id: string;

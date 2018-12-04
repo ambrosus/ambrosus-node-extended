@@ -11,7 +11,7 @@ export class EmailService {
   constructor(
     @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
     @inject(TYPE.LoggerService) private readonly logger: ILogger
-  ) {}
+  ) { }
 
   public async sendInvitation(organizationInvite: OrganizationInvite) {
     const msg = {

@@ -14,7 +14,9 @@ import { ILogger } from '../../interface/logger.inferface';
 import { APIQuery, MongoPagedResult } from '../../model';
 import { DBClient } from '../client';
 import { getTimestamp } from '../../util';
-import { RepositoryError } from '../../model/error/repository.error';
+
+import { RepositoryError } from '../../errors';
+import { DeveloperError } from '../../errors/developer.error';
 
 @injectable()
 export class BaseRepository<T> {
@@ -37,20 +39,24 @@ export class BaseRepository<T> {
   }
 
   get paginatedField(): string {
-    throw new Error('paginatedField getter must be overridden!');
+    throw new DeveloperError({ reason: 'paginatedField getter must be overridden!' });
   }
 
   get paginatedAscending(): boolean {
-    throw new Error('paginatedAscending getter must be overridden!');
+    throw new DeveloperError({ reason: 'paginatedAscending getter must be overridden!' });
   }
 
-  public async getConnection() {
+  public async getCollection() {
+    if (this.collection) {
+      return this.collection;
+    }
     this.db = await this.client.getConnection();
     this.collection = this.db.collection(this.collectionName);
+    return this.collection;
   }
 
   public async create(item: T): Promise<InsertOneWriteOpResult> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -60,16 +66,16 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result: InsertOneWriteOpResult = await this.collection.insertOne(item);
+      const result: InsertOneWriteOpResult = await collection.insertOne(item);
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
   public async createBulk(item: T[]): Promise<number> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -79,16 +85,16 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result: InsertWriteOpResult = await this.collection.insertMany(item);
+      const result: InsertWriteOpResult = await collection.insertMany(item);
       return result.result.n;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
   public async update(apiQuery: APIQuery, item: T, create: boolean = false): Promise<T> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -99,7 +105,7 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result = await this.collection.findOneAndUpdate(
+      const result = await collection.findOneAndUpdate(
         apiQuery.query,
         { $set: item },
         {
@@ -110,12 +116,12 @@ export class BaseRepository<T> {
       return result.value;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
   public async deleteOne(apiQuery: APIQuery): Promise<DeleteWriteOpResultObject> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -126,16 +132,16 @@ export class BaseRepository<T> {
     );
 
     try {
-      const result: DeleteWriteOpResultObject = await this.collection.deleteOne(apiQuery.query);
+      const result: DeleteWriteOpResultObject = await collection.deleteOne(apiQuery.query);
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
   public async count(apiQuery: APIQuery): Promise<number> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -146,18 +152,18 @@ export class BaseRepository<T> {
     );
 
     try {
-      const result = await this.collection.countDocuments(apiQuery.query);
+      const result = await collection.countDocuments(query);
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
   // TODO: Add accessLevel to aggregates
   // FIXME: Aggregation isn't returning the correct data with paging b/c a limit to the pipeline.
   public async aggregatePaging(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -172,7 +178,7 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result = await MongoPaging.aggregate(this.collection, {
+      const result = await MongoPaging.aggregate(collection, {
         aggregation: apiQuery.query,
         paginatedField: this.paginatedField,
         paginatedAscending: this.paginatedAscending,
@@ -183,12 +189,12 @@ export class BaseRepository<T> {
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
   public async aggregate(apiQuery: APIQuery): Promise<any> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -199,26 +205,27 @@ export class BaseRepository<T> {
     );
 
     try {
-      const result = await this.collection.aggregate(apiQuery.query).toArray();
+      const result = await collection.aggregate(apiQuery.query).toArray();
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
   public async exists(apiQuery: APIQuery): Promise<boolean> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `exists for ${this.collectionName}:
       ${JSON.stringify(apiQuery, null, 2)}`
     );
     if (!apiQuery.query.keys.length) {
-      throw new RepositoryError('Invalid query for exists');
+      throw new RepositoryError({ reason: 'Invalid query for exists' });
     }
+
     try {
-      const result = await this.collection
+      const result = await collection
         .find(apiQuery.query, { _id: 1 })
         .limit(1)
         .toArray();
@@ -226,12 +233,12 @@ export class BaseRepository<T> {
       return result.length > 0;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
   public async existsOR(obj, ...fields): Promise<boolean> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     const qor = _.reduce(
       fields,
@@ -245,7 +252,7 @@ export class BaseRepository<T> {
     );
 
     if (!qor.length) {
-      throw new RepositoryError('Invalid query for existsOR');
+      throw new RepositoryError({ reason: 'Invalid query for existsOR' });
     }
 
     this.logger.debug(
@@ -253,7 +260,7 @@ export class BaseRepository<T> {
       ${JSON.stringify(qor)}`
     );
     try {
-      const result = await this.collection
+      const result = await collection
         .find({ $or: qor }, { _id: 1 })
         .limit(1)
         .toArray();
@@ -261,12 +268,12 @@ export class BaseRepository<T> {
       return result.length > 0;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
   public async distinct(field: string): Promise<any> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -276,16 +283,16 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result = await this.collection.distinct(field);
+      const result = await collection.distinct(field);
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
   public async search(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -303,7 +310,7 @@ export class BaseRepository<T> {
     );
 
     try {
-      const result = await MongoPaging.search(this.collection, apiQuery.search, {
+      const result = await MongoPaging.search(collection, apiQuery.search, {
         query: apiQuery.query,
         fields: apiQuery.fields,
         limit: apiQuery.limit,
@@ -313,12 +320,12 @@ export class BaseRepository<T> {
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
   public async find(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -338,7 +345,7 @@ export class BaseRepository<T> {
       ? { projection: apiQuery.fields }
       : undefined;
     try {
-      const result = await MongoPaging.find(this.collection, {
+      const result = await MongoPaging.find(collection, {
         query: apiQuery.query,
         fields: projection,
         paginatedField: this.paginatedField,
@@ -351,12 +358,12 @@ export class BaseRepository<T> {
       return result;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
   public async findOne(apiQuery: APIQuery): Promise<T> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -367,7 +374,7 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result = await this.collection
+      const result = await collection
         .find(apiQuery.query, { projection: apiQuery.fields })
         .limit(1)
         .toArray();
@@ -382,12 +389,12 @@ export class BaseRepository<T> {
       return result[0] || undefined;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 
   public async findOneOrCreate(apiQuery: APIQuery, createUser: string): Promise<T> {
-    await this.getConnection();
+    const collection = await this.getCollection();
 
     this.logger.debug(
       `
@@ -398,7 +405,7 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result = await this.collection.findOneAndUpdate(
+      const result = await collection.findOneAndUpdate(
         apiQuery.query,
         { $setOnInsert: { createdOn: getTimestamp(), createdBy: createUser } },
         {
@@ -409,7 +416,7 @@ export class BaseRepository<T> {
       return result.value;
     } catch (err) {
       this.logger.captureError(err);
-      throw new RepositoryError(err.message);
+      throw new RepositoryError(err);
     }
   }
 }

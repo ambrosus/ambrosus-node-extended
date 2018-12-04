@@ -1,10 +1,9 @@
 import { Request } from 'express';
-import { ValidationSchema } from 'express-validator/check';
 import { injectable } from 'inversify';
 
 import { config } from '../../config';
 import { getMongoFilter, getParamValue, validateOperators } from '../../util';
-import { ValidationError } from '../error';
+import { ValidationError } from '../../errors';
 
 export interface IAPIPagination {
   limit: number;
@@ -28,7 +27,7 @@ export class APIQuery implements IAPIQuery {
     if (query) {
       const errors = validateOperators(query);
       if (errors.length) {
-        throw new ValidationError('bad operators found in query', 400);
+        throw new ValidationError({ reason: 'bad operators found in query' });
       }
       apiQuery.query = getMongoFilter(query);
     }
@@ -38,31 +37,6 @@ export class APIQuery implements IAPIQuery {
     apiQuery.previous = getParamValue(req, 'previous');
 
     return apiQuery;
-  }
-
-  public static validationSchema(): ValidationSchema {
-    return {
-      limit: {
-        in: ['body', 'query'],
-        isInt: {
-          options: { min: 1 },
-        },
-        optional: true,
-        errorMessage: 'Limit must be a numeric value > 0',
-      },
-      next: {
-        in: ['body', 'query'],
-        // isBase64: true,
-        optional: true,
-        errorMessage: 'Next must be a base64 encoded string',
-      },
-      previous: {
-        in: ['body', 'query'],
-        isBase64: true,
-        optional: true,
-        errorMessage: 'Previous must be a base64 encoded string',
-      },
-    };
   }
 
   public query;
