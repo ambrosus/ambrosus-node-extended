@@ -35,8 +35,7 @@ export class BaseRepository<T> {
   }
 
   get timestampField(): string {
-    // For when we have a system control creation date
-    return this.paginatedField;
+    throw new RepositoryError({ reason: 'timestampField getter must be overridden!' });
   }
 
   get paginatedField(): string {
@@ -141,11 +140,19 @@ export class BaseRepository<T> {
     }
   }
 
-  public async count(query: object): Promise<number> {
+  public async count(apiQuery: APIQuery): Promise<number> {
     const collection = await this.getCollection();
 
+    this.logger.debug(
+      `
+      ################ count ################
+      collection      ${this.collectionName}:
+      query:    ${JSON.stringify(apiQuery.query, null, 2)}
+      `
+    );
+
     try {
-      const result = await collection.countDocuments(query);
+      const result = await collection.countDocuments(apiQuery.query);
       return result;
     } catch (err) {
       this.logger.captureError(err);

@@ -19,6 +19,10 @@ export class AccountRepository extends BaseRepository<Account> {
     super(client, 'accounts');
   }
 
+  get timestampField(): string {
+    return 'registeredOn';
+  }
+
   get paginatedField(): string {
     return '_id';
   }

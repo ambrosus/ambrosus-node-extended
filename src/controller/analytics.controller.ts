@@ -1,21 +1,26 @@
 import { Request } from 'express';
 import { inject } from 'inversify';
-import { controller, httpGet, requestParam } from 'inversify-express-utils';
+import {
+  controller,
+  httpGet,
+  requestParam,
+  queryParam
+} from 'inversify-express-utils';
 
-import { MIDDLEWARE, TYPE } from '../constant/types';
+import {
+  MIDDLEWARE,
+  TYPE,
+  TimeSeriesGroupBy,
+  timeSeriesGroupFromString
+} from '../constant';
 import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse } from '../model';
 import { AnalyticsService } from '../service/analytics.service';
 import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
 
-@controller(
-  '/analytics',
-  MIDDLEWARE.Context,
-  authorize()
-)
+@controller('/analytics', MIDDLEWARE.Context, authorize())
 export class AnalyticsController extends BaseController {
-
   constructor(
     @inject(TYPE.AnalyticsService) private analyticsService: AnalyticsService,
     @inject(TYPE.LoggerService) protected logger: ILogger
@@ -23,9 +28,7 @@ export class AnalyticsController extends BaseController {
     super(logger);
   }
 
-  @httpGet(
-    '/:collection/count'
-  )
+  @httpGet('/:collection/count')
   public async getCount(
     @requestParam('collection') collection: string
   ): Promise<APIResponse> {
@@ -33,85 +36,34 @@ export class AnalyticsController extends BaseController {
     return APIResponse.fromSingleResult({ count });
   }
 
-  @httpGet(
-    '/:collection/count/mtd'
-  )
-  public async getCountByMonthToDate(
-    @requestParam('collection') collection: string
-  ): Promise<APIResponse> {
-    const count = await this.analyticsService.countByMonthToDate(collection);
-    return APIResponse.fromSingleResult({ count });
-  }
-
-  @httpGet(
-    '/:collection/count/date/:date'
-  )
-  public async getCountByDate(
+  @httpGet('/:collection/count/timerange/total')
+  public async getTimeRangeCount(
     @requestParam('collection') collection: string,
-    @requestParam('date') date: string
+    @queryParam('start') start: string,
+    @queryParam('end') end: string
   ): Promise<APIResponse> {
-    const count = await this.analyticsService.countByDate(collection, date);
-    return APIResponse.fromSingleResult({ count });
-  }
-
-  @httpGet(
-    '/:collection/count/daterange/:start/:end'
-  )
-  public async getCountByDateRange(
-    @requestParam('collection') collection: string,
-    @requestParam('start') start: string,
-    @requestParam('end') end: string
-  ): Promise<APIResponse> {
-    const count = await this.analyticsService.countByDateRange(collection, start, end);
-    return APIResponse.fromSingleResult({ count });
-  }
-
-  @httpGet(
-    '/:collection/count/rolling/hours/:hours'
-  )
-  public async getCountByRollingHours(
-    @requestParam('collection') collection: string,
-    @requestParam('hours') hours: number
-  ): Promise<APIResponse> {
-    const count = await this.analyticsService.countByRollingHours(collection, hours);
-    return APIResponse.fromSingleResult({ count });
-  }
-
-  @httpGet(
-    '/:collection/count/rolling/days/:days'
-  )
-  public async getCountByRollingDays(
-    @requestParam('collection') collection: string,
-    @requestParam('days') days: number
-  ): Promise<APIResponse> {
-    const count = await this.analyticsService.countByRollingDays(collection, days);
-    return APIResponse.fromSingleResult({ count });
-  }
-
-  @httpGet(
-    '/:collection/timeseries/day'
-  )
-  public async getTimeSeriesDay(
-    @requestParam('collection') collection: string,
-    req: Request
-  ): Promise<APIResponse> {
-    const count = await this.analyticsService.timeSeriesDay(
+    const count = await this.analyticsService.countForTimeRange(
       collection,
-      APIQuery.fromRequest(req)
+      +start,
+      +end
     );
     return APIResponse.fromSingleResult({ count });
   }
 
-  @httpGet(
-    '/:collection/timeseries/month'
-  )
-  public async getTimeSeriesMonth(
+  @httpGet('/:collection/count/timerange/aggregate')
+  public async getTimeRangeCountAggregate(
     @requestParam('collection') collection: string,
-    req: Request
+    @queryParam('group') group: string,
+    @queryParam('start') start: string,
+    @queryParam('end') end: string
   ): Promise<APIResponse> {
-    const count = await this.analyticsService.timeSeriesMonth(
+    const groupBy = timeSeriesGroupFromString(group);
+
+    const count = await this.analyticsService.countForTimeRangeWithAggregate(
       collection,
-      APIQuery.fromRequest(req)
+      groupBy,
+      +start,
+      +end
     );
     return APIResponse.fromSingleResult({ count });
   }
