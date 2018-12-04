@@ -6,14 +6,15 @@ import {
   APIQuery,
   MongoPagedResult,
   UserPrincipal,
-  AmbrosusError,
   AccountDetail,
 } from '../../model';
 import { DBClient } from '../client';
 import { BaseRepository } from './base.repository';
+import { AmbrosusError } from '../../errors';
 
 @injectable()
 export class AccountRepository extends BaseRepository<Account> {
+
   constructor(@inject(TYPE.DBClient) protected client: DBClient) {
     super(client, 'accounts');
   }
@@ -64,7 +65,7 @@ export class AccountRepository extends BaseRepository<Account> {
       return result[0];
     }
     if (result && result.length > 1) {
-      throw new AmbrosusError('Single get query returned more than one object', 400);
+      throw new AmbrosusError({ reason: 'Single get query returned more than one object' });
     }
     return undefined;
   }
@@ -94,7 +95,7 @@ export class AccountRepository extends BaseRepository<Account> {
       return result[0];
     }
     if (result && result.length > 1) {
-      throw new AmbrosusError('Single get query returned more than one object', 400);
+      throw new AmbrosusError({ reason: 'Single get query returned more than one object' });
     }
     return undefined;
   }

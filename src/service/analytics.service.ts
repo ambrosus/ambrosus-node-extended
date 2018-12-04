@@ -8,7 +8,7 @@ import {
   EventRepository,
 } from '../database/repository';
 import { ILogger } from '../interface/logger.inferface';
-import { APIQuery, NotFoundError, ValidationError } from '../model';
+import { APIQuery } from '../model';
 import {
   getTimestamp,
   getTimestampDateEnd,
@@ -20,6 +20,8 @@ import {
   isValidDate,
 } from '../util';
 
+import { ValidationError, NotFoundError } from '../errors';
+
 @injectable()
 export class AnalyticsService {
   constructor(
@@ -28,12 +30,13 @@ export class AnalyticsService {
     @inject(TYPE.EventRepository) private readonly event: EventRepository,
     @inject(TYPE.BundleRepository) private readonly bundle: BundleRepository,
     @inject(TYPE.LoggerService) private readonly logger: ILogger
-  ) {}
+  ) { }
 
   public count(collection: string): Promise<number> {
     if (!this[collection]) {
-      throw new NotFoundError('Bad Request');
+      throw new NotFoundError({ reason: 'No such data' });
     }
+
     this.logger.debug(`count ${this[collection]}`);
     return this[collection].count();
   }
@@ -51,8 +54,9 @@ export class AnalyticsService {
 
   public countByDate(collection: string, date: string): Promise<number> {
     if (!isValidDate(date)) {
-      throw new ValidationError(`Invalid date string: ${date}`, 400);
+      throw new ValidationError({ reason: `Invalid date string: ${date}` });
     }
+
     const start: number = getTimestampDateStart(date);
     const end: number = getTimestampDateEnd(date);
     return this.countForDateRange(collection, start, end);
@@ -60,11 +64,12 @@ export class AnalyticsService {
 
   public countByDateRange(collection: string, startDate: string, endDate: string): Promise<number> {
     if (!isValidDate(startDate)) {
-      throw new ValidationError(`Invalid date string: ${startDate}`, 400);
+      throw new ValidationError({ reason: `Invalid date string: ${startDate}` });
     }
     if (!isValidDate(endDate)) {
-      throw new ValidationError(`Invalid date string: ${endDate}`, 400);
+      throw new ValidationError({ reason: `Invalid date string: ${endDate}` });
     }
+
     const start: number = getTimestampDateStart(startDate);
     const end: number = getTimestampDateEnd(endDate);
     return this.countForDateRange(collection, start, end);

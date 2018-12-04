@@ -1,4 +1,3 @@
-import { RequestHandler } from 'express';
 import { Container, interfaces } from 'inversify';
 
 import { MIDDLEWARE, TYPE } from './constant/types';
@@ -28,7 +27,6 @@ import {
 import { GraphQLSchema, IGraphQLResolver, IGraphQLSchema, IGraphQLType } from './graphql';
 import { AccountResolver, AssetResolver, BundleResolver, EventResolver } from './graphql/resolver';
 import { AccountType, AssetType, BundleType, EventType, QueryType } from './graphql/type';
-import { AuthorizedMiddleware, NodeAdminMiddleware, ValidateRequestMiddleware } from './middleware';
 import { UserPrincipal } from './model';
 import { AccountService } from './service/account.service';
 import { AnalyticsService } from './service/analytics.service';
@@ -41,6 +39,7 @@ import { EmailService } from './service/email.service';
 
 import { OrganizationService } from './service/organization.service';
 import { Web3Service } from './service/web3.service';
+import { ContextMiddleware } from './middleware/context.middleware';
 
 export const iocContainer: Container = new Container();
 
@@ -115,11 +114,8 @@ iocContainer.bind<OrganizationService>(TYPE.OrganizationService).to(Organization
 iocContainer.bind<EmailService>(TYPE.EmailService).to(EmailService);
 
 // middleware
-iocContainer.bind<AuthorizedMiddleware>(MIDDLEWARE.Authorized).to(AuthorizedMiddleware);
-iocContainer.bind<NodeAdminMiddleware>(MIDDLEWARE.NodeAdmin).to(NodeAdminMiddleware);
-iocContainer
-  .bind<RequestHandler>(MIDDLEWARE.ValidateRequest)
-  .toConstantValue(ValidateRequestMiddleware);
+
+iocContainer.bind<ContextMiddleware>(MIDDLEWARE.Context).to(ContextMiddleware);
 
 // gql schema
 iocContainer.bind<IGraphQLSchema>(TYPE.GraphQLSchema).to(GraphQLSchema);

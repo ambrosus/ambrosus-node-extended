@@ -1,5 +1,4 @@
 import { Request } from 'express';
-import { ValidationSchema } from 'express-validator/check';
 import { injectable } from 'inversify';
 
 import { getTimestamp } from '../../util';
@@ -38,38 +37,6 @@ export class AccountDetail extends Account implements IAccountDetail {
       accountDetail.timeZone = req.body.timeZone;
     }
     return accountDetail;
-  }
-
-  public static validationSchema(): ValidationSchema {
-    return {
-      fullName: {
-        in: ['body'],
-        optional: true,
-        isLength: {
-          errorMessage: 'Full name may not exceed 100 characters',
-          options: { max: 100 },
-        },
-      },
-      email: {
-        in: ['body'],
-        optional: true,
-        errorMessage: 'Invalid email format',
-        isEmail: true,
-      },
-      token: {
-        in: ['body'],
-        optional: true,
-        isBase64: true,
-      },
-      timeZone: {
-        in: ['body'],
-        optional: true,
-        isLength: {
-          errorMessage: 'Timezone may not exceed 50 characters',
-          options: { max: 50 },
-        },
-      },
-    };
   }
 
   public _id: string;
