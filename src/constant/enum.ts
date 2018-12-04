@@ -24,6 +24,9 @@ export const timeSeriesGroupFromString = s => {
     case 'month': {
       return TimeSeriesGroupBy.MONTH;
     }
+    case 'year': {
+      return TimeSeriesGroupBy.YEAR;
+    }
     default: {
       return undefined;
     }

@@ -152,7 +152,7 @@ export class BaseRepository<T> {
     );
 
     try {
-      const result = await collection.countDocuments(query);
+      const result = await collection.countDocuments(apiQuery.query);
       return result;
     } catch (err) {
       this.logger.captureError(err);
