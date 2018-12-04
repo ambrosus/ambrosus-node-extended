@@ -16,6 +16,7 @@ import { DBClient } from '../client';
 import { getTimestamp } from '../../util';
 
 import { RepositoryError } from '../../errors';
+import { DeveloperError } from '../../errors/developer.error';
 
 @injectable()
 export class BaseRepository<T> {
@@ -39,11 +40,11 @@ export class BaseRepository<T> {
   }
 
   get paginatedField(): string {
-    throw new RepositoryError({ reason: 'paginatedField getter must be overridden!' });
+    throw new DeveloperError({ reason: 'paginatedField getter must be overridden!' });
   }
 
   get paginatedAscending(): boolean {
-    throw new RepositoryError({ reason: 'paginatedAscending getter must be overridden!' });
+    throw new DeveloperError({ reason: 'paginatedAscending getter must be overridden!' });
   }
 
   public async getConnection() {

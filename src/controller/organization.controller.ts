@@ -86,7 +86,7 @@ export class OrganizationController extends BaseController {
     req: Request
   ): Promise<APIResponse> {
     const result = await this.organizationService.updateOrganization(
-      organizationId,
+      req.params.organizationId,
       Organization.fromRequestForUpdate(req)
     );
     return APIResponse.fromSingleResult(result);

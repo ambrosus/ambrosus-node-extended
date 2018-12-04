@@ -98,6 +98,10 @@ export const expressErrorHandler = (err, req, res, next) => {
     case 'ConnectionError':
       status = 500;
       break;
+    case 'DeveloperError':
+      status = 500;
+      message = `Error occured`;
+      break;
     default:
       status = 500;
       message = `${err.name}: ${err.message}`;

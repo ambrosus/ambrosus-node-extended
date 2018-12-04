@@ -77,14 +77,14 @@ server.setErrorConfig(app => {
 });
 
 // Server errors
-process.on('unhandledRejection', err => {
-  logger.warn('unhandledRejection event: ', err);
-  process.exit(1);
+process.on('unhandledRejection', error => {
+  logger.error('unhandledRejection event: ', error);
+  Sentry.captureException(error);
 });
 
-process.on('uncaughtException', err => {
-  logger.warn('uncaughtException event: ', err);
-  process.exit(1);
+process.on('uncaughtException', error => {
+  logger.error('uncaughtException event: ', error);
+  Sentry.captureException(error);
 });
 
 const app_server = server.build();
