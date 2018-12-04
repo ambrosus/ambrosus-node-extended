@@ -1137,7 +1137,7 @@
 					"response": []
 				},
 				{
-					"name": "getCountByMonthToDate",
+					"name": "getTimeRangeCount",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1152,202 +1152,206 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/analytics/account/count/mtd",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"analytics",
-								"account",
-								"count",
-								"mtd"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getCountByDate",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "AMB_TOKEN {{userToken}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{url}}/analytics/account/count/date/20180910",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"analytics",
-								"account",
-								"count",
-								"date",
-								"20180910"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getCountByDateRange",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "AMB_TOKEN {{userToken}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{url}}/analytics/account/count/daterange/20180101/20181010",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"analytics",
-								"account",
-								"count",
-								"daterange",
-								"20180101",
-								"20181010"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getCountByRollingHours",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "AMB_TOKEN {{userToken}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{url}}/analytics/account/count/rolling/hours/180",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"analytics",
-								"account",
-								"count",
-								"rolling",
-								"hours",
-								"180"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getCountByRollingDays",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "AMB_TOKEN {{userToken}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{url}}/analytics/account/count/rolling/days/365",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"analytics",
-								"account",
-								"count",
-								"rolling",
-								"days",
-								"365"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getTimeSeriesDay",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "AMB_TOKEN {{userToken}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{url}}/analytics/account/timeseries/day",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"analytics",
-								"account",
-								"timeseries",
-								"day"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getTimeSeriesMonth",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "AMB_TOKEN {{userToken}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "{{url}}/analytics/event/timeseries/month",
+							"raw": "{{url}}/analytics/event/count/timerange/total?start=1538691787&end=1543962187",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"analytics",
 								"event",
-								"timeseries",
-								"month"
+								"count",
+								"timerange",
+								"total"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "1538691787"
+								},
+								{
+									"key": "end",
+									"value": "1543962187"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTimeRange By Hour",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/analytics/event/count/timerange/aggregate?start=1538691787&end=1543962187&group=hour",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"analytics",
+								"event",
+								"count",
+								"timerange",
+								"aggregate"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "1538691787"
+								},
+								{
+									"key": "end",
+									"value": "1543962187"
+								},
+								{
+									"key": "group",
+									"value": "hour"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTimeRange By Day",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/analytics/event/count/timerange/aggregate?start=1538691787&end=1543962187&group=day",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"analytics",
+								"event",
+								"count",
+								"timerange",
+								"aggregate"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "1538691787"
+								},
+								{
+									"key": "end",
+									"value": "1543962187"
+								},
+								{
+									"key": "group",
+									"value": "day"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTimeRange By Month",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/analytics/event/count/timerange/aggregate?start=1538691787&end=1543962187&group=month",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"analytics",
+								"event",
+								"count",
+								"timerange",
+								"aggregate"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "1538691787"
+								},
+								{
+									"key": "end",
+									"value": "1543962187"
+								},
+								{
+									"key": "group",
+									"value": "month"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTimeRange By Year",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/analytics/event/count/timerange/aggregate?start=1538691787&end=1543962187&group=month",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"analytics",
+								"event",
+								"count",
+								"timerange",
+								"aggregate"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "1538691787"
+								},
+								{
+									"key": "end",
+									"value": "1543962187"
+								},
+								{
+									"key": "group",
+									"value": "month"
+								}
 							]
 						}
 					},
@@ -1407,13 +1411,13 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/bundle/0xd8376819325cf020f8855ecee1999563432085af848605b820f036b678d98af5",
+							"raw": "{{url}}/bundle/0x2d840fe1b5dcd7816070fbc23eda8114676e2cfa2bb30abf33ea21bbcd36c0e4",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"bundle",
-								"0xd8376819325cf020f8855ecee1999563432085af848605b820f036b678d98af5"
+								"0x2d840fe1b5dcd7816070fbc23eda8114676e2cfa2bb30abf33ea21bbcd36c0e4"
 							]
 						}
 					},
@@ -1438,15 +1442,15 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"query\": [{\n\t\t\"field\": \"bundleId\",\n\t\t\"value\": [\"0xd8376819325cf020f8855ecee1999563432085af848605b820f036b678d98af5\", \"0x81aae998852e50efbcaecd2296f705e1b8e6811cb1fc167ea21d4781a12cf492\"],\n\t\t\"operator\": \"equal\"\n\t}]\n}\n"
+							"raw": "{\n\t\"query\": [{\n\t\t\"field\": \"bundleId\",\n\t\t\"value\": [\"0x2d840fe1b5dcd7816070fbc23eda8114676e2cfa2bb30abf33ea21bbcd36c0e4\", \"0x81aae998852e50efbcaecd2296f705e1b8e6811cb1fc167ea21d4781a12cf492\"],\n\t\t\"operator\": \"equal\"\n\t}]\n}\n"
 						},
 						"url": {
-							"raw": "{{url}}/account/query",
+							"raw": "{{url}}/bundle/query",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"account",
+								"bundle",
 								"query"
 							]
 						}
@@ -1584,6 +1588,40 @@
 				},
 				{
 					"name": "Query Events #2",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "AMB_TOKEN {{userToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"query\": [\n\t{\n\t\t\"field\": \"content.idData.timestamp\",\n\t\t\"value\": {\"greater-than-equal\": 1538315311, \"less-than-equal\": 1540216111},\n\t\t\"operator\": \"inrange\"\n\t}],\n\t\"limit\": 10\n}\n"
+						},
+						"url": {
+							"raw": "{{url}}/event/query",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"event",
+								"query"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Events #3",
 					"request": {
 						"method": "POST",
 						"header": [
