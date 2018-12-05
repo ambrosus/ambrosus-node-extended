@@ -1,23 +1,17 @@
-import { Request } from 'express';
 import { inject } from 'inversify';
 import {
   controller,
   httpGet,
-  requestParam,
-  queryParam
+  queryParam,
+  requestParam
 } from 'inversify-express-utils';
 
-import {
-  MIDDLEWARE,
-  TYPE,
-  TimeSeriesGroupBy,
-  timeSeriesGroupFromString
-} from '../constant';
+import { MIDDLEWARE, timeSeriesGroupFromString, TYPE } from '../constant';
 import { ILogger } from '../interface/logger.inferface';
-import { APIQuery, APIResponse } from '../model';
+import { authorize } from '../middleware/authorize.middleware';
+import { APIResponse } from '../model';
 import { AnalyticsService } from '../service/analytics.service';
 import { BaseController } from './base.controller';
-import { authorize } from '../middleware/authorize.middleware';
 
 @controller('/analytics', MIDDLEWARE.Context, authorize())
 export class AnalyticsController extends BaseController {
@@ -36,11 +30,11 @@ export class AnalyticsController extends BaseController {
     return APIResponse.fromSingleResult({ count });
   }
 
-  @httpGet('/:collection/count/timerange/total')
+  @httpGet('/:collection/count/:start/:end/total')
   public async getTimeRangeCount(
     @requestParam('collection') collection: string,
-    @queryParam('start') start: string,
-    @queryParam('end') end: string
+    @requestParam('start') start: number,
+    @requestParam('end') end: number
   ): Promise<APIResponse> {
     const count = await this.analyticsService.countForTimeRange(
       collection,
@@ -50,12 +44,12 @@ export class AnalyticsController extends BaseController {
     return APIResponse.fromSingleResult({ count });
   }
 
-  @httpGet('/:collection/count/timerange/aggregate')
+  @httpGet('/:collection/count/:start/:end/aggregate')
   public async getTimeRangeCountAggregate(
     @requestParam('collection') collection: string,
     @queryParam('group') group: string,
-    @queryParam('start') start: string,
-    @queryParam('end') end: string
+    @requestParam('start') start: number,
+    @requestParam('end') end: number
   ): Promise<APIResponse> {
     const groupBy = timeSeriesGroupFromString(group);
 
