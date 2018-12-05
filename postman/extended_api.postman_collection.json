@@ -6,6 +6,134 @@
 	},
 	"item": [
 		{
+			"name": "Metrics",
+			"item": [
+				{
+					"name": "Amb Price",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/metrics/amb?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"metrics",
+								"amb"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bundle Price",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/metrics/bundle?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"metrics",
+								"bundle"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Node Balance",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "AMB_TOKEN {{userToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/metrics/balance?",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"metrics",
+								"balance"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Organization",
 			"item": [
 				{
@@ -1152,7 +1280,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/analytics/event/count/timerange/total?start=1538691787&end=1543962187",
+							"raw": "{{url}}/analytics/event/count/1515188678/1544046907/total",
 							"host": [
 								"{{url}}"
 							],
@@ -1160,18 +1288,9 @@
 								"analytics",
 								"event",
 								"count",
-								"timerange",
+								"1515188678",
+								"1544046907",
 								"total"
-							],
-							"query": [
-								{
-									"key": "start",
-									"value": "1538691787"
-								},
-								{
-									"key": "end",
-									"value": "1543962187"
-								}
 							]
 						}
 					},
@@ -1193,7 +1312,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/analytics/event/count/timerange/aggregate?start=1538691787&end=1543962187&group=hour",
+							"raw": "{{url}}/analytics/event/count/1541454943/1541541343/aggregate?group=hour",
 							"host": [
 								"{{url}}"
 							],
@@ -1201,18 +1320,11 @@
 								"analytics",
 								"event",
 								"count",
-								"timerange",
+								"1541454943",
+								"1541541343",
 								"aggregate"
 							],
 							"query": [
-								{
-									"key": "start",
-									"value": "1538691787"
-								},
-								{
-									"key": "end",
-									"value": "1543962187"
-								},
 								{
 									"key": "group",
 									"value": "hour"
@@ -1238,7 +1350,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/analytics/event/count/timerange/aggregate?start=1538691787&end=1543962187&group=day",
+							"raw": "{{url}}/analytics/event/count/1541541343/1544046280/aggregate",
 							"host": [
 								"{{url}}"
 							],
@@ -1246,22 +1358,9 @@
 								"analytics",
 								"event",
 								"count",
-								"timerange",
+								"1541541343",
+								"1544046280",
 								"aggregate"
-							],
-							"query": [
-								{
-									"key": "start",
-									"value": "1538691787"
-								},
-								{
-									"key": "end",
-									"value": "1543962187"
-								},
-								{
-									"key": "group",
-									"value": "day"
-								}
 							]
 						}
 					},
@@ -1283,7 +1382,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/analytics/event/count/timerange/aggregate?start=1538691787&end=1543962187&group=month",
+							"raw": "{{url}}/analytics/event/count/1515188678/1544046280/aggregate?group=month",
 							"host": [
 								"{{url}}"
 							],
@@ -1291,18 +1390,11 @@
 								"analytics",
 								"event",
 								"count",
-								"timerange",
+								"1515188678",
+								"1544046280",
 								"aggregate"
 							],
 							"query": [
-								{
-									"key": "start",
-									"value": "1538691787"
-								},
-								{
-									"key": "end",
-									"value": "1543962187"
-								},
 								{
 									"key": "group",
 									"value": "month"
@@ -1328,7 +1420,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/analytics/event/count/timerange/aggregate?start=1538691787&end=1543962187&group=month",
+							"raw": "{{url}}/analytics/event/count/1478469343/1544046280/aggregate?group=year",
 							"host": [
 								"{{url}}"
 							],
@@ -1336,21 +1428,14 @@
 								"analytics",
 								"event",
 								"count",
-								"timerange",
+								"1478469343",
+								"1544046280",
 								"aggregate"
 							],
 							"query": [
 								{
-									"key": "start",
-									"value": "1538691787"
-								},
-								{
-									"key": "end",
-									"value": "1543962187"
-								},
-								{
 									"key": "group",
-									"value": "month"
+									"value": "year"
 								}
 							]
 						}
