@@ -140,10 +140,6 @@ export class OrganizationService {
   }
 
   public async createOrganizationRequest(organizationRequest: OrganizationRequest): Promise<any> {
-    if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError({ reason: 'Unauthorized' });
-    }
-
     if (
       await this.organizationRequestRepository.existsOR(
         organizationRequest,
