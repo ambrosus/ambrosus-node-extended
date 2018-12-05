@@ -15,7 +15,7 @@ export enum TimeSeriesGroupBy {
 
 export const timeSeriesGroupFromString = s => {
   if (!s) {
-    return undefined;
+    return TimeSeriesGroupBy.DAY;
   }
   switch (s.toLowerCase()) {
     case 'hour': {
@@ -31,7 +31,7 @@ export const timeSeriesGroupFromString = s => {
       return TimeSeriesGroupBy.YEAR;
     }
     default: {
-      return undefined;
+      return TimeSeriesGroupBy.DAY;
     }
   }
 };
