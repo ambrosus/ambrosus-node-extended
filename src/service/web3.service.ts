@@ -20,10 +20,16 @@ export class Web3Service {
     }
 
     this.web3 = new web3();
-    this.w3Account = this.web3.eth.accounts.privateKeyToAccount(this.privateKey);
+    this.w3Account = this.web3.eth.accounts.privateKeyToAccount(
+      this.privateKey
+    );
     this.web3.eth.accounts.wallet.add(this.w3Account);
     this.web3.eth.defaultAccount = this.w3Account.address;
     this.web3.setProvider(config.web3.rpc);
+  }
+
+  public async getBalance() {
+    return await this.web3.eth.getBalance(this.w3Account.address);
   }
 
   public createKeyPair() {
@@ -54,7 +60,10 @@ export class Web3Service {
     if (!matchHexOfLength(signature, 130)) {
       return false;
     }
-    const signer = this.web3.eth.accounts.recover(this.serializeForHashing(data), signature);
+    const signer = this.web3.eth.accounts.recover(
+      this.serializeForHashing(data),
+      signature
+    );
 
     if (address.toLowerCase() !== signer.toLowerCase()) {
       return false;
@@ -63,7 +72,8 @@ export class Web3Service {
   }
 
   public serializeForHashing(object) {
-    const isDict = subject => typeof subject === 'object' && !Array.isArray(subject);
+    const isDict = subject =>
+      typeof subject === 'object' && !Array.isArray(subject);
     const isString = subject => typeof subject === 'string';
     const isArray = subject => Array.isArray(subject);
 
@@ -76,7 +86,9 @@ export class Web3Service {
       return `{${content}}`;
     }
     if (isArray(object)) {
-      const content = object.map(item => this.serializeForHashing(item)).join(',');
+      const content = object
+        .map(item => this.serializeForHashing(item))
+        .join(',');
 
       return `[${content}]`;
     }
