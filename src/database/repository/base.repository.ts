@@ -5,7 +5,7 @@ import {
   InsertOneWriteOpResult,
   DeleteWriteOpResultObject,
   InsertWriteOpResult,
-  Db,
+  Db
 } from 'mongodb';
 
 import { config } from '../../config';
@@ -35,15 +35,21 @@ export class BaseRepository<T> {
   }
 
   get timestampField(): string {
-    throw new RepositoryError({ reason: 'timestampField getter must be overridden!' });
+    throw new RepositoryError({
+      reason: 'timestampField getter must be overridden!',
+    });
   }
 
   get paginatedField(): string {
-    throw new DeveloperError({ reason: 'paginatedField getter must be overridden!' });
+    throw new DeveloperError({
+      reason: 'paginatedField getter must be overridden!',
+    });
   }
 
   get paginatedAscending(): boolean {
-    throw new DeveloperError({ reason: 'paginatedAscending getter must be overridden!' });
+    throw new DeveloperError({
+      reason: 'paginatedAscending getter must be overridden!',
+    });
   }
 
   public async getCollection() {
@@ -93,7 +99,11 @@ export class BaseRepository<T> {
     }
   }
 
-  public async update(apiQuery: APIQuery, item: T, create: boolean = false): Promise<T> {
+  public async update(
+    apiQuery: APIQuery,
+    item: T,
+    create: boolean = false
+  ): Promise<T> {
     const collection = await this.getCollection();
 
     this.logger.debug(
@@ -120,7 +130,9 @@ export class BaseRepository<T> {
     }
   }
 
-  public async deleteOne(apiQuery: APIQuery): Promise<DeleteWriteOpResultObject> {
+  public async deleteOne(
+    apiQuery: APIQuery
+  ): Promise<DeleteWriteOpResultObject> {
     const collection = await this.getCollection();
 
     this.logger.debug(
@@ -132,7 +144,9 @@ export class BaseRepository<T> {
     );
 
     try {
-      const result: DeleteWriteOpResultObject = await collection.deleteOne(apiQuery.query);
+      const result: DeleteWriteOpResultObject = await collection.deleteOne(
+        apiQuery.query
+      );
       return result;
     } catch (err) {
       this.logger.captureError(err);
@@ -393,7 +407,10 @@ export class BaseRepository<T> {
     }
   }
 
-  public async findOneOrCreate(apiQuery: APIQuery, createUser: string): Promise<T> {
+  public async findOneOrCreate(
+    apiQuery: APIQuery,
+    createUser: string
+  ): Promise<T> {
     const collection = await this.getCollection();
 
     this.logger.debug(

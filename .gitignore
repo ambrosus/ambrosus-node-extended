@@ -1,4 +1,5 @@
 .env.test
+.env.local
 .idea
 .vscode
 # Logs
