@@ -22,10 +22,10 @@ export class OrganizationInviteRepository extends BaseRepository<OrganizationInv
   }
 
   public async deleteExpired() {
-    await this.client.getConnection();
+    const collection = await this.getCollection();
 
     const apiQuery = new APIQuery({ validUntil: { $lte: getTimestamp() } });
-    const invites = await this.collection
+    const invites = await collection
       .find(apiQuery.query, { projection: { inviteId: 1 } })
       .toArray();
     for (const invite of invites) {
