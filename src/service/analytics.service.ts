@@ -25,9 +25,7 @@ export class AnalyticsService {
     if (!this[collection]) {
       throw new NotFoundError({ reason: 'No such data' });
     }
-
-    this.logger.debug(`count ${this[collection]}`);
-    return this[collection].count();
+    return this[collection].count(new APIQuery());
   }
 
   public countForTimeRangeWithAggregate(collection, groupBy, start, end) {
