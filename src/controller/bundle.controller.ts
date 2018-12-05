@@ -1,23 +1,23 @@
 import { Request } from 'express';
 import { inject } from 'inversify';
-import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
+import {
+  controller,
+  httpGet,
+  httpPost,
+  requestParam
+} from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
+import { validate } from '../middleware';
+import { authorize } from '../middleware/authorize.middleware';
 import { APIQuery, APIResponse } from '../model';
 import { BundleService } from '../service/bundle.service';
-import { BaseController } from './base.controller';
-import { authorize } from '../middleware/authorize.middleware';
-import { validate } from '../middleware';
 import { querySchema } from '../validation';
+import { BaseController } from './base.controller';
 
-@controller(
-  '/bundle',
-  MIDDLEWARE.Context,
-  authorize()
-)
+@controller('/bundle', MIDDLEWARE.Context, authorize())
 export class BundleController extends BaseController {
-
   constructor(
     @inject(TYPE.BundleService) private bundleService: BundleService,
     @inject(TYPE.LoggerService) protected logger: ILogger
@@ -25,17 +25,15 @@ export class BundleController extends BaseController {
     super(logger);
   }
 
-  @httpGet(
-    '/'
-  )
+  @httpGet('/')
   public async getBundles(req: Request): Promise<APIResponse> {
-    const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
+    const result = await this.bundleService.getBundles(
+      APIQuery.fromRequest(req)
+    );
     return APIResponse.fromMongoPagedResult(result);
   }
 
-  @httpGet(
-    '/:bundleId'
-  )
+  @httpGet('/:bundleId')
   public async getBundle(
     @requestParam('bundleId') bundleId: string
   ): Promise<APIResponse> {
@@ -43,9 +41,7 @@ export class BundleController extends BaseController {
     return APIResponse.fromSingleResult(result);
   }
 
-  @httpGet(
-    '/exists/:bundleId'
-  )
+  @httpGet('/exists/:bundleId')
   public async getBundleExists(
     @requestParam('bundleId') bundleId: string
   ): Promise<APIResponse> {
@@ -53,12 +49,11 @@ export class BundleController extends BaseController {
     return APIResponse.fromSingleResult(result);
   }
 
-  @httpPost(
-    '/query',
-    validate(querySchema)
-  )
+  @httpPost('/query', validate(querySchema))
   public async queryBundles(req: Request): Promise<APIResponse> {
-    const result = await this.bundleService.getBundles(APIQuery.fromRequest(req));
+    const result = await this.bundleService.getBundles(
+      APIQuery.fromRequest(req)
+    );
     return APIResponse.fromMongoPagedResult(result);
   }
 }
