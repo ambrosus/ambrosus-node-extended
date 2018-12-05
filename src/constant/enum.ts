@@ -14,6 +14,9 @@ export enum TimeSeriesGroupBy {
 }
 
 export const timeSeriesGroupFromString = s => {
+  if (!s) {
+    return undefined;
+  }
   switch (s.toLowerCase()) {
     case 'hour': {
       return TimeSeriesGroupBy.HOUR;
