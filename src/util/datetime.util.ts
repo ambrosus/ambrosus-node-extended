@@ -23,22 +23,22 @@ export const getTimestampDateEnd = date =>
 
 export const getTimestampSubHours = h =>
   moment()
-    .subtract(h, 'h')
+    .subtract(h, 'hours')
     .unix();
 
 export const getTimestampSubDays = d =>
   moment()
-    .subtract(d, 'd')
+    .subtract(d, 'days')
     .unix();
 
 export const getTimestampSubWeeks = w =>
   moment()
-    .subtract(w, 'w')
+    .subtract(w, 'weeks')
     .unix();
 
 export const getTimestampAddDays = d =>
   moment()
-    .add(d, 'd')
+    .add(d, 'days')
     .unix();
 
 export const parseAnalytics = (array: any[], start, end, group: string) => {
@@ -46,13 +46,13 @@ export const parseAnalytics = (array: any[], start, end, group: string) => {
   const format: any = (add = true) => {
     switch (group) {
       case 'hour':
-        return add ? 'h' : 'Y-MM-DD-HH';
+        return add ? 'hours' : 'Y-MM-DD-HH';
       case 'month':
-        return add ? 'M' : 'Y-MM';
+        return add ? 'months' : 'Y-MM';
       case 'year':
-        return add ? 'y' : 'Y';
+        return add ? 'years' : 'Y';
       default:
-        return add ? 'd' : 'Y-MM-DD';
+        return add ? 'days' : 'Y-MM-DD';
     }
   };
 
