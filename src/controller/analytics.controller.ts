@@ -12,6 +12,7 @@ import { authorize } from '../middleware/authorize.middleware';
 import { APIResponse } from '../model';
 import { AnalyticsService } from '../service/analytics.service';
 import { BaseController } from './base.controller';
+import { parseAnalytics } from '../util';
 
 @controller('/analytics', MIDDLEWARE.Context, authorize())
 export class AnalyticsController extends BaseController {
@@ -53,12 +54,15 @@ export class AnalyticsController extends BaseController {
   ): Promise<APIResponse> {
     const groupBy = timeSeriesGroupFromString(group);
 
-    const count = await this.analyticsService.countForTimeRangeWithAggregate(
+    let count = await this.analyticsService.countForTimeRangeWithAggregate(
       collection,
       groupBy,
       +start,
       +end
     );
+
+    count = parseAnalytics(count, start, end, group);
+
     return APIResponse.fromSingleResult({ count });
   }
 }
