@@ -19,7 +19,7 @@ export class AnalyticsService {
     @inject(TYPE.EventRepository) private readonly event: EventRepository,
     @inject(TYPE.BundleRepository) private readonly bundle: BundleRepository,
     @inject(TYPE.LoggerService) private readonly logger: ILogger
-  ) {}
+  ) { }
 
   public count(collection: string): Promise<number> {
     if (!this[collection]) {
@@ -59,13 +59,13 @@ export class AnalyticsService {
       {
         $project: {
           _id: 0.0,
-          date: '$_id',
+          timestamp: `$_id`,
           count: 1.0,
         },
       },
       {
         $sort: {
-          date: -1.0,
+          timestamp: 1.0,
         },
       },
     ];
