@@ -41,7 +41,18 @@ export const getTimestampAddDays = d =>
     .add(d, 'days')
     .unix();
 
+/* tslint:disable */
 export const parseAnalytics = (array: any[], start, end, group: string) => {
+  console.log('****** DEBUG FOR parseAnalytics ******');
+  console.log(group);
+  console.log(typeof group);
+  console.log('=== month: ', group === 'month');
+  console.log('== month: ', group == 'month');
+  console.log('=== hour: ', group === 'hour');
+  console.log('== hour: ', group == 'hour');
+  console.log('=== day: ', group === 'day');
+  console.log('== day: ', group == 'day');
+
   let results = [];
   const format: any = (add = true) => {
     switch (group) {
