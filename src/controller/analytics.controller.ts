@@ -45,12 +45,11 @@ export class AnalyticsController extends BaseController {
     return APIResponse.fromSingleResult({ count });
   }
 
-  @httpGet('/:collection/count/:start/:end/aggregate')
+  @httpGet('/:collection/count/:start/:end/aggregate/:group')
   public async getTimeRangeCountAggregate(
     req: Request
   ): Promise<APIResponse> {
-    const { collection, start, end } = req.params;
-    const { group } = req.query;
+    const { collection, start, end, group } = req.params;
 
     const groupBy = timeSeriesGroupFromString(group);
 
