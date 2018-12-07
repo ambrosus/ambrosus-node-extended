@@ -5,7 +5,7 @@ import {
   queryParam,
   requestParam
 } from 'inversify-express-utils';
-
+import { Request } from 'express';
 import { MIDDLEWARE, timeSeriesGroupFromString, TYPE } from '../constant';
 import { ILogger } from '../interface/logger.inferface';
 import { authorize } from '../middleware/authorize.middleware';
@@ -33,10 +33,10 @@ export class AnalyticsController extends BaseController {
 
   @httpGet('/:collection/count/:start/:end/total')
   public async getTimeRangeCount(
-    @requestParam('collection') collection: string,
-    @requestParam('start') start: number,
-    @requestParam('end') end: number
+    req: Request
   ): Promise<APIResponse> {
+    const { collection, start, end } = req.params;
+
     const count = await this.analyticsService.countForTimeRange(
       collection,
       +start,
@@ -47,11 +47,11 @@ export class AnalyticsController extends BaseController {
 
   @httpGet('/:collection/count/:start/:end/aggregate')
   public async getTimeRangeCountAggregate(
-    @requestParam('collection') collection: string,
-    @queryParam('group') group: string,
-    @requestParam('start') start: number,
-    @requestParam('end') end: number
+    req: Request
   ): Promise<APIResponse> {
+    const { collection, start, end } = req.params;
+    const { group } = req.query;
+
     const groupBy = timeSeriesGroupFromString(group);
 
     console.log('****** DEBUG FOR getTimeRangeCountAggregate ******');
