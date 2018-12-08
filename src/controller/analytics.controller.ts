@@ -53,10 +53,6 @@ export class AnalyticsController extends BaseController {
 
     const groupBy = timeSeriesGroupFromString(group);
 
-    console.log('****** DEBUG FOR getTimeRangeCountAggregate ******');
-    console.log(group);
-    console.log(typeof group);
-
     let count = await this.analyticsService.countForTimeRangeWithAggregate(
       collection,
       groupBy,
