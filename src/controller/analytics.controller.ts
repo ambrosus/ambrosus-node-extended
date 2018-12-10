@@ -42,7 +42,7 @@ export class AnalyticsController extends BaseController {
     const { organizationId, collection, start, end } = req.params;
 
     const count = await this.analyticsService.countForTimeRangeLimitedByOrganization(
-      organizationId,
+      +organizationId,
       collection,
       +start,
       +end
@@ -59,7 +59,7 @@ export class AnalyticsController extends BaseController {
     const groupBy = timeSeriesGroupFromString(group);
 
     let count = await this.analyticsService.countForTimeRangeWithAggregateLimitedByOrganization(
-      organizationId,
+      +organizationId,
       collection,
       groupBy,
       +start,
