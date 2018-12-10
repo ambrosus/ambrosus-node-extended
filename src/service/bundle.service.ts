@@ -16,7 +16,7 @@ export class BundleService {
     apiQuery.fields = {
       'content.entries': 0,
     };
-    return this.bundleRepository.find(apiQuery);
+    return this.bundleRepository.findWithPagination(apiQuery);
   }
 
   public getBundle(bundleId: string): Promise<Bundle> {
