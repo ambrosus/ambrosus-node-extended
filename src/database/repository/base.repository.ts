@@ -338,7 +338,7 @@ export class BaseRepository<T> {
     }
   }
 
-  public async find(apiQuery: APIQuery): Promise<MongoPagedResult> {
+  public async findWithPagination(apiQuery: APIQuery): Promise<MongoPagedResult> {
     const collection = await this.getCollection();
 
     this.logger.debug(
@@ -368,6 +368,35 @@ export class BaseRepository<T> {
         next: apiQuery.next,
         previous: apiQuery.previous,
       });
+
+      return result;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err);
+    }
+  }
+
+  public async find(apiQuery: APIQuery): Promise<T[]> {
+    const collection = await this.getCollection();
+
+    this.logger.debug(
+      `
+      ################ find ################
+      collection      ${this.collectionName}:
+      query:          ${JSON.stringify(apiQuery.query, null, 2)}
+      fields:         ${JSON.stringify(apiQuery.fields, null, 2)}
+      paginatedField: ${this.paginatedField}
+      sortAscending:  ${this.paginatedAscending}
+      `
+    );
+
+    const projection = Object.keys(apiQuery.fields).length
+      ? { projection: apiQuery.fields }
+      : undefined;
+    try {
+      const result = await collection
+        .find(apiQuery.query, projection)
+        .toArray();
 
       return result;
     } catch (err) {

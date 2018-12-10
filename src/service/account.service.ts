@@ -1,28 +1,33 @@
 import { inject, injectable } from 'inversify';
 
 import { Permission, TYPE } from '../constant/';
-import { AccountDetailRepository, AccountRepository } from '../database/repository';
+import {
+  AccountDetailRepository,
+  AccountRepository
+} from '../database/repository';
 import { ILogger } from '../interface/logger.inferface';
 import {
   Account,
   AccountDetail,
   APIQuery,
   MongoPagedResult,
-  UserPrincipal,
+  UserPrincipal
 } from '../model';
 import { getTimestamp } from '../util';
 
 import { ExistsError, PermissionError } from '../errors';
+import * as _ from 'lodash';
 
 @injectable()
 export class AccountService {
   constructor(
     @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
-    @inject(TYPE.AccountRepository) private readonly accountRepository: AccountRepository,
+    @inject(TYPE.AccountRepository)
+    private readonly accountRepository: AccountRepository,
     @inject(TYPE.AccountDetailRepository)
     private readonly accountDetailRepository: AccountDetailRepository,
     @inject(TYPE.LoggerService) private readonly logger: ILogger
-  ) { }
+  ) {}
 
   public async createAccount(
     address: string,
@@ -34,10 +39,14 @@ export class AccountService {
     createdBy: string
   ) {
     if (await this.getAccountExists(address)) {
-      throw new ExistsError({ reason: 'An account already exists with this address' });
+      throw new ExistsError({
+        reason: 'An account already exists with this address',
+      });
     }
     if (await this.getAccountExistsForEmail(email)) {
-      throw new ExistsError({ reason: 'An account already exists with this email' });
+      throw new ExistsError({
+        reason: 'An account already exists with this email',
+      });
     }
 
     const newAccount = new Account();
@@ -107,7 +116,9 @@ export class AccountService {
     );
   }
 
-  public getAccountsByOrganization(organizationId: number): Promise<MongoPagedResult> {
+  public getAccountsByOrganization(
+    organizationId: number
+  ): Promise<MongoPagedResult> {
     if (
       !this.user.hasPermission(Permission.super_account) &&
       !(
@@ -125,6 +136,16 @@ export class AccountService {
       this.user.accessLevel,
       this.user.isSuperAdmin
     );
+  }
+
+  public async getOrganizationAddresses(
+    organizationId: number
+  ): Promise<string[]> {
+    const apiQuery = new APIQuery({ organization: organizationId });
+    apiQuery.fields = { address: 1 };
+    const accounts = await this.accountRepository.find(apiQuery);
+    const addresses = _.map(accounts, 'address');
+    return addresses;
   }
 
   public async updateAccountDetail(

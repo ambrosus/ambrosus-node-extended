@@ -15,7 +15,7 @@ export class AssetService {
   public getAssets(apiQuery: APIQuery): Promise<MongoPagedResult> {
     apiQuery.paginationField = 'content.idData.timestamp';
     apiQuery.sortAscending = false;
-    return this.assetRepository.find(apiQuery);
+    return this.assetRepository.findWithPagination(apiQuery);
   }
 
   public getAsset(assetId: string): Promise<Asset> {
