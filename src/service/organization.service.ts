@@ -47,7 +47,7 @@ export class OrganizationService {
       throw new PermissionError({ reason: 'Unauthorized' });
     }
 
-    return this.organizationRepository.find(apiQuery);
+    return this.organizationRepository.findWithPagination(apiQuery);
   }
 
   public async getOrganization(organizationId: number): Promise<Organization> {
@@ -118,7 +118,7 @@ export class OrganizationService {
     }
 
     apiQuery.addToQuery({ refused: { $ne: true } });
-    return this.organizationRequestRepository.find(apiQuery);
+    return this.organizationRequestRepository.findWithPagination(apiQuery);
   }
 
   public getOrganizationRequestsRefused(apiQuery: APIQuery): Promise<MongoPagedResult> {
@@ -127,7 +127,7 @@ export class OrganizationService {
     }
 
     apiQuery.addToQuery({ refused: true });
-    return this.organizationRequestRepository.find(apiQuery);
+    return this.organizationRequestRepository.findWithPagination(apiQuery);
   }
 
   public getOrganizationRequest(address: string): Promise<OrganizationRequest> {
@@ -241,7 +241,7 @@ export class OrganizationService {
     }
     await this.organizationInviteRepository.deleteExpired();
 
-    return this.organizationInviteRepository.find(apiQuery);
+    return this.organizationInviteRepository.findWithPagination(apiQuery);
   }
 
   public async createOrganizationInvites(emails: string[]): Promise<any> {

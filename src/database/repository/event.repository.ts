@@ -9,6 +9,50 @@ import { BaseRepository } from './base.repository';
 export class EventRepository extends BaseRepository<Event> {
   constructor(@inject(TYPE.DBClient) protected client: DBClient) {
     super(client, 'events');
+
+    // TODO: Needs to be optimized, too slow
+    // client.events.on('dbConnected', () => {
+    //   client.db.createCollection('eventsView', {
+    //     viewOn: 'events',
+    //     pipeline: [
+    //       {
+    //         $project: {
+    //           _id: 0,
+    //           assets: '$$ROOT',
+    //         },
+    //       },
+    //       {
+    //         $lookup: {
+    //           localField: 'events.content.idData.createdBy',
+    //           from: 'accounts',
+    //           foreignField: 'address',
+    //           as: 'accounts',
+    //         },
+    //       },
+    //       {
+    //         $unwind: {
+    //           path: '$accounts',
+    //           preserveNullAndEmptyArrays: true,
+    //         },
+    //       },
+    //       {
+    //         $project: {
+    //           _id: '$events._id',
+    //           content: '$events.content',
+    //           assetId: '$events.eventId',
+    //           metadata: '$events.metadata',
+    //           repository: '$events.repository',
+    //           organization: '$accounts.organization',
+    //         },
+    //       },
+    //       {
+    //         $sort: {
+    //           'events.content.idData.timestamp': -1,
+    //         },
+    //       },
+    //     ],
+    //   });
+    // });
   }
 
   get timestampField(): string {
@@ -49,7 +93,7 @@ export class EventRepository extends BaseRepository<Event> {
     apiQuery.fields = {
       repository: 0,
     };
-    return this.find(apiQuery);
+    return this.findWithPagination(apiQuery);
   }
 
   public searchEvents(

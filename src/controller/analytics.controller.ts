@@ -23,6 +23,54 @@ export class AnalyticsController extends BaseController {
     super(logger);
   }
 
+  @httpGet('/:organizationId/:collection/count')
+  public async getCountForOrganization(
+    @requestParam('organizationId') organizationId: number,
+    @requestParam('collection') collection: string
+  ): Promise<APIResponse> {
+    const count = await this.analyticsService.countLimitedByOrganization(
+      +organizationId,
+      collection
+    );
+    return APIResponse.fromSingleResult({ count });
+  }
+
+  @httpGet('/:organizationId/:collection/count/:start/:end/total')
+  public async getTimeRangeCountForOrganization(
+    req: Request
+  ): Promise<APIResponse> {
+    const { organizationId, collection, start, end } = req.params;
+
+    const count = await this.analyticsService.countForTimeRangeLimitedByOrganization(
+      +organizationId,
+      collection,
+      +start,
+      +end
+    );
+    return APIResponse.fromSingleResult({ count });
+  }
+
+  @httpGet('/:organizationId/:collection/count/:start/:end/aggregate/:group')
+  public async getTimeRangeCountAggregateForOrganization(
+    req: Request
+  ): Promise<APIResponse> {
+    const { organizationId, collection, start, end, group } = req.params;
+
+    const groupBy = timeSeriesGroupFromString(group);
+
+    let count = await this.analyticsService.countForTimeRangeWithAggregateLimitedByOrganization(
+      +organizationId,
+      collection,
+      groupBy,
+      +start,
+      +end
+    );
+
+    count = parseAnalytics(count, start, end, group);
+
+    return APIResponse.fromSingleResult({ count });
+  }
+
   @httpGet('/:collection/count')
   public async getCount(
     @requestParam('collection') collection: string
@@ -32,9 +80,7 @@ export class AnalyticsController extends BaseController {
   }
 
   @httpGet('/:collection/count/:start/:end/total')
-  public async getTimeRangeCount(
-    req: Request
-  ): Promise<APIResponse> {
+  public async getTimeRangeCount(req: Request): Promise<APIResponse> {
     const { collection, start, end } = req.params;
 
     const count = await this.analyticsService.countForTimeRange(
@@ -46,9 +92,7 @@ export class AnalyticsController extends BaseController {
   }
 
   @httpGet('/:collection/count/:start/:end/aggregate/:group')
-  public async getTimeRangeCountAggregate(
-    req: Request
-  ): Promise<APIResponse> {
+  public async getTimeRangeCountAggregate(req: Request): Promise<APIResponse> {
     const { collection, start, end, group } = req.params;
 
     const groupBy = timeSeriesGroupFromString(group);
