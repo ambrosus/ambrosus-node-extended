@@ -23,10 +23,6 @@ export const accountSchema = {
                 "minLength": 3,
                 "maxLength": 50
             },
-            "password": {
-                "type": "string",
-                "pattern": '^((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,}))'
-            },
             "address": {
                 "type": "string",
                 "isAddress": ''
