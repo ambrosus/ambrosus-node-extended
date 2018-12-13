@@ -163,6 +163,9 @@ export class OrganizationService {
       throw new ExistsError({ reason: 'An organization already exists with that title.' });
     }
 
+    // Send email
+    await this.emailService.sendOrganizationRequest(organizationRequest);
+
     organizationRequest.setCreationTimestamp();
 
     return this.organizationRequestRepository.create(organizationRequest);

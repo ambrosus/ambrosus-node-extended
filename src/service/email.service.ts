@@ -31,6 +31,25 @@ export class EmailService {
     }
   }
 
+  public async sendOrganizationRequest(organizationRequest: OrganizationRequest) {
+    const msg = {
+      to: config.email.orgReqTo,
+      from: config.email.defaultFrom,
+      templateId: config.email.templateIdOrgReq,
+      dynamic_template_data: {
+        address: organizationRequest.address,
+        organizationName: organizationRequest.title,
+        message: organizationRequest.message,
+        dashboardLink: config.dashboardUrl,
+      },
+    };
+    try {
+      await sgMail.send(msg);
+    } catch (error) {
+      this.handleSendError(error);
+    }
+  }
+
   public async sendOrganizationRequestApproval(organizationRequest: OrganizationRequest) {
     const msg = {
       to: organizationRequest.email,
