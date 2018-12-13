@@ -48,7 +48,9 @@ server.setConfig(app => {
     })
   );
   app.use(bodyParser.json());
-  app.use(morgan('combined'));
+  if (process.env.NODE_ENV !== 'test') {
+    app.use(morgan('combined'));
+  }
   app.use(cors());
   app.use((req, res, next) => {
     res.set('cache-control', 'no-store');
@@ -87,9 +89,7 @@ process.on('uncaughtException', error => {
   Sentry.captureException(error);
 });
 
-const app_server = server.build();
+export const app_server = server.build();
 app_server.listen(config.port);
 
 logger.info(`${process.env.NODE_ENV} Hermes++ is running on ${config.port} :)`);
-
-exports = module.exports = app_server;

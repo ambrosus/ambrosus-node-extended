@@ -11,7 +11,7 @@ const { expect } = chai;
 const ajv = new Ajv({ allErrors: true });
 
 describe('(Schema) Accounts', () => {
-    let test: any = '';
+    let test: any;
 
     before(() => {
         ajv.addKeyword('isObjectId', {
