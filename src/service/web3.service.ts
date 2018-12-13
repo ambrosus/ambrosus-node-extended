@@ -1,5 +1,7 @@
 import { inject, injectable } from 'inversify';
 import web3 = require('web3');
+import * as moment from 'moment';
+import base64url from 'base64url';
 
 import { config } from '../config';
 import { TYPE } from '../constant/types';
@@ -28,6 +30,18 @@ export class Web3Service {
     this.web3.setProvider(config.web3.rpc);
   }
 
+  public getToken(secret, timestamp = '') {
+    const idData = {
+      createdBy: this.addressFromSecret(secret),
+      validUntil: timestamp || moment().add(5, 'days').unix(),
+    };
+
+    return base64url(this.serializeForHashing({
+      idData,
+      signature: this.sign(idData, secret),
+    }));
+  }
+
   public async getBalance() {
     return await this.web3.eth.getBalance(this.w3Account.address);
   }
@@ -36,10 +50,10 @@ export class Web3Service {
     return this.web3.eth.accounts.create(this.web3.utils.randomHex(32));
   }
 
-  public sign(data) {
+  public sign(data, privateKey = '') {
     const { signature } = this.web3.eth.accounts.sign(
       this.serializeForHashing(data),
-      this.privateKey
+      privateKey || this.privateKey
     );
 
     return signature;
