@@ -27,7 +27,7 @@ export class AccountService {
     @inject(TYPE.AccountDetailRepository)
     private readonly accountDetailRepository: AccountDetailRepository,
     @inject(TYPE.LoggerService) private readonly logger: ILogger
-  ) {}
+  ) { }
 
   public async createAccount(
     address: string,
