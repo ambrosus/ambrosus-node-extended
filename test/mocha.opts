@@ -1,5 +1,4 @@
 --require ts-node/register
---require reflect-metadata/Reflect 
---require test/mocha_env.ts
+--require reflect-metadata/Reflect
 --timeout 5000
 --recursive

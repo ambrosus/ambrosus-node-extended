@@ -1,38 +1,82 @@
+/* tslint:disable */
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
-import * as sinonChai from 'sinon-chai';
 
-import { DBClient } from '../../src/database/client';
-import { AccountDetailRepository, AccountRepository } from '../../src/database/repository';
-import { UserPrincipal } from '../../src/model';
-import { AccountService } from '../../src/service/account.service';
-import { LoggerService } from '../../src/service/logger.service';
-
-chai.use(sinonChai);
 chai.use(chaiAsPromised);
+chai.use(require('chai-http'));
 const { expect } = chai;
+const should = chai.should();
 
-describe('AccountService', () => {
-  let service;
-  let client;
-  before(done => {
-    client = new DBClient();
-    client.events.on('dbConnected', () => {
-      done();
+import 'reflect-metadata';
+import { TYPE } from '../../src/constant/types';
+import { config } from '../../src/config';
+config.db.dbName = 'hermes-test';
+
+import { iocContainer } from '../../src/inversify.config';
+import { all_accounts } from '../fixtures';
+import { AccountService } from '../../src/service/account.service';
+import { DBClient } from '../../src/database/client';
+
+describe('(Service) Account', () => {
+  let _DBClient: DBClient;
+  let _AccountService: AccountService;
+  let db: any;
+  let collections: any = {
+    accounts: '',
+    accountDetail: '',
+  };
+
+  const setup: any = () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        _DBClient = iocContainer.get(TYPE.DBClient);
+        _AccountService = iocContainer.get(TYPE.AccountService);
+        db = await _DBClient.getConnection();
+        collections.accounts = db.collection('accounts');
+        collections.accountDetail = db.collection('accountDetail');
+
+        // Insert demo accounts
+        await all_accounts(collections);
+      } catch (error) {
+        console.log(error);
+      }
+
+      resolve();
     });
+  }
+
+  before(done => {
+    setup().then(resp => done()).catch(error => done(error));
   });
 
-  beforeEach(() => {
-    const user = new UserPrincipal();
-    const accountRepo = new AccountRepository(client);
-    accountRepo.logger = new LoggerService();
-    const accountDetailRepo = new AccountDetailRepository(client);
-    accountDetailRepo.logger = new LoggerService();
-    service = new AccountService(user, accountRepo, accountDetailRepo);
+  it('should succeed if DB is connected', () => {
+    expect(db).to.exist;
+    expect(db.serverConfig.isConnected()).to.be.true;
   });
 
-  it('should give back account exists', async () => {
-    const address = '0x2A52139de123c9fa265C206772d1606e326CC044';
-    await expect(service.getAccountExists(address)).to.be.eventually.equal(true);
+  it('should succeed if AccountService instance exists', () => {
+    expect(_AccountService).to.exist;
+    expect(_AccountService instanceof AccountService).to.be.true;
   });
+
+  // it('should succeed if valid address is passed', done => {
+  //   _AccountService.getAccountExists('0x1403F4C7059206291E101F2932d73Ed013B2FF71')
+  //     .then(result => {
+  //       console.log(result);
+  //       done();
+  //     })
+  //     .catch(error => done(error));
+  // });
+
+  after(done => {
+    if (db && db.s.databaseName === 'hermes-test') {
+      db.dropDatabase()
+        .then(result => {
+          _DBClient.mongoClient.close();
+          done();
+        })
+        .catch(error => done(error));
+    }
+  });
+
 });
