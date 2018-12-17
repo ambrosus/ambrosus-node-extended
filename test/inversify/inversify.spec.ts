@@ -243,15 +243,13 @@ describe('(Inversify)', () => {
   describe('Other', () => {
 
     it('should resolve UserPrincipal as Request transient', async () => {
-      const instance = iocContainer.get(TYPE.UserPrincipal);
+      const instance1 = iocContainer.get(TYPE.UserPrincipal);
+      const instance2 = iocContainer.get(TYPE.UserPrincipal);
 
-      expect(instance).to.exist;
-    });
+      expect(instance1).to.exist;
+      expect(instance2).to.exist;
 
-    it('should resolve Context as Request transient', async () => {
-      const instance = iocContainer.get(MIDDLEWARE.Context);
-
-      expect(instance).to.exist;
+      assert.equal(instance1, instance2, 'UserPrincipal is Request transient');
     });
 
   });
