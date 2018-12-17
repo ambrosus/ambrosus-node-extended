@@ -1,3 +1,4 @@
+/* tslint:disable */
 
 // privateKey: 0xce75741e246852f1bf8e4f86ccf7d56f77942c37ea7b683d3a3735f1635de7c9
 export const super_account = (collections: any) => {
@@ -37,6 +38,7 @@ export const admin_account = (collections: any) => {
         await collections.accountDetail.insertOne({
             address: '0xcD156e06318801B441Df42d7064538baEE3747E3',
             email: 'admin@test.com',
+            token: 'eyJ2ZXJzaW9uIjozLCJpZCI6IjA1MGU4MmNiLWQwOTctNDMxYS1iZTUzLTk1MGZkNjk0N2Q1YiIsImFkZHJlc3MiOiIyZmRiMjYyZjA3MTY2NjZlYjBjZTMyNTA5ZGIxOWJlMzhlNThjZDI4IiwiY3J5cHRvIjp7ImNpcGhlcnRleHQiOiI0MDVmMzZmYWQ2MjIyNTg1NjgzNzhkZDA4ZDFiNGJmMzhmNjBmMWEyZWZlOTIyN2Q3OTgzMTA4ZmUyYTY2NWRkIiwiY2lwaGVycGFyYW1zIjp7Iml2IjoiOTdlNzcyZmQ2ZjQ2YTc3NGRiNGZmMDFiZjFjNjVjYTAifSwiY2lwaGVyIjoiYWVzLTEyOC1jdHIiLCJrZGYiOiJzY3J5cHQiLCJrZGZwYXJhbXMiOnsiZGtsZW4iOjMyLCJzYWx0IjoiMTg1NGIwZDFkYjE1MzdjYjc1NDQ4MTZiMDY3NjliZTliMTU4M2I3MTU1MmUwOWE5ZjIyY2ZjYTU4MDY1MGJjZCIsIm4iOjgxOTIsInIiOjgsInAiOjF9LCJtYWMiOiI4Zjk5MjU0M2JlYjMxNzJiMDU3OTM0YjAwNDNlNDVhYmUyOGNmNWQ0Y2FmZTQ2NjVmYzRjMzFlNDhkOTE1MDM4In19',
         });
         resolve();
     });
@@ -56,6 +58,7 @@ export const regular_account = (collections: any) => {
         await collections.accountDetail.insertOne({
             address: '0x1403F4C7059206291E101F2932d73Ed013B2FF71',
             email: 'regular@test.com',
+            createdBy: '0xcD156e06318801B441Df42d7064538baEE3747E3',
         });
         resolve();
     });
