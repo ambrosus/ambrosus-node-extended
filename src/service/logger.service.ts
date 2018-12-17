@@ -18,7 +18,7 @@ export class LoggerService implements ILogger {
 
         const ts = timestamp.slice(0, 19).replace('T', ' ');
         return `${ts} [${level}]: ${message} ${
-          Object.keys(args).length ? JSON.stringify(args, undefined, 2) : ''
+          Object.keys(args).length ? JSON.stringify(args) : ''
         }`;
       })
     );
