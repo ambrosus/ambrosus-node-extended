@@ -37,7 +37,7 @@ export const assets = (collections: any) => {
         {
           content: {
             idData: {
-              timestamp: 1545079321,
+              timestamp: 1543079321,
               sequenceNumber: 0.8145796618200531,
               createdBy: '0x2C81A356c33D95574a2D502874196d21a2507daD'
             },
@@ -52,7 +52,7 @@ export const assets = (collections: any) => {
         {
           content: {
             idData: {
-              timestamp: 1545079261,
+              timestamp: 1540079261,
               sequenceNumber: 0.2711032117553114,
               createdBy: '0x2C81A356c33D95574a2D502874196d21a2507daD'
             },
@@ -67,7 +67,7 @@ export const assets = (collections: any) => {
         {
           content: {
             idData: {
-              timestamp: 1545079201,
+              timestamp: 1535079201,
               sequenceNumber: 0.16464615873888733,
               createdBy: '0x2C81A356c33D95574a2D502874196d21a2507daD'
             },
