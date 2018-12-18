@@ -69,12 +69,195 @@ describe('(Controller) Organization /organization', () => {
 
   describe('(GET) /', () => {
 
-    it('success as authorized', done => {
+    it('success as super_account', done => {
       chai.request(app_server)
         .get(`/organization`)
         .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
         .end((err, res) => {
           res.should.have.status(200);
+          expect(res.body.data.length).to.eq(2);
+          done();
+        });
+    });
+
+    it('fail as admin_account', done => {
+      chai.request(app_server)
+        .get(`/organization`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
+
+  });
+
+  describe('(GET) /:organizationId', () => {
+
+    it('success as super_account', done => {
+      const organizationId = 2;
+      chai.request(app_server)
+        .get(`/organization/${organizationId}`)
+        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.organizationId).to.eq(2);
+          done();
+        });
+    });
+
+    it('success as admin_account, own organization', done => {
+      const organizationId = 2;
+      chai.request(app_server)
+        .get(`/organization/${organizationId}`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.organizationId).to.eq(2);
+          done();
+        });
+    });
+
+    it('fail as admin_account, another organization', done => {
+      const organizationId = 1;
+      chai.request(app_server)
+        .get(`/organization/${organizationId}`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
+
+  });
+
+  describe('(GET) /:organizationId/accounts', () => {
+
+    it('success as super_account', done => {
+      const organizationId = 2;
+      chai.request(app_server)
+        .get(`/organization/${organizationId}/accounts`)
+        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.length).to.eq(2);
+          done();
+        });
+    });
+
+    it('success as admin_account, own organization', done => {
+      const organizationId = 2;
+      chai.request(app_server)
+        .get(`/organization/${organizationId}/accounts`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.length).to.eq(2);
+          done();
+        });
+    });
+
+    it('fail as admin_account, another organization', done => {
+      const organizationId = 1;
+      chai.request(app_server)
+        .get(`/organization/${organizationId}/accounts`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
+
+  });
+
+  describe('(POST) /:organizationId/accounts', () => {
+
+    it('success as super_account', done => {
+      chai.request(app_server)
+        .post(`/organization`)
+        .send({
+          owner: '0x2Cb65761Be6DB9fA05bA2720D1c31c1e10B3Bb3b',
+          title: 'Organization for new account',
+          active: true,
+        })
+        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+        .end((err, res) => {
+          res.should.have.status(201);
+          done();
+        });
+    });
+
+    it('fail, account exists', done => {
+      chai.request(app_server)
+        .post(`/organization`)
+        .send({
+          owner: '0x1403F4C7059206291E101F2932d73Ed013B2FF71',
+          title: 'Organization for regular_account',
+          active: true,
+        })
+        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+        .end((err, res) => {
+          res.should.have.status(404);
+          done();
+        });
+    });
+
+    it('fail w/o super_account', done => {
+      chai.request(app_server)
+        .post(`/organization`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .send({
+          owner: '0x1403F4C7059206291E101F2932d73Ed013B2FF71',
+          title: 'Organization for regular_account',
+          active: true,
+        })
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
+
+  });
+
+  describe('(PUT) /:organizationId', () => {
+
+    it('success as super_account', done => {
+      chai.request(app_server)
+        .put(`/organization/2`)
+        .send({
+          title: 'New organization title',
+        })
+        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.title).to.eq('New organization title');
+          done();
+        });
+    });
+
+    it('success as admin_account, own organization', done => {
+      chai.request(app_server)
+        .put(`/organization/2`)
+        .send({
+          title: 'New organization title',
+        })
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.title).to.eq('New organization title');
+          done();
+        });
+    });
+
+    it('fail admin_account, another organization', done => {
+      chai.request(app_server)
+        .put(`/organization/1`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .send({
+          title: 'New organization title',
+        })
+        .end((err, res) => {
+          res.should.have.status(403);
           done();
         });
     });
