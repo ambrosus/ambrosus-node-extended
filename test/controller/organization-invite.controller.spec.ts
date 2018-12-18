@@ -70,9 +70,6 @@ describe('(Controller) Organization invite /organization/invite', () => {
     expect(db.serverConfig.isConnected()).to.be.true;
   });
 
-  // Overall, not just super_account permission
-  // But organization owner/admin should be able to use routes
-
   describe('(GET) /', () => {
 
     it('success as super_account', done => {
@@ -80,32 +77,31 @@ describe('(Controller) Organization invite /organization/invite', () => {
         .get(`/organization/invite`)
         .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
         .end((err, res) => {
+          console.log(err);
           res.should.have.status(200);
-          expect(res.body.data.length).to.eq(3);
+          expect(res.body.data.length).to.eq(1);
           done();
         });
     });
 
-    // Organization owner/admin should get invites
-    // for their organization only, not just super_account all
-
-    // it('success as admin of organization', done => {
-    //   chai.request(app_server)
-    //     .get(`/organization/invite`)
-    //     .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
-    //     .end((err, res) => {
-    //       console.log(res.body);
-    //       res.should.have.status(200);
-    //       done();
-    //     });
-    // });
+    it('success as admin of organization', done => {
+      chai.request(app_server)
+        .get(`/organization/invite`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          console.log(res.body);
+          res.should.have.status(200);
+          expect(res.body.data.length).to.eq(2);
+          done();
+        });
+    });
 
   });
 
   describe('(GET) /:inviteId/exists', () => {
 
     it('success, no authorization', done => {
-      const inviteId = '93a78393a31d4dc9a42541aec88e7cfc';
+      const inviteId = '13a78393a31d4dc9a42541aec88e7cfc';
       chai.request(app_server)
         .get(`/organization/invite/${inviteId}/exists`)
         .end((err, res) => {
@@ -119,11 +115,10 @@ describe('(Controller) Organization invite /organization/invite', () => {
 
   describe('(POST) /:inviteId/accept', () => {
 
-    it('success, as super_account', done => {
-      const inviteId = '93a78393a31d4dc9a42541aec88e7cfc';
+    it('success, no authorization', done => {
+      const inviteId = '13a78393a31d4dc9a42541aec88e7cfc';
       chai.request(app_server)
         .post(`/organization/invite/${inviteId}/accept`)
-        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
         .send({
           address: '0x6d90C4Ccc3988bE57ED1267E68Be96048380364F',
         })
@@ -139,10 +134,22 @@ describe('(Controller) Organization invite /organization/invite', () => {
   describe('(DELETE) /:inviteId', () => {
 
     it('success, as super_account', done => {
-      const inviteId = '93a78393a31d4dc9a42541aec88e3cfc';
+      const inviteId = '23a78393a31d4dc9a42541aec88e7cfc';
       chai.request(app_server)
         .del(`/organization/invite/${inviteId}`)
         .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.meta.deleted).to.eq(1);
+          done();
+        });
+    });
+
+    it('success, as admin_account', done => {
+      const inviteId = '33a78393a31d4dc9a42541aec88e7cfc';
+      chai.request(app_server)
+        .del(`/organization/invite/${inviteId}`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
         .end((err, res) => {
           res.should.have.status(200);
           expect(res.body.meta.deleted).to.eq(1);
@@ -171,6 +178,23 @@ describe('(Controller) Organization invite /organization/invite', () => {
         });
     });
 
+    it('success, as admin_account', done => {
+      chai.request(app_server)
+        .post(`/organization/invite`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .send({
+          email: [
+            'test34@test.com',
+            'test35@test.com',
+          ],
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.sent.length).to.eq(2);
+          done();
+        });
+    });
+
   });
 
   describe('(POST) /resend', () => {
@@ -182,6 +206,24 @@ describe('(Controller) Organization invite /organization/invite', () => {
         .send({
           email: [
             'test1@test.com',
+            'super@test.com',
+          ],
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.sent.length).to.eq(1);
+          expect(res.body.data.errors.length).to.eq(1);
+          done();
+        });
+    });
+
+    it('success, as admin_account', done => {
+      chai.request(app_server)
+        .post(`/organization/invite/resend`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .send({
+          email: [
+            'test35@test.com',
             'super@test.com',
           ],
         })
