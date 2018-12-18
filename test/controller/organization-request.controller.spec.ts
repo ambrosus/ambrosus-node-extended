@@ -72,12 +72,130 @@ describe('(Controller) Organization request /organization/request', () => {
 
   describe('(GET) /', () => {
 
-    it('success as authorized', done => {
+    it('success as super_account', done => {
       chai.request(app_server)
         .get(`/organization/request`)
         .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
         .end((err, res) => {
           res.should.have.status(200);
+          expect(res.body.data.length).to.eq(2);
+          done();
+        });
+    });
+
+    it('fails as admin_account', done => {
+      chai.request(app_server)
+        .get(`/organization/request`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
+
+  });
+
+  describe('(GET) /refused', () => {
+
+    it('success as super_account', done => {
+      chai.request(app_server)
+        .get(`/organization/request/refused`)
+        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.length).to.eq(1);
+          done();
+        });
+    });
+
+    it('fails as admin_account', done => {
+      chai.request(app_server)
+        .get(`/organization/request/refused`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
+
+  });
+
+  describe('(GET) /:address', () => {
+
+    it('success as super_account', done => {
+      const address = '0x475fd3FAA4C28de5aA4E6Ab168BFC5e732a1FAAE';
+      chai.request(app_server)
+        .get(`/organization/request/${address}`)
+        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.address).to.eq(address);
+          done();
+        });
+    });
+
+  });
+
+  describe('(GET) /:address/approve', () => {
+
+    it('success as super_account', done => {
+      const address = '0x475fd3FAA4C28de5aA4E6Ab168BFC5e732a1FAAE';
+      chai.request(app_server)
+        .get(`/organization/request/${address}/approve`)
+        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+        .end((err, res) => {
+          res.should.have.status(202);
+          done();
+        });
+    });
+
+  });
+
+  describe('(GET) /:address/refuse', () => {
+
+    it('success as super_account', done => {
+      const address = '0xED3F43988aD00A74a5E3ed592cC94cB919D9306F';
+      chai.request(app_server)
+        .get(`/organization/request/${address}/refuse`)
+        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+        .end((err, res) => {
+          res.should.have.status(202);
+          done();
+        });
+    });
+
+  });
+
+  describe('(POST) /', () => {
+
+    // Error: Provide at least one of to, cc or bcc, send grid email
+
+    // it('success, no authorization', done => {
+    //   chai.request(app_server)
+    //     .post(`/organization/request`)
+    //     .send({
+    //       title: 'Some title',
+    //       email: 'request4@test.com',
+    //       address: '0xF8a597fc6C409d98e674502D6107d98EFc5B0ddB',
+    //       message: 'Asd'
+    //     })
+    //     .end((err, res) => {
+    //       res.should.have.status(201);
+    //       done();
+    //     });
+    // });
+
+    it('fail, organization request exists', done => {
+      chai.request(app_server)
+        .post(`/organization/request`)
+        .send({
+          title: 'Some title 2',
+          email: 'request1@test.com',
+          address: '0xF8a597fc6C409d98e674502D6107d98EFc5B0ddB',
+          message: 'Asd'
+        })
+        .end((err, res) => {
+          res.should.have.status(400);
           done();
         });
     });

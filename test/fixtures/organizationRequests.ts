@@ -21,7 +21,8 @@ export const organizationRequests = (collections: any) => {
           address: '0x9c746031ae6152C3a651cB64A4929E4c19C6083c',
           email: 'request3@test.com',
           message: 'Some message 3',
-          createdOn: 1544950885
+          createdOn: 1544950885,
+          refused: true,
         }
       ]
     );
