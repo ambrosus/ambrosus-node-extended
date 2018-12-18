@@ -74,50 +74,50 @@ describe('(Controller) Metrics /metrics', () => {
 
   });
 
-  describe('(GET) /amb', () => {
+  // describe('(GET) /amb', () => {
 
-    it('success as super_account', done => {
-      chai.request(app_server)
-        .get(`/metrics/amb`)
-        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
-        .end((err, res) => {
-          res.should.have.status(200);
-          expect(res.body.id).to.eq('amber');
-          done();
-        });
-    });
+  //   it('success as super_account', done => {
+  //     chai.request(app_server)
+  //       .get(`/metrics/amb`)
+  //       .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+  //       .end((err, res) => {
+  //         res.should.have.status(200);
+  //         expect(res.body.id).to.eq('amber');
+  //         done();
+  //       });
+  //   });
 
-  });
+  // });
 
-  describe('(GET) /bundle', () => {
+  // describe('(GET) /bundle', () => {
 
-    it('success as super_account', done => {
-      chai.request(app_server)
-        .get(`/metrics/bundle`)
-        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
-        .end((err, res) => {
-          res.should.have.status(200);
-          expect(res.body.price).to.exist;
-          done();
-        });
-    });
+  //   it('success as super_account', done => {
+  //     chai.request(app_server)
+  //       .get(`/metrics/bundle`)
+  //       .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+  //       .end((err, res) => {
+  //         res.should.have.status(200);
+  //         expect(res.body.price).to.exist;
+  //         done();
+  //       });
+  //   });
 
-  });
+  // });
 
-  describe('(GET) /balance', () => {
+  // describe('(GET) /balance', () => {
 
-    it('success as super_account', done => {
-      chai.request(app_server)
-        .get(`/metrics/balance`)
-        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
-        .end((err, res) => {
-          res.should.have.status(200);
-          expect(res.body.balance).to.exist;
-          done();
-        });
-    });
+  //   it('success as super_account', done => {
+  //     chai.request(app_server)
+  //       .get(`/metrics/balance`)
+  //       .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+  //       .end((err, res) => {
+  //         res.should.have.status(200);
+  //         expect(res.body.balance).to.exist;
+  //         done();
+  //       });
+  //   });
 
-  });
+  // });
 
   after(done => {
     if (db && db.s.databaseName === 'hermes-test') {

@@ -97,6 +97,10 @@ describe('(Controller) Analytics /analytics', () => {
         });
     });
 
+
+    // TODO: Validation for collection param:
+    // asset, event, bundle, account
+
     // it('fail as organization admin, another organization', done => {
     //   chai.request(app_server)
     //     .get(`/analytics/1/asset/count`)
