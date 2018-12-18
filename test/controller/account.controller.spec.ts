@@ -43,7 +43,7 @@ describe('(Controller) Account /account', () => {
         collections.accountDetail = db.collection('accountDetail');
         collections.organization = db.collection('organization');
 
-        // Insert demo accounts
+        // Insert fixtures
         await all_accounts(collections);
         await all_organizations(collections);
 
@@ -148,8 +148,6 @@ describe('(Controller) Account /account', () => {
   });
 
   describe('(PUT) /:address', () => {
-
-
 
     it('succeess, edit own account', done => {
       const address = '0x1403F4C7059206291E101F2932d73Ed013B2FF71';
@@ -294,7 +292,6 @@ describe('(Controller) Account /account', () => {
     if (db && db.s.databaseName === 'hermes-test') {
       db.dropDatabase()
         .then(result => {
-          _DBClient.mongoClient.close();
           done();
         })
         .catch(error => done(error));
