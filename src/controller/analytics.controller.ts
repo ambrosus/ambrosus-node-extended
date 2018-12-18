@@ -16,6 +16,7 @@ import { parseAnalytics } from '../util';
 
 @controller('/analytics', MIDDLEWARE.Context, authorize())
 export class AnalyticsController extends BaseController {
+
   constructor(
     @inject(TYPE.AnalyticsService) private analyticsService: AnalyticsService,
     @inject(TYPE.LoggerService) protected logger: ILogger
