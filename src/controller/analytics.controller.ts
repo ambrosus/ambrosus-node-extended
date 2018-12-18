@@ -13,6 +13,8 @@ import { APIResponse } from '../model';
 import { AnalyticsService } from '../service/analytics.service';
 import { BaseController } from './base.controller';
 import { parseAnalytics } from '../util';
+import { validate } from '../middleware';
+import { utilSchema } from '../validation';
 
 @controller('/analytics', MIDDLEWARE.Context, authorize())
 export class AnalyticsController extends BaseController {
@@ -24,7 +26,10 @@ export class AnalyticsController extends BaseController {
     super(logger);
   }
 
-  @httpGet('/:organizationId/:collection/count')
+  @httpGet(
+    '/:organizationId/:collection/count',
+    validate(utilSchema.collection, { paramsOnly: true })
+  )
   public async getCountForOrganization(
     @requestParam('organizationId') organizationId: number,
     @requestParam('collection') collection: string
@@ -36,7 +41,10 @@ export class AnalyticsController extends BaseController {
     return APIResponse.fromSingleResult({ count });
   }
 
-  @httpGet('/:organizationId/:collection/count/:start/:end/total')
+  @httpGet(
+    '/:organizationId/:collection/count/:start/:end/total',
+    validate(utilSchema.collection, { paramsOnly: true })
+  )
   public async getTimeRangeCountForOrganization(
     req: Request
   ): Promise<APIResponse> {
@@ -51,7 +59,10 @@ export class AnalyticsController extends BaseController {
     return APIResponse.fromSingleResult({ count });
   }
 
-  @httpGet('/:organizationId/:collection/count/:start/:end/aggregate/:group')
+  @httpGet(
+    '/:organizationId/:collection/count/:start/:end/aggregate/:group',
+    validate(utilSchema.collection, { paramsOnly: true })
+  )
   public async getTimeRangeCountAggregateForOrganization(
     req: Request
   ): Promise<APIResponse> {
@@ -72,7 +83,11 @@ export class AnalyticsController extends BaseController {
     return APIResponse.fromSingleResult({ count });
   }
 
-  @httpGet('/:collection/count')
+  @httpGet(
+    '/:collection/count',
+    authorize('super_account'),
+    validate(utilSchema.collection, { paramsOnly: true })
+  )
   public async getCount(
     @requestParam('collection') collection: string
   ): Promise<APIResponse> {
@@ -80,7 +95,11 @@ export class AnalyticsController extends BaseController {
     return APIResponse.fromSingleResult({ count });
   }
 
-  @httpGet('/:collection/count/:start/:end/total')
+  @httpGet(
+    '/:collection/count/:start/:end/total',
+    authorize('super_account'),
+    validate(utilSchema.collection, { paramsOnly: true })
+  )
   public async getTimeRangeCount(req: Request): Promise<APIResponse> {
     const { collection, start, end } = req.params;
 
@@ -92,7 +111,11 @@ export class AnalyticsController extends BaseController {
     return APIResponse.fromSingleResult({ count });
   }
 
-  @httpGet('/:collection/count/:start/:end/aggregate/:group')
+  @httpGet(
+    '/:collection/count/:start/:end/aggregate/:group',
+    authorize('super_account'),
+    validate(utilSchema.collection, { paramsOnly: true })
+  )
   public async getTimeRangeCountAggregate(req: Request): Promise<APIResponse> {
     const { collection, start, end, group } = req.params;
 
