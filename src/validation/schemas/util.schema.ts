@@ -10,9 +10,22 @@ export const utilSchema = {
                 "isAddress": ''
             },
         },
-        "additionalProperties": false,
         "required": [
             "address"
+        ]
+    },
+    collection: {
+        "$async": true,
+        "title": "Collection",
+        "type": "object",
+        "properties": {
+            "collection": {
+                "type": "string",
+                "enum": ["asset", "event", "bundle", "account"]
+            },
+        },
+        "required": [
+            "collection"
         ]
     },
     email: {
@@ -25,7 +38,6 @@ export const utilSchema = {
                 "pattern": '^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@(([0-9a-zA-Z])+([-\w]*[0-9a-zA-Z])*\.)+[a-zA-Z]{2,9})$'
             }
         },
-        "additionalProperties": false,
         "required": [
             "email"
         ]
@@ -40,7 +52,6 @@ export const utilSchema = {
                 "minimum": 1
             }
         },
-        "additionalProperties": false,
         "required": [
             "organizationId"
         ]

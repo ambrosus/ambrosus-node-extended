@@ -168,22 +168,20 @@ describe('(Controller) Organization request /organization/request', () => {
 
   describe('(POST) /', () => {
 
-    // Error: Provide at least one of to, cc or bcc, send grid email
-
-    // it('success, no authorization', done => {
-    //   chai.request(app_server)
-    //     .post(`/organization/request`)
-    //     .send({
-    //       title: 'Some title',
-    //       email: 'request4@test.com',
-    //       address: '0xF8a597fc6C409d98e674502D6107d98EFc5B0ddB',
-    //       message: 'Asd'
-    //     })
-    //     .end((err, res) => {
-    //       res.should.have.status(201);
-    //       done();
-    //     });
-    // });
+    it('success, no authorization', done => {
+      chai.request(app_server)
+        .post(`/organization/request`)
+        .send({
+          title: 'Some title',
+          email: 'request4@test.com',
+          address: '0xF8a597fc6C409d98e674502D6107d98EFc5B0ddB',
+          message: 'Asd'
+        })
+        .end((err, res) => {
+          res.should.have.status(201);
+          done();
+        });
+    });
 
     it('fail, organization request exists', done => {
       chai.request(app_server)

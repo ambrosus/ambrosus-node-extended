@@ -1,20 +1,22 @@
 import { inject, injectable } from 'inversify';
 
-import { TYPE } from '../constant';
+import { TYPE, Permission } from '../constant';
 import {
   AccountRepository,
   AssetRepository,
   BundleRepository,
   EventRepository
 } from '../database/repository';
-import { NotFoundError } from '../errors';
+import { NotFoundError, PermissionError } from '../errors';
 import { ILogger } from '../interface/logger.inferface';
-import { APIQuery } from '../model';
+import { APIQuery, UserPrincipal } from '../model';
 import { AccountService } from '../service/account.service';
 
 @injectable()
 export class AnalyticsService {
+
   constructor(
+    @inject(TYPE.UserPrincipal) private readonly user: any,
     @inject(TYPE.AccountService)
     private readonly accountService: AccountService,
     @inject(TYPE.AccountRepository) private readonly account: AccountRepository,
@@ -22,7 +24,7 @@ export class AnalyticsService {
     @inject(TYPE.EventRepository) private readonly event: EventRepository,
     @inject(TYPE.BundleRepository) private readonly bundle: BundleRepository,
     @inject(TYPE.LoggerService) private readonly logger: ILogger
-  ) {}
+  ) { }
 
   public count(collection: string): Promise<number> {
     if (!this[collection]) {
@@ -35,6 +37,13 @@ export class AnalyticsService {
     organizationId: number,
     collection: string
   ): Promise<number> {
+    if (
+      !this.user.hasPermission(Permission.super_account) &&
+      !(this.user.hasAnyPermission(Permission.manage_accounts) && this.user.organization.organizationId === organizationId)
+    ) {
+      throw new PermissionError({ reason: 'Unauthorized' });
+    }
+
     if (!this[collection]) {
       throw new NotFoundError({ reason: 'No such data' });
     }
@@ -100,6 +109,13 @@ export class AnalyticsService {
     start,
     end
   ) {
+    if (
+      !this.user.hasPermission(Permission.super_account) &&
+      !(this.user.hasAnyPermission(Permission.manage_accounts) && this.user.organization.organizationId === organizationId)
+    ) {
+      throw new PermissionError({ reason: 'Unauthorized' });
+    }
+
     const addresses = await this.accountService.getOrganizationAddresses(
       organizationId
     );
@@ -166,6 +182,13 @@ export class AnalyticsService {
     start: number,
     end: number
   ): Promise<number> {
+    if (
+      !this.user.hasPermission(Permission.super_account) &&
+      !(this.user.hasAnyPermission(Permission.manage_accounts) && this.user.organization.organizationId === organizationId)
+    ) {
+      throw new PermissionError({ reason: 'Unauthorized' });
+    }
+
     const addresses = await this.accountService.getOrganizationAddresses(
       organizationId
     );

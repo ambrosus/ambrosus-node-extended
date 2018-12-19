@@ -239,18 +239,20 @@ export class OrganizationService {
 
   //#region Organization Invite
   public async getOrganizationInvites(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    if (!this.user.hasPermission(Permission.super_account)) {
+    if (!(this.user.organization && this.user.organization.organizationId)) {
       throw new PermissionError({ reason: 'Unauthorized' });
     }
+    if (!apiQuery.query) {
+      apiQuery.query = {};
+    }
+    apiQuery.query.organizationId = this.user.organization.organizationId;
+
     await this.organizationInviteRepository.deleteExpired();
 
     return this.organizationInviteRepository.findWithPagination(apiQuery);
   }
 
   public async createOrganizationInvites(emails: string[]): Promise<any> {
-    if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError({ reason: 'Unauthorized' });
-    }
     await this.organizationInviteRepository.deleteExpired();
 
     const failed = [];
@@ -281,9 +283,6 @@ export class OrganizationService {
   }
 
   public async resendOrganizationInvites(emails: string[]): Promise<any> {
-    if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError({ reason: 'Unauthorized' });
-    }
     const failed = [];
     const success = [];
     for (const email of emails) {

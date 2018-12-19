@@ -97,31 +97,35 @@ describe('(Controller) Analytics /analytics', () => {
         });
     });
 
+    it('fail, organization collection not allowed', done => {
+      chai.request(app_server)
+        .get(`/analytics/2/organization/count`)
+        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+        .end((err, res) => {
+          res.should.have.status(400);
+          done();
+        });
+    });
 
-    // TODO: Validation for collection param:
-    // asset, event, bundle, account
+    it('fail as admin_account, another organization', done => {
+      chai.request(app_server)
+        .get(`/analytics/1/asset/count`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
 
-    // it('fail as organization admin, another organization', done => {
-    //   chai.request(app_server)
-    //     .get(`/analytics/1/asset/count`)
-    //     .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
-    //     .end((err, res) => {
-    //       res.should.have.status(200);
-    //       expect(res.body.data.count).to.eq(5);
-    //       done();
-    //     });
-    // });
-
-    // it('fail as regular_account', done => {
-    //   chai.request(app_server)
-    //     .get(`/analytics/2/asset/count`)
-    //     .set('Authorization', `AMB_TOKEN ${tokens.regular_account}`)
-    //     .end((err, res) => {
-    //       console.log(res.body)
-    //       res.should.have.status(403);
-    //       done();
-    //     });
-    // });
+    it('fail as regular_account', done => {
+      chai.request(app_server)
+        .get(`/analytics/2/asset/count`)
+        .set('Authorization', `AMB_TOKEN ${tokens.regular_account}`)
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
 
   });
 
@@ -149,25 +153,25 @@ describe('(Controller) Analytics /analytics', () => {
         });
     });
 
-    // it('fail as admin_account, another organization', done => {
-    //   chai.request(app_server)
-    //     .get(`/analytics/1/asset/count/${1535079201}/${1545079381}/total`)
-    //     .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
-    //     .end((err, res) => {
-    //       res.should.have.status(403);
-    //       done();
-    //     });
-    // });
+    it('fail as admin_account, another organization', done => {
+      chai.request(app_server)
+        .get(`/analytics/1/asset/count/${1535079201}/${1545079381}/total`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
 
-    // it('fail as regular_account', done => {
-    //   chai.request(app_server)
-    //     .get(`/analytics/2/asset/count/${1535079201}/${1545079381}/total`)
-    //     .set('Authorization', `AMB_TOKEN ${tokens.regular_account}`)
-    //     .end((err, res) => {
-    //       res.should.have.status(403);
-    //       done();
-    //     });
-    // });
+    it('fail as regular_account', done => {
+      chai.request(app_server)
+        .get(`/analytics/2/asset/count/${1535079201}/${1545079381}/total`)
+        .set('Authorization', `AMB_TOKEN ${tokens.regular_account}`)
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
 
   });
 
@@ -195,25 +199,25 @@ describe('(Controller) Analytics /analytics', () => {
         });
     });
 
-    // it('fail as admin_account, another organization', done => {
-    //   chai.request(app_server)
-    //     .get(`/analytics/1/asset/count/${1535079201}/${1545079381}/total`)
-    //     .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
-    //     .end((err, res) => {
-    //       res.should.have.status(403);
-    //       done();
-    //     });
-    // });
+    it('fail as admin_account, another organization', done => {
+      chai.request(app_server)
+        .get(`/analytics/1/asset/count/${1535079201}/${1545079381}/total`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
 
-    // it('fail as regular_account', done => {
-    //   chai.request(app_server)
-    //     .get(`/analytics/2/asset/count/${1535079201}/${1545079381}/total`)
-    //     .set('Authorization', `AMB_TOKEN ${tokens.regular_account}`)
-    //     .end((err, res) => {
-    //       res.should.have.status(403);
-    //       done();
-    //     });
-    // });
+    it('fail as regular_account', done => {
+      chai.request(app_server)
+        .get(`/analytics/2/asset/count/${1535079201}/${1545079381}/total`)
+        .set('Authorization', `AMB_TOKEN ${tokens.regular_account}`)
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
 
   });
 
@@ -230,16 +234,15 @@ describe('(Controller) Analytics /analytics', () => {
         });
     });
 
-    // it('fail as admin_account', done => {
-    //   chai.request(app_server)
-    //     .get(`/analytics/asset/count`)
-    //     .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
-    //     .end((err, res) => {
-    //       console.log(res.body);
-    //       res.should.have.status(403);
-    //       done();
-    //     });
-    // });
+    it('fail as admin_account', done => {
+      chai.request(app_server)
+        .get(`/analytics/asset/count`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
 
   });
 
@@ -256,16 +259,15 @@ describe('(Controller) Analytics /analytics', () => {
         });
     });
 
-    // it('fail as admin_account', done => {
-    //   chai.request(app_server)
-    //     .get(`/analytics/asset/count/${1535079201}/${1545079381}/total`)
-    //     .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
-    //     .end((err, res) => {
-    //       console.log(res.body);
-    //       res.should.have.status(403);
-    //       done();
-    //     });
-    // });
+    it('fail as admin_account', done => {
+      chai.request(app_server)
+        .get(`/analytics/asset/count/${1535079201}/${1545079381}/total`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
 
   });
 
@@ -282,16 +284,15 @@ describe('(Controller) Analytics /analytics', () => {
         });
     });
 
-    // it('fail as admin_account', done => {
-    //   chai.request(app_server)
-    //     .get(`/analytics/asset/count/${1535079201}/${1545079381}/aggregate/day`)
-    //     .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
-    //     .end((err, res) => {
-    //       console.log(res.body);
-    //       res.should.have.status(403);
-    //       done();
-    //     });
-    // });
+    it('fail as admin_account', done => {
+      chai.request(app_server)
+        .get(`/analytics/asset/count/${1535079201}/${1545079381}/aggregate/day`)
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          res.should.have.status(403);
+          done();
+        });
+    });
 
   });
 

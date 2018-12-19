@@ -33,7 +33,7 @@ export class OrganizationInviteController extends BaseController {
 
   @httpGet(
     '/',
-    authorize('super_account')
+    authorize('manage_accounts')
   )
   public async getOrganizationInvites(req: Request): Promise<APIResponse> {
     const result = await this.organizationService.getOrganizationInvites(
@@ -54,7 +54,6 @@ export class OrganizationInviteController extends BaseController {
 
   @httpPost(
     '/:inviteId/accept',
-    authorize('super_account'),
     validate(utilSchema.address)
   )
   public async acceptOrganizationInvite(
@@ -70,7 +69,7 @@ export class OrganizationInviteController extends BaseController {
 
   @httpDelete(
     '/:inviteId',
-    authorize('super_account')
+    authorize('manage_accounts')
   )
   public async deleteOrganizationInvite(
     @requestParam('inviteId') inviteId: string
@@ -87,7 +86,7 @@ export class OrganizationInviteController extends BaseController {
 
   @httpPost(
     '/',
-    authorize('super_account'),
+    authorize('manage_accounts'),
     validate(organizationSchema.organizationInvites)
   )
   public async createOrganizationInvite(
@@ -99,7 +98,7 @@ export class OrganizationInviteController extends BaseController {
 
   @httpPost(
     '/resend',
-    authorize('super_account'),
+    authorize('manage_accounts'),
     validate(organizationSchema.organizationInvites)
   )
   public async resendOrganizationInviteEmails(
