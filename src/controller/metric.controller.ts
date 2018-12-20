@@ -40,4 +40,9 @@ export class MetricController {
     const balance = await this.web3Service.getBalance();
     return { balance };
   }
+
+  @httpGet('/forceError')
+  public async forceError() {
+    throw new Error('Forced error');
+  }
 }
