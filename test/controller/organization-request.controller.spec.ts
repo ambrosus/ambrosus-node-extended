@@ -173,9 +173,23 @@ describe('(Controller) Organization request /organization/request', () => {
         .post(`/organization/request`)
         .send({
           title: 'Some title',
-          email: 'request4@test.com',
+          email: 'lazareric.com+asd@gmail.com',
           address: '0xF8a597fc6C409d98e674502D6107d98EFc5B0ddB',
           message: 'Asd'
+        })
+        .end((err, res) => {
+          res.should.have.status(201);
+          done();
+        });
+    });
+
+    it('success, no authorization, no title', done => {
+      chai.request(app_server)
+        .post(`/organization/request`)
+        .send({
+          email: 'lazareric.com+2@gmail.com',
+          address: '0xeF58EC75Ed86a7137c8A11C9D90fD9De77bBd730',
+          message: 'Request with no title'
         })
         .end((err, res) => {
           res.should.have.status(201);
