@@ -24,9 +24,8 @@ install:
   - docker pull hadolint/hadolint
 
 script:
-  - npx npm dev:docker:db
+  - npx npm run dev:docker:db
   - npx npm run dev:lint
-  - export MONGO_HOSTS="localhost:27017" MONGO_DB_NAME="hermes"
   - npx npm test
   - docker run --rm -i hadolint/hadolint < Dockerfile
 
