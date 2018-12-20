@@ -14,7 +14,7 @@
     "dev:clean": "rimraf ./build",
     "dev:start": "source ./.env.dev && nodemon ./build/index.js",
     "dev:lint": "tslint -c tslint.json --project tsconfig.json 'src/**/*.ts'",
-    "test": "source ./.env.test && mocha ./test/**/*.spec.ts --exit",
+    "test": "source ./.env.dev && mocha ./test/**/*.spec.ts --exit",
     "dev:docker:db": "docker-compose up -d db"
   },
   "files": [
