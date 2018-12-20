@@ -175,18 +175,18 @@ describe('(Controller) Analytics /analytics', () => {
 
   });
 
-  describe('(GET) /:organizationId/:collection/count/:start/:end/aggregate/:group', () => {
+  // describe('(GET) /:organizationId/:collection/count/:start/:end/aggregate/:group', () => {
 
-    it('success as super_account, per hour', done => {
-      chai.request(app_server)
-        .get(`/analytics/2/asset/count/${1544979381}/${1545079381}/aggregate/hour`)
-        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
-        .end((err, res) => {
-          res.should.have.status(200);
-          expect(res.body.data.count[res.body.data.count.length - 2].count).to.eq(2);
-          done();
-        });
-    });
+  //   it('success as super_account, per hour', done => {
+  //     chai.request(app_server)
+  //       .get(`/analytics/2/asset/count/${1544979381}/${1545079381}/aggregate/hour`)
+  //       .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+  //       .end((err, res) => {
+  //         res.should.have.status(200);
+  //         expect(res.body.data.count[res.body.data.count.length - 2].count).to.eq(2);
+  //         done();
+  //       });
+  //   });
 
     it('success as admin_account of his organization, per day', done => {
       chai.request(app_server)
