@@ -204,7 +204,7 @@ export class OrganizationService {
       address,
       1,
       newOrganizationId,
-      [Permission.create_asset, Permission.create_event],
+      [Permission.create_asset, Permission.create_event, Permission.manage_accounts],
       organizationRequest.email,
       undefined,
       this.user.address
