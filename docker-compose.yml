@@ -5,9 +5,3 @@ services:
     ports:
       - '27017:27017'
     container_name: "db"
-
-  parity:
-    image: parity/parity:nightly
-    command: ['--chain', 'dev', '--unsafe-expose']
-    ports:
-      - '8545:8545'

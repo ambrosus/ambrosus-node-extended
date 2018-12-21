@@ -12,11 +12,22 @@ cache:
   directories:
   - node_modules
 
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
 install:
+  - docker-compose pull
   - npx npm install
+  - docker pull hadolint/hadolint
 
 script:
+  - npx npm run dev:docker:db
   - npx npm run dev:lint
+  - npx npm test
+  - docker run --rm -i hadolint/hadolint < Dockerfile
 
 notifications:
   slack:
