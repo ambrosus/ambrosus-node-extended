@@ -239,12 +239,25 @@ describe('(Controller) Organization /organization', () => {
       chai.request(app_server)
         .put(`/organization/2`)
         .send({
-          title: 'New organization title',
+          title: 'New organization title 2',
         })
         .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
         .end((err, res) => {
           res.should.have.status(200);
-          expect(res.body.data.title).to.eq('New organization title');
+          expect(res.body.data.title).to.eq('New organization title 2');
+          done();
+        });
+    });
+
+    it('fails as admin_account, title exists', done => {
+      chai.request(app_server)
+        .put(`/organization/2`)
+        .send({
+          title: 'New organization title 2',
+        })
+        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
+        .end((err, res) => {
+          res.should.have.status(400);
           done();
         });
     });

@@ -257,7 +257,7 @@ export class BaseRepository<T> {
     const qor = _.reduce(
       fields,
       (rv, field) => {
-        if (obj.hasOwnProperty(field)) {
+        if (obj.hasOwnProperty(field) && obj[field]) {
           rv.push({ [field]: obj[field] });
         }
         return rv;
@@ -266,7 +266,8 @@ export class BaseRepository<T> {
     );
 
     if (!qor.length) {
-      throw new RepositoryError({ reason: 'Invalid query for existsOR' });
+      // throw new RepositoryError({ reason: 'Invalid query for existsOR' });
+      return;
     }
 
     this.logger.debug(

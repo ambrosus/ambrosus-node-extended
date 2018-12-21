@@ -105,6 +105,10 @@ export class OrganizationService {
       throw new PermissionError({ reason: 'Unauthorized' });
     }
 
+    if (await this.organizationRepository.existsOR(organization, 'title')) {
+      throw new ExistsError({ reason: 'An organization already exists with that title.' });
+    }
+
     organization.setMutationTimestamp(this.user.address);
     const apiQuery = new APIQuery({ organizationId });
     return this.organizationRepository.update(apiQuery, organization);
