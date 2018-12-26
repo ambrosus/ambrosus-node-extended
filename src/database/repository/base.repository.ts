@@ -30,8 +30,8 @@ export class BaseRepository<T> {
     @inject(TYPE.DBClient) protected client: DBClient,
     @unmanaged() protected collectionName: string
   ) {
-    MongoPaging.config.DEFAULT_LIMIT = config.paginationDefault;
-    MongoPaging.config.MAX_LIMIT = config.paginationMax;
+    MongoPaging.config.DEFAULT_LIMIT = +config.paginationDefault;
+    MongoPaging.config.MAX_LIMIT = +config.paginationMax;
   }
 
   get timestampField(): string {
