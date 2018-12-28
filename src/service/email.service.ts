@@ -40,6 +40,7 @@ export class EmailService {
         address: organizationRequest.address,
         organizationName: organizationRequest.title,
         message: organizationRequest.message,
+        email: organizationRequest.email,
         dashboardLink: config.dashboardUrl,
       },
     };
