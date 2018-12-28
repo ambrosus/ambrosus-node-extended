@@ -7,6 +7,7 @@ import {
   OrganizationInviteRepository,
   OrganizationRepository,
   OrganizationRequestRepository,
+  AccountRepository,
 } from '../database/repository';
 import { ILogger } from '../interface/logger.inferface';
 import {
@@ -35,6 +36,8 @@ export class OrganizationService {
     private readonly organizationRequestRepository: OrganizationRequestRepository,
     @inject(TYPE.OrganizationInviteRepository)
     private readonly organizationInviteRepository: OrganizationInviteRepository,
+    @inject(TYPE.AccountRepository)
+    private readonly accountRepository: AccountRepository,
     @inject(TYPE.AccountService) private readonly accountService: AccountService,
     @inject(TYPE.EmailService) private readonly emailService: EmailService,
     @inject(TYPE.LoggerService) private readonly logger: ILogger
@@ -144,27 +147,49 @@ export class OrganizationService {
   }
 
   public async createOrganizationRequest(organizationRequest: OrganizationRequest): Promise<any> {
-    if (
-      await this.organizationRequestRepository.existsOR(
-        organizationRequest,
-        'email',
-        'address',
-        'title'
-      )
-    ) {
-      throw new ExistsError({ reason: 'An organization request already exists.' });
+    const errors = {
+      organizationRequest: [],
+      account: [],
+      organization: [],
+    };
+
+    // Check organization request
+
+    if (await this.organizationRequestRepository.existsOR(organizationRequest, 'email')) {
+      errors.organizationRequest.push('email');
+    }
+    if (await this.organizationRequestRepository.existsOR(organizationRequest, 'address')) {
+      errors.organizationRequest.push('address');
+    }
+    if (await this.organizationRequestRepository.existsOR(organizationRequest, 'title')) {
+      errors.organizationRequest.push('title');
     }
 
-    if (await this.accountService.getAccountExists(organizationRequest.address)) {
-      throw new ExistsError({ reason: 'An account already exists with this address.' });
+    if (errors.organizationRequest.length) {
+      throw new ExistsError({ reason: `An organization request already exists with this ${errors.organizationRequest.join(', ')}.` });
     }
 
-    if (await this.accountService.getAccountExistsForEmail(organizationRequest.email)) {
-      throw new ExistsError({ reason: 'An account already exists with this email.' });
+    // Check account
+
+    if (await this.accountRepository.existsOR(organizationRequest, 'address')) {
+      errors.account.push('address');
     }
+    if (await this.accountRepository.existsOR(organizationRequest, 'email')) {
+      errors.account.push('email');
+    }
+
+    if (errors.account.length) {
+      throw new ExistsError({ reason: `An account already exists with this ${errors.account.join(', ')}.` });
+    }
+
+    // Check organization
 
     if (await this.organizationRepository.existsOR(organizationRequest, 'title')) {
-      throw new ExistsError({ reason: 'An organization already exists with that title.' });
+      errors.organization.push('title');
+    }
+
+    if (errors.organization.length) {
+      throw new ExistsError({ reason: `An organization already exists with this ${errors.organization.join(', ')}.` });
     }
 
     // Send email

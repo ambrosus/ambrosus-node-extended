@@ -130,6 +130,20 @@ describe('(Controller) Event /event', () => {
         });
     });
 
+    it('success as authorized, limit 2', done => {
+      chai.request(app_server)
+        .post(`/event/query`)
+        .set('Authorization', `AMB_TOKEN ${tokens.regular_account}`)
+        .send({
+          limit: 2,
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.length).to.eq(2);
+          done();
+        });
+    });
+
   });
 
   after(done => {
