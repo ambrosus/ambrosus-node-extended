@@ -26,7 +26,7 @@ describe('(Controller) Bundle /bundle', () => {
     accounts: '',
     accountDetail: '',
     organization: '',
-    bundles: '',
+    bundle_metadata: '',
   };
   let tokens = {
     super_account: '',
@@ -43,7 +43,7 @@ describe('(Controller) Bundle /bundle', () => {
         collections.accounts = db.collection('accounts');
         collections.accountDetail = db.collection('accountDetail');
         collections.organization = db.collection('organization');
-        collections.bundles = db.collection('bundles');
+        collections.bundle_metadata = db.collection('bundle_metadata');
 
         // Insert fixtures
         await all_accounts(collections);
