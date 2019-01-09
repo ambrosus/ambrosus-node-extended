@@ -14,7 +14,7 @@ config.db.dbName = 'hermes-test';
 
 import { iocContainer } from '../../src/inversify.config';
 import { app_server } from '../../src';
-import { all_accounts, all_organizations, assets, events } from '../fixtures';
+import { all_accounts, all_organizations, assets, events, bundles } from '../fixtures';
 import { Web3Service } from '../../src/service/web3.service';
 import { DBClient } from '../../src/database/client';
 
@@ -28,6 +28,7 @@ describe('(Controller) Analytics /analytics', () => {
     organization: '',
     assets: '',
     events: '',
+    bundle_metadata: '',
   };
   let tokens = {
     super_account: '',
@@ -46,12 +47,14 @@ describe('(Controller) Analytics /analytics', () => {
         collections.organization = db.collection('organization');
         collections.assets = db.collection('assets');
         collections.events = db.collection('events');
+        collections.bundle_metadata = db.collection('bundle_metadata');
 
         // Insert fixtures
         await all_accounts(collections);
         await all_organizations(collections);
         await assets(collections);
         await events(collections);
+        await bundles(collections);
 
         tokens.super_account = _Web3Service.getToken('0xce75741e246852f1bf8e4f86ccf7d56f77942c37ea7b683d3a3735f1635de7c9');
         tokens.admin_account = _Web3Service.getToken('0xa06c37def3a202c94508d3cb45c0009b91b85861f90284f4ce98f1ec6ce9913a');
@@ -234,6 +237,17 @@ describe('(Controller) Analytics /analytics', () => {
         });
     });
 
+    it('success as super_account, bundle_metadata', done => {
+      chai.request(app_server)
+        .get(`/analytics/bundle/count`)
+        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.count).to.eq(2);
+          done();
+        });
+    });
+
     it('fail as admin_account', done => {
       chai.request(app_server)
         .get(`/analytics/asset/count`)
@@ -259,6 +273,17 @@ describe('(Controller) Analytics /analytics', () => {
         });
     });
 
+    it('success as super_account, bundle_metadata', done => {
+      chai.request(app_server)
+        .get(`/analytics/bundle/count/${1535079201}/${1545079381}/total`)
+        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.count).to.eq(2);
+          done();
+        });
+    });
+
     it('fail as admin_account', done => {
       chai.request(app_server)
         .get(`/analytics/asset/count/${1535079201}/${1545079381}/total`)
@@ -280,6 +305,18 @@ describe('(Controller) Analytics /analytics', () => {
         .end((err, res) => {
           res.should.have.status(200);
           expect(res.body.data.count[res.body.data.count.length - 1].count).to.eq(3);
+          done();
+        });
+    });
+
+    it('success as super_account, bundle_metadata', done => {
+      chai.request(app_server)
+        .get(`/analytics/bundle/count/${1535079201}/${1545079381}/aggregate/day`)
+        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.count[0].count).to.eq(1);
+          expect(res.body.data.count[res.body.data.count.length - 1].count).to.eq(1);
           done();
         });
     });

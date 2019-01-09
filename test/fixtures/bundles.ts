@@ -1,7 +1,7 @@
 /* tslint:disable */
 export const bundles = (collections: any) => {
     return new Promise(async (resolve, reject) => {
-        await collections.bundles.insertMany(
+        await collections.bundle_metadata.insertMany(
             [
                 {
                     bundleId: '0x0419a305e34825a2c4ba91f4a7202e9aa6ba698761e3f3484402d221acf4cf22',
@@ -10,7 +10,7 @@ export const bundles = (collections: any) => {
                         idData: {
                             createdBy: '0x6717083A10aa3137E3748C41ac22B1bA73B5D6e7',
                             entriesHash: '0xe73e70e716abf61dc2bc8b11f0f2a862f58b061801daa3f77df0458a3ce5d699',
-                            timestamp: 1545116218
+                            timestamp: 1535079201
                         }
                     }
                 },
@@ -21,7 +21,7 @@ export const bundles = (collections: any) => {
                         idData: {
                             createdBy: '0x6717083A10aa3137E3748C41ac22B1bA73B5D6e7',
                             entriesHash: '0x550178b7858fdbba745586ddd27a4cf4f59c7bb630a6c6b1d33a209a723b45be',
-                            timestamp: 1545115911
+                            timestamp: 1545018801
                         }
                     }
                 }

@@ -77,7 +77,6 @@ describe('(Controller) Organization invite /organization/invite', () => {
         .get(`/organization/invite`)
         .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
         .end((err, res) => {
-          console.log(err);
           res.should.have.status(200);
           expect(res.body.data.length).to.eq(1);
           done();
@@ -89,7 +88,6 @@ describe('(Controller) Organization invite /organization/invite', () => {
         .get(`/organization/invite`)
         .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
         .end((err, res) => {
-          console.log(res.body);
           res.should.have.status(200);
           expect(res.body.data.length).to.eq(2);
           done();
