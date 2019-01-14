@@ -130,6 +130,11 @@ export class EventRepository extends BaseRepository<Event> {
         },
       },
       {
+        $sort: {
+          'content.idData.timestamp': -1,
+        },
+      },
+      {
         $group: {
           _id: '$content.idData.assetId',
           doc: {
