@@ -133,7 +133,7 @@ export class EventRepository extends BaseRepository<Event> {
         $group: {
           _id: '$content.idData.assetId',
           doc: {
-            $last: '$$ROOT',
+            $first: '$$ROOT',
           },
         },
       },
