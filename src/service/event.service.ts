@@ -9,7 +9,7 @@ export class EventService {
   constructor(
     @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
     @inject(TYPE.EventRepository) private readonly eventRepository: EventRepository
-  ) {}
+  ) { }
 
   public getEventExists(eventId: string) {
     return this.eventRepository.existsOR({ eventId }, 'eventId');
@@ -32,11 +32,32 @@ export class EventService {
     return this.eventRepository.queryEvent(apiQuery, this.user.accessLevel);
   }
 
-  public getLatestAssetEventsOfType(
+  public async getLatestAssetEventsOfType(
     assets: string[],
     type: string,
     apiQuery: APIQuery
-  ): Promise<MongoPagedResult> {
-    return this.eventRepository.assetEventsOfType(assets, type, apiQuery);
+  ): Promise<any> {
+    const query = new APIQuery({
+      'content.data.type': type,
+      'content.idData.assetId': {
+        $in: assets,
+      },
+    });
+
+    const infoEvents = await this.eventRepository.find(query);
+
+    const events = {};
+    infoEvents.map((event: any) => {
+      const exists = events[event.eventId];
+      const sameTimestamp = exists && exists.content.idData.timestamp === event.content.idData.timestamp;
+
+      if (!exists ||
+        (sameTimestamp && exists._id.toString() < event._id.toString()) ||
+        exists.content.idData.timestamp < event.content.idData.timestamp) {
+        events[event.eventId] = event;
+      }
+    });
+
+    return Object.keys(events).map(event => events[event]);
   }
 }
