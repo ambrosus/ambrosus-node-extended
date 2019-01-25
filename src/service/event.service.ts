@@ -48,13 +48,13 @@ export class EventService {
 
     const events = {};
     infoEvents.map((event: any) => {
-      const exists = events[event.eventId];
+      const exists = events[event.content.idData.assetId];
       const sameTimestamp = exists && exists.content.idData.timestamp === event.content.idData.timestamp;
 
       if (!exists ||
         (sameTimestamp && exists._id.toString() < event._id.toString()) ||
         exists.content.idData.timestamp < event.content.idData.timestamp) {
-        events[event.eventId] = event;
+        events[event.content.idData.assetId] = event;
       }
     });
 
