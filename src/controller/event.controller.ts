@@ -90,6 +90,7 @@ export class EventController extends BaseController {
       type,
       APIQuery.fromRequest(req)
     );
+
     return APIResponse.fromSingleResult(result);
   }
 }
