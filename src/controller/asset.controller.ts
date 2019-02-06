@@ -7,14 +7,12 @@ import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse } from '../model';
 import { AssetService } from '../service/asset.service';
 import { BaseController } from './base.controller';
-import { authorize } from '../middleware/authorize.middleware';
 import { validate } from '../middleware';
 import { querySchema } from '../validation';
 
 @controller(
   '/asset',
-  MIDDLEWARE.Context,
-  authorize()
+  MIDDLEWARE.Context
 )
 export class AssetController extends BaseController {
 

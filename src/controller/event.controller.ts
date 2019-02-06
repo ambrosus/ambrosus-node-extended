@@ -8,14 +8,12 @@ import { APIQuery, APIResponse } from '../model';
 import { EventService } from '../service/event.service';
 import { getParamValue } from '../util';
 import { BaseController } from './base.controller';
-import { authorize } from '../middleware/authorize.middleware';
 import { validate } from '../middleware';
 import { querySchema } from '../validation';
 
 @controller(
   '/event',
-  MIDDLEWARE.Context,
-  authorize()
+  MIDDLEWARE.Context
 )
 export class EventController extends BaseController {
 
