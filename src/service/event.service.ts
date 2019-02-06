@@ -16,11 +16,11 @@ export class EventService {
   }
 
   public getEvents(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    return this.eventRepository.queryEvents(apiQuery, this.user.accessLevel);
+    return this.eventRepository.queryEvents(apiQuery, (this.user && this.user.accessLevel) || 0);
   }
 
   public searchEvents(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    return this.eventRepository.searchEvents(apiQuery, this.user.accessLevel);
+    return this.eventRepository.searchEvents(apiQuery, (this.user && this.user.accessLevel) || 0);
   }
 
   public getEventDistinctField(field: string): Promise<any> {
@@ -29,7 +29,7 @@ export class EventService {
 
   public getEvent(eventId: string): Promise<Event> {
     const apiQuery = new APIQuery({ eventId });
-    return this.eventRepository.queryEvent(apiQuery, this.user.accessLevel);
+    return this.eventRepository.queryEvent(apiQuery, (this.user && this.user.accessLevel) || 0);
   }
 
   public async getLatestAssetEventsOfType(
