@@ -22,9 +22,9 @@ export class MetricController {
   @httpGet('/amb', authorize('super_account'))
   public async getAmb() {
     const amb = await axios.get(
-      'https://api.coinmarketcap.com/v1/ticker/amber/'
+      'https://token.ambrosus.com/'
     );
-    return amb.data[0];
+    return amb.data.data || {};
   }
 
   @httpGet('/bundle', authorize('super_account'))
