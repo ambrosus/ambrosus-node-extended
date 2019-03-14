@@ -14,7 +14,7 @@ config.db.dbName = 'hermes-test';
 
 import { iocContainer } from '../../src/inversify.config';
 import { app_server } from '../../src';
-import { all_accounts, all_organizations, organizationRequests, organizationInvites } from '../fixtures';
+import { all_accounts, insertOrganizations, organizationRequests, organizationInvites } from '../fixtures';
 import { Web3Service } from '../../src/service/web3.service';
 import { DBClient } from '../../src/database/client';
 
@@ -22,17 +22,8 @@ describe('(Controller) Organization invite /organization/invite', () => {
   let _Web3Service: Web3Service;
   let _DBClient: DBClient;
   let db: any;
-  let collections: any = {
-    accounts: '',
-    accountDetail: '',
-    organization: '',
-    organizationInvite: '',
-  };
-  let tokens = {
-    super_account: '',
-    admin_account: '',
-    regular_account: '',
-  };
+  let collections: any = {};
+  let tokens: any = {};
 
   const setup: any = () => {
     return new Promise(async (resolve, reject) => {
@@ -47,7 +38,7 @@ describe('(Controller) Organization invite /organization/invite', () => {
 
         // Insert fixtures
         await all_accounts(collections);
-        await all_organizations(collections);
+        await insertOrganizations(collections);
         await organizationInvites(collections);
 
         tokens.super_account = _Web3Service.getToken('0xce75741e246852f1bf8e4f86ccf7d56f77942c37ea7b683d3a3735f1635de7c9');

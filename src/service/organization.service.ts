@@ -8,6 +8,7 @@ import {
   OrganizationRepository,
   OrganizationRequestRepository,
   AccountRepository,
+  AccountDetailRepository,
 } from '../database/repository';
 import { ILogger } from '../interface/logger.inferface';
 import {
@@ -38,6 +39,8 @@ export class OrganizationService {
     private readonly organizationInviteRepository: OrganizationInviteRepository,
     @inject(TYPE.AccountRepository)
     private readonly accountRepository: AccountRepository,
+    @inject(TYPE.AccountDetailRepository)
+    private readonly accountDetailRepository: AccountDetailRepository,
     @inject(TYPE.AccountService) private readonly accountService: AccountService,
     @inject(TYPE.EmailService) private readonly emailService: EmailService,
     @inject(TYPE.LoggerService) private readonly logger: ILogger
@@ -174,7 +177,7 @@ export class OrganizationService {
     if (await this.accountRepository.existsOR(organizationRequest, 'address')) {
       errors.account.push('address');
     }
-    if (await this.accountRepository.existsOR(organizationRequest, 'email')) {
+    if (await this.accountDetailRepository.existsOR(organizationRequest, 'email')) {
       errors.account.push('email');
     }
 
@@ -219,7 +222,7 @@ export class OrganizationService {
     // Create organization
     const newOrganization = new Organization();
     newOrganization.owner = organizationRequest.address;
-    newOrganization.title = organizationRequest.title;
+    newOrganization.title = organizationRequest.title || `${organizationRequest.email}'s organization`;
     newOrganization.active = true;
 
     const result: InsertOneWriteOpResult = await this.createOrganization(newOrganization);

@@ -14,7 +14,7 @@ config.db.dbName = 'hermes-test';
 
 import { iocContainer } from '../../src/inversify.config';
 import { app_server } from '../../src';
-import { all_accounts, all_organizations, assets, events, bundles } from '../fixtures';
+import { all_accounts, insertOrganizations, assets, events, bundles } from '../fixtures';
 import { Web3Service } from '../../src/service/web3.service';
 import { DBClient } from '../../src/database/client';
 
@@ -22,19 +22,8 @@ describe('(Controller) Analytics /analytics', () => {
   let _Web3Service: Web3Service;
   let _DBClient: DBClient;
   let db: any;
-  let collections: any = {
-    accounts: '',
-    accountDetail: '',
-    organization: '',
-    assets: '',
-    events: '',
-    bundle_metadata: '',
-  };
-  let tokens = {
-    super_account: '',
-    admin_account: '',
-    regular_account: '',
-  };
+  let collections: any = {};
+  let tokens: any = {};
 
   const setup: any = () => {
     return new Promise(async (resolve, reject) => {
@@ -51,7 +40,7 @@ describe('(Controller) Analytics /analytics', () => {
 
         // Insert fixtures
         await all_accounts(collections);
-        await all_organizations(collections);
+        await insertOrganizations(collections);
         await assets(collections);
         await events(collections);
         await bundles(collections);
