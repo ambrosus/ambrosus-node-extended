@@ -22,17 +22,8 @@ describe('(Controller) Metrics /metrics', () => {
   let _Web3Service: Web3Service;
   let _DBClient: DBClient;
   let db: any;
-  let collections: any = {
-    accounts: '',
-    accountDetail: '',
-    organization: '',
-    events: '',
-  };
-  let tokens = {
-    super_account: '',
-    admin_account: '',
-    regular_account: '',
-  };
+  let collections: any = {};
+  let tokens: any = {};
 
   const setup: any = () => {
     return new Promise(async (resolve, reject) => {

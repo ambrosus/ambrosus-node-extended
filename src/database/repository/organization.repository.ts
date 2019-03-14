@@ -12,7 +12,6 @@ export class OrganizationRepository extends BaseRepository<Organization> {
 
     client.events.on('dbConnected', () => {
       client.db.collection('organization').createIndex({ organizationId: 1 }, { unique: true });
-      client.db.collection('organization').createIndex({ title: 1 }, { unique: true });
       client.db.collection('organization').createIndex({ owner: 1 }, { unique: true });
     });
   }

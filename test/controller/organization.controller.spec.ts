@@ -14,7 +14,7 @@ config.db.dbName = 'hermes-test';
 
 import { iocContainer } from '../../src/inversify.config';
 import { app_server } from '../../src';
-import { all_accounts, all_organizations } from '../fixtures';
+import { all_accounts, insertOrganizations } from '../fixtures';
 import { Web3Service } from '../../src/service/web3.service';
 import { DBClient } from '../../src/database/client';
 
@@ -22,16 +22,8 @@ describe('(Controller) Organization /organization', () => {
   let _Web3Service: Web3Service;
   let _DBClient: DBClient;
   let db: any;
-  let collections: any = {
-    accounts: '',
-    accountDetail: '',
-    organization: '',
-  };
-  let tokens = {
-    super_account: '',
-    admin_account: '',
-    regular_account: '',
-  };
+  let collections: any = {};
+  let tokens: any = {};
 
   const setup: any = () => {
     return new Promise(async (resolve, reject) => {
@@ -45,7 +37,7 @@ describe('(Controller) Organization /organization', () => {
 
         // Insert fixtures
         await all_accounts(collections);
-        await all_organizations(collections);
+        await insertOrganizations(collections);
 
         tokens.super_account = _Web3Service.getToken('0xce75741e246852f1bf8e4f86ccf7d56f77942c37ea7b683d3a3735f1635de7c9');
         tokens.admin_account = _Web3Service.getToken('0xa06c37def3a202c94508d3cb45c0009b91b85861f90284f4ce98f1ec6ce9913a');
@@ -75,7 +67,7 @@ describe('(Controller) Organization /organization', () => {
         .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
         .end((err, res) => {
           res.should.have.status(200);
-          expect(res.body.data.length).to.eq(2);
+          expect(res.body.data.length).to.eq(3);
           done();
         });
     });
