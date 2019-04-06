@@ -26,7 +26,16 @@ export const organizationSchema = {
                 "type": "string",
                 "minLength": 2,
                 "maxLength": 255
-            }
+            },
+            "logo": {
+                "type": "string",
+            },
+            "colorPrimary": {
+                "type": "string",
+            },
+            "colorSecondary": {
+                "type": "string",
+            },
         },
         "additionalProperties": false,
         "required": [
@@ -64,7 +73,16 @@ export const organizationSchema = {
             "organizationId": {
                 "type": "integer",
                 "minimum": 1
-            }
+            },
+            "logo": {
+                "type": "string",
+            },
+            "colorPrimary": {
+                "type": "string",
+            },
+            "colorSecondary": {
+                "type": "string",
+            },
         },
         "additionalProperties": false,
         "required": [
