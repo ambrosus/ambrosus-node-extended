@@ -162,7 +162,7 @@ describe('(Controller) Organization /organization', () => {
 
   });
 
-  describe('(POST) /:organizationId/accounts', () => {
+  describe('(POST) /organization', () => {
 
     it('success as super_account', done => {
       chai.request(app_server)
@@ -171,6 +171,9 @@ describe('(Controller) Organization /organization', () => {
           owner: '0x2Cb65761Be6DB9fA05bA2720D1c31c1e10B3Bb3b',
           title: 'Organization for new account',
           active: true,
+          logo: 'somelogo',
+          colorPrimary: 'blue',
+          colorSecondary: 'green',
         })
         .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
         .end((err, res) => {
