@@ -10,6 +10,9 @@ export interface IOrganization {
   timeZone?: string;
   active: boolean;
   legalAddress?: string;
+  logo?: string;
+  colorPrimary?: string;
+  colorSecondary?: string;
   createdBy?: string;
   createdOn?: number;
   modifiedBy?: string;
@@ -42,6 +45,15 @@ export class Organization implements IOrganization {
     if (undefined !== req.body['legalAddress']) {
       organization.legalAddress = req.body.legalAddress;
     }
+    if (undefined !== req.body['logo']) {
+      organization.logo = req.body.logo;
+    }
+    if (undefined !== req.body['colorPrimary']) {
+      organization.colorPrimary = req.body.colorPrimary;
+    }
+    if (undefined !== req.body['colorSecondary']) {
+      organization.colorSecondary = req.body.colorSecondary;
+    }
     return organization;
   }
 
@@ -52,6 +64,9 @@ export class Organization implements IOrganization {
   public timeZone?: string;
   public active: boolean;
   public legalAddress?: string;
+  public logo?: string;
+  public colorPrimary?: string;
+  public colorSecondary?: string;
   public createdBy?: string;
   public createdOn?: number;
   public modifiedBy?: string;
