@@ -40,7 +40,7 @@ import { EmailService } from './service/email.service';
 import { OrganizationService } from './service/organization.service';
 import { Web3Service } from './service/web3.service';
 import { ContextMiddleware } from './middleware/context.middleware';
-
+import { MobileService } from './service/mobile.service';
 export const iocContainer: Container = new Container();
 
 // db
@@ -112,6 +112,7 @@ iocContainer.bind<BundleService>(TYPE.BundleService).to(BundleService);
 iocContainer.bind<AnalyticsService>(TYPE.AnalyticsService).to(AnalyticsService);
 iocContainer.bind<OrganizationService>(TYPE.OrganizationService).to(OrganizationService);
 iocContainer.bind<EmailService>(TYPE.EmailService).to(EmailService);
+iocContainer.bind<MobileService>(TYPE.MobileService).to(MobileService);
 
 // middleware
 
