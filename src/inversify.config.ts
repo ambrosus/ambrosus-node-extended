@@ -41,6 +41,7 @@ import { OrganizationService } from './service/organization.service';
 import { Web3Service } from './service/web3.service';
 import { ContextMiddleware } from './middleware/context.middleware';
 import { MobileService } from './service/mobile.service';
+import { MobileController } from './controller/mobile.controller';
 export const iocContainer: Container = new Container();
 
 // db
@@ -100,6 +101,7 @@ iocContainer
   .to(OrganizationInviteController);
 iocContainer.bind<MetricController>(TYPE.MetricController).to(MetricController);
 iocContainer.bind<HealthController>(TYPE.HealthController).to(HealthController);
+iocContainer.bind<MobileController>(TYPE.MobileController).to(MobileController);
 
 // services
 iocContainer.bind<AuthService>(TYPE.AuthService).to(AuthService);
