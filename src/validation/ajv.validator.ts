@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb';
 import * as checkBase64 from 'is-base64';
-import web3 = require('web3');
+// tslint:disable-next-line:no-var-requires
+const web3 = require('web3');
 
 export const isObjectId = (schema, data) => {
   return new Promise((resolve, reject) => {
