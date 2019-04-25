@@ -85,6 +85,7 @@ process.on('unhandledRejection', error => {
 });
 
 process.on('uncaughtException', error => {
+  console.log(error.toString());
   logger.error('uncaughtException event: ', error);
   Sentry.captureException(error);
 });

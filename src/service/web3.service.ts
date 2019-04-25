@@ -1,5 +1,6 @@
 import { inject, injectable } from 'inversify';
-import web3 = require('web3');
+// tslint:disable-next-line:no-var-requires
+const web3 = require('web3');
 import * as moment from 'moment';
 import base64url from 'base64url';
 
