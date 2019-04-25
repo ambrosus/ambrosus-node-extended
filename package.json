@@ -72,7 +72,7 @@
     "@types/slug": "^0.9.0",
     "@types/twilio": "0.0.10",
     "@types/uuid": "^3.4.4",
-    "@types/web3": "^1.0.10",
+    "@types/web3": "1.0.10",
     "chai-as-promised": "^7.1.1",
     "chai-http": "^4.2.0",
     "faker": "^4.1.0",
