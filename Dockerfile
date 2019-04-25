@@ -1,4 +1,4 @@
-FROM node:10.14-alpine
+FROM node:10.15.2-alpine
 
 RUN apk --update --no-cache add \
 	git=2.18.1-r0 \
