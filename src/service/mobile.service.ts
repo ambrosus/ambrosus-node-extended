@@ -20,9 +20,11 @@ export class MobileService {
     public async sendMessage(to: string, body: string) {
         try {
             const response = await this.client.message.create({ to, body, from: config.twilio.number });
+            console.log('SMS response: ', response);
 
             return response;
         } catch (error) {
+            console.error('SMS: ', error);
             this.handleSendError(error);
         }
     }
