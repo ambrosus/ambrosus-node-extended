@@ -3,6 +3,7 @@ import { BaseMiddleware } from 'inversify-express-utils';
 import { TYPE } from '../constant/types';
 import { Request, Response, NextFunction } from 'express';
 import { UserPrincipal } from '../model';
+import { iocContainer } from '../inversify.config';
 
 @injectable()
 export class ContextMiddleware extends BaseMiddleware {
