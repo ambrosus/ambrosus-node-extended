@@ -33,6 +33,6 @@ export const config: any = {
   twilio: {
     sid: 'ACbd182f15b349d4ad7caa2ca92508b3e7',
     authToken: '13f8a1ca902c6bf448088032b2bf3896',
-    number: '+41798074834',
+    number: '+13347216481',
   },
 };

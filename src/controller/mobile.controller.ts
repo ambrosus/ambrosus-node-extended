@@ -31,7 +31,7 @@ export class MobileController extends BaseController {
         '/'
     )
     public async sendMessage(req: Request): Promise<APIResponse> {
-        const { to, message }: any = req;
+        const { to, message }: any = req.body;
         const response = await this.mobileService.sendMessage(to, message);
         const meta = new APIResponseMeta(HttpStatus.CREATED, response);
 

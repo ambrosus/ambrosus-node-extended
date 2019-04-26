@@ -1,4 +1,4 @@
-import * as Twilio from 'twilio';
+import * as twilio from 'twilio';
 import { inject, injectable } from 'inversify';
 
 import { config } from '../config';
@@ -14,12 +14,13 @@ export class MobileService {
         @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
         @inject(TYPE.LoggerService) private readonly logger: ILogger
     ) {
-        this.client = Twilio(config.twilio.sid, config.twilio.authToken);
+        this.client = twilio(config.twilio.sid, config.twilio.authToken);
     }
 
     public async sendMessage(to: string, body: string) {
         try {
-            const response = await this.client.message.create({ to, body, from: config.twilio.number });
+            const options = { to, body, from: config.twilio.number };
+            const response = await this.client.messages.create(options);
             console.log('SMS response: ', response);
 
             return response;
