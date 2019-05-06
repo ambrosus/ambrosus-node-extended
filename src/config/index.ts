@@ -45,8 +45,8 @@ export const config: any = {
     templateIdOrgReqRefuse: process.env.EMAIL_TMPL_ID_ORGREQ_REFUSE,
   },
   twilio: {
-    sid: 'ACbd182f15b349d4ad7caa2ca92508b3e7',
-    authToken: '13f8a1ca902c6bf448088032b2bf3896',
-    number: '+13347216481',
+    sid: process.env.TWILIO_SID,
+    authToken: process.env.TWILIO_AUTHTOKEN,
+    number: process.env.TWILIO_NUMBER,
   },
 };
