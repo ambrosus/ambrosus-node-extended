@@ -2,7 +2,7 @@
   "extends": ["tslint:recommended", "tslint-config-airbnb", "tslint-config-prettier"],
   "rules": {
     "max-line-length": [
-      true,
+      false,
       150
     ],
     "no-unnecessary-initializer": false,

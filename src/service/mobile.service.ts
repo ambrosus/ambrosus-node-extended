@@ -28,7 +28,9 @@ export class MobileService {
         @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
         @inject(TYPE.LoggerService) private readonly logger: ILogger
     ) {
-        this.client = twilio(config.twilio.sid, config.twilio.authToken);
+        if (config.twilio.sid && config.twilio.authToken) {
+            this.client = twilio(config.twilio.sid, config.twilio.authToken);
+        }
     }
 
     public async sendMessage(to: string, body: string) {
