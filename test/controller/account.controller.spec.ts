@@ -139,6 +139,29 @@ describe('(Controller) Account /account', () => {
 
   });
 
+  describe('(GET) /:address/details', () => {
+
+    it('succeess, gets account with no authorization', done => {
+      chai.request(app_server)
+        .get(`/account/0x2C81A356c33D95574a2D502874196d21a2507daD/details`)
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.account.address).to.equal('0x2C81A356c33D95574a2D502874196d21a2507daD');
+          done();
+        });
+    });
+
+    it('fail, with no accunt with such address', done => {
+      chai.request(app_server)
+        .get(`/account/0x2C81A356c33D95574a2D502874196d21a25asdaD/details`)
+        .end((err, res) => {
+          res.should.have.status(404);
+          done();
+        });
+    });
+
+  });
+
   describe('(PUT) /:address', () => {
 
     it('succeess, edit own account', done => {

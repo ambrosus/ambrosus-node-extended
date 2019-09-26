@@ -17,7 +17,8 @@ import { inject, injectable } from 'inversify';
 import { Permission, TYPE } from '../constant/';
 import {
   AccountDetailRepository,
-  AccountRepository
+  AccountRepository,
+  OrganizationRepository
 } from '../database/repository';
 import { ILogger } from '../interface/logger.inferface';
 import {
@@ -29,15 +30,18 @@ import {
 } from '../model';
 import { getTimestamp } from '../util';
 
-import { ExistsError, PermissionError } from '../errors';
+import { ExistsError, PermissionError, NotFoundError } from '../errors';
 import * as _ from 'lodash';
 
 @injectable()
 export class AccountService {
+
   constructor(
     @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
     @inject(TYPE.AccountRepository)
     private readonly accountRepository: AccountRepository,
+    @inject(TYPE.OrganizationRepository)
+    private readonly organizationRepository: OrganizationRepository,
     @inject(TYPE.AccountDetailRepository)
     private readonly accountDetailRepository: AccountDetailRepository,
     @inject(TYPE.LoggerService) private readonly logger: ILogger
@@ -128,6 +132,45 @@ export class AccountService {
       this.user.accessLevel,
       this.user.isSuperAdmin
     );
+  }
+
+  public async getPublicAccountDetails(address: string): Promise<any> {
+
+    const account: any = await this.accountRepository.findOne(new APIQuery({ address }));
+
+    if (!account) {
+      throw new NotFoundError('Account not found');
+    }
+
+    const accountDetails: any = await this.accountDetailRepository.findOne(new APIQuery({ address }));
+
+    if (!accountDetails) {
+      throw new NotFoundError('Account details not found');
+    }
+
+    const organization: any = await this.organizationRepository.findOne(new APIQuery({ organizationId: account.organization }));
+
+    if (!organization) {
+      throw new NotFoundError('Organization not found');
+    }
+
+    const data: any = {};
+    data.account = {
+      address: account.address,
+      fullName: accountDetails.fullName,
+      email: accountDetails.email,
+    };
+
+    data.organization = {
+      title: organization.title,
+      timeZone: organization.timeZone,
+      legalAddress: organization.legalAddress,
+      organizationId: organization.organizationId,
+      owner: organization.owner,
+      active: organization.active,
+    };
+
+    return data;
   }
 
   public getAccountsByOrganization(

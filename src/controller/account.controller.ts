@@ -77,6 +77,17 @@ export class AccountController extends BaseController {
     return APIResponse.fromSingleResult(result);
   }
 
+  @httpGet(
+    '/:address/details'
+  )
+  public async getPublicAccountDetails(
+    @requestParam('address') address: string
+  ): Promise<APIResponse> {
+    const result = await this.accountService.getPublicAccountDetails(address);
+
+    return APIResponse.fromSingleResult(result);
+  }
+
   @httpPut(
     '/:address',
     authorize(),

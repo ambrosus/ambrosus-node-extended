@@ -39,6 +39,7 @@ export const admin_account = (collections: any) => {
         });
         await collections.accountDetail.insertOne({
             address: '0xcD156e06318801B441Df42d7064538baEE3747E3',
+            fullName: 'John Doe',
             email: 'admin@test.com',
             registeredBy: '0x2C81A356c33D95574a2D502874196d21a2507daD',
             token: 'eyJ2ZXJzaW9uIjozLCJpZCI6IjA1MGU4MmNiLWQwOTctNDMxYS1iZTUzLTk1MGZkNjk0N2Q1YiIsImFkZHJlc3MiOiIyZmRiMjYyZjA3MTY2NjZlYjBjZTMyNTA5ZGIxOWJlMzhlNThjZDI4IiwiY3J5cHRvIjp7ImNpcGhlcnRleHQiOiI0MDVmMzZmYWQ2MjIyNTg1NjgzNzhkZDA4ZDFiNGJmMzhmNjBmMWEyZWZlOTIyN2Q3OTgzMTA4ZmUyYTY2NWRkIiwiY2lwaGVycGFyYW1zIjp7Iml2IjoiOTdlNzcyZmQ2ZjQ2YTc3NGRiNGZmMDFiZjFjNjVjYTAifSwiY2lwaGVyIjoiYWVzLTEyOC1jdHIiLCJrZGYiOiJzY3J5cHQiLCJrZGZwYXJhbXMiOnsiZGtsZW4iOjMyLCJzYWx0IjoiMTg1NGIwZDFkYjE1MzdjYjc1NDQ4MTZiMDY3NjliZTliMTU4M2I3MTU1MmUwOWE5ZjIyY2ZjYTU4MDY1MGJjZCIsIm4iOjgxOTIsInIiOjgsInAiOjF9LCJtYWMiOiI4Zjk5MjU0M2JlYjMxNzJiMDU3OTM0YjAwNDNlNDVhYmUyOGNmNWQ0Y2FmZTQ2NjVmYzRjMzFlNDhkOTE1MDM4In19',
