@@ -115,12 +115,12 @@ export class OrganizationService {
   }
 
   public async updateOrganization(
-    organizationId: number,
+    organizationId: string,
     organization: Organization
   ): Promise<Organization> {
     if (
       !this.user.hasPermission(Permission.super_account) &&
-      !(this.user.organizationId === organizationId && this.user.isOrganizationOwner())
+      !(Number(this.user.organizationId) === Number(organizationId) && this.user.isOrganizationOwner())
     ) {
       throw new PermissionError({ reason: 'Unauthorized' });
     }
