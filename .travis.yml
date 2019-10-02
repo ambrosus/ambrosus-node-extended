@@ -20,13 +20,13 @@ before_install:
 
 install:
   - docker-compose pull
-  - npx npm install
+  - npm install
   - docker pull hadolint/hadolint
 
 script:
-  - npx npm run dev:docker:db
-  - npx npm run dev:lint
-  - npx npm test
+  - npm run dev:docker:db
+  - npm run dev:lint
+  - npm test
   - docker run --rm -i hadolint/hadolint < Dockerfile
 
 notifications:
