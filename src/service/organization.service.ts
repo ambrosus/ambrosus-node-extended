@@ -239,7 +239,7 @@ export class OrganizationService {
     newOrganization.title = organizationRequest.title || `${organizationRequest.email}'s organization`;
     newOrganization.active = true;
 
-    const result: InsertOneWriteOpResult = await this.createOrganization(newOrganization);
+    const result: InsertOneWriteOpResult<any> = await this.createOrganization(newOrganization);
     if (!result.ops[0]) {
       throw new CreateError({ reason: 'Organization' });
     }

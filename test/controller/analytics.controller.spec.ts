@@ -323,7 +323,7 @@ describe('(Controller) Analytics /analytics', () => {
   });
 
   after(done => {
-    if (db && db.s.databaseName === 'hermes-test') {
+    if (db.databaseName === 'hermes-test') {
       db.dropDatabase()
         .then(result => {
           done();
