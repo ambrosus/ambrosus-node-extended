@@ -75,7 +75,7 @@ export class BaseRepository<T> {
     return this.collection;
   }
 
-  public async create(item: T): Promise<InsertOneWriteOpResult> {
+  public async create(item: T): Promise<InsertOneWriteOpResult<any>> {
     const collection = await this.getCollection();
 
     this.logger.debug(
@@ -86,7 +86,7 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result: InsertOneWriteOpResult = await collection.insertOne(item);
+      const result: InsertOneWriteOpResult<any> = await collection.insertOne(item);
       return result;
     } catch (err) {
       this.logger.captureError(err);
@@ -105,7 +105,7 @@ export class BaseRepository<T> {
       `
     );
     try {
-      const result: InsertWriteOpResult = await collection.insertMany(item);
+      const result: InsertWriteOpResult<any> = await collection.insertMany(item);
       return result.result.n;
     } catch (err) {
       this.logger.captureError(err);

@@ -135,10 +135,31 @@ describe('(Controller) Event /event', () => {
         });
     });
 
+    it('success as authorized, with query', done => {
+      chai.request(app_server)
+        .post(`/event/query`)
+        .set('Authorization', `AMB_TOKEN ${tokens.regular_account}`)
+        .send({
+          query: [
+            {
+              field: 'content.data.assetType',
+              value: `35-organization-asset`,
+              operator: 'equal',
+            },
+          ],
+          limit: 30,
+        })
+        .end((err, res) => {
+          res.should.have.status(200);
+          expect(res.body.data.length).to.eq(1);
+          done();
+        });
+    });
+
   });
 
   after(done => {
-    if (db && db.s.databaseName === 'hermes-test') {
+    if (db.databaseName === 'hermes-test') {
       db.dropDatabase()
         .then(result => {
           done();

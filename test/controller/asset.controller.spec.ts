@@ -125,7 +125,7 @@ describe('(Controller) Asset /asset', () => {
   });
 
   after(done => {
-    if (db && db.s.databaseName === 'hermes-test') {
+    if (db.databaseName === 'hermes-test') {
       db.dropDatabase()
         .then(result => {
           done();

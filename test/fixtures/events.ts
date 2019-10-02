@@ -38,6 +38,7 @@ export const events = (collections: any) => {
             data: [
               {
                 type: 'ambrosus.asset.displayed',
+                assetType: '35-organization-asset',
                 name: 'Displayed'
               }
             ],

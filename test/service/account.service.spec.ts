@@ -69,7 +69,7 @@ describe('(Service) Account', () => {
   // });
 
   after(done => {
-    if (db && db.s.databaseName === 'hermes-test') {
+    if (db.databaseName === 'hermes-test') {
       db.dropDatabase()
         .then(result => {
           _DBClient.mongoClient.close();
