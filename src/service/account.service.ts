@@ -111,7 +111,7 @@ export class AccountService {
   }
 
   public getAccounts(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    if (!this.user.hasPermission(Permission.super_account)) {      
+    if (!this.user.hasPermission(Permission.super_account)) {
       throw new PermissionError({ reason: 'Unauthorized' });
     }
 
