@@ -83,7 +83,7 @@ export const validate = (
       next();
     } catch (e) {
       next(new ValidationError(e));
-    }    
+    }
   };
 };
 
