@@ -246,6 +246,9 @@ describe('(Inversify)', () => {
       const instance1 = iocContainer.get(TYPE.UserPrincipal);
       const instance2 = iocContainer.get(TYPE.UserPrincipal);
 
+      console.log('instance1: '+instance1);
+      console.log('instance2: '+instance2);
+
       expect(instance1).to.exist;
       expect(instance2).to.exist;
 

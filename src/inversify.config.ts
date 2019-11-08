@@ -153,5 +153,7 @@ iocContainer.bind<IGraphQLResolver>(TYPE.GraphQLResolver).to(BundleResolver);
 iocContainer
   .bind<UserPrincipal>(TYPE.UserPrincipal)
   .toDynamicValue((context: interfaces.Context) => {
+    console.log('toDynamicValue');
+
     return new UserPrincipal();
   });

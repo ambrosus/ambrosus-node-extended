@@ -63,6 +63,7 @@ export class OrganizationInviteController extends BaseController {
     @requestParam('inviteId') inviteId: string
   ): Promise<APIResponse> {
     const result = await this.organizationService.organizationInviteExists(inviteId);
+
     return APIResponse.fromSingleResult(result);
   }
 

@@ -248,9 +248,9 @@ export class OrganizationService {
     // Create account with new organizationId
     await this.accountService.createAccount(
       address,
-      1,
+      900,
       newOrganizationId,
-      [Permission.create_asset, Permission.create_event, Permission.manage_accounts],
+      [Permission.create_asset, Permission.create_event, Permission.register_accounts, Permission.manage_accounts],
       organizationRequest.email,
       undefined,
       this.user.address

@@ -76,12 +76,14 @@ export const validate = (
     }
 
     const test = ajv.compile(schema);
+
     try {
       await test(data);
+
       next();
     } catch (e) {
       next(new ValidationError(e));
-    }
+    }    
   };
 };
 

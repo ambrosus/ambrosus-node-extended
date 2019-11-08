@@ -57,6 +57,7 @@ export class AMBAccountProvider implements interfaces.AuthProvider {
 
       if (user.authToken && user.authToken.createdBy) {
         user.account = await this.accountService.getAccountForAuth(user.authToken.createdBy);
+
         userScope['token:validUntil'] = user.authToken.validUntil;
         userScope['token:createdBy'] = user.authToken.createdBy;
       }

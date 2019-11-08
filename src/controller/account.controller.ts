@@ -21,7 +21,10 @@ import {
   httpPut,
   requestBody,
   requestParam,
+  requestHeaders,
 } from 'inversify-express-utils';
+
+import { Permission } from '../constant/';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
@@ -32,6 +35,7 @@ import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
 import { validate } from '../middleware';
 import { querySchema, utilSchema, accountSchema } from '../validation/schemas';
+import { AuthService } from '../service/auth.service';
 
 @controller(
   '/account',
@@ -42,7 +46,8 @@ export class AccountController extends BaseController {
   constructor(
     @inject(TYPE.AccountService) private accountService: AccountService,
     @inject(TYPE.Web3Service) private web3Service: Web3Service,
-    @inject(TYPE.LoggerService) protected logger: ILogger
+    @inject(TYPE.LoggerService) protected logger: ILogger,
+    @inject(TYPE.AuthService) private authService: AuthService
   ) {
     super(logger);
   }
@@ -132,6 +137,39 @@ export class AccountController extends BaseController {
     @requestBody() acc: AccountDetail
   ): Promise<APIResponse> {
     const result = await this.accountService.getAccountEncryptedToken(acc.email);
+    return APIResponse.fromSingleResult(result);
+  }
+
+ @httpPost(
+    '/create',
+    authorize('register_accounts'),
+    validate(accountSchema.accountCreate)
+  )
+  public async createAccount(
+    @requestHeaders('authorization') authorization: string,
+    @requestBody() payload: {address, email, fullName, accessLevel, permissions}
+    ): Promise<APIResponse> {
+    const authToken = this.authService.getAuthToken(authorization);
+    const creatorAccount = await this.accountService.getAccount(authToken.createdBy);
+
+    if (payload.accessLevel === undefined) {
+      payload.accessLevel = 0;
+    }
+
+    if (payload.permissions === undefined) {
+      payload.permissions = [Permission.create_asset, Permission.create_event];
+    }
+
+    const result = await this.accountService.createAccount(
+      payload.address,
+      payload.accessLevel,
+      creatorAccount.organization,
+      payload.permissions,
+      payload.email,
+      payload.fullName,
+      creatorAccount.address
+    );
+
     return APIResponse.fromSingleResult(result);
   }
 }
