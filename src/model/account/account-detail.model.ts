@@ -21,6 +21,7 @@ import { Account } from './account.model';
 export interface IAccountDetail {
   _id: string;
   address: string;
+  active: boolean;
   fullName: string;
   email: string;
   password: string;
@@ -55,6 +56,7 @@ export class AccountDetail extends Account implements IAccountDetail {
 
   public _id: string;
   public address: string;
+  public active: boolean;
   public fullName: string;
   public email: string;
   public password: string;

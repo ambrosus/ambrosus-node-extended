@@ -12,6 +12,8 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { Permission } from '../../constant/';
+
 /* tslint:disable */
 export const accountSchema = {
     accountDetails: {
@@ -45,6 +47,43 @@ export const accountSchema = {
         "additionalProperties": false,
         "required": [
             "address"
+        ]
+    },
+    accountCreate: {
+        "$async": true,
+        "title": "Account create",
+        "type": "object",
+        "properties": {            
+            "address": {
+                "type": "string",
+                "isAddress": ''
+            },
+            "fullName": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 100
+            },
+            "accessLevel": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000
+            },
+            "email": {
+                "type": "string",
+                "pattern": '^([0-9a-zA-Z]([-.+\\w]*[0-9a-zA-Z])*@(([0-9a-zA-Z])+([-\\w]*[0-9a-zA-Z])*\\.)+[a-zA-Z]{2,9})$'
+            },
+            "permissions": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                    "type": "string"
+                }
+        },
+
+        },
+        "additionalProperties": false,
+        "required": [
+            "address", "email"
         ]
     }
 }

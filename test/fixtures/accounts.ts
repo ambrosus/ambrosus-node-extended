@@ -5,7 +5,8 @@ export const super_account = (collections: any) => {
     return new Promise(async (resolve, reject) => {
         await collections.accounts.insertOne({
             address: '0x2C81A356c33D95574a2D502874196d21a2507daD',
-            accessLevel: 5,
+            active: true,
+            accessLevel: 1000,
             permissions: [
                 'super_account',
                 'manage_accounts',
@@ -28,6 +29,7 @@ export const admin_account = (collections: any) => {
     return new Promise(async (resolve, reject) => {
         await collections.accounts.insertOne({
             address: '0xcD156e06318801B441Df42d7064538baEE3747E3',
+            active: true,
             accessLevel: 3,
             permissions: [
                 'manage_accounts',
@@ -53,6 +55,7 @@ export const regular_account = (collections: any) => {
     return new Promise(async (resolve, reject) => {
         await collections.accounts.insertOne({
             address: '0x1403F4C7059206291E101F2932d73Ed013B2FF71',
+            active: true,
             accessLevel: 3,
             permissions: [
                 'create_event',

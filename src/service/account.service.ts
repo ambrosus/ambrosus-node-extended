@@ -33,6 +33,8 @@ import { getTimestamp } from '../util';
 import { ExistsError, PermissionError, NotFoundError } from '../errors';
 import * as _ from 'lodash';
 
+import { ensureCanCreateAccount } from '../security/access.check';
+
 @injectable()
 export class AccountService {
 
@@ -74,6 +76,11 @@ export class AccountService {
     newAccount.permissions = permissions;
     newAccount.registeredBy = createdBy;
     newAccount.registeredOn = getTimestamp();
+    newAccount.active = true;
+
+    const creator = await this.accountRepository.getAccount(new APIQuery({address: createdBy}), 0, 1000, true);
+
+    await ensureCanCreateAccount(this.organizationRepository, creator, newAccount);
 
     const newAccountDetail = new AccountDetail();
     newAccountDetail.address = address;

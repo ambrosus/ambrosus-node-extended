@@ -17,6 +17,7 @@ import { injectable } from 'inversify';
 export interface IAccount {
   _id: string;
   address: string;
+  active: boolean;
   accessLevel: number;
   organization: number;
   permissions: string[];
@@ -28,6 +29,7 @@ export interface IAccount {
 export class Account implements IAccount {
   public _id: string;
   public address: string;
+  public active: boolean;
   public accessLevel: number;
   public organization: number;
   public permissions: string[];

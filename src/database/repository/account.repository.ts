@@ -79,6 +79,7 @@ export class AccountRepository extends BaseRepository<Account> {
     ];
     apiQuery.query = pipeline;
     const result = await super.aggregate(apiQuery);
+
     if (result && result.length === 1) {
       return result[0];
     }
