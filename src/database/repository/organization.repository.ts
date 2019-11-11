@@ -19,6 +19,9 @@ import { Organization, APIQuery } from '../../model';
 import { DBClient } from '../client';
 import { BaseRepository } from './base.repository';
 
+import { config } from '../../config';
+import { getTimestamp } from '../../util';
+
 @injectable()
 export class OrganizationRepository extends BaseRepository<Organization> {
   constructor(@inject(TYPE.DBClient) protected client: DBClient) {
@@ -28,6 +31,23 @@ export class OrganizationRepository extends BaseRepository<Organization> {
       client.db.collection('organization').createIndex({ organizationId: 1 }, { unique: true });
       client.db.collection('organization').createIndex({ owner: 1 }, { unique: true });
     });
+  }
+
+  public async builtInCheck() {
+    const organizationProbe = await this.findOne(new APIQuery({ organizationId: 0 }));
+
+    if (organizationProbe === undefined) {
+
+      const organization = new Organization;
+      organization.owner = config.builtinAddress;
+      organization.title = 'built-in';
+      organization.active = true;
+      organization.createdBy = config.builtinAddress;
+      organization.organizationId = 0;
+      organization.createdOn = getTimestamp();
+
+      await this.create(organization);
+    }
   }
 
   get paginatedField(): string {

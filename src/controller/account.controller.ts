@@ -160,7 +160,7 @@ export class AccountController extends BaseController {
       payload.permissions = [Permission.create_asset, Permission.create_event];
     }
 
-    const result = await this.accountService.createAccount(
+    const account = await this.accountService.createAccount(
       payload.address,
       payload.accessLevel,
       creatorAccount.organization,
@@ -169,6 +169,8 @@ export class AccountController extends BaseController {
       payload.fullName,
       creatorAccount.address
     );
+
+    const result = await this.accountService.getAccount(payload.address);
 
     return APIResponse.fromSingleResult(result);
   }
