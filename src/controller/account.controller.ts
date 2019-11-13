@@ -160,7 +160,7 @@ export class AccountController extends BaseController {
       payload.permissions = [Permission.create_asset, Permission.create_event];
     }
 
-    const account = await this.accountService.createAccount(
+    await this.accountService.createAccount(
       payload.address,
       payload.accessLevel,
       creatorAccount.organization,
