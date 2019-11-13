@@ -13,7 +13,7 @@ process.env.MONGO_PASSWORD = '';
 process.env.SENTRY_DSN = '';
 process.env.DASHBOARD_URL = 'https://dashboard.ambrosus.com';
 process.env.EMAIL_FROM = 'no-reply@ambrosus.com';
-process.env.EMAIL_ORGREQ_TO = 'lazar.eric@ambrosus.com';
+process.env.EMAIL_ORGREQ_TO = 'schayka@gmail.com';
 process.env.EMAIL_API_KEY =
   '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';
 process.env.EMAIL_TMPL_ID_INVITE = 'd-0f9b5646779e4e41a62e682f659c3350';
