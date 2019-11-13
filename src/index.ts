@@ -28,6 +28,7 @@ import * as Sentry from '@sentry/node';
 import * as sgMail from '@sendgrid/mail';
 import { DBClient } from './database/client';
 import { errorHandler } from './middleware';
+import { OrganizationRepository } from './database/repository';
 
 if (config.email.api) {
   sgMail.setApiKey(config.email.api);
@@ -103,6 +104,10 @@ process.on('uncaughtException', error => {
   logger.error('uncaughtException event: ', error);
   Sentry.captureException(error);
 });
+
+const organizationRepository = iocContainer.get<OrganizationRepository>(TYPE.OrganizationRepository);
+
+organizationRepository.builtInCheck().then();
 
 export const app_server = server.build();
 app_server.listen(config.port);
