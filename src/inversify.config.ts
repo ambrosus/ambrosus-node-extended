@@ -16,6 +16,7 @@ import { Container, interfaces } from 'inversify';
 
 import { MIDDLEWARE, TYPE } from './constant/types';
 import { AccountController } from './controller/account.controller';
+import { Account2Controller } from './controller/account2.controller';
 import { AnalyticsController } from './controller/analytics.controller';
 import { AssetController } from './controller/asset.controller';
 import { BundleController } from './controller/bundle.controller';
@@ -102,6 +103,7 @@ iocContainer
 iocContainer.bind<RootController>(TYPE.RootController).to(RootController);
 iocContainer.bind<GraphQLController>(TYPE.GraphQLController).to(GraphQLController);
 iocContainer.bind<AccountController>(TYPE.AccountController).to(AccountController);
+iocContainer.bind<Account2Controller>(TYPE.Account2Controller).to(Account2Controller);
 iocContainer.bind<AssetController>(TYPE.AssetController).to(AssetController);
 iocContainer.bind<EventController>(TYPE.EventController).to(EventController);
 iocContainer.bind<BundleController>(TYPE.BundleController).to(BundleController);

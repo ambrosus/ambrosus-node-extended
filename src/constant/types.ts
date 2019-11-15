@@ -20,6 +20,7 @@ export const TYPE: any = {
   GraphQLController: Symbol.for('GraphQLController'),
 
   AccountController: Symbol.for('AccountController'),
+  Account2Controller: Symbol.for('Account2Controller'),
   AnalyticsController: Symbol.for('AnalyticsController'),
   AssetController: Symbol.for('AssetController'),
   EventController: Symbol.for('EventController'),

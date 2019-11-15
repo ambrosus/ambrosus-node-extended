@@ -111,10 +111,6 @@ export class AccountService {
   }
 
   public getAccounts(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    if (!this.user.hasPermission(Permission.super_account)) {
-      throw new PermissionError({ reason: 'Unauthorized' });
-    }
-
     return this.accountRepository.getAccounts(
       apiQuery,
       this.user.organizationId,
@@ -139,6 +135,31 @@ export class AccountService {
       this.user.accessLevel,
       this.user.isSuperAdmin
     );
+  }
+
+  public async getAccount2(address: string): Promise<any> {
+    if (
+      !this.user.hasAnyPermission(Permission.manage_accounts) &&
+      !(this.user.address === address)
+    ) {
+      throw new PermissionError({ reason: 'Unauthorized' });
+    }
+
+    const data: any = {};
+    data.account = await this.accountRepository.getAccount(
+      new APIQuery({ address }),
+      this.user.organizationId,
+      this.user.accessLevel,
+      this.user.isSuperAdmin
+    );
+
+    if (!data.account) {
+      throw new NotFoundError('Account not found');
+    }
+
+    data.details = await this.accountDetailRepository.findOne(new APIQuery({ address }));
+
+    return data;
   }
 
   public async getPublicAccountDetails(address: string): Promise<any> {
