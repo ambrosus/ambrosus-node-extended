@@ -18,7 +18,6 @@ import {
   controller,
   httpGet,
   httpPost,
-  httpPut,
   requestBody,
   requestParam,
   requestHeaders,
@@ -28,7 +27,7 @@ import { Permission } from '../constant/';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
-import { AccountDetail, APIQuery, APIResponse } from '../model';
+import { APIQuery, APIResponse } from '../model';
 import { AccountService } from '../service/account.service';
 import { Web3Service } from '../service/web3.service';
 import { BaseController } from './base.controller';
@@ -38,14 +37,13 @@ import { querySchema, utilSchema, accountSchema } from '../validation/schemas';
 import { AuthService } from '../service/auth.service';
 
 @controller(
-  '/account',
+  '/account2',
   MIDDLEWARE.Context
 )
-export class AccountController extends BaseController {
+export class Account2Controller extends BaseController {
 
   constructor(
     @inject(TYPE.AccountService) private accountService: AccountService,
-    @inject(TYPE.Web3Service) private web3Service: Web3Service,
     @inject(TYPE.LoggerService) protected logger: ILogger,
     @inject(TYPE.AuthService) private authService: AuthService
   ) {
@@ -53,16 +51,8 @@ export class AccountController extends BaseController {
   }
 
   @httpGet(
-    '/keyPair'
-  )
-  public async getKeyPair(): Promise<APIResponse> {
-    const result = await this.web3Service.createKeyPair();
-    return APIResponse.fromSingleResult(result);
-  }
-
-  @httpGet(
-    '/',
-    authorize('super_account', 'manage_accounts'),
+    '/list',
+    authorize('manage_accounts'),
     validate(querySchema, { queryParamsOnly: true })
   )
   public async getAccounts(req: Request): Promise<APIResponse> {
@@ -71,72 +61,86 @@ export class AccountController extends BaseController {
   }
 
   @httpGet(
-    '/:address',
+    '/info/:address',
     authorize(),
     validate(utilSchema.address, { paramsOnly: true })
   )
   public async getAccount(
     @requestParam('address') address: string
   ): Promise<APIResponse> {
-    const result = await this.accountService.getAccount(address);
+    const result = await this.accountService.getAccount2(address);
     return APIResponse.fromSingleResult(result);
   }
 
-  @httpGet(
-    '/:address/details'
+ @httpPost(
+    '/create',
+    authorize('register_accounts'),
+    validate(accountSchema.accountCreate)
   )
-  public async getPublicAccountDetails(
-    @requestParam('address') address: string
-  ): Promise<APIResponse> {
-    const result = await this.accountService.getPublicAccountDetails(address);
+  public async createAccount(
+    @requestHeaders('authorization') authorization: string,
+    @requestBody() payload: {address, email, fullName, accessLevel, permissions}
+    ): Promise<APIResponse> {
+    
+    const authToken = this.authService.getAuthToken(authorization);
+    const creatorAccount = await this.accountService.getAccount(authToken.createdBy);
 
-    return APIResponse.fromSingleResult(result);
-  }
+    if (payload.accessLevel === undefined) {
+      payload.accessLevel = 0;
+    }
 
-  @httpPut(
-    '/:address',
-    authorize(),
-    validate(accountSchema.accountDetails, { params: true })
-  )
-  public async updateAccountDetail(
-    @requestParam('address') address: string, req: Request
-  ): Promise<APIResponse> {
-    const result = await this.accountService.updateAccountDetail(
-      address,
-      AccountDetail.fromRequestForUpdate(req)
+    if (payload.permissions === undefined) {
+      payload.permissions = [Permission.create_asset, Permission.create_event];
+    }
+
+    await this.accountService.createAccount(
+      payload.address,
+      payload.accessLevel,
+      creatorAccount.organization,
+      payload.permissions,
+      payload.email,
+      payload.fullName,
+      creatorAccount.address
     );
+
+    const result = await this.accountService.getAccount(payload.address);
+
     return APIResponse.fromSingleResult(result);
   }
 
-  @httpGet(
-    '/:address/exists',
-    validate(utilSchema.address, { paramsOnly: true })
+  /*@httpPost(
+    '/modify/:address',
+    authorize('manage_accounts'),
+    validate(accountSchema.accountCreate)
   )
-  public async getAccountExists(
-    @requestParam('address') address: string
-  ): Promise<APIResponse> {
-    const result = await this.accountService.getAccountExists(address);
-    return APIResponse.fromSingleResult(result);
-  }
+  public async modifyAccount(
+    @requestHeaders('authorization') authorization: string,
+    @requestBody() payload: {address, email, fullName, accessLevel, permissions}
+    ): Promise<APIResponse> {
+    
+    const authToken = this.authService.getAuthToken(authorization);
+    const creatorAccount = await this.accountService.getAccount(authToken.createdBy);
 
-  @httpPost(
-    '/query',
-    authorize('super_account', 'manage_accounts'),
-    validate(querySchema)
-  )
-  public async queryAccounts(req: Request): Promise<APIResponse> {
-    const result = await this.accountService.getAccounts(APIQuery.fromRequest(req));
-    return APIResponse.fromMongoPagedResult(result);
-  }
+    if (payload.accessLevel === undefined) {
+      payload.accessLevel = 0;
+    }
 
-  @httpPost(
-    '/secret',
-    validate(utilSchema.email)
-  )
-  public async getEncryptedSecretByEmail(
-    @requestBody() acc: AccountDetail
-  ): Promise<APIResponse> {
-    const result = await this.accountService.getAccountEncryptedToken(acc.email);
+    if (payload.permissions === undefined) {
+      payload.permissions = [Permission.create_asset, Permission.create_event];
+    }
+
+    await this.accountService.modifyAccount(
+      payload.address,
+      payload.accessLevel,
+      creatorAccount.organization,
+      payload.permissions,
+      payload.email,
+      payload.fullName,
+      creatorAccount.address
+    );
+
+    const result = await this.accountService.getAccount(payload.address);
+
     return APIResponse.fromSingleResult(result);
-  } 
+  }*/
 }
