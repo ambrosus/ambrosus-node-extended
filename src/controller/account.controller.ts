@@ -138,5 +138,5 @@ export class AccountController extends BaseController {
   ): Promise<APIResponse> {
     const result = await this.accountService.getAccountEncryptedToken(acc.email);
     return APIResponse.fromSingleResult(result);
-  } 
+  }
 }

@@ -81,7 +81,7 @@ export class Account2Controller extends BaseController {
     @requestHeaders('authorization') authorization: string,
     @requestBody() payload: {address, email, fullName, accessLevel, permissions}
     ): Promise<APIResponse> {
-    
+
     const authToken = this.authService.getAuthToken(authorization);
     const creatorAccount = await this.accountService.getAccount(authToken.createdBy);
 
@@ -117,7 +117,7 @@ export class Account2Controller extends BaseController {
     @requestHeaders('authorization') authorization: string,
     @requestBody() payload: {address, email, fullName, accessLevel, permissions}
     ): Promise<APIResponse> {
-    
+
     const authToken = this.authService.getAuthToken(authorization);
     const creatorAccount = await this.accountService.getAccount(authToken.createdBy);
 

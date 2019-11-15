@@ -98,17 +98,6 @@ export class AccountService {
     }
   }
 
-  public async modifyAccount(
-    address: string,
-    accessLevel: number,
-    organizationId: number,
-    permissions: string[],
-    email: string,
-    fullName: string,
-    createdBy: string
-  ) {
-  }
-
   public getAccountExists(address: string) {
     return this.accountRepository.existsOR({ address }, 'address');
   }
@@ -154,7 +143,7 @@ export class AccountService {
       !(this.user.address === address)
     ) {
       throw new PermissionError({ reason: 'Unauthorized' });
-    }    
+    }
 
     const data: any = {};
     data.account = await this.accountRepository.getAccount(
