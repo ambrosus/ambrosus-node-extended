@@ -224,13 +224,13 @@ export class BaseRepository<T> {
   public async aggregate(apiQuery: APIQuery): Promise<any> {
     const collection = await this.getCollection();
 
-    this.logger.debug(
+    /*this.logger.debug(
       `
       ################ aggregate ################
       collection      ${this.collectionName}:
       aggregation:    ${JSON.stringify(apiQuery.query, null, 2)}
       `
-    );
+    );*/
 
     try {
       const result = await collection.aggregate(apiQuery.query).toArray();
@@ -423,14 +423,14 @@ export class BaseRepository<T> {
   public async findOne(apiQuery: APIQuery): Promise<T> {
     const collection = await this.getCollection();
 
-    this.logger.debug(
+    /*this.logger.debug(
       `
       ################ findOne ################
       collection      ${this.collectionName}:
       query:          ${JSON.stringify(apiQuery.query, null, 2)}
       fields:         ${JSON.stringify(apiQuery.fields, null, 2)}
       `
-    );
+    );*/
     try {
       const result = await collection
         .find(apiQuery.query, { projection: apiQuery.fields })
