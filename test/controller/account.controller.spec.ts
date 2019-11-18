@@ -307,9 +307,8 @@ describe('(Controller) Account /account', () => {
 
     it('success, as admin', done => {
       chai.request(app_server)
-        .post(`/account2/create`)
+        .post(`/account2/create/0xC769C64a70ECA2606A927DC28DD947A5Dbec237B`)
         .send({
-          address: '0xC769C64a70ECA2606A927DC28DD947A5Dbec237B',
           email: 'test7b@domain.com'
         })
         .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
@@ -321,9 +320,8 @@ describe('(Controller) Account /account', () => {
 
     it('fail, w/o register_account permission', done => {
       chai.request(app_server)
-        .post(`/account2/create`)
+        .post(`/account2/create/0xC769C64a70ECA2606A927DC28DD947A5Dbec237B`)
         .send({
-          address: '0xC769C64a70ECA2606A927DC28DD947A5Dbec237B',
           email: 'test7b@domain.com'
         })
         .set('Authorization', `AMB_TOKEN ${tokens.regular_account}`)

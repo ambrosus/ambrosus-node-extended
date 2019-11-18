@@ -119,6 +119,11 @@ export class AccountRepository extends BaseRepository<Account> {
     return undefined;
   }
 
+  public async update(address, changedParams) {
+    await this.db.collection('accounts').updateOne({address}, {$set : {...changedParams}});
+    return await this.db.collection('accounts').findOne({address}, {projection: {_id: 0}});
+  }
+
   private getJoinPipeline(
     match: object,
     organizationId: number,

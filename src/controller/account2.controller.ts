@@ -36,6 +36,8 @@ import { validate } from '../middleware';
 import { querySchema, utilSchema, accountSchema } from '../validation/schemas';
 import { AuthService } from '../service/auth.service';
 
+import { ValidationError } from '../errors';
+
 @controller(
   '/account2',
   MIDDLEWARE.Context
@@ -45,7 +47,8 @@ export class Account2Controller extends BaseController {
   constructor(
     @inject(TYPE.AccountService) private accountService: AccountService,
     @inject(TYPE.LoggerService) protected logger: ILogger,
-    @inject(TYPE.AuthService) private authService: AuthService
+    @inject(TYPE.AuthService) private authService: AuthService,
+    @inject(TYPE.Web3Service) private web3Service: Web3Service
   ) {
     super(logger);
   }
@@ -73,14 +76,19 @@ export class Account2Controller extends BaseController {
   }
 
  @httpPost(
-    '/create',
+    '/create/:address',
     authorize('register_accounts'),
     validate(accountSchema.accountCreate)
   )
   public async createAccount(
+    @requestParam('address') address: string,
     @requestHeaders('authorization') authorization: string,
-    @requestBody() payload: {address, email, fullName, accessLevel, permissions}
+    @requestBody() payload: {email: string, fullName: string, accessLevel: number, permissions: string[]}
     ): Promise<APIResponse> {
+
+    if (!(await this.web3Service.isAddress(address))) {
+      throw new ValidationError( {reason: 'invalid address.'} );
+    }
 
     const authToken = this.authService.getAuthToken(authorization);
     const creatorAccount = await this.accountService.getAccount(authToken.createdBy);
@@ -94,7 +102,7 @@ export class Account2Controller extends BaseController {
     }
 
     await this.accountService.createAccount(
-      payload.address,
+      address,
       payload.accessLevel,
       creatorAccount.organization,
       payload.permissions,
@@ -103,44 +111,34 @@ export class Account2Controller extends BaseController {
       creatorAccount.address
     );
 
-    const result = await this.accountService.getAccount(payload.address);
+    const result = await this.accountService.getAccount(address);
 
     return APIResponse.fromSingleResult(result);
   }
 
-  /*@httpPost(
+  @httpPost(
     '/modify/:address',
     authorize('manage_accounts'),
     validate(accountSchema.accountCreate)
   )
   public async modifyAccount(
-    @requestHeaders('authorization') authorization: string,
-    @requestBody() payload: {address, email, fullName, accessLevel, permissions}
+    @requestParam('address') address: string,
+    @requestBody() payload: {active: boolean, accessLevel: number, permissions: string[]}
     ): Promise<APIResponse> {
 
-    const authToken = this.authService.getAuthToken(authorization);
-    const creatorAccount = await this.accountService.getAccount(authToken.createdBy);
-
-    if (payload.accessLevel === undefined) {
-      payload.accessLevel = 0;
-    }
-
-    if (payload.permissions === undefined) {
-      payload.permissions = [Permission.create_asset, Permission.create_event];
+    if (!(await this.web3Service.isAddress(address))) {
+      throw new ValidationError( {reason: 'invalid address.'} );
     }
 
     await this.accountService.modifyAccount(
-      payload.address,
+      address,
+      payload.active,
       payload.accessLevel,
-      creatorAccount.organization,
-      payload.permissions,
-      payload.email,
-      payload.fullName,
-      creatorAccount.address
+      payload.permissions
     );
 
-    const result = await this.accountService.getAccount(payload.address);
+    const result = await this.accountService.getAccount(address);
 
     return APIResponse.fromSingleResult(result);
-  }*/
+  }
 }

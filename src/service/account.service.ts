@@ -33,7 +33,10 @@ import { getTimestamp } from '../util';
 import { ExistsError, PermissionError, NotFoundError } from '../errors';
 import * as _ from 'lodash';
 
-import { ensureCanCreateAccount } from '../security/access.check';
+import {
+  ensureCanCreateAccount,
+  ensureCanModifyAccount
+} from '../security/access.check';
 
 @injectable()
 export class AccountService {
@@ -96,6 +99,32 @@ export class AccountService {
       this.logger.captureError(error);
       throw error;
     }
+  }
+
+  public async modifyAccount(
+    address: string,
+    active: boolean,
+    accessLevel: number,
+    permissions: string[]
+  ) {
+    const modifier = await this.accountRepository.getAccount(new APIQuery({address: this.user.authToken.createdBy}), 0, 1000, true);
+    const target = await this.accountRepository.getAccount(new APIQuery({address}), 0, 1000, true);
+
+    await ensureCanModifyAccount(this.organizationRepository, modifier, target, accessLevel, permissions);
+
+    if (active) {
+      target.active = active;
+    }
+
+    if (accessLevel) {
+      target.accessLevel = accessLevel;
+    }
+
+    if (permissions) {
+      target.permissions = permissions;
+    }
+
+    return await this.accountRepository.update(address, target);
   }
 
   public getAccountExists(address: string) {

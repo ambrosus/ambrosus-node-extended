@@ -45,6 +45,10 @@ export class Web3Service {
     this.web3.setProvider(config.web3.rpc);
   }
 
+  public async isAddress(address) {
+    return await this.web3.utils.isAddress(address);
+  }
+
   public getToken(secret, timestamp = '') {
     const idData = {
       createdBy: this.addressFromSecret(secret),

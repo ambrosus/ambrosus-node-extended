@@ -53,11 +53,7 @@ export const accountSchema = {
         "$async": true,
         "title": "Account create",
         "type": "object",
-        "properties": {            
-            "address": {
-                "type": "string",
-                "isAddress": ''
-            },
+        "properties": {                        
             "fullName": {
                 "type": "string",
                 "minLength": 2,
@@ -83,7 +79,40 @@ export const accountSchema = {
         },
         "additionalProperties": false,
         "required": [
-            "address", "email"
+            "email"
         ]
+    },
+    accountModify: {
+        "$async": true,
+        "title": "Account modify",
+        "type": "object",
+        "properties": {    
+            "active": {
+                "type": "boolean"
+            },
+            "fullName": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 100
+            },
+            "accessLevel": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000
+            },
+            "email": {
+                "type": "string",
+                "pattern": '^([0-9a-zA-Z]([-.+\\w]*[0-9a-zA-Z])*@(([0-9a-zA-Z])+([-\\w]*[0-9a-zA-Z])*\\.)+[a-zA-Z]{2,9})$'
+            },
+            "permissions": {
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                    "type": "string"
+                }
+        },
+
+        },
+        "additionalProperties": false
     }
 }

@@ -26,25 +26,39 @@ import {
   ValidationError
  } from '../errors';
 
-function hasPermission(account :Account, permission: string): boolean {
-  return account ? account.permissions.indexOf(permission) > -1 : false;
+function hasPermission(permissions: string[], permission: string): boolean {
+  return permissions ? permissions.indexOf(permission) > -1 : false;
 }
 
-function ensureAccountIsActive(account :Account) {
-  if (!account.active) {
-    throw new PermissionError({ reason: 'creator account must be active' });
+function ensureAccountIsActive(modifier :Account) {
+  if (!modifier.active) {
+    throw new PermissionError({ reason: 'modifier account must be active' });
   }
 }
 
-function ensureAccessLevel(creator: Account, newAccount: Account) {
-  if (newAccount.accessLevel > creator.accessLevel) {
-    throw new PermissionError({ reason: 'newAccount acessLevel must less or equal' });
+function ensureAccessLevelLessOrEqual(modifier: Account, accessLevel) {
+  if (!accessLevel) {
+    return;
+  }
+  
+  if (modifier.accessLevel < accessLevel) {
+    throw new PermissionError({ reason: 'target acessLevel must less or equal' });
   }
 }
 
-function ensureNoSuperPermission(newAccount: Account) {
-  if (hasPermission(newAccount, Permission.super_account)) {
-    throw new PermissionError({ reason: 'creator must have super_account permission to create another super_account' });
+function ensureSameOrganization(modifier: Account, target: Account) {
+  if (modifier.organization !== target.organization) {
+    throw new PermissionError({ reason: 'target and modifier organization must be same' });
+  }
+}
+
+function ensureNoSuperPermission(newPemissions) {
+  if (!newPemissions) {
+    return;
+  }
+
+  if (hasPermission(newPemissions, Permission.super_account)) {
+    throw new PermissionError({ reason: 'modifier must have super_account permission to create another super_account' });
   }
 }
 
@@ -58,26 +72,55 @@ function ensureCorrectPermissions(account :Account) {
   account.permissions.forEach(validateCorrectPermission);
 }
 
-async function ensureOrganizationIsActive(organizationRepository: OrganizationRepository, creator: Account) {
-  const organization = await organizationRepository.findOne(new APIQuery({ organizationId: creator.organization }));
+async function ensureOrganizationIsActive(organizationRepository: OrganizationRepository, modifier: Account) {
+  const organization = await organizationRepository.findOne(new APIQuery({ organizationId: modifier.organization }));
 
   if (!organization.active) {
-    throw new PermissionError({ reason: 'creators organization must be active' });
+    throw new PermissionError({ reason: 'modifiers organization must be active' });
   }
 }
 
-export const ensureCanCreateAccount = async (organizationRepository: OrganizationRepository, creator: Account, newAccount: Account) => {  
+export const ensureCanCreateAccount = async (
+  organizationRepository: OrganizationRepository, 
+  creator: Account, 
+  newAccount: Account
+  ) => {  
   ensureAccountIsActive(creator);
-  ensureAccessLevel(creator, newAccount);
+  ensureAccessLevelLessOrEqual(creator, newAccount.accessLevel);
   
   ensureCorrectPermissions(newAccount);
+
+  await ensureOrganizationIsActive(organizationRepository, creator);
   
-  if (hasPermission(creator, Permission.super_account)) {
+  if (hasPermission(creator.permissions, Permission.super_account)) {
     return
   }
 
-  ensureNoSuperPermission(newAccount);
+  ensureNoSuperPermission(newAccount.permissions);
+};
 
-  await ensureOrganizationIsActive(organizationRepository, creator);
+export const ensureCanModifyAccount = async (
+  organizationRepository: OrganizationRepository, 
+  modifier: Account, 
+  target: Account,
+  newAccessLevel,
+  newPermissions
+  ) => {
+  ensureAccountIsActive(modifier);
+
+  ensureAccessLevelLessOrEqual(modifier, target.accessLevel);
+  ensureAccessLevelLessOrEqual(modifier, newAccessLevel);
+
+  console.log(modifier.organization+' '+target.organization);
+
+  ensureSameOrganization(modifier, target);
+
+  await ensureOrganizationIsActive(organizationRepository, modifier);
+
+  if (hasPermission(modifier.permissions, Permission.super_account)) {
+    return
+  }
+
+  ensureNoSuperPermission(newPermissions);
 };
 
