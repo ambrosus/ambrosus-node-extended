@@ -20,6 +20,10 @@ export enum Permission {
   create_event = 'create_event',
 }
 
+export enum Authorization {
+  organization_owner = 'organization_owner',
+}
+
 export enum TimeSeriesGroupBy {
   HOUR = '%Y-%m-%d-%H',
   DAY = '%Y-%m-%d',

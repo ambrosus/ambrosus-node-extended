@@ -31,6 +31,8 @@ export interface IOrganization {
   createdOn?: number;
   modifiedBy?: string;
   modifiedOn?: number;
+  inviteEmail?: string;
+  inviteTemplateId?: string;
 }
 
 @injectable()
@@ -68,6 +70,12 @@ export class Organization implements IOrganization {
     if (undefined !== req.body['colorSecondary']) {
       organization.colorSecondary = req.body.colorSecondary;
     }
+    if (undefined !== req.body['inviteEmail']) {
+      organization.inviteEmail = req.body.inviteEmail;
+    }
+    if (undefined !== req.body['inviteTemplateId']) {
+      organization.inviteTemplateId = req.body.inviteTemplateId;
+    }
     return organization;
   }
 
@@ -85,6 +93,8 @@ export class Organization implements IOrganization {
   public createdOn?: number;
   public modifiedBy?: string;
   public modifiedOn?: number;
+  public inviteEmail?: string;
+  public inviteTemplateId?: string;
 
   public setCreationTimestamp(address: string) {
     this.createdOn = getTimestamp();

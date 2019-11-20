@@ -37,6 +37,7 @@ import { AccountService } from '../service/account.service';
 import { EmailService } from '../service/email.service';
 
 import { ExistsError, ValidationError, NotFoundError, PermissionError, CreateError } from '../errors';
+import { config } from '../config';
 
 //#endregion
 
@@ -115,7 +116,7 @@ export class OrganizationService {
   }
 
   public async updateOrganization(
-    organizationId: string,
+    organizationId: number,
     organization: Organization
   ): Promise<Organization> {
     if (
@@ -298,8 +299,24 @@ export class OrganizationService {
     return this.organizationInviteRepository.findWithPagination(apiQuery);
   }
 
+  public getInviteEmail(organization: Organization) {
+    if (!organization.inviteEmail) {
+      return config.email.defaultFrom;
+    }
+  }
+
+  public getInviteTemplateId(organization: Organization) {
+
+    if (!organization.inviteTemplateId) {
+      return config.email.templateIdInvite;
+    }
+  }
+
   public async createOrganizationInvites(emails: string[]): Promise<any> {
     await this.organizationInviteRepository.deleteExpired();
+
+    const inviteEmail = this.getInviteEmail(this.user.organization);
+    const inviteTemplateId = this.getInviteTemplateId(this.user.organization);
 
     const failed = [];
     const success = [];
@@ -317,7 +334,7 @@ export class OrganizationService {
       }
       try {
         await this.organizationInviteRepository.create(organizationInvite);
-        await this.emailService.sendInvitation(organizationInvite);
+        await this.emailService.sendInvitation(organizationInvite, inviteEmail, inviteTemplateId);
         success.push(organizationInvite.email);
       } catch (error) {
         failed.push({ email, reason: error.message });
@@ -331,6 +348,10 @@ export class OrganizationService {
   public async resendOrganizationInvites(emails: string[]): Promise<any> {
     const failed = [];
     const success = [];
+
+    const inviteEmail = this.getInviteEmail(this.user.organization);
+    const inviteTemplateId = this.getInviteTemplateId(this.user.organization);
+
     for (const email of emails) {
       try {
         const apiQuery = new APIQuery({ email });
@@ -338,7 +359,7 @@ export class OrganizationService {
         if (!organizationInvite) {
           throw new NotFoundError({ reason: 'No invite found for email.' });
         }
-        await this.emailService.sendInvitation(organizationInvite);
+        await this.emailService.sendInvitation(organizationInvite, inviteEmail, inviteTemplateId);
         await this.organizationInviteRepository.update(apiQuery, organizationInvite);
         success.push(email);
       } catch (error) {
