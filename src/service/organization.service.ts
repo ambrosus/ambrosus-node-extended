@@ -303,6 +303,8 @@ export class OrganizationService {
     if (!organization.inviteEmail) {
       return config.email.defaultFrom;
     }
+
+    return organization.inviteEmail;
   }
 
   public getInviteTemplateId(organization: Organization) {
@@ -310,6 +312,8 @@ export class OrganizationService {
     if (!organization.inviteTemplateId) {
       return config.email.templateIdInvite;
     }
+
+    return organization.inviteTemplateId;
   }
 
   public async createOrganizationInvites(emails: string[]): Promise<any> {
