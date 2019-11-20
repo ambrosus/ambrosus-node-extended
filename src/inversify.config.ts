@@ -23,6 +23,7 @@ import { BundleController } from './controller/bundle.controller';
 import { EventController } from './controller/event.controller';
 import { GraphQLController } from './controller/graphql.controller';
 import { OrganizationController } from './controller/organization.controller';
+import { Organization2Controller } from './controller/organization2.controller';
 import { OrganizationRequestController } from './controller/organization-request.controller';
 import { OrganizationInviteController } from './controller/organization-invite.controller';
 import { RootController } from './controller/root.controller';
@@ -109,6 +110,7 @@ iocContainer.bind<EventController>(TYPE.EventController).to(EventController);
 iocContainer.bind<BundleController>(TYPE.BundleController).to(BundleController);
 iocContainer.bind<AnalyticsController>(TYPE.AnalyticsController).to(AnalyticsController);
 iocContainer.bind<OrganizationController>(TYPE.OrganizationController).to(OrganizationController);
+iocContainer.bind<Organization2Controller>(TYPE.Organization2Controller).to(Organization2Controller);
 iocContainer
   .bind<OrganizationRequestController>(TYPE.OrganizationRequestController)
   .to(OrganizationRequestController);

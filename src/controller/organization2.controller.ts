@@ -24,20 +24,21 @@ import {
 } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
+import { Authorization } from '../constant/enum';
 import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse, APIResponseMeta, Organization } from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
-import { authorize } from '../middleware/authorize.middleware';
+import { authorize, authorizeByType } from '../middleware/authorize.middleware';
 import { validate } from '../middleware';
 import { utilSchema, organizationSchema } from '../validation';
 
 @controller(
-  '/organization',
+  '/organization2',
   MIDDLEWARE.Context,
   authorize()
 )
-export class OrganizationController extends BaseController {
+export class Organization2Controller extends BaseController {
 
   constructor(
     @inject(TYPE.OrganizationService) private organizationService: OrganizationService,
@@ -47,16 +48,7 @@ export class OrganizationController extends BaseController {
   }
 
   @httpGet(
-    '/',
-    authorize('super_account')
-  )
-  public async getOrganizations(req: Request): Promise<APIResponse> {
-    const result = await this.organizationService.getOrganizations(APIQuery.fromRequest(req));
-    return APIResponse.fromMongoPagedResult(result);
-  }
-
-  @httpGet(
-    '/:organizationId',
+    '/info/:organizationId',
     validate(utilSchema.organizationId, { paramsOnly: true })
   )
   public async getOrganization(
@@ -66,33 +58,9 @@ export class OrganizationController extends BaseController {
     return APIResponse.fromSingleResult(result);
   }
 
-  @httpGet(
-    '/:organizationId/accounts',
-    authorize('manage_accounts'),
-    validate(utilSchema.organizationId, { paramsOnly: true })
-  )
-  public async getOrganizationAccounts(
-    @requestParam('organizationId') organizationId: number
-  ): Promise<APIResponse> {
-    const result = await this.organizationService.getOrganizationAccounts(organizationId);
-    return APIResponse.fromMongoPagedResult(result);
-  }
-
   @httpPost(
-    '/',
-    authorize('super_account'),
-    validate(organizationSchema.organizationCreate)
-  )
-  public async createOrganization(req: Request): Promise<APIResponse> {
-    await this.organizationService.createOrganization(Organization.fromRequest(req));
-    const meta = new APIResponseMeta(HttpStatus.CREATED, 'Organization created');
-
-    return APIResponse.withMeta(meta);
-  }
-
-  @httpPut(
-    '/:organizationId',
-    authorize('manage_accounts'),
+    '/update/:organizationId',
+    authorizeByType(Authorization.organization_owner),
     validate(organizationSchema.organizationUpdate, { params: true })
   )
   public async updateOrganization(

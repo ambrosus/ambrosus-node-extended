@@ -27,11 +27,11 @@ export class EmailService {
     @inject(TYPE.LoggerService) private readonly logger: ILogger
   ) { }
 
-  public async sendInvitation(organizationInvite: OrganizationInvite) {
+  public async sendInvitation(organizationInvite: OrganizationInvite, emailFrom: string, templateId: string) {
     const msg = {
+      templateId,
       to: organizationInvite.email,
-      from: config.email.defaultFrom,
-      templateId: config.email.templateIdInvite,
+      from: emailFrom,
       dynamic_template_data: {
         organizationName: this.user.organization.title || 'an organization',
         invitationLink: organizationInvite.invitationLink,
