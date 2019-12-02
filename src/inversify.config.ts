@@ -19,6 +19,7 @@ import { AccountController } from './controller/account.controller';
 import { Account2Controller } from './controller/account2.controller';
 import { AnalyticsController } from './controller/analytics.controller';
 import { AssetController } from './controller/asset.controller';
+import { Asset2Controller } from './controller/asset2.controller';
 import { BundleController } from './controller/bundle.controller';
 import { EventController } from './controller/event.controller';
 import { GraphQLController } from './controller/graphql.controller';
@@ -106,6 +107,7 @@ iocContainer.bind<GraphQLController>(TYPE.GraphQLController).to(GraphQLControlle
 iocContainer.bind<AccountController>(TYPE.AccountController).to(AccountController);
 iocContainer.bind<Account2Controller>(TYPE.Account2Controller).to(Account2Controller);
 iocContainer.bind<AssetController>(TYPE.AssetController).to(AssetController);
+iocContainer.bind<Asset2Controller>(TYPE.Asset2Controller).to(Asset2Controller);
 iocContainer.bind<EventController>(TYPE.EventController).to(EventController);
 iocContainer.bind<BundleController>(TYPE.BundleController).to(BundleController);
 iocContainer.bind<AnalyticsController>(TYPE.AnalyticsController).to(AnalyticsController);

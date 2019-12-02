@@ -17,6 +17,12 @@ import { inject, injectable } from 'inversify';
 import { TYPE } from '../constant/types';
 import { AssetRepository } from '../database/repository';
 import { APIQuery, Asset, MongoPagedResult } from '../model';
+import { ensureCanCreateAsset } from '../security/access.check';
+import { getTimestamp } from '../util';
+import { ValidationError } from '../errors';
+import { AssetMetaData } from '../model/asset/asset-metadata.model';
+import { AssetContent } from '../model/asset/asset-content.model';
+import { AssetIdData } from '../model/asset/asset-iddata.model';
 
 @injectable()
 export class AssetService {
@@ -36,5 +42,41 @@ export class AssetService {
     const apiQuery = new APIQuery();
     apiQuery.query = { assetId };
     return this.assetRepository.findOne(apiQuery);
+  }
+
+  public async createAsset(
+    assetId: string,
+    createdBy: string,
+    timestamp: number,
+    sequesnceNumber: number,
+    signature: string
+  ) {
+    await ensureCanCreateAsset();
+
+    const testAsset = await this.getAsset(assetId);
+
+    if (testAsset && (testAsset !== null)) {
+      throw new ValidationError( {reason: `Asset with assetId=${assetId} already exists` } );
+    }
+
+    const asset = new Asset();
+    asset.assetId = assetId;
+
+    asset.metadata = new AssetMetaData();
+
+    asset.metadata.bundleId = null;
+    asset.metadata.bundleUploadTimestamp = getTimestamp();
+
+    asset.content = new AssetContent();
+
+    asset.content.idData = new AssetIdData();
+
+    asset.content.idData.createdBy = createdBy;
+    asset.content.idData.timestamp = timestamp;
+    asset.content.idData.sequenceNumber = sequesnceNumber;
+
+    asset.content.signature = signature;
+
+    await this.assetRepository.create(asset);
   }
 }
