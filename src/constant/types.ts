@@ -23,6 +23,7 @@ export const TYPE: any = {
   Account2Controller: Symbol.for('Account2Controller'),
   AnalyticsController: Symbol.for('AnalyticsController'),
   AssetController: Symbol.for('AssetController'),
+  Asset2Controller: Symbol.for('Asset2Controller'),
   EventController: Symbol.for('EventController'),
   BundleController: Symbol.for('BundleController'),
   OrganizationController: Symbol.for('OrganizationController'),

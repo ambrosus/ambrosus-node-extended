@@ -186,6 +186,11 @@ describe('(Controller) Analytics /analytics', () => {
         .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
         .end((err, res) => {
           res.should.have.status(200);
+
+          console.log(JSON.stringify(res.body.data));
+
+          console.log(JSON.stringify(res.body.data.count[res.body.data.count.length - 1]));
+
           expect(res.body.data.count[res.body.data.count.length - 1].count).to.eq(2);
           done();
         });

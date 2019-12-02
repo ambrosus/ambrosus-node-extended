@@ -1,10 +1,10 @@
 {
   "name": "ambrosus-node-extended",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "author": "Ambrosus",
   "repository": "git@github.com:ambrosus/ambrosus-node-extended.git",
   "private": true,
-  "description": "Extended query api for the Ambrosus Hermes node",
+  "description": "API for the Ambrosus Hermes node",
   "license": "MPL-2.0-no-copyleft-exception",
   "main": "./build/index.js",
   "scripts": {

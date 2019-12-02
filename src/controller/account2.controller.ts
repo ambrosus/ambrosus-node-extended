@@ -28,12 +28,12 @@ import { Permission } from '../constant/';
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse } from '../model';
-import { AccountService } from '../service/account.service';
 import { Web3Service } from '../service/web3.service';
 import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
 import { validate } from '../middleware';
 import { querySchema, utilSchema, accountSchema } from '../validation/schemas';
+import { AccountService } from '../service/account.service';
 import { AuthService } from '../service/auth.service';
 
 import { ValidationError } from '../errors';

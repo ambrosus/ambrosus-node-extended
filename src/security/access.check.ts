@@ -124,3 +124,7 @@ export const ensureCanModifyAccount = async (
   ensureNoSuperPermission(newPermissions);
 };
 
+export const ensureCanCreateAsset = async ( // TODO
+  ) => {
+    return
+  }
