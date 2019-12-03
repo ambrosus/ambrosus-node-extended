@@ -42,6 +42,7 @@ import { ValidationError } from '../errors';
   '/account2',
   MIDDLEWARE.Context
 )
+
 export class Account2Controller extends BaseController {
 
   constructor(
