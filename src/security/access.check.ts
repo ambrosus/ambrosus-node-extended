@@ -128,3 +128,8 @@ export const ensureCanCreateAsset = async ( // TODO
   ) => {
     return
   }
+
+export const ensureCanCreateEvent = async ( // TODO
+  ) => {
+    return
+  }

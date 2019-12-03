@@ -17,6 +17,7 @@ export interface IEventIdData {
   createdBy: string;
   accessLevel: number;
   timestamp: number;
+  dataHash: string;
 }
 
 export class EventIdData implements IEventIdData {
@@ -24,4 +25,5 @@ export class EventIdData implements IEventIdData {
   public createdBy: string;
   public accessLevel: number;
   public timestamp: number;
+  public dataHash: string;
 }

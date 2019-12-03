@@ -12,24 +12,35 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { injectable } from 'inversify';
-import { EventContent } from './event-content.model';
-import { EventRepository } from './event-repository.model';
-import { EventMetaData } from './event-metadata.model';
-
-export interface IEvent {
-  _id: string;
-  eventId: string;
-  content: EventContent;
-  metadata: EventMetaData;
-  repository: EventRepository;
-}
-
-@injectable()
-export class Event implements IEvent {
-  public _id: string;
-  public eventId: string;
-  public content: EventContent;
-  public metadata: EventMetaData;
-  public repository: EventRepository;
+/* tslint:disable */
+export const eventSchema = {
+    eventCreate: {
+        "$async": true,
+        "title": "Event create",
+        "type": "object",
+        "properties": {
+            "timestamp": {
+                "type": "number"
+            },
+            "assetId": {
+                "type": "string"
+            },
+            "accessLevel": {
+                "type": "number"
+            },
+            "dataHash": {
+                "type": "string"
+            },
+            "signature": {
+                "type": "string"
+            },
+            "data": {
+                "type": "array"
+            }
+        },
+        "additionalProperties": false,
+        "required": [
+            "timestamp", "assetId", "accessLevel", "dataHash", "signature", "data"
+        ]
+    }
 }

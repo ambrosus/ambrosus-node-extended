@@ -15,5 +15,6 @@
 export * from './query.schema';
 export * from './account.schema';
 export * from './asset.schema';
+export * from './event.schema';
 export * from './util.schema';
 export * from './organization.schema';
