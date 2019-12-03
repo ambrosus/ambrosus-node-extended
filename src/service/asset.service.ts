@@ -16,7 +16,11 @@ import { inject, injectable } from 'inversify';
 
 import { TYPE } from '../constant/types';
 import { AssetRepository } from '../database/repository';
-import { APIQuery, Asset, MongoPagedResult } from '../model';
+import {
+  APIQuery,
+  Asset,
+  MongoPagedResult
+} from '../model';
 import { ensureCanCreateAsset } from '../security/access.check';
 import { getTimestamp } from '../util';
 import { ValidationError } from '../errors';

@@ -25,6 +25,7 @@ export const TYPE: any = {
   AssetController: Symbol.for('AssetController'),
   Asset2Controller: Symbol.for('Asset2Controller'),
   EventController: Symbol.for('EventController'),
+  Event2Controller: Symbol.for('Event2Controller'),
   BundleController: Symbol.for('BundleController'),
   OrganizationController: Symbol.for('OrganizationController'),
   Organization2Controller: Symbol.for('Organization2Controller'),

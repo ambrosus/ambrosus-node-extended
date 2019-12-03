@@ -12,24 +12,16 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { injectable } from 'inversify';
-import { EventContent } from './event-content.model';
-import { EventRepository } from './event-repository.model';
-import { EventMetaData } from './event-metadata.model';
-
-export interface IEvent {
-  _id: string;
-  eventId: string;
-  content: EventContent;
-  metadata: EventMetaData;
-  repository: EventRepository;
+export interface IEventMetaData {
+  bundleId: string;
+  bundleTransactionHash: string;
+  bundleUploadTimestamp: number;
+  entityUploadTimestamp: number;
 }
 
-@injectable()
-export class Event implements IEvent {
-  public _id: string;
-  public eventId: string;
-  public content: EventContent;
-  public metadata: EventMetaData;
-  public repository: EventRepository;
+export class EventMetaData implements IEventMetaData {
+  public bundleId: string;
+  public bundleTransactionHash: string;
+  public bundleUploadTimestamp: number;
+  public entityUploadTimestamp: number;
 }

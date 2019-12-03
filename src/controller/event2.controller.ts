@@ -20,27 +20,28 @@ import {
   httpPost,
   requestParam,
   requestHeaders,
-  requestBody,
+  requestBody
 } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse } from '../model';
+import { EventService } from '../service/event.service';
+import { getParamValue } from '../util';
 import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
 import { validate } from '../middleware';
-import { querySchema, assetSchema } from '../validation/schemas';
-import { AssetService } from '../service/asset.service';
+import { querySchema, eventSchema } from '../validation/schemas';
 import { AuthService } from '../service/auth.service';
 
 @controller(
-  '/asset2',
+  '/event2',
   MIDDLEWARE.Context
 )
-export class Asset2Controller extends BaseController {
+export class Event2Controller extends BaseController {
 
   constructor(
-    @inject(TYPE.AssetService) private assetService: AssetService,
+    @inject(TYPE.EventService) private eventService: EventService,
     @inject(TYPE.LoggerService) protected logger: ILogger,
     @inject(TYPE.AuthService) private authService: AuthService
   ) {
@@ -50,28 +51,28 @@ export class Asset2Controller extends BaseController {
   @httpGet(
     '/list'
   )
-  public async getAssets(req: Request): Promise<APIResponse> {
-    const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
+  public async getEvents(req: Request): Promise<APIResponse> {
+    const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
     return APIResponse.fromMongoPagedResult(result);
   }
 
   @httpGet(
-    '/info/:assetId'
+    '/info/:eventId'
   )
-  public async get(
-    @requestParam('assetId') assetId: string
+  public async getEvent(
+    @requestParam('eventId') eventId: string
   ): Promise<APIResponse> {
-    const result = await this.assetService.getAsset(assetId);
+    const result = await this.eventService.getEvent(eventId);
     return APIResponse.fromSingleResult(result);
   }
 
   @httpGet(
-    '/exists/:assetId'
+    '/exists/:eventId'
   )
-  public async getAssetExists(
-    @requestParam('assetId') assetId: string
+  public async getEventExists(
+    @requestParam('eventId') eventId: string
   ): Promise<APIResponse> {
-    const result = await this.assetService.getAssetExists(assetId);
+    const result = await this.eventService.getEventExists(eventId);
     return APIResponse.fromSingleResult(result);
   }
 
@@ -79,32 +80,73 @@ export class Asset2Controller extends BaseController {
     '/query',
     validate(querySchema)
   )
-  public async query(req: Request): Promise<APIResponse> {
-    const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
+  public async queryEvents(req: Request): Promise<APIResponse> {
+    const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
     return APIResponse.fromMongoPagedResult(result);
   }
 
   @httpPost(
-    '/create/:assetId',
-    authorize('create_asset'),
-    validate(assetSchema.assetCreate)
+    '/search'
+  )
+  public async search(req: Request): Promise<APIResponse> {
+    const result = await this.eventService.searchEvents(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(result);
+  }
+
+  @httpGet(
+    '/lookup/types'
+  )
+  public async getEventTypes(): Promise<APIResponse> {
+    const result = await this.eventService.getEventDistinctField('content.data.type');
+    return APIResponse.fromSingleResult(result);
+  }
+
+  @httpPost(
+    '/latest/type'
+  )
+  public async latestType(req: Request): Promise<APIResponse> {
+    const assets = getParamValue(req, 'assets');
+    const type = getParamValue(req, 'type');
+    const result = await this.eventService.getLatestAssetEventsOfType(
+      assets,
+      type,
+      APIQuery.fromRequest(req)
+    );
+
+    return APIResponse.fromSingleResult(result);
+  }
+
+  @httpPost(
+    '/create/:eventId',
+    authorize('create_event'),
+    validate(eventSchema.eventCreate)
   )
   public async createAsset(
-    @requestParam('assetId') assetId: string,
+    @requestParam('eventId') eventId: string,
     @requestHeaders('authorization') authorization: string,
-    @requestBody() payload: {timestamp: number, sequenceNumber: number, signature: string}
+    @requestBody() payload: {
+      assetId: string,
+      timestamp: number,
+      accessLevel: number,
+      dataHash: string,
+      signature: string,
+      data: object[]
+    }
   ): Promise<APIResponse> {
     const authToken = this.authService.getAuthToken(authorization);
 
-    await this.assetService.createAsset(
-      assetId,
-      authToken.createdBy,
+    await this.eventService.createEvent(
+      eventId,
+      payload.assetId,
+      payload.accessLevel,
       payload.timestamp,
-      payload.sequenceNumber,
-      payload.signature
+      authToken.createdBy,
+      payload.dataHash,
+      payload.signature,
+      payload.data
     );
 
-    const result = await this.assetService.getAsset(assetId);
+    const result = await this.eventService.getEvent(eventId);
 
     return APIResponse.fromSingleResult(result);
   }

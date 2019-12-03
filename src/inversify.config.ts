@@ -22,6 +22,7 @@ import { AssetController } from './controller/asset.controller';
 import { Asset2Controller } from './controller/asset2.controller';
 import { BundleController } from './controller/bundle.controller';
 import { EventController } from './controller/event.controller';
+import { Event2Controller } from './controller/event2.controller';
 import { GraphQLController } from './controller/graphql.controller';
 import { OrganizationController } from './controller/organization.controller';
 import { Organization2Controller } from './controller/organization2.controller';
@@ -109,6 +110,7 @@ iocContainer.bind<Account2Controller>(TYPE.Account2Controller).to(Account2Contro
 iocContainer.bind<AssetController>(TYPE.AssetController).to(AssetController);
 iocContainer.bind<Asset2Controller>(TYPE.Asset2Controller).to(Asset2Controller);
 iocContainer.bind<EventController>(TYPE.EventController).to(EventController);
+iocContainer.bind<Event2Controller>(TYPE.Event2Controller).to(Event2Controller);
 iocContainer.bind<BundleController>(TYPE.BundleController).to(BundleController);
 iocContainer.bind<AnalyticsController>(TYPE.AnalyticsController).to(AnalyticsController);
 iocContainer.bind<OrganizationController>(TYPE.OrganizationController).to(OrganizationController);
