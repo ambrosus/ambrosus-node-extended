@@ -36,6 +36,7 @@ export const TYPE: any = {
 
   MetricController: Symbol.for('MetricController'),
   HealthController: Symbol.for('HealthController'),
+  NodeinfoController: Symbol.for('NodeinfoController'),
 
   AuthService: Symbol.for('AuthService'),
   Web3Service: Symbol.for('Web3Service'),
@@ -58,6 +59,7 @@ export const TYPE: any = {
   OrganizationRepository: Symbol.for('OrganizationRepository'),
   OrganizationRequestRepository: Symbol.for('OrganizationRequestRepository'),
   OrganizationInviteRepository: Symbol.for('OrganizationInviteRepository'),
+  WorkerLogsRepository: Symbol.for('WorkerLogsRepository'),
 
   GraphQLSchema: Symbol.for('GraphQLSchema'),
   GraphQLType: Symbol.for('GraphQLType'),
