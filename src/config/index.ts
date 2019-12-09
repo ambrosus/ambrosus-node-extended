@@ -20,6 +20,7 @@ export const config: any = {
   dashboardUrl: process.env.DASHBOARD_URL,
   encryptionKey: process.env.ENCRYPTION_KEY,
   builtinAddress: process.env.BUILT_IN_ACCOUNT_ADDRESS,
+  gitCommit: process.env.GIT_COMMIT,
   db: {
     hosts: process.env.MONGO_HOSTS || 'localhost:27017',
     dbName: process.env.MONGO_DB_NAME || 'hermes',

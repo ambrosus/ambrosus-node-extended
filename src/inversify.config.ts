@@ -32,6 +32,7 @@ import { OrganizationInviteController } from './controller/organization-invite.c
 import { RootController } from './controller/root.controller';
 import { MetricController } from './controller/metric.controller';
 import { HealthController } from './controller/health.controller';
+import { NodeinfoController } from './controller/nodeinfo.controller';
 import { DBClient } from './database/client';
 import {
   AccountRepository,
@@ -42,6 +43,7 @@ import {
   OrganizationRepository,
   OrganizationRequestRepository,
   OrganizationInviteRepository,
+  WorkerLogsRepository,
 } from './database/repository';
 import { GraphQLSchema, IGraphQLResolver, IGraphQLSchema, IGraphQLType } from './graphql';
 import { AccountResolver, AssetResolver, BundleResolver, EventResolver } from './graphql/resolver';
@@ -102,6 +104,10 @@ iocContainer
   .bind<OrganizationInviteRepository>(TYPE.OrganizationInviteRepository)
   .to(OrganizationInviteRepository)
   .inSingletonScope();
+iocContainer
+  .bind<WorkerLogsRepository>(TYPE.WorkerLogsRepository)
+  .to(WorkerLogsRepository)
+  .inSingletonScope();
 
 // controllers
 iocContainer.bind<RootController>(TYPE.RootController).to(RootController);
@@ -125,6 +131,7 @@ iocContainer
   .to(OrganizationInviteController);
 iocContainer.bind<MetricController>(TYPE.MetricController).to(MetricController);
 iocContainer.bind<HealthController>(TYPE.HealthController).to(HealthController);
+iocContainer.bind<NodeinfoController>(TYPE.NodeinfoController).to(NodeinfoController);
 iocContainer.bind<MobileController>(TYPE.MobileController).to(MobileController);
 
 // services
