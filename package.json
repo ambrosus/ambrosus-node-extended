@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc",
     "start": "source ./.env.dev && nodemon ./build/index.js",
-    "start:server": "node build/index.js",
+    "start:server": "node build/src/index.js",
     "dev:clean": "rimraf ./build",
     "dev:start": "source ./.env.dev && nodemon ./build/index.js",
     "dev:lint": "tslint -c tslint.json --project tsconfig.json 'src/**/*.ts'",
