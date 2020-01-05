@@ -95,13 +95,13 @@ server.setErrorConfig(app => {
 
 // Server errors
 process.on('unhandledRejection', error => {
-  logger.error('unhandledRejection event: ', error);
+  logger.error('unhandledRejection event My: ', error);
   Sentry.captureException(error);
 });
 
 process.on('uncaughtException', error => {
   console.log(error.toString());
-  logger.error('uncaughtException event: ', error);
+  logger.error('uncaughtException event My: ', error);
   Sentry.captureException(error);
 });
 
