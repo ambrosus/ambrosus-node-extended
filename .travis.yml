@@ -27,7 +27,7 @@ script:
   - yarn dev:docker:db
   - yarn dev:lint
   - yarn test
-  - docker run --rm -i hadolint/hadolint < Dockerfile
+  - docker run --rm -i hadolint/hadolint hadolint --ignore DL3018 - < Dockerfile
 
 notifications:
   slack:
