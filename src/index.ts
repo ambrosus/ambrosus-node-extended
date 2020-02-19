@@ -56,7 +56,8 @@ const db: DBClient = iocContainer.get<DBClient>(TYPE.DBClient);
 db.getConnection().then();
 
 server.setConfig(app => {
-  app.use('/dashboard', express.static(__dirname+'/dashboard'));
+  app.use('/dashboard', express.static(__dirname + '/dashboard'));
+  app.use('/assets', express.static(__dirname + '/dashboard/assets'));
 
   app.use(Sentry.Handlers.requestHandler());
   app.use(Sentry.Handlers.errorHandler());
