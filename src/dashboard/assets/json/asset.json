@@ -1,0 +1,331 @@
+[{
+        "content": {
+            "idData": {
+                "assetId": "{{ assetId }}",
+                "timestamp": 1496250888,
+                "accessLevel": 0,
+                "createdBy": "{{ userAddress }}"
+            },
+            "data": [{
+                    "type": "ambrosus.asset.info",
+                    "name": "PURE DARK CHOCOLATE BAR 92%",
+                    "assetType": "ambrosus.assetTypes.batch",
+                    "images": {
+                        "default": {
+                            "url": "https://madecasse.com/wp-content/uploads/2016/10/92-dark-chocolate-hero-2.jpg"
+                        }
+                    },
+                    "size": "2.64 oz.",
+                    "Product Information": {
+                        "attributes": "No-GMOs, Vegan, Gluten Free, Kosher, Soy Free",
+                        "ingredients": "Organic cocoa beans, organic sugar, organic cocoa butter",
+                        "Brand": "Madecasse"
+                    },
+                    "Batch Information": {
+                        "Origin": "Madagascar"
+                    }
+                },
+                {
+                    "type": "identifiers",
+                    "identifiers": {
+                        "Serial Number": [
+                            "0009243902"
+                        ],
+                        "GTIN": [
+                            "1043345532"
+                        ],
+                        "RFID": [
+                            "E2001AC16987B6305024DED8"
+                        ],
+                        "EAN13": [
+                            "3451080000324"
+                        ],
+                        "batchId": [
+                            "0x...."
+                        ],
+                        "Lot": [
+                            "6126L70313EJ184"
+                        ]
+                    },
+                    "name": "identifiers"
+                }
+            ]
+        }
+    },
+    {
+        "content": {
+            "idData": {
+                "assetId": "{{ assetId }}",
+                "timestamp": 1496250888,
+                "accessLevel": 0,
+                "createdBy": "{{ userAddress }}"
+            },
+            "data": [{
+                    "type": "ambrosus.asset.shipped",
+                    "name": "Shipped to Retailer",
+                    "documents": {
+                        "default": {
+                            "url": "https://image.ibb.co/mUrgvH/HO.jpg"
+                        }
+                    }
+                },
+                {
+                    "type": "ambrosus.event.location",
+                    "location": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                51.5249003,
+                                -0.1240547
+                            ]
+                        }
+                    },
+                    "name": "Waitrose, Brunswick Centre",
+                    "city": "London",
+                    "country": "UK",
+                    "locationId": "809c578721b74cae1d56504594819285",
+                    "GLN": 9501101530003
+                }
+            ]
+        }
+    },
+    {
+        "content": {
+            "idData": {
+                "assetId": "{{ assetId }}",
+                "timestamp": 1496250888,
+                "accessLevel": 0,
+                "createdBy": "{{ userAddress }}"
+            },
+            "data": [{
+                    "type": "ambrosus.asset.displayed",
+                    "name": "Displayed in Shop",
+                    "documents": {
+                        "default": {
+                            "url": "https://image.ibb.co/mUrgvH/HO.jpg"
+                        }
+                    }
+                },
+                {
+                    "type": "ambrosus.event.location",
+                    "location": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                51.5249003,
+                                -0.1240547
+                            ]
+                        }
+                    },
+                    "name": "Waitrose, Brunswick Centre",
+                    "city": "London",
+                    "country": "UK",
+                    "locationId": "809c578721b74cae1d56504594819285",
+                    "GLN": 9501101530003
+                }
+            ]
+        }
+    },
+    {
+        "content": {
+            "idData": {
+                "assetId": "{{ assetId }}",
+                "timestamp": 1496250888,
+                "accessLevel": 0,
+                "createdBy": "{{ userAddress }}"
+            },
+            "data": [{
+                    "type": "ambrosus.asset.shipped",
+                    "name": "Chocolate Bars Shipped",
+                    "images": {
+                        "default": "https://www.gtreview.com/wp-content/uploads/2015/01/Cocoa-Beans-Bag-1024x681.jpg"
+                    },
+                    "documents": {
+                        "default": {
+                            "url": "https://image.ibb.co/mUrgvH/HO.jpg"
+                        }
+                    }
+                },
+                {
+                    "type": "ambrosus.event.location",
+                    "location": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                -13.4050616,
+                                48.2748573
+                            ]
+                        }
+                    },
+                    "name": "Port of Andoany",
+                    "city": "Andoany",
+                    "country": "MG",
+                    "locationId": "809c578721b74cae1d56504594819285",
+                    "GLN": 9501101530003
+                }
+            ]
+        }
+    },
+    {
+        "content": {
+            "idData": {
+                "assetId": "{{ assetId }}",
+                "timestamp": 1496250888,
+                "accessLevel": 0,
+                "createdBy": "{{ userAddress }}"
+            },
+            "data": [{
+                    "type": "ambrosus.asset.arrived",
+                    "name": "Arrived at Retailer",
+                    "documents": {
+                        "default": {
+                            "url": "https://image.ibb.co/mUrgvH/HO.jpg"
+                        }
+                    }
+                },
+                {
+                    "type": "ambrosus.event.location",
+                    "location": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                51.5249003,
+                                -0.1240547
+                            ]
+                        }
+                    },
+                    "name": "Waitrose, Brunswick Centre",
+                    "city": "London",
+                    "country": "UK",
+                    "locationId": "809c578721b74cae1d56504594819285",
+                    "GLN": 9501101530003
+                }
+            ]
+        }
+    },
+    {
+        "content": {
+            "idData": {
+                "assetId": "{{ assetId }}",
+                "timestamp": 1496250888,
+                "accessLevel": 0,
+                "createdBy": "{{ userAddress }}"
+            },
+            "data": [{
+                    "type": "ambrosus.asset.harvested",
+                    "name": "Raw Cocoa Harvested",
+                    "images": {
+                        "default": "http://www.madacamp.com/images/madagascar/thumb/Sambirano_101.jpg/600px-Sambirano_101.jpg"
+                    },
+                    "Harvest Information": {
+                        "Total volume": "45 kg",
+                        "Harvest Date": "03.01.2019"
+                    }
+                },
+                {
+                    "type": "ambrosus.event.location",
+                    "location": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                -13.7111508,
+                                48.4937583
+                            ]
+                        }
+                    },
+                    "name": "Sambriano Valley",
+                    "city": "Ambanja",
+                    "country": "MG",
+                    "locationId": "809c578721b74cae1d56504594819285",
+                    "GLN": 9501101530003
+                }
+            ]
+        }
+    },
+    {
+        "content": {
+            "idData": {
+                "assetId": "{{ assetId }}",
+                "timestamp": 1496250888,
+                "accessLevel": 0,
+                "createdBy": "{{ userAddress }}"
+            },
+            "data": [{
+                    "type": "ambrosus.asset.customs",
+                    "name": "Arrived at Customs",
+                    "documents": {
+                        "import-document": {
+                            "url": "https://image.ibb.co/mUrgvH/HO.jpg"
+                        },
+                        "bill-of-lading": {
+                            "url": "https://image.ibb.co/mUrgvH/HO.jpg"
+                        }
+                    }
+                },
+                {
+                    "type": "ambrosus.event.location",
+                    "location": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                50.909704,
+                                -1.4357131
+                            ]
+                        }
+                    },
+                    "name": "Port of Southampton",
+                    "city": "Southampton",
+                    "country": "MG",
+                    "locationId": "809c578721b74cae1d56504594819285",
+                    "GLN": 9501101530003
+                }
+            ]
+        }
+    },
+    {
+        "content": {
+            "idData": {
+                "assetId": "{{ assetId }}",
+                "timestamp": 1496250888,
+                "accessLevel": 0,
+                "createdBy": "{{ userAddress }}"
+            },
+            "data": [{
+                    "type": "ambrosus.asset.sold",
+                    "name": "Sold in Shop",
+                    "documents": {
+                        "receipt": {
+                            "url": "http://...",
+                            "id": "00394009304",
+                            "customer-id": "900394"
+                        }
+                    }
+                },
+                {
+                    "type": "ambrosus.event.location",
+                    "location": {
+                        "type": "Feature",
+                        "geometry": {
+                            "type": "Point",
+                            "coordinates": [
+                                51.5249003,
+                                -0.1240547
+                            ]
+                        }
+                    },
+                    "name": "Waitrose, Brunswick Centre",
+                    "city": "London",
+                    "country": "UK",
+                    "locationId": "809c578721b74cae1d56504594819285",
+                    "GLN": 9501101530003
+                }
+            ]
+        }
+    }
+]

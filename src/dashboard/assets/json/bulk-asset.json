@@ -1,0 +1,897 @@
+[
+  [{
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531389862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.identifiers",
+            "identifiers": {
+              "Serial Number": [
+                "0009243902"
+              ],
+              "GTIN": [
+                "1043345532"
+              ],
+              "RFID": [
+                "E2001AC16987B6305024DED8"
+              ],
+              "EAN13": [
+                "3451080000324"
+              ],
+              "Lot": [
+                "6126L70313EJ184"
+              ]
+            }
+          },
+          {
+            "type": "ambrosus.asset.info",
+            "name": "Carrot",
+            "assetType": "ambrosus.assetType.batch",
+            "images": {
+              "default": {
+                "url": "https://www.publicdomainpictures.net/pictures/180000/nahled/carrot.jpg"
+              }
+            },
+            "Product Information": {
+              "Description": "Healthy food delivered daily.",
+              "Country of origin": "Ireland",
+              "Country of Packing": "Ireland"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531489862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.harvested",
+            "name": "Harvested"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  53.3110733,
+                  -6.7201713
+                ]
+              }
+            },
+            "name": "Old farm",
+            "city": "Dublin",
+            "country": "Ireland",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531589862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.packaged",
+            "name": "Packaged"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  53.3110733,
+                  -6.7201713
+                ]
+              }
+            },
+            "name": "Old farm",
+            "city": "Dublin",
+            "country": "Ireland",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531689862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.exported",
+            "name": "Exported"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  53.1938947,
+                  -6.1002917
+                ]
+              }
+            },
+            "name": "Newcourt",
+            "city": "Dublin",
+            "country": "Ireland",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531789862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.harvested",
+            "name": "Sold"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  51.8537874,
+                  -3.2076148
+                ]
+              }
+            },
+            "name": "Market",
+            "city": "Smethwick",
+            "country": "England",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    }
+  ],
+  [{
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531389862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.identifiers",
+            "identifiers": {
+              "Serial Number": [
+                "0009243902"
+              ],
+              "GTIN": [
+                "1043345532"
+              ],
+              "RFID": [
+                "E2001AC16987B6305024DED8"
+              ],
+              "EAN13": [
+                "3451080000324"
+              ],
+              "Lot": [
+                "6126L70313EJ184"
+              ]
+            }
+          },
+          {
+            "type": "ambrosus.asset.info",
+            "name": "Cabbage",
+            "assetType": "ambrosus.assetType.batch",
+            "images": {
+              "default": {
+                "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSV4T0WbDKsm52zh4FLqX39gaQTuJsm5EummOXbC8M83QuVk0PCWw"
+              }
+            },
+            "Product Information": {
+              "Description": "Healthy food delivered daily.",
+              "Country of origin": "Ireland",
+              "Country of Packing": "Ireland"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531489862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.harvested",
+            "name": "Harvested"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  53.3110733,
+                  -6.7201713
+                ]
+              }
+            },
+            "name": "Old farm",
+            "city": "Dublin",
+            "country": "Ireland",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531589862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.packaged",
+            "name": "Packaged"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  53.3110733,
+                  -6.7201713
+                ]
+              }
+            },
+            "name": "Old farm",
+            "city": "Dublin",
+            "country": "Ireland",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531689862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.exported",
+            "name": "Exported"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  53.1938947,
+                  -6.1002917
+                ]
+              }
+            },
+            "name": "Newcourt",
+            "city": "Dublin",
+            "country": "Ireland",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531789862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.harvested",
+            "name": "Sold"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  51.8537874,
+                  -3.2076148
+                ]
+              }
+            },
+            "name": "Market",
+            "city": "Smethwick",
+            "country": "England",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    }
+  ],
+  [{
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531389862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.identifiers",
+            "identifiers": {
+              "Serial Number": [
+                "0009243902"
+              ],
+              "GTIN": [
+                "1043345532"
+              ],
+              "RFID": [
+                "E2001AC16987B6305024DED8"
+              ],
+              "EAN13": [
+                "3451080000324"
+              ],
+              "Lot": [
+                "6126L70313EJ184"
+              ]
+            }
+          },
+          {
+            "type": "ambrosus.asset.info",
+            "name": "Onion",
+            "assetType": "ambrosus.assetType.batch",
+            "images": {
+              "default": {
+                "url": "https://upload.wikimedia.org/wikipedia/commons/2/25/Onion_on_White.JPG"
+              }
+            },
+            "Product Information": {
+              "Description": "Healthy food delivered daily.",
+              "Country of origin": "Ireland",
+              "Country of Packing": "Ireland"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531489862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.harvested",
+            "name": "Harvested"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  53.3110733,
+                  -6.7201713
+                ]
+              }
+            },
+            "name": "Old farm",
+            "city": "Dublin",
+            "country": "Ireland",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531589862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.packaged",
+            "name": "Packaged"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  53.3110733,
+                  -6.7201713
+                ]
+              }
+            },
+            "name": "Old farm",
+            "city": "Dublin",
+            "country": "Ireland",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531689862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.exported",
+            "name": "Exported"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  53.1938947,
+                  -6.1002917
+                ]
+              }
+            },
+            "name": "Newcourt",
+            "city": "Dublin",
+            "country": "Ireland",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531789862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.harvested",
+            "name": "Sold"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  51.8537874,
+                  -3.2076148
+                ]
+              }
+            },
+            "name": "Market",
+            "city": "Smethwick",
+            "country": "England",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    }
+  ],
+  [{
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531389862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.identifiers",
+            "identifiers": {
+              "Serial Number": [
+                "0009243902"
+              ],
+              "GTIN": [
+                "1043345532"
+              ],
+              "RFID": [
+                "E2001AC16987B6305024DED8"
+              ],
+              "EAN13": [
+                "3451080000324"
+              ],
+              "Lot": [
+                "6126L70313EJ184"
+              ]
+            }
+          },
+          {
+            "type": "ambrosus.asset.info",
+            "name": "Tomato",
+            "assetType": "ambrosus.assetType.batch",
+            "images": {
+              "default": {
+                "url": "https://upload.wikimedia.org/wikipedia/commons/1/11/Tomato_%283667951881%29.jpg"
+              }
+            },
+            "Product Information": {
+              "Description": "Healthy food delivered daily.",
+              "Country of origin": "Ireland",
+              "Country of Packing": "Ireland"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531489862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.harvested",
+            "name": "Harvested"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  53.3110733,
+                  -6.7201713
+                ]
+              }
+            },
+            "name": "Old farm",
+            "city": "Dublin",
+            "country": "Ireland",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531589862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.packaged",
+            "name": "Packaged"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  53.3110733,
+                  -6.7201713
+                ]
+              }
+            },
+            "name": "Old farm",
+            "city": "Dublin",
+            "country": "Ireland",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531689862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.exported",
+            "name": "Exported"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  53.1938947,
+                  -6.1002917
+                ]
+              }
+            },
+            "name": "Newcourt",
+            "city": "Dublin",
+            "country": "Ireland",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531789862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.harvested",
+            "name": "Sold"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  51.8537874,
+                  -3.2076148
+                ]
+              }
+            },
+            "name": "Market",
+            "city": "Smethwick",
+            "country": "England",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    }
+  ],
+  [{
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531389862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.identifiers",
+            "identifiers": {
+              "Serial Number": [
+                "0009243902"
+              ],
+              "GTIN": [
+                "1043345532"
+              ],
+              "RFID": [
+                "E2001AC16987B6305024DED8"
+              ],
+              "EAN13": [
+                "3451080000324"
+              ],
+              "Lot": [
+                "6126L70313EJ184"
+              ]
+            }
+          },
+          {
+            "type": "ambrosus.asset.info",
+            "name": "Potato",
+            "assetType": "ambrosus.assetType.batch",
+            "images": {
+              "default": {
+                "url": "https://upload.wikimedia.org/wikipedia/commons/4/47/Russet_potato_cultivar_with_sprouts.jpg"
+              }
+            },
+            "Product Information": {
+              "Description": "Healthy food delivered daily.",
+              "Country of origin": "Ireland",
+              "Country of Packing": "Ireland"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531489862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.harvested",
+            "name": "Harvested"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  53.3110733,
+                  -6.7201713
+                ]
+              }
+            },
+            "name": "Old farm",
+            "city": "Dublin",
+            "country": "Ireland",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531589862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.packaged",
+            "name": "Packaged"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  53.3110733,
+                  -6.7201713
+                ]
+              }
+            },
+            "name": "Old farm",
+            "city": "Dublin",
+            "country": "Ireland",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531689862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.exported",
+            "name": "Exported"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  53.1938947,
+                  -6.1002917
+                ]
+              }
+            },
+            "name": "Newcourt",
+            "city": "Dublin",
+            "country": "Ireland",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    },
+    {
+      "content": {
+        "idData": {
+          "assetId": "{{ assetId }}",
+          "timestamp": 1531789862,
+          "accessLevel": 0,
+          "createdBy": "{{ userAddress }}"
+        },
+        "data": [{
+            "type": "ambrosus.asset.harvested",
+            "name": "Sold"
+          },
+          {
+            "type": "ambrosus.event.location",
+            "location": {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [
+                  51.8537874,
+                  -3.2076148
+                ]
+              }
+            },
+            "name": "Market",
+            "city": "Smethwick",
+            "country": "England",
+            "locationId": "809c578721b74cae1d56504594819285",
+            "GLN": 9501101530003
+          }
+        ]
+      }
+    }
+  ]
+]
