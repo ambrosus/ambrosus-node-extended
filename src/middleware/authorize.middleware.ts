@@ -24,12 +24,16 @@ export const authorize = (...args) => {
     try {
       const user = iocContainer.get<UserPrincipal>(TYPE.UserPrincipal);
 
-      if (!user || !user.isAuthorized()) {
+      if (!user) {
+        throw new PermissionError({ reason: 'No such user' });
+      }
+
+      if (!user.isAuthorized()) {
         throw new PermissionError({ reason: 'Unauthorized' });
       }
 
       if (args && args.length && !user.hasPermissions(args)) {
-        throw new PermissionError({ reason: 'Unauthorized' });
+        throw new PermissionError({ reason: 'No permission' });
       }
 
       next();

@@ -30,6 +30,8 @@ import { DBClient } from './database/client';
 import { errorHandler } from './middleware';
 import { OrganizationRepository } from './database/repository';
 
+import * as express from 'express';
+
 if (config.email.api) {
   sgMail.setApiKey(config.email.api);
 }
@@ -54,6 +56,8 @@ const db: DBClient = iocContainer.get<DBClient>(TYPE.DBClient);
 db.getConnection().then();
 
 server.setConfig(app => {
+  app.use('/dashboard', express.static('/var/www/dashboard'));
+
   app.use(Sentry.Handlers.requestHandler());
   app.use(Sentry.Handlers.errorHandler());
   app.set('json spaces', 2);
