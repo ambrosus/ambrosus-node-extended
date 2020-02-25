@@ -33,6 +33,9 @@ import { querySchema, assetSchema } from '../validation/schemas';
 import { AssetService } from '../service/asset.service';
 import { AuthService } from '../service/auth.service';
 
+import { Web3Service } from '../service/web3.service';
+import { ValidationError } from '../errors';
+
 @controller(
   '/asset2',
   MIDDLEWARE.Context
@@ -42,7 +45,8 @@ export class Asset2Controller extends BaseController {
   constructor(
     @inject(TYPE.AssetService) private assetService: AssetService,
     @inject(TYPE.LoggerService) protected logger: ILogger,
-    @inject(TYPE.AuthService) private authService: AuthService
+    @inject(TYPE.AuthService) private authService: AuthService,
+    @inject(TYPE.Web3Service) private web3Service: Web3Service
   ) {
     super(logger);
   }
@@ -96,6 +100,10 @@ export class Asset2Controller extends BaseController {
   ): Promise<APIResponse> {
     const authToken = this.authService.getAuthToken(authorization);
 
+    const idData = {'createdBy': authToken.createdBy, 'timestamp': payload.timestamp, 'sequenceNumber': payload.sequenceNumber};
+    
+    this.web3Service.validateSignature2(authToken.createdBy, payload.signature, idData);
+    
     await this.assetService.createAsset(
       assetId,
       authToken.createdBy,

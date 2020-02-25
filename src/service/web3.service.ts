@@ -87,12 +87,14 @@ export class Web3Service {
   }
 
   public validateSignature(address, signature, data): boolean {
-    if (!matchHexOfLength(address, 40)) {
+    if (!matchHexOfLength(address, 40)) {      
       return false;
     }
+
     if (!matchHexOfLength(signature, 130)) {
       return false;
     }
+
     const signer = this.web3.eth.accounts.recover(
       this.serializeForHashing(data),
       signature
@@ -102,6 +104,25 @@ export class Web3Service {
       return false;
     }
     return true;
+  }
+
+  public validateSignature2(address, signature, data) {
+    if (!matchHexOfLength(address, 40)) {      
+      throw new ValidationError({reason: `Invalid address format`});
+    }
+
+    if (!matchHexOfLength(signature, 130)) {
+      throw new ValidationError({reason: `Invalid signature format`});
+    }
+
+    const signer = this.web3.eth.accounts.recover(
+      this.serializeForHashing(data),
+      signature
+    );
+
+    if (address.toLowerCase() !== signer.toLowerCase()) {
+      throw new AuthenticationError({reason: `Signature doesn't match`});
+    }    
   }
 
   public serializeForHashing(object) {
