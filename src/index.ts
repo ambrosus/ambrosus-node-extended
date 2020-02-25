@@ -56,8 +56,8 @@ const db: DBClient = iocContainer.get<DBClient>(TYPE.DBClient);
 db.getConnection().then();
 
 server.setConfig(app => {
-  app.use('/dashboard', express.static(__dirname + '/dashboard'));
-  
+  app.use('/dashboard', express.static('/var/www/dashboard'));
+
   app.use(Sentry.Handlers.requestHandler());
   app.use(Sentry.Handlers.errorHandler());
   app.set('json spaces', 2);
