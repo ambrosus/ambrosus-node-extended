@@ -151,4 +151,15 @@ export class Web3Service {
     }
     return object.toString();
   }
+
+  public calculateHash = (data: object) => {
+    const serialized = this.serializeForHashing(data);
+    return this.web3.eth.accounts.hashMessage(serialized);
+  }
+  
+  public checkHashMatches = (hash: string, data: object, where :string) => {
+    if (hash !== this.calculateHash(data)) {
+      throw new ValidationError({reason: `${where} hash not match`});
+    };
+  }
 }

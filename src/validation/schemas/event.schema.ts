@@ -19,19 +19,13 @@ export const eventSchema = {
         "title": "Event create",
         "type": "object",
         "properties": {
-            "idData": {
+            "content": {
                 "type": "object"
-            },
-            "signature": {
-                "type": "string"
-            },
-            "data": {
-                "type": "array"
             }
         },
         "additionalProperties": false,
         "required": [
-            "idData", "signature", "data"
+            "content"
         ]
     }
 }

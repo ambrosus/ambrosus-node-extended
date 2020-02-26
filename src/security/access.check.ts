@@ -127,9 +127,9 @@ export const ensureCanModifyAccount = async (
 export const ensureCanCreateAsset = async ( // TODO
   ) => {
     return
-}
+};
 
 export const ensureCanCreateEvent = async ( // TODO
   ) => {
     return
-}
+};

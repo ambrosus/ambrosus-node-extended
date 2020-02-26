@@ -34,7 +34,8 @@ import { AssetService } from '../service/asset.service';
 import { AuthService } from '../service/auth.service';
 
 import { Web3Service } from '../service/web3.service';
-import { ValidationError } from '../errors';
+
+import { validateTimestamp } from '../validation/validate.utils';
 
 @controller(
   '/asset2',
@@ -97,28 +98,34 @@ export class Asset2Controller extends BaseController {
     @requestParam('assetId') assetId: string,
     @requestHeaders('authorization') authorization: string,
     @requestBody() payload: {
-      idData: {
-        createdBy: string,
-        timestamp: number,
-        sequenceNumber: number
-      },
-      signature: string
+      content: {
+        idData: {        
+          createdBy: string,
+          timestamp: number,
+          sequenceNumber: number
+        },
+        signature: string
+      }
     }
   ): Promise<APIResponse> {
     const authToken = this.authService.getAuthToken(authorization);
     
     this.web3Service.validateSignature2(
       authToken.createdBy, 
-      payload.signature, 
-      payload.idData
+      payload.content.signature, 
+      payload.content.idData
     );
+
+    validateTimestamp(payload.content.idData.timestamp);
+
+    this.web3Service.checkHashMatches(assetId, payload.content, 'assetId');
     
     await this.assetService.createAsset(
       assetId,
       authToken.createdBy,
-      payload.idData.timestamp,
-      payload.idData.sequenceNumber,
-      payload.signature
+      payload.content.idData.timestamp,
+      payload.content.idData.sequenceNumber,
+      payload.content.signature
     );
 
     const result = await this.assetService.getAsset(assetId);

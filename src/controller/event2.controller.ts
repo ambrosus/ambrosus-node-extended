@@ -36,6 +36,8 @@ import { AuthService } from '../service/auth.service';
 
 import { Web3Service } from '../service/web3.service';
 
+import { validateTimestamp } from '../validation/validate.utils';
+
 @controller(
   '/event2',
   MIDDLEWARE.Context
@@ -128,34 +130,42 @@ export class Event2Controller extends BaseController {
     @requestParam('eventId') eventId: string,
     @requestHeaders('authorization') authorization: string,
     @requestBody() payload: {
-      idData: {
-        assetId: string,
-        timestamp: number,
-        accessLevel: number,
-        createdBy: string,
-        dataHash: string
-      },
-      signature: string,
-      data: object[]      
+      content: {
+        idData: {
+          assetId: string,
+          timestamp: number,
+          accessLevel: number,
+          createdBy: string,
+          dataHash: string
+        },
+        signature: string,
+        data: object[]
+      }      
     }
   ): Promise<APIResponse> {
     const authToken = this.authService.getAuthToken(authorization);
 
     this.web3Service.validateSignature2(
       authToken.createdBy, 
-      payload.signature, 
-      payload.idData
+      payload.content.signature, 
+      payload.content.idData
     );
+
+    validateTimestamp(payload.content.idData.timestamp);
+
+    this.web3Service.checkHashMatches(payload.content.idData.dataHash, payload.content.data, 'event.data');
+
+    this.web3Service.checkHashMatches(eventId, payload.content, 'eventId')
 
     await this.eventService.createEvent(
       eventId,
-      payload.idData.assetId,
-      payload.idData.accessLevel,
-      payload.idData.timestamp,
+      payload.content.idData.assetId,
+      payload.content.idData.accessLevel,
+      payload.content.idData.timestamp,
       authToken.createdBy,
-      payload.idData.dataHash,
-      payload.signature,
-      payload.data
+      payload.content.idData.dataHash,
+      payload.content.signature,
+      payload.content.data
     );
 
     const result = await this.eventService.getEvent(eventId);
