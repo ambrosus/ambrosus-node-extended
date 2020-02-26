@@ -12,7 +12,7 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { 
+import {
   ValidationError
 } from '../errors';
 
@@ -22,6 +22,6 @@ export const getTimestamp = () => Math.floor(Date.now() / 1000);
 
 export const validateTimestamp = (timestamp: number) => {
   if (timestamp >= (getTimestamp() + maximumEntityTimestampOvertake)) {
-    throw new ValidationError({reason: "timestamp out of range"});
+    throw new ValidationError({reason: 'timestamp out of range'});
   }
 };

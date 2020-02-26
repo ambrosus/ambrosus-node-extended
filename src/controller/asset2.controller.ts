@@ -99,7 +99,7 @@ export class Asset2Controller extends BaseController {
     @requestHeaders('authorization') authorization: string,
     @requestBody() payload: {
       content: {
-        idData: {        
+        idData: {
           createdBy: string,
           timestamp: number,
           sequenceNumber: number
@@ -109,17 +109,17 @@ export class Asset2Controller extends BaseController {
     }
   ): Promise<APIResponse> {
     const authToken = this.authService.getAuthToken(authorization);
-    
+
     this.web3Service.validateSignature2(
-      authToken.createdBy, 
-      payload.content.signature, 
+      authToken.createdBy,
+      payload.content.signature,
       payload.content.idData
     );
 
     validateTimestamp(payload.content.idData.timestamp);
 
     this.web3Service.checkHashMatches(assetId, payload.content, 'assetId');
-    
+
     await this.assetService.createAsset(
       assetId,
       authToken.createdBy,

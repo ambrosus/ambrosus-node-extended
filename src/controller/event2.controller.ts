@@ -140,14 +140,14 @@ export class Event2Controller extends BaseController {
         },
         signature: string,
         data: object[]
-      }      
+      }
     }
   ): Promise<APIResponse> {
     const authToken = this.authService.getAuthToken(authorization);
 
     this.web3Service.validateSignature2(
-      authToken.createdBy, 
-      payload.content.signature, 
+      authToken.createdBy,
+      payload.content.signature,
       payload.content.idData
     );
 
@@ -155,7 +155,7 @@ export class Event2Controller extends BaseController {
 
     this.web3Service.checkHashMatches(payload.content.idData.dataHash, payload.content.data, 'event.data');
 
-    this.web3Service.checkHashMatches(eventId, payload.content, 'eventId')
+    this.web3Service.checkHashMatches(eventId, payload.content, 'eventId');
 
     await this.eventService.createEvent(
       eventId,
