@@ -32,6 +32,8 @@ import { OrganizationRepository } from './database/repository';
 
 import * as express from 'express';
 
+import * as pack from '../package.json';
+
 if (config.email.api) {
   sgMail.setApiKey(config.email.api);
 }
@@ -56,6 +58,8 @@ const db: DBClient = iocContainer.get<DBClient>(TYPE.DBClient);
 db.getConnection().then();
 
 server.setConfig(app => {
+  logger.info(`Version: ${pack.version}`);
+
   app.use('/dashboard', express.static('/var/www/dashboard'));
 
   app.use(Sentry.Handlers.requestHandler());
