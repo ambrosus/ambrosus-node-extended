@@ -19,11 +19,8 @@ export const assetSchema = {
         "title": "Asset create",
         "type": "object",
         "properties": {
-            "timestamp": {
-                "type": "number"
-            },
-            "sequenceNumber": {
-                "type": "number"
+            "idData": {
+                "type": "object"
             },
             "signature": {
                 "type": "string"
@@ -31,7 +28,7 @@ export const assetSchema = {
         },
         "additionalProperties": false,
         "required": [
-            "timestamp", "sequenceNumber", "signature"
+            "idData", "signature"
         ]
     }
 }

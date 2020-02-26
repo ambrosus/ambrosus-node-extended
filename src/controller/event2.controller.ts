@@ -34,6 +34,8 @@ import { validate } from '../middleware';
 import { querySchema, eventSchema } from '../validation/schemas';
 import { AuthService } from '../service/auth.service';
 
+import { Web3Service } from '../service/web3.service';
+
 @controller(
   '/event2',
   MIDDLEWARE.Context
@@ -43,7 +45,8 @@ export class Event2Controller extends BaseController {
   constructor(
     @inject(TYPE.EventService) private eventService: EventService,
     @inject(TYPE.LoggerService) protected logger: ILogger,
-    @inject(TYPE.AuthService) private authService: AuthService
+    @inject(TYPE.AuthService) private authService: AuthService,
+    @inject(TYPE.Web3Service) private web3Service: Web3Service
   ) {
     super(logger);
   }
@@ -125,23 +128,32 @@ export class Event2Controller extends BaseController {
     @requestParam('eventId') eventId: string,
     @requestHeaders('authorization') authorization: string,
     @requestBody() payload: {
-      assetId: string,
-      timestamp: number,
-      accessLevel: number,
-      dataHash: string,
+      idData: {
+        assetId: string,
+        timestamp: number,
+        accessLevel: number,
+        createdBy: string,
+        dataHash: string
+      },
       signature: string,
-      data: object[]
+      data: object[]      
     }
   ): Promise<APIResponse> {
     const authToken = this.authService.getAuthToken(authorization);
 
+    this.web3Service.validateSignature2(
+      authToken.createdBy, 
+      payload.signature, 
+      payload.idData
+    );
+
     await this.eventService.createEvent(
       eventId,
-      payload.assetId,
-      payload.accessLevel,
-      payload.timestamp,
+      payload.idData.assetId,
+      payload.idData.accessLevel,
+      payload.idData.timestamp,
       authToken.createdBy,
-      payload.dataHash,
+      payload.idData.dataHash,
       payload.signature,
       payload.data
     );

@@ -96,19 +96,28 @@ export class Asset2Controller extends BaseController {
   public async createAsset(
     @requestParam('assetId') assetId: string,
     @requestHeaders('authorization') authorization: string,
-    @requestBody() payload: {timestamp: number, sequenceNumber: number, signature: string}
+    @requestBody() payload: {
+      idData: {
+        createdBy: string,
+        timestamp: number,
+        sequenceNumber: number
+      },
+      signature: string
+    }
   ): Promise<APIResponse> {
     const authToken = this.authService.getAuthToken(authorization);
-
-    const idData = {'createdBy': authToken.createdBy, 'timestamp': payload.timestamp, 'sequenceNumber': payload.sequenceNumber};
     
-    this.web3Service.validateSignature2(authToken.createdBy, payload.signature, idData);
+    this.web3Service.validateSignature2(
+      authToken.createdBy, 
+      payload.signature, 
+      payload.idData
+    );
     
     await this.assetService.createAsset(
       assetId,
       authToken.createdBy,
-      payload.timestamp,
-      payload.sequenceNumber,
+      payload.idData.timestamp,
+      payload.idData.sequenceNumber,
       payload.signature
     );
 
