@@ -33,6 +33,10 @@ import { querySchema, assetSchema } from '../validation/schemas';
 import { AssetService } from '../service/asset.service';
 import { AuthService } from '../service/auth.service';
 
+import { Web3Service } from '../service/web3.service';
+
+import { validateTimestamp } from '../validation/validate.utils';
+
 @controller(
   '/asset2',
   MIDDLEWARE.Context
@@ -42,7 +46,8 @@ export class Asset2Controller extends BaseController {
   constructor(
     @inject(TYPE.AssetService) private assetService: AssetService,
     @inject(TYPE.LoggerService) protected logger: ILogger,
-    @inject(TYPE.AuthService) private authService: AuthService
+    @inject(TYPE.AuthService) private authService: AuthService,
+    @inject(TYPE.Web3Service) private web3Service: Web3Service
   ) {
     super(logger);
   }
@@ -92,16 +97,35 @@ export class Asset2Controller extends BaseController {
   public async createAsset(
     @requestParam('assetId') assetId: string,
     @requestHeaders('authorization') authorization: string,
-    @requestBody() payload: {timestamp: number, sequenceNumber: number, signature: string}
+    @requestBody() payload: {
+      content: {
+        idData: {
+          createdBy: string,
+          timestamp: number,
+          sequenceNumber: number
+        },
+        signature: string
+      }
+    }
   ): Promise<APIResponse> {
     const authToken = this.authService.getAuthToken(authorization);
+
+    this.web3Service.validateSignature2(
+      authToken.createdBy,
+      payload.content.signature,
+      payload.content.idData
+    );
+
+    validateTimestamp(payload.content.idData.timestamp);
+
+    this.web3Service.checkHashMatches(assetId, payload.content, 'assetId');
 
     await this.assetService.createAsset(
       assetId,
       authToken.createdBy,
-      payload.timestamp,
-      payload.sequenceNumber,
-      payload.signature
+      payload.content.idData.timestamp,
+      payload.content.idData.sequenceNumber,
+      payload.content.signature
     );
 
     const result = await this.assetService.getAsset(assetId);

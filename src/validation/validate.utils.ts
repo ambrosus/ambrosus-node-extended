@@ -12,20 +12,16 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/* tslint:disable */
-export const assetSchema = {
-    assetCreate: {
-        "$async": true,
-        "title": "Asset create",
-        "type": "object",
-        "properties": {
-            "content": {
-                "type": "object"
-            }
-        },
-        "additionalProperties": false,
-        "required": [
-            "content"
-        ]
-    }
-}
+import {
+  ValidationError
+} from '../errors';
+
+const maximumEntityTimestampOvertake = 86400;
+
+export const getTimestamp = () => Math.floor(Date.now() / 1000);
+
+export const validateTimestamp = (timestamp: number) => {
+  if (timestamp >= (getTimestamp() + maximumEntityTimestampOvertake)) {
+    throw new ValidationError({reason: 'timestamp out of range'});
+  }
+};

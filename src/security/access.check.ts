@@ -24,7 +24,7 @@ import { Permission } from '../constant/';
 import { 
   PermissionError,
   ValidationError
- } from '../errors';
+} from '../errors';
 
 function hasPermission(permissions: string[], permission: string): boolean {
   return permissions ? permissions.indexOf(permission) > -1 : false;
@@ -127,9 +127,9 @@ export const ensureCanModifyAccount = async (
 export const ensureCanCreateAsset = async ( // TODO
   ) => {
     return
-  }
+};
 
 export const ensureCanCreateEvent = async ( // TODO
   ) => {
     return
-  }
+};

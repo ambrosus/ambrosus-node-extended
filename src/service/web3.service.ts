@@ -90,9 +90,11 @@ export class Web3Service {
     if (!matchHexOfLength(address, 40)) {
       return false;
     }
+
     if (!matchHexOfLength(signature, 130)) {
       return false;
     }
+
     const signer = this.web3.eth.accounts.recover(
       this.serializeForHashing(data),
       signature
@@ -102,6 +104,25 @@ export class Web3Service {
       return false;
     }
     return true;
+  }
+
+  public validateSignature2(address, signature, data) {
+    if (!matchHexOfLength(address, 40)) {
+      throw new ValidationError({reason: `Invalid address format`});
+    }
+
+    if (!matchHexOfLength(signature, 130)) {
+      throw new ValidationError({reason: `Invalid signature format`});
+    }
+
+    const signer = this.web3.eth.accounts.recover(
+      this.serializeForHashing(data),
+      signature
+    );
+
+    if (address.toLowerCase() !== signer.toLowerCase()) {
+      throw new AuthenticationError({reason: `Signature doesn't match`});
+    }
   }
 
   public serializeForHashing(object) {
@@ -129,5 +150,16 @@ export class Web3Service {
       return `"${object}"`;
     }
     return object.toString();
+  }
+
+  public calculateHash = (data: object) => {
+    const serialized = this.serializeForHashing(data);
+    return this.web3.eth.accounts.hashMessage(serialized);
+  }
+
+  public checkHashMatches = (hash: string, data: object, where: string) => {
+    if (hash !== this.calculateHash(data)) {
+      throw new ValidationError({reason: `${where} hash not match`});
+    }
   }
 }

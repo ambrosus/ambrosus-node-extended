@@ -19,28 +19,13 @@ export const eventSchema = {
         "title": "Event create",
         "type": "object",
         "properties": {
-            "timestamp": {
-                "type": "number"
-            },
-            "assetId": {
-                "type": "string"
-            },
-            "accessLevel": {
-                "type": "number"
-            },
-            "dataHash": {
-                "type": "string"
-            },
-            "signature": {
-                "type": "string"
-            },
-            "data": {
-                "type": "array"
+            "content": {
+                "type": "object"
             }
         },
         "additionalProperties": false,
         "required": [
-            "timestamp", "assetId", "accessLevel", "dataHash", "signature", "data"
+            "content"
         ]
     }
 }
