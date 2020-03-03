@@ -29,6 +29,7 @@ import * as sgMail from '@sendgrid/mail';
 import { DBClient } from './database/client';
 import { errorHandler } from './middleware';
 import { BuiltInService } from './service/builtin.service';
+import { EmailService } from './service/email.service';
 
 import * as express from 'express';
 
@@ -60,6 +61,9 @@ db.getConnection().then();
 
 const builtInService = iocContainer.get<BuiltInService>(TYPE.BuiltInService);
 builtInService.checkBuiltIn().then();
+
+const emailService = iocContainer.get<EmailService>(TYPE.EmailService);
+emailService.paramsCheck();
 
 server.setConfig(app => {
   logger.info(`Version: ${pack.version}`);

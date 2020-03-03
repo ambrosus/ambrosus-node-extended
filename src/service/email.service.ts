@@ -94,6 +94,23 @@ export class EmailService {
     }
   }
 
+  public paramsCheck() {
+    this.checkVariable('config.dashboardUrl', config.dashboardUrl);
+    this.checkVariable('config.email.api', config.email.api);
+    this.checkVariable('config.email.defaultFrom', config.email.defaultFrom);
+    this.checkVariable('config.email.orgReqTo', config.email.orgReqTo);
+    this.checkVariable('config.email.templateIdInvite', config.email.templateIdInvite);
+    this.checkVariable('config.email.templateIdOrgReq', config.email.templateIdOrgReq);
+    this.checkVariable('config.email.templateIdOrgReqApprove', config.email.templateIdOrgReqApprove);
+    this.checkVariable('config.email.templateIdOrgReqRefuse', config.email.templateIdOrgReqRefuse);
+  }
+
+  private checkVariable(name: string, variable) {
+    if (variable === undefined) {
+      this.logger.error('checkVariable: undefined', name);
+    }
+  }
+
   private async handleSendError(error) {
     this.logger.captureError(error);
     const { message, code, response } = error;
