@@ -44,6 +44,8 @@ export const TYPE: any = {
   LoggerService: Symbol.for('LoggerService'),
 
   AccountService: Symbol.for('AccountService'),
+  StateService: Symbol.for('StateService'),
+  BuiltInService: Symbol.for('BuiltInService'),
   AssetService: Symbol.for('AssetService'),
   EventService: Symbol.for('EventService'),
   BundleService: Symbol.for('BundleService'),
