@@ -167,53 +167,6 @@ describe('(Controller) Analytics /analytics', () => {
 
   });
 
-  describe('(GET) /:organizationId/:collection/count/:start/:end/aggregate/:group', () => {
-
-    // it('success as super_account, per hour', done => {
-    //   chai.request(app_server)
-    //     .get(`/analytics/2/asset/count/${1544979381}/${1545079381}/aggregate/hour`)
-    //     .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
-    //     .end((err, res) => {
-    //       res.should.have.status(200);
-    //       expect(res.body.data.count[res.body.data.count.length - 2].count).to.eq(2);
-    //       done();
-    //     });
-    // });
-
-    it('success as admin_account of his organization, per day', done => {
-      chai.request(app_server)
-        .get(`/analytics/2/asset/count/${1535079201}/${1545079381}/aggregate/day`)
-        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
-        .end((err, res) => {
-          res.should.have.status(200);
-
-          expect(res.body.data.count[res.body.data.count.length - 1].count).to.eq(2);
-          done();
-        });
-    });
-
-    it('fail as admin_account, another organization', done => {
-      chai.request(app_server)
-        .get(`/analytics/1/asset/count/${1535079201}/${1545079381}/total`)
-        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
-        .end((err, res) => {
-          res.should.have.status(403);
-          done();
-        });
-    });
-
-    it('fail as regular_account', done => {
-      chai.request(app_server)
-        .get(`/analytics/2/asset/count/${1535079201}/${1545079381}/total`)
-        .set('Authorization', `AMB_TOKEN ${tokens.regular_account}`)
-        .end((err, res) => {
-          res.should.have.status(403);
-          done();
-        });
-    });
-
-  });
-
   describe('(GET) /:collection/count', () => {
 
     it('success as super_account', done => {
@@ -277,43 +230,6 @@ describe('(Controller) Analytics /analytics', () => {
     it('fail as admin_account', done => {
       chai.request(app_server)
         .get(`/analytics/asset/count/${1535079201}/${1545079381}/total`)
-        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
-        .end((err, res) => {
-          res.should.have.status(403);
-          done();
-        });
-    });
-
-  });
-
-  describe('(GET) /:collection/count/:start/:end/aggregate/group', () => {
-
-    it('success as super_account', done => {
-      chai.request(app_server)
-        .get(`/analytics/asset/count/${1535079201}/${1545079381}/aggregate/day`)
-        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
-        .end((err, res) => {
-          res.should.have.status(200);
-          expect(res.body.data.count[res.body.data.count.length - 1].count).to.eq(3);
-          done();
-        });
-    });
-
-    it('success as super_account, bundle_metadata', done => {
-      chai.request(app_server)
-        .get(`/analytics/bundle/count/${1535079201}/${1545079381}/aggregate/day`)
-        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
-        .end((err, res) => {
-          res.should.have.status(200);
-          expect(res.body.data.count[0].count).to.eq(1);
-          expect(res.body.data.count[res.body.data.count.length - 1].count).to.eq(1);
-          done();
-        });
-    });
-
-    it('fail as admin_account', done => {
-      chai.request(app_server)
-        .get(`/analytics/asset/count/${1535079201}/${1545079381}/aggregate/day`)
         .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
         .end((err, res) => {
           res.should.have.status(403);

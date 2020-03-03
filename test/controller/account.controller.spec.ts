@@ -74,32 +74,6 @@ describe('(Controller) Account /account', () => {
 
   });
 
-  describe('(GET) /', () => {
-
-    it('success, as super account', done => {
-      chai.request(app_server)
-        .get(`/account`)
-        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.data.should.be.a('array');
-          expect(res.body.data.length).to.equal(3);
-          done();
-        });
-    });
-
-    it('fail, as regular account, w/o super_account permission', done => {
-      chai.request(app_server)
-        .get(`/account`)
-        .set('Authorization', `AMB_TOKEN ${tokens.regular_account}`)
-        .end((err, res) => {
-          res.should.have.status(403);
-          done();
-        });
-    });
-
-  });
-
   describe('(GET) /:address', () => {
 
     it('succeess, get own account', done => {
@@ -272,31 +246,6 @@ describe('(Controller) Account /account', () => {
         .end((err, res) => {
           res.should.have.status(200);
           expect(res.body.data.token).to.not.exist;
-          done();
-        });
-    });
-
-  });
-
-  describe('(POST) /query', () => {
-
-    it('success, as super_account', done => {
-      chai.request(app_server)
-        .post(`/account/query`)
-        .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
-        .end((err, res) => {
-          res.should.have.status(200);
-          expect(res.body.data.length).to.equal(3);
-          done();
-        });
-    });
-
-    it('fail, w/o super_account permission', done => {
-      chai.request(app_server)
-        .post(`/account/query`)
-        .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
-        .end((err, res) => {
-          res.should.have.status(403);
           done();
         });
     });
