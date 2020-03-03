@@ -16,18 +16,20 @@ import { config } from '../config';
 
 import { TYPE } from '../constant/types';
 
-import { 
+import {
   injectable,
   inject
 } from 'inversify';
 
-import { Account } from '../model';
-
 import { ILogger } from '../interface/logger.inferface';
-import { Organization, APIQuery } from '../model';
+import { Account, Organization, APIQuery } from '../model';
 import { getTimestamp } from '../util';
-import { AccountRepository } from '../database/repository';
-import { OrganizationRepository } from '../database/repository';
+
+import {
+  AccountRepository,
+  OrganizationRepository
+} from '../database/repository';
+
 import { StateService } from '../service/state.service';
 import { AccountService } from '../service/account.service';
 import { Web3Service } from '../service/web3.service';
@@ -43,18 +45,18 @@ export class BuiltInService {
     @inject(TYPE.StateService) private stateService: StateService,
     @inject(TYPE.AccountService) private accountService: AccountService,
     @inject(TYPE.Web3Service) private web3Service: Web3Service
-  ) {    
+  ) {
   }
 
   public checkBuiltInAccount = async () => {
     this.logger.info('checkBuiltInAccount: ...');
 
     let privateKey = '';
-  
+
     try {
       privateKey = await this.stateService.read(builtInPrivateKey);
-    } catch(e) {      
-      privateKey = this.web3Service.createKeyPair().privateKey;      
+    } catch (e) {
+      privateKey = this.web3Service.createKeyPair().privateKey;
 
       await this.stateService.write(builtInPrivateKey, privateKey);
 
@@ -62,9 +64,9 @@ export class BuiltInService {
     }
 
     const address = this.web3Service.addressFromSecret(privateKey);
-  
+
     const accountProbe = await this.accountRepository.getAccount(new APIQuery({ address }), 0, 1000, true);
-    
+
     if (accountProbe === undefined ) {
       this.logger.debug('checkBuiltInAccount: creating account ...');
 
@@ -84,17 +86,17 @@ export class BuiltInService {
       this.logger.debug('checkBuiltInAccount: account found.');
     }
 
-    this.logger.info('checkBuiltInAccount: address', address);    
-  };
+    this.logger.info('checkBuiltInAccount: address', address);
+  }
 
   public checkBuiltInOrganization = async () => {
     this.logger.info('checkBuiltInOrganization: ...');
-  
+
     const organizationProbe = await this.organizationRepository.findOne(new APIQuery({ organizationId: 0 }));
-  
+
     if (organizationProbe === undefined) {
       this.logger.debug('checkBuiltInOrganization: creating organization ...');
-  
+
       const organization = new Organization;
       organization.owner = config.builtinAddress;
       organization.title = 'built-in';
@@ -102,7 +104,7 @@ export class BuiltInService {
       organization.createdBy = config.builtinAddress;
       organization.organizationId = 0;
       organization.createdOn = getTimestamp();
-  
+
       await this.organizationRepository.create(organization);
 
       this.logger.debug('checkBuiltInOrganization: organization created.');

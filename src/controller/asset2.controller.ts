@@ -45,9 +45,9 @@ export class Asset2Controller extends BaseController {
 
   constructor(
     @inject(TYPE.LoggerService) protected logger: ILogger,
-    @inject(TYPE.AssetService) private assetService: AssetService,    
+    @inject(TYPE.AssetService) private assetService: AssetService,
     @inject(TYPE.AuthService) private authService: AuthService,
-    @inject(TYPE.Web3Service) private web3Service: Web3Service    
+    @inject(TYPE.Web3Service) private web3Service: Web3Service
   ) {
     super(logger);
   }
@@ -109,7 +109,7 @@ export class Asset2Controller extends BaseController {
     }
   ): Promise<APIResponse> {
     const authToken = this.authService.getAuthToken(authorization);
-    
+
     this.web3Service.validateSignature2(
       authToken.createdBy,
       payload.content.signature,

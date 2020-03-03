@@ -12,7 +12,9 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+// tslint:disable-next-line:no-var-requires
 const fs = require('fs');
+// tslint:disable-next-line:no-var-requires
 const path = require('path');
 
 export const writeFile = (filepath, data, opts = {}) =>
@@ -37,9 +39,9 @@ export const readFile = async (filepath: string) =>
     fs.readFile(filepath, 'utf8', (err, data) => {
       if (err) {
         return reject(err);
-      } else {
-        return resolve(data);
       }
+
+      return resolve(data);
     });
   });
 

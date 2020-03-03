@@ -19,18 +19,6 @@ export class StateService {
     this.storeFilePath = config.statePath;
   }
 
-  private async readFile() {    
-    if (await checkFileExists(this.storeFilePath)) {
-      return JSON.parse(String(await readFile(this.storeFilePath)));
-    }    
-
-    return {};
-  }
-
-  private async writeFile(contents) {
-    await writeFile(this.storeFilePath, JSON.stringify(contents, null, 2), {mode: 0o660});
-  }
-
   public async write(key: string, value) {
     const contents = await this.readFile();
     contents[key] = value;
@@ -55,5 +43,17 @@ export class StateService {
   public async has(key: string) {
     const contents = await this.readFile();
     return contents[key] !== undefined;
+  }
+
+  private async readFile() {
+    if (await checkFileExists(this.storeFilePath)) {
+      return JSON.parse(String(await readFile(this.storeFilePath)));
+    }
+
+    return {};
+  }
+
+  private async writeFile(contents) {
+    await writeFile(this.storeFilePath, JSON.stringify(contents, null, 2), {mode: 0o660});
   }
 }
