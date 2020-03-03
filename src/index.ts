@@ -28,7 +28,7 @@ import * as Sentry from '@sentry/node';
 import * as sgMail from '@sendgrid/mail';
 import { DBClient } from './database/client';
 import { errorHandler } from './middleware';
-import { OrganizationRepository } from './database/repository';
+import { BuiltInService } from './service/builtin.service';
 
 import * as express from 'express';
 
@@ -54,8 +54,12 @@ const server = new InversifyExpressServer(
 );
 
 const logger = iocContainer.get<LoggerService>(TYPE.LoggerService);
+
 const db: DBClient = iocContainer.get<DBClient>(TYPE.DBClient);
 db.getConnection().then();
+
+const builtInService = iocContainer.get<BuiltInService>(TYPE.BuiltInService);
+builtInService.checkBuiltIn().then();
 
 server.setConfig(app => {
   logger.info(`Version: ${pack.version}`);
@@ -113,11 +117,8 @@ process.on('uncaughtException', error => {
   Sentry.captureException(error);
 });
 
-const organizationRepository = iocContainer.get<OrganizationRepository>(TYPE.OrganizationRepository);
-
-organizationRepository.builtInCheck().then();
-
 export const app_server = server.build();
+
 app_server.listen(config.port);
 
 logger.info(`${process.env.NODE_ENV} Hermes++ is running on ${config.port} :)`);

@@ -44,8 +44,8 @@ import { validateTimestamp } from '../validation/validate.utils';
 export class Asset2Controller extends BaseController {
 
   constructor(
-    @inject(TYPE.AssetService) private assetService: AssetService,
     @inject(TYPE.LoggerService) protected logger: ILogger,
+    @inject(TYPE.AssetService) private assetService: AssetService,
     @inject(TYPE.AuthService) private authService: AuthService,
     @inject(TYPE.Web3Service) private web3Service: Web3Service
   ) {

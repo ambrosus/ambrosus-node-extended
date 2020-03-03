@@ -58,6 +58,8 @@ import { BundleService } from './service/bundle.service';
 import { EventService } from './service/event.service';
 import { LoggerService } from './service/logger.service';
 import { EmailService } from './service/email.service';
+import { StateService } from './service/state.service';
+import { BuiltInService } from './service/builtin.service';
 
 import { OrganizationService } from './service/organization.service';
 import { Web3Service } from './service/web3.service';
@@ -141,6 +143,9 @@ iocContainer.bind<AuthService>(TYPE.AuthService).to(AuthService);
 iocContainer.bind<Web3Service>(TYPE.Web3Service).to(Web3Service);
 iocContainer.bind<LoggerService>(TYPE.LoggerService).to(LoggerService);
 iocContainer.bind<AccountService>(TYPE.AccountService).to(AccountService);
+iocContainer.bind<StateService>(TYPE.StateService).to(StateService);
+iocContainer.bind<BuiltInService>(TYPE.BuiltInService).to(BuiltInService);
+
 iocContainer.bind<AssetService>(TYPE.AssetService).to(AssetService);
 iocContainer.bind<EventService>(TYPE.EventService).to(EventService);
 iocContainer.bind<BundleService>(TYPE.BundleService).to(BundleService);
