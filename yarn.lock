@@ -1861,6 +1861,13 @@ expect-ct@0.2.0:
   resolved "https://registry.yarnpkg.com/expect-ct/-/expect-ct-0.2.0.tgz#3a54741b6ed34cc7a93305c605f63cd268a54a62"
   integrity sha512-6SK3MG/Bbhm8MsgyJAylg+ucIOU71/FzyFalcfu5nY19dH8y/z0tBJU0wrNBXD4B27EoQtqPF/9wqH0iYAd04g==
 
+express-error-handler@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/express-error-handler/-/express-error-handler-1.1.0.tgz#ff2edb1fedcfcab1e601c60aab3554982f1f6497"
+  integrity sha1-/y7bH+3PyrHmAcYKqzVUmC8fZJc=
+  dependencies:
+    mout "0.12.0"
+
 express@4.16.2:
   version "4.16.2"
   resolved "https://registry.yarnpkg.com/express/-/express-4.16.2.tgz#e35c6dfe2d64b7dca0a5cd4f21781be3299e076c"
@@ -3474,6 +3481,11 @@ morgan@^1.9.1:
     depd "~1.1.2"
     on-finished "~2.3.0"
     on-headers "~1.0.1"
+
+mout@0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/mout/-/mout-0.12.0.tgz#6d5b242ee331f9d04c68e58f77a91a3060e8cacb"
+  integrity sha1-bVskLuMx+dBMaOWPd6kaMGDoyss=
 
 mout@^0.11.0:
   version "0.11.1"
