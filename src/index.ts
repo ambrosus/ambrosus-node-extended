@@ -106,14 +106,15 @@ server.setConfig(app => {
 });
 
 server.setErrorConfig(app => {
-  console.log('setErrorConfig');
+  const errorHandler404 = require('express-error-handler');
 
-  var errorHandler404 = require('express-error-handler'),
-  handler404 = errorHandler404({
-    static: {
-      '404': '/var/www/dashboard/index.html'
+  const handler404 = errorHandler404(
+    {
+      static: {
+        '404': '/var/www/dashboard/index.html',
+      },
     }
-  });
+  );
 
   app.use(errorHandler);
 

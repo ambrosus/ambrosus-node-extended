@@ -87,7 +87,7 @@ export const errorHandler = (err, req, res, next) => {
   Sentry.captureException(err);
 
   let message = `${err.message} ${getErrorMessages(err)}`;
-  
+
   switch (err.name) {
     case 'ValidationError':
       status = 400;
