@@ -87,7 +87,7 @@ export const errorHandler = (err, req, res, next) => {
   Sentry.captureException(err);
 
   let message = `${err.message} ${getErrorMessages(err)}`;
-
+  
   switch (err.name) {
     case 'ValidationError':
       status = 400;
@@ -109,6 +109,9 @@ export const errorHandler = (err, req, res, next) => {
       break;
     case 'NotFoundError':
       status = 404;
+
+      console.log('ERROR_404');
+
       break;
     case 'ConnectionError':
       status = 500;

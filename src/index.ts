@@ -106,7 +106,23 @@ server.setConfig(app => {
 });
 
 server.setErrorConfig(app => {
+  console.log('setErrorConfig');
+
+  var errorHandler404 = require('express-error-handler'),
+  handler404 = errorHandler404({
+    static: {
+      '404': '/var/www/dashboard/index.html'
+    }
+  });
+
   app.use(errorHandler);
+
+  // After all your routes...
+  // Pass a 404 into next(err)
+  app.use( errorHandler404.httpError(404) );
+
+  // Handle all unhandled errors:
+  app.use( handler404 );
 });
 
 // Server errors
