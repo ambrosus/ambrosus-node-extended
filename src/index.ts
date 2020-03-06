@@ -35,6 +35,11 @@ import * as express from 'express';
 
 import * as pack from '../package.json';
 
+// tslint:disable-next-line:no-var-requires
+const fs = require('fs');
+
+const dashboardStatic = '/var/www/dashboard';
+
 if (config.email.api) {
   sgMail.setApiKey(config.email.api);
 }
@@ -68,7 +73,7 @@ emailService.paramsCheck();
 server.setConfig(app => {
   logger.info(`version: ${pack.version}`);
 
-  app.use('/dashboard', express.static('/var/www/dashboard'));
+  app.use('/dashboard', express.static(dashboardStatic));
 
   app.use(Sentry.Handlers.requestHandler());
   app.use(Sentry.Handlers.errorHandler());
@@ -105,25 +110,24 @@ server.setConfig(app => {
   });
 });
 
+function handler404(request, response) {
+  if (request.accepts('html')) {
+    logger.debug('REDIRECT(404)', request.url);
+
+    fs.readFile(`${dashboardStatic}/index.html`, 'utf-8',
+      (err, data) => {
+        response.writeHead(404, {'Content-Type': 'text/html'});
+        response.write(data);
+        response.end();
+      }
+    );
+  }
+}
+
 server.setErrorConfig(app => {
-  const errorHandler404 = require('express-error-handler');
-
-  const handler404 = errorHandler404(
-    {
-      static: {
-        '404': '/var/www/dashboard/index.html',
-      },
-    }
-  );
-
   app.use(errorHandler);
 
-  // After all your routes...
-  // Pass a 404 into next(err)
-  app.use( errorHandler404.httpError(404) );
-
-  // Handle all unhandled errors:
-  app.use( handler404 );
+  app.get('*', handler404);
 });
 
 // Server errors
