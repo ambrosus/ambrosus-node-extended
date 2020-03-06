@@ -19,6 +19,9 @@ export const assetSchema = {
         "title": "Asset create",
         "type": "object",
         "properties": {
+            "assetId": {
+                "type": "string"
+            },
             "content": {
                 "type": "object"
             }

@@ -110,7 +110,7 @@ export const errorHandler = (err, req, res, next) => {
     case 'NotFoundError':
       status = 404;
 
-      console.log('ERROR_404');
+      console.log('ERROR_404 '+req);
 
       break;
     case 'ConnectionError':

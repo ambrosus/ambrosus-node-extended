@@ -19,6 +19,9 @@ export const eventSchema = {
         "title": "Event create",
         "type": "object",
         "properties": {
+            "eventId": {
+                "type": "string"
+            },
             "content": {
                 "type": "object"
             }

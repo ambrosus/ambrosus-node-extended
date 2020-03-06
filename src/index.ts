@@ -66,7 +66,7 @@ const emailService = iocContainer.get<EmailService>(TYPE.EmailService);
 emailService.paramsCheck();
 
 server.setConfig(app => {
-  logger.info(`Version: ${pack.version}`);
+  logger.info(`version: ${pack.version}`);
 
   app.use('/dashboard', express.static('/var/www/dashboard'));
 
