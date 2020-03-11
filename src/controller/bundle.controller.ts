@@ -51,6 +51,18 @@ export class BundleController extends BaseController {
   public async getBundle(
     @requestParam('bundleId') bundleId: string
   ): Promise<APIResponse> {
+    console.log('getBundle');
+
+    const result = await this.bundleService.getBundle(bundleId);
+    return APIResponse.fromSingleResult(result);
+  }
+
+  @httpGet('/:bundleId/info')
+  public async getBundleInfo(
+    @requestParam('bundleId') bundleId: string
+  ): Promise<APIResponse> {
+    console.log('getBundleInfo');
+
     const result = await this.bundleService.getBundle(bundleId);
     return APIResponse.fromSingleResult(result);
   }
