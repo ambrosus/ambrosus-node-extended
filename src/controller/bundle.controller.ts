@@ -30,7 +30,12 @@ import { BundleService } from '../service/bundle.service';
 import { querySchema } from '../validation';
 import { BaseController } from './base.controller';
 
-@controller('/bundle', MIDDLEWARE.Context, authorize())
+@controller(
+  '/bundle',
+  MIDDLEWARE.Context
+  //authorize()
+)
+
 export class BundleController extends BaseController {
   constructor(
     @inject(TYPE.BundleService) private bundleService: BundleService,
@@ -39,7 +44,10 @@ export class BundleController extends BaseController {
     super(logger);
   }
 
-  @httpGet('/')
+  @httpGet(
+    '/',
+    authorize()
+  )
   public async getBundles(req: Request): Promise<APIResponse> {
     const result = await this.bundleService.getBundles(
       APIQuery.fromRequest(req)
@@ -67,7 +75,10 @@ export class BundleController extends BaseController {
     return APIResponse.fromSingleResult(result);
   }
 
-  @httpGet('/exists/:bundleId')
+  @httpGet(
+    '/exists/:bundleId',
+    authorize()
+  )
   public async getBundleExists(
     @requestParam('bundleId') bundleId: string
   ): Promise<APIResponse> {
@@ -75,7 +86,11 @@ export class BundleController extends BaseController {
     return APIResponse.fromSingleResult(result);
   }
 
-  @httpPost('/query', validate(querySchema))
+  @httpPost(
+    '/query', 
+    validate(querySchema),
+    authorize()
+  )
   public async queryBundles(req: Request): Promise<APIResponse> {
     const result = await this.bundleService.getBundles(
       APIQuery.fromRequest(req)
