@@ -33,7 +33,7 @@ import { BaseController } from './base.controller';
 @controller(
   '/bundle',
   MIDDLEWARE.Context
-  //authorize()
+  // authorize()
 )
 
 export class BundleController extends BaseController {
@@ -87,7 +87,7 @@ export class BundleController extends BaseController {
   }
 
   @httpPost(
-    '/query', 
+    '/query',
     validate(querySchema),
     authorize()
   )
