@@ -15,12 +15,33 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPE } from '../constant/types';
+import { DBClient } from '../database/client';
 import { BundleRepository } from '../database/repository';
-import { APIQuery, Bundle, MongoPagedResult } from '../model';
+import { GridFSBucket } from 'mongodb';
+import { NotFoundError } from '../errors';
+
+import {
+  APIQuery,
+  Bundle,
+  MongoPagedResult
+} from '../model';
 
 @injectable()
 export class BundleService {
-  constructor(@inject(TYPE.BundleRepository) private readonly bundleRepository: BundleRepository) {}
+  private bundlesBucket;
+  private blacklistedFields;
+
+  constructor(
+    @inject(TYPE.DBClient) protected client: DBClient,
+    @inject(TYPE.BundleRepository) private readonly bundleRepository: BundleRepository
+  ) {
+    this.bundlesBucket = new GridFSBucket(client.db, { bucketName: 'bundles' });
+
+    this.blacklistedFields = {
+      _id: 0,
+      repository: 0,
+    };
+  }
 
   public getBundleExists(bundleId: string) {
     return this.bundleRepository.existsOR({ bundleId }, 'bundleId');
@@ -40,5 +61,22 @@ export class BundleService {
       'content.entries': 0,
     };
     return this.bundleRepository.findOne(apiQuery);
+  }
+
+  public async getBundleStream(bundleId) {
+    const bundle = await this.bundlesBucket.getBundleStream(bundleId);
+
+    if (bundle === null) {
+      throw new NotFoundError(`No bundle with id = ${bundleId} found`);
+    }
+    return bundle;
+  }
+
+  public async getBundleMetadata(bundleId) {
+    const metadata = await this.client.db.collection('bundle_metadata').findOne({ bundleId }, { projection: this.blacklistedFields });
+    if (metadata === null) {
+      throw new NotFoundError(`No metadata found for bundleId = ${bundleId}`);
+    }
+    return metadata;
   }
 }

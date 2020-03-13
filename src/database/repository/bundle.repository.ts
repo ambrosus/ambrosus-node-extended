@@ -21,7 +21,9 @@ import { BaseRepository } from './base.repository';
 
 @injectable()
 export class BundleRepository extends BaseRepository<Bundle> {
-  constructor(@inject(TYPE.DBClient) protected client: DBClient) {
+  constructor(
+    @inject(TYPE.DBClient) protected client: DBClient
+  ) {
     super(client, 'bundle_metadata');
   }
 
