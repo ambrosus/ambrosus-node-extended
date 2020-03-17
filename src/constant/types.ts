@@ -59,6 +59,7 @@ export const TYPE: any = {
   AssetRepository: Symbol.for('AssetRepository'),
   EventRepository: Symbol.for('EventRepository'),
   BundleRepository: Symbol.for('BundleRepository'),
+  GridRepository: Symbol.for('GridRepository'),
   OrganizationRepository: Symbol.for('OrganizationRepository'),
   OrganizationRequestRepository: Symbol.for('OrganizationRequestRepository'),
   OrganizationInviteRepository: Symbol.for('OrganizationInviteRepository'),

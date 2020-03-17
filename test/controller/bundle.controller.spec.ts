@@ -76,7 +76,7 @@ describe('(Controller) Bundle /bundle', () => {
 
   });
 
-  describe('(GET) /:bundleId', () => {
+  /* describe('(GET) /:bundleId', () => {
 
     it('success as authorized', done => {
       const bundleId = '0x0419a305e34825a2c4ba91f4a7202e9aa6ba698761e3f3484402d221acf4cf22';
@@ -90,7 +90,7 @@ describe('(Controller) Bundle /bundle', () => {
         });
     });
 
-  });
+  }); */
 
   describe('(GET) /exists/:bundleId', () => {
 

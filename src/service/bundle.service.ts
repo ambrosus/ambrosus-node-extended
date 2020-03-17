@@ -15,10 +15,10 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPE } from '../constant/types';
-import { DBClient } from '../database/client';
-import { BundleRepository } from '../database/repository';
-import { GridFSBucket } from 'mongodb';
-import { NotFoundError } from '../errors';
+import {
+  BundleRepository,
+  GridRepository
+} from '../database/repository';
 
 import {
   APIQuery,
@@ -28,19 +28,10 @@ import {
 
 @injectable()
 export class BundleService {
-  private bundlesBucket;
-  private blacklistedFields;
-
   constructor(
-    @inject(TYPE.DBClient) protected client: DBClient,
-    @inject(TYPE.BundleRepository) private readonly bundleRepository: BundleRepository
+    @inject(TYPE.BundleRepository) private readonly bundleRepository: BundleRepository,
+    @inject(TYPE.GridRepository) private readonly gridRepository: GridRepository
   ) {
-    this.bundlesBucket = new GridFSBucket(client.db, { bucketName: 'bundles' });
-
-    this.blacklistedFields = {
-      _id: 0,
-      repository: 0,
-    };
   }
 
   public getBundleExists(bundleId: string) {
@@ -58,25 +49,14 @@ export class BundleService {
     const apiQuery = new APIQuery();
     apiQuery.query = { bundleId };
     apiQuery.fields = {
+      '_id': 0,
       'content.entries': 0,
     };
+
     return this.bundleRepository.findOne(apiQuery);
   }
 
-  public async getBundleStream(bundleId) {
-    const bundle = await this.bundlesBucket.getBundleStream(bundleId);
-
-    if (bundle === null) {
-      throw new NotFoundError(`No bundle with id = ${bundleId} found`);
-    }
-    return bundle;
-  }
-
-  public async getBundleMetadata(bundleId) {
-    const metadata = await this.client.db.collection('bundle_metadata').findOne({ bundleId }, { projection: this.blacklistedFields });
-    if (metadata === null) {
-      throw new NotFoundError(`No metadata found for bundleId = ${bundleId}`);
-    }
-    return metadata;
+  public async getBundleStream(bundleId: string) {
+    return await this.gridRepository.getBundleStream(bundleId);
   }
 }
