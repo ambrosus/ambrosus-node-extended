@@ -33,7 +33,7 @@ export class AssetsController extends BaseController {
 
   constructor(
     @inject(TYPE.AssetService) private assetService: AssetService,
-    @inject(TYPE.EventsService) private eventService: EventService,
+    @inject(TYPE.EventService) private eventService: EventService,
     @inject(TYPE.LoggerService) protected logger: ILogger
   ) {
     super(logger);
