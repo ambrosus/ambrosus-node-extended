@@ -15,27 +15,54 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPE } from '../../constant';
-import { Bundle } from '../../model';
+import { ILogger } from '../../interface/logger.inferface';
 import { DBClient } from '../client';
-import { BaseRepository } from './base.repository';
+import { GridFSBucket } from 'mongodb';
+import { NotFoundError } from '../../errors';
 
 @injectable()
-export class BundleRepository extends BaseRepository<Bundle> {
+export class GridRepository {
+  private bundlesBucket;
+  private blacklistedFields;
+
   constructor(
+    @inject(TYPE.LoggerService) private readonly logger: ILogger,
     @inject(TYPE.DBClient) protected client: DBClient
   ) {
-    super(client, 'bundle_metadata');
+    this.blacklistedFields = {
+      _id: 0,
+      repository: 0,
+    };
   }
 
-  get timestampField(): string {
-    return 'bundleUploadTimestamp';
+  public async getConnection() {
+    if (this.bundlesBucket === undefined) {
+      this.bundlesBucket = new GridFSBucket(this.client.db, { bucketName: 'bundles' });
+
+      console.log('GridRepository.getConnection()');
+    }
   }
 
-  get paginatedField(): string {
-    return '_id';
+  public async getBundleStream(bundleId) {
+    await this.getConnection();
+
+    if (!await this.client.isFileInGridFSBucket(bundleId, this.bundlesBucket)) {
+      throw new NotFoundError({ reason: `No bundle with id = ${bundleId} found`});
+    }
+
+    const bundle = await this.bundlesBucket.openDownloadStreamByName(bundleId);
+
+    return bundle;
   }
 
-  get paginatedAscending(): boolean {
-    return false;
+  public async getBundleMetadata(bundleId) {
+    await this.getConnection();
+
+    const metadata = await this.client.db.collection('bundle_metadata').findOne({ bundleId }, { projection: this.blacklistedFields });
+
+    if (metadata === null) {
+      throw new NotFoundError(`No metadata found for bundleId = ${bundleId}`);
+    }
+    return metadata;
   }
 }

@@ -40,6 +40,7 @@ import {
   AccountDetailRepository,
   AssetRepository,
   BundleRepository,
+  GridRepository,
   EventRepository,
   OrganizationRepository,
   OrganizationRequestRepository,
@@ -94,6 +95,10 @@ iocContainer
 iocContainer
   .bind<BundleRepository>(TYPE.BundleRepository)
   .to(BundleRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<GridRepository>(TYPE.GridRepository)
+  .to(GridRepository)
   .inSingletonScope();
 iocContainer
   .bind<OrganizationRepository>(TYPE.OrganizationRepository)

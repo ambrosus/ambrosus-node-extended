@@ -12,7 +12,11 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { injectable, inject } from 'inversify';
+import {
+  inject,
+  injectable
+} from 'inversify';
+
 import { Db, MongoClient } from 'mongodb';
 import * as querystring from 'querystring';
 
@@ -21,10 +25,9 @@ import { EventEmitter } from 'events';
 import * as Sentry from '@sentry/node';
 import { TYPE } from '../constant';
 import { LoggerService } from '../service/logger.service';
-
 import { ConnectionError } from '../errors';
 
-type DBClientProvider = () => Promise<DBClient>;
+import { StringWriteStream } from './string_write_stream';
 
 @injectable()
 export class DBClient {
@@ -47,6 +50,28 @@ export class DBClient {
         throw new ConnectionError('Database failed to connect');
       }
     });
+  }
+
+  public isFileInGridFSBucket = async (filename, bucket) => {
+    const gridFSCursor = await bucket.find({filename});
+    return await gridFSCursor.count() > 0;
+  }
+
+  public asyncPipe = async (readStream, writeStream) => new Promise((resolve, reject) => {
+    writeStream.on('finish', () => resolve());
+    writeStream.on('error', (err) => reject(err));
+
+    readStream.pipe(writeStream);
+  })
+
+  public downloadJSONFromGridFSBucket = async (filename, bucket) => {
+    const readStream = bucket.openDownloadStreamByName(filename);
+    const writeStream = new StringWriteStream();
+
+    await this.asyncPipe(readStream, writeStream);
+
+    const serializedJSON = writeStream.get();
+    return JSON.parse(serializedJSON);
   }
 
   private connect(): Promise<any> {

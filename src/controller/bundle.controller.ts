@@ -12,7 +12,11 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Request } from 'express';
+import {
+  Request,
+  Response
+} from 'express';
+
 import { inject } from 'inversify';
 import {
   controller,
@@ -25,12 +29,30 @@ import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
 import { validate } from '../middleware';
 import { authorize } from '../middleware/authorize.middleware';
-import { APIQuery, APIResponse } from '../model';
+import {
+  APIQuery,
+  APIResponse,
+  Bundle
+} from '../model';
 import { BundleService } from '../service/bundle.service';
 import { querySchema } from '../validation';
 import { BaseController } from './base.controller';
 
-@controller('/bundle', MIDDLEWARE.Context, authorize())
+import { NotFoundError } from '../errors';
+
+function streamFinished(stream: NodeJS.ReadableStream) {
+  return new Promise((resolve, reject) => {
+    stream.on('end', () => resolve());
+    stream.on('error', () => reject());
+  });
+}
+
+@controller(
+  '/bundle',
+  MIDDLEWARE.Context
+  // authorize()
+)
+
 export class BundleController extends BaseController {
   constructor(
     @inject(TYPE.BundleService) private bundleService: BundleService,
@@ -39,7 +61,10 @@ export class BundleController extends BaseController {
     super(logger);
   }
 
-  @httpGet('/')
+  @httpGet(
+    '/',
+    authorize()
+  )
   public async getBundles(req: Request): Promise<APIResponse> {
     const result = await this.bundleService.getBundles(
       APIQuery.fromRequest(req)
@@ -47,15 +72,53 @@ export class BundleController extends BaseController {
     return APIResponse.fromMongoPagedResult(result);
   }
 
-  @httpGet('/:bundleId')
+  /* @httpGet('/:bundleId')
   public async getBundle(
     @requestParam('bundleId') bundleId: string
   ): Promise<APIResponse> {
+    console.log('getBundle');
+
     const result = await this.bundleService.getBundle(bundleId);
     return APIResponse.fromSingleResult(result);
+  } */
+
+  @httpGet('/:bundleId')
+  public async getBundle(
+    @requestParam('bundleId') bundleId: string
+  ) {
+    const bundleStream = await this.bundleService.getBundleStream(bundleId);
+
+    let result;
+
+    bundleStream.on('data', (chunk) => {
+       console.log(`getBundle(data, length): ${chunk.length}`);
+       console.log(`getBundle(data, data): ${chunk.toString()}`);
+
+      result = chunk;
+    });
+
+    await streamFinished(bundleStream);
+
+    return result;
   }
 
-  @httpGet('/exists/:bundleId')
+  @httpGet('/:bundleId/info')
+  public async getBundleInfo(
+    @requestParam('bundleId') bundleId: string
+  ): Promise<Bundle> {
+    const result = await this.bundleService.getBundle(bundleId);
+
+    if (result === undefined) {
+      throw new NotFoundError({ reason: `No bundle with id = ${bundleId} found`});
+    }
+
+    return result;
+  }
+
+  @httpGet(
+    '/exists/:bundleId',
+    authorize()
+  )
   public async getBundleExists(
     @requestParam('bundleId') bundleId: string
   ): Promise<APIResponse> {
@@ -63,7 +126,11 @@ export class BundleController extends BaseController {
     return APIResponse.fromSingleResult(result);
   }
 
-  @httpPost('/query', validate(querySchema))
+  @httpPost(
+    '/query',
+    validate(querySchema),
+    authorize()
+  )
   public async queryBundles(req: Request): Promise<APIResponse> {
     const result = await this.bundleService.getBundles(
       APIQuery.fromRequest(req)

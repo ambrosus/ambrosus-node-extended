@@ -15,12 +15,24 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPE } from '../constant/types';
-import { BundleRepository } from '../database/repository';
-import { APIQuery, Bundle, MongoPagedResult } from '../model';
+import {
+  BundleRepository,
+  GridRepository
+} from '../database/repository';
+
+import {
+  APIQuery,
+  Bundle,
+  MongoPagedResult
+} from '../model';
 
 @injectable()
 export class BundleService {
-  constructor(@inject(TYPE.BundleRepository) private readonly bundleRepository: BundleRepository) {}
+  constructor(
+    @inject(TYPE.BundleRepository) private readonly bundleRepository: BundleRepository,
+    @inject(TYPE.GridRepository) private readonly gridRepository: GridRepository
+  ) {
+  }
 
   public getBundleExists(bundleId: string) {
     return this.bundleRepository.existsOR({ bundleId }, 'bundleId');
@@ -37,8 +49,14 @@ export class BundleService {
     const apiQuery = new APIQuery();
     apiQuery.query = { bundleId };
     apiQuery.fields = {
+      '_id': 0,
       'content.entries': 0,
     };
+
     return this.bundleRepository.findOne(apiQuery);
+  }
+
+  public async getBundleStream(bundleId: string) {
+    return await this.gridRepository.getBundleStream(bundleId);
   }
 }

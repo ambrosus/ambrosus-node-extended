@@ -17,7 +17,7 @@ import { injectable } from 'inversify';
 import { MongoPagedResult } from '../query/mongo-paged-result.model';
 import { APIResponseMeta } from './api-res-meta.model';
 import { APIResponsePagination } from './api-res-pagination.model';
-import { HttpResponseMessage, HttpContent, JsonContent } from 'inversify-express-utils';
+import { HttpResponseMessage, JsonContent } from 'inversify-express-utils';
 import * as HttpStatus from 'http-status-codes';
 
 export interface IAPIResponse {
