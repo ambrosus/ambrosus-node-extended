@@ -20,6 +20,7 @@ import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
 import { APIQuery, APIResponse } from '../model';
 import { AssetService } from '../service/asset.service';
+import { EventService } from '../service/event.service';
 import { BaseController } from './base.controller';
 import { validate } from '../middleware';
 import { querySchema } from '../validation';
@@ -32,6 +33,7 @@ export class AssetsController extends BaseController {
 
   constructor(
     @inject(TYPE.AssetService) private assetService: AssetService,
+    @inject(TYPE.EventsService) private eventService: EventService,
     @inject(TYPE.LoggerService) protected logger: ILogger
   ) {
     super(logger);
@@ -52,6 +54,16 @@ export class AssetsController extends BaseController {
     @requestParam('assetId') assetId: string
   ): Promise<APIResponse> {
     const result = await this.assetService.getAsset(assetId);
+    return APIResponse.fromSingleResult(result);
+  }
+
+  @httpGet(
+    '/:assetId/events'
+  )
+  public async getEvents(
+    @requestParam('assetId') assetId: string
+  ): Promise<APIResponse> {
+    const result = await this.eventService.getEvents(new APIQuery({assetId}));
     return APIResponse.fromSingleResult(result);
   }
 
