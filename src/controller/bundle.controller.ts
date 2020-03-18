@@ -91,9 +91,6 @@ export class BundleController extends BaseController {
     let result;
 
     bundleStream.on('data', (chunk) => {
-       console.log(`getBundle(data, length): ${chunk.length}`);
-       console.log(`getBundle(data, data): ${chunk.toString()}`);
-
       result = chunk;
     });
 
