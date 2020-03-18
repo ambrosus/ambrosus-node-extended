@@ -20,6 +20,7 @@ import { Account2Controller } from './controller/account2.controller';
 import { AnalyticsController } from './controller/analytics.controller';
 import { AssetController } from './controller/asset.controller';
 import { Asset2Controller } from './controller/asset2.controller';
+import { AssetsController } from './controller/assets.controller';
 import { BundleController } from './controller/bundle.controller';
 import { Bundle2Controller } from './controller/bundle2.controller';
 import { EventController } from './controller/event.controller';
@@ -124,6 +125,7 @@ iocContainer.bind<AccountController>(TYPE.AccountController).to(AccountControlle
 iocContainer.bind<Account2Controller>(TYPE.Account2Controller).to(Account2Controller);
 iocContainer.bind<AssetController>(TYPE.AssetController).to(AssetController);
 iocContainer.bind<Asset2Controller>(TYPE.Asset2Controller).to(Asset2Controller);
+iocContainer.bind<AssetsController>(TYPE.AssetsController).to(AssetsController);
 iocContainer.bind<EventController>(TYPE.EventController).to(EventController);
 iocContainer.bind<Event2Controller>(TYPE.Event2Controller).to(Event2Controller);
 iocContainer.bind<ExtendedController>(TYPE.ExtendedController).to(ExtendedController);
