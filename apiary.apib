@@ -122,9 +122,9 @@ Account can hold any number of following permissions:
 * register_accounts - allows account to add new accounts
 * manage_accounts - allows account to view and manage existing accounts
 
-### /accounts
+### /account2
 
-#### Add account [POST]
+#### Create account [POST]
 
 __Warning__ Request sender needs to have "register_accounts" permission
 
@@ -135,67 +135,41 @@ __Warning__ Request sender needs to have "register_accounts" permission
             Accept: application/json
             Authorization: AMB_TOKEN ...
 
-    + Attributes (object)
-        + address (string) - An address of the new account
-        + permissions (array) - A list of permissions granted to this account. It is not possible to give permissions the request sender lacks. 
-        + accessLevel (number) - Access level of the account. Should be a non-negative integer. Cannot be higher than sender's accessLevel.
-        + organization (number, optional) - Identifier of the organization the account belongs to. Should be same as the sender's organization
+    + Parameters
+        + address (string) - An address of the new account        
 
+    + Attributes (object)
+        + permissions (array) - A list of permissions granted to this account. It is not possible to give permissions the request sender lacks.
+        + accessLevel (number) - Access level of the account. Should be a non-negative integer. Cannot be higher than sender's accessLevel.
+        + email (string) - Email for the account.
+        
     + Body
 
             {
-                "address": "0x162a44701727a31f457a53801cd181cd38eb5bbd",
-                "permissions" : ["register_accounts","create_asset"],
-                "accessLevel" : 0,
-                "organization": 12623
+                "permissions" : ["register_accounts", "create_asset", "create_event"],
+                "accessLevel" : 100,
+                "email" : "email1C@domain.com"
             }
-
-
 
 + Response 201 (application/json)
 
-    Added.
+    Created.
 
     + Body
 
-            {
-                "address": "0x162a44701727a31f457a53801cd181cd38eb5bbd",
-                "registeredBy": "0x345b44701723a31f457a534801cd181cd38eb5bcd",
-                "registeredOn": 32141243,
-                "permissions": ["register_accounts", "create_asset"],
-                "accessLevel": 0,
-                "organization": 12623
-            }
-
-    + Schema
-
-            {
-              "type": "object",
-              "properties": {
-                "address": {
-                  "type": "string",
-                  "example": "0x162a44701727a31f457a53801cd181cd38eb5bbd"
-                },
-                "registeredBy": {
-                  "type": "string",
-                  "example": "0x345b44701723a31f457a534801cd181cd38eb5bcd"
-                },
-                "registeredOn": {
-                  "type": "integer"
-                },
-                "accessLevel": {
-                  "type": "integer"
-                },
-                "permissions": {
-                  "type": "array",
-                  "items" : {
-                  "type" : "string"
-                  }
-                  "example": ["register_accounts", "create_asset"]
-                },
-                "organization": {
-                  "type": "integer"
-                }
+            {"data":
+              {"_id":"5e7460530bae2c4dd751a4d5",
+                "address":"0x918eACF10eA2C47B001f761460Ed19607656f01C",
+                "email":"email1C@domain.com",
+                "fullName":null,
+                "createdBy":"0xC769C64a70ECA2606A927DC28DD947A5Dbec237B",
+                "createdOn":1584685139,
+                "accessLevel":100,
+                "organization":9,
+                "permissions":["create_asset", "create_event", "create_event"],
+                "registeredBy":"0xC769C64a70ECA2606A927DC28DD947A5Dbec237B",
+                "registeredOn":1584685139,
+                "active":true
               }
             }
 
