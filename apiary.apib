@@ -444,28 +444,39 @@ Finds assets satisfying provided criteria.
 
     + Body
 
-            {
-                "results": [
-                    {
-                        "assetId": "0xc5cfd04.....30755ed65",
-                        "content": {
-                            "signature": "0x30755ed65396facf86c53e6...65c5cfd04be400",
-                            "idData": {
-                                "createdBy": "0x162a44701727a31f457a53801cd181cd38eb5bbd",
-                                "timestamp": 1503424923,
-                                "sequenceNumber": 3
-                            }
-                        },
-                        "metadata": {
-                            "bundleId": "0x85a427a3.....cd1d38ebbd",
-                            "bundleTransactionHash": "0x21ab....1cdf8e55b37",
-                            "bundleUploadTimestamp": 1503424969,
-                            "bundleProofBlock": 3221
-                        }
-                    }
-                ],
-                "resultCount": 112
-            }
+{
+ "data":[
+   {
+    "_id":"5e672f4a80d54c1fc22754d2",
+    "assetId":"0x3450e3c846338bc2486fd6a3dc1738db8943d0bf4bc5426f571863b1b814a018",
+    "metadata":
+     {
+      "bundleId":"0x5042e9e79fc23bb938cf377bf5379d4287c26203c259d342eb2d1f23b181f353",
+      "bundleUploadTimestamp":1583820645,
+      "bundleProofBlock":38,
+      "bundleTransactionHash":"0x7757fef7f32f020fb1f23ce32a93b193fe0d14a70c2dbea9655cefa80e7348f7"
+     },
+    "content":{
+     "idData":{
+      "createdBy":"0x2D2a0BE476559200D87EdD128Bd31c100be74e0f",
+      "timestamp":1582616736,
+      "sequenceNumber":0
+     },
+    "signature":"0x669f6a33dafaa9c35953bbab201eba63ad4b6960252af398d7cea230c17ec5323dae8c637e8995a799da8c13aeb5101163876e3411e43852a1cb4c7669bc9cc21c"},
+    "repository":{}
+   }
+  ],
+  "meta":{
+   "code":200,
+   "count":1
+   },
+  "pagination":{
+   "hasNext":false,
+   "next":"WzE1ODI2MTY3MzYseyIkb2lkIjoiNWU2NzJmNGE4MGQ1NGMxZmMyMjc1NGQyIn1d",
+   "hasPrevious":false,
+   "previous":"WzE1ODI2MTY3MzYseyIkb2lkIjoiNWU2NzJmNGE4MGQ1NGMxZmMyMjc1NGQyIn1d"
+   }
+}
 
 ### /asset2/info/{assetId}
 
@@ -500,22 +511,38 @@ Fetches asset with provided assetId in the system.
     + Body
 
             {
-                "assetId": "0xc5cfd04.....30755ed65",
-                "content": {
-                    "signature": "0x30755ed65396facf86c53e6...65c5cfd04be400",
-                    "idData": {
-                        "createdBy": "0x162a44701727a31f457a53801cd181cd38eb5bbd",
-                        "timestamp": 1503424923,
-                        "sequenceNumber": 3
-                    }
-                },
-                "metadata": {
-                    "bundleId": "0x85a427a3.....cd1d38ebbd",
-                    "bundleTransactionHash": "0x21ab....1cdf8e55b37"
-                    "bundleUploadTimestamp": 1503424969,
-                    "bundleProofBlock": 3221
-                }
-            }
+ "data":[
+   {
+    "_id":"5e672f4a80d54c1fc22754d2",
+    "assetId":"0x3450e3c846338bc2486fd6a3dc1738db8943d0bf4bc5426f571863b1b814a018",
+    "metadata":
+     {
+      "bundleId":"0x5042e9e79fc23bb938cf377bf5379d4287c26203c259d342eb2d1f23b181f353",
+      "bundleUploadTimestamp":1583820645,
+      "bundleProofBlock":38,
+      "bundleTransactionHash":"0x7757fef7f32f020fb1f23ce32a93b193fe0d14a70c2dbea9655cefa80e7348f7"
+     },
+    "content":{
+     "idData":{
+      "createdBy":"0x2D2a0BE476559200D87EdD128Bd31c100be74e0f",
+      "timestamp":1582616736,
+      "sequenceNumber":0
+     },
+    "signature":"0x669f6a33dafaa9c35953bbab201eba63ad4b6960252af398d7cea230c17ec5323dae8c637e8995a799da8c13aeb5101163876e3411e43852a1cb4c7669bc9cc21c"},
+    "repository":{}
+   }
+  ],
+  "meta":{
+   "code":200,
+   "count":1
+   },
+  "pagination":{
+   "hasNext":false,
+   "next":"WzE1ODI2MTY3MzYseyIkb2lkIjoiNWU2NzJmNGE4MGQ1NGMxZmMyMjc1NGQyIn1d",
+   "hasPrevious":false,
+   "previous":"WzE1ODI2MTY3MzYseyIkb2lkIjoiNWU2NzJmNGE4MGQ1NGMxZmMyMjc1NGQyIn1d"
+   }
+}
 
 + Response 404 (application/json)
 
@@ -523,6 +550,7 @@ Fetches asset with provided assetId in the system.
 
     + Body
 
+### /asset2/create/{assetId}
 
 #### Create an asset [POST]
 
@@ -549,61 +577,30 @@ __Warning__ Request sender needs to have "create_asset" permission
 
     + Body
 
+        {
+         "data":
+          {
+           "_id":"5e786b1777c81e2942d9165a",
+           "assetId":"0x3450e3c846338bc2486fd6a3dc1738db8943d0bf4bc5426f571863b1b814a018",
+           "metadata": {
+            "bundleId":null,
+            "bundleUploadTimestamp":1584950039
+           },
+           "content":{
+            "idData":{
+             "createdBy":"0x2D2a0BE476559200D87EdD128Bd31c100be74e0f",
+             "timestamp":1582616736,
+             "sequenceNumber":0
+            },
+           "signature":"0x669f6a33dafaa9c35953bbab201eba63ad4b6960252af398d7cea230c17ec5323dae8c637e8995a799da8c13aeb5101163876e3411e43852a1cb4c7669bc9cc21c"
+           }
+          },
+           "meta":
             {
-                "assetId": "0xc5cfd04.....30755ed65",
-                "content": {
-                    "signature": "0x30755ed65396facf86c53e6...65c5cfd04be400",
-                    "idData": {
-                        "createdBy": "0x162a44701727a31f457a53801cd181cd38eb5bbd",
-                        "timestamp": 1503424923,
-                        "sequenceNumber": 3
-                    }
-                }
+             "code":200
             }
-
-
-    + Schema
-
-            {
-              "type": "object",
-              "properties": {
-                "assetId": {
-                  "type": "string",
-                  "format": "int64",
-                  "example": "0xc5cfd04.....30755ed65"
-                },
-                "contents": {
-                  "type": "object",
-                  "properties": {
-                    "signature": {
-                      "type": "string",
-                      "format": "int64",
-                      "example": "0x30755ed65396facf86c53e6...65c5cfd04be400"
-                    },
-                    "idData": {
-                      "type": "object",
-                      "properties": {
-                        "createdBy": {
-                          "type": "string",
-                          "format": "int64",
-                          "example": "0x162a44701727a31f457a53801cd181cd38eb5bbd"
-                        },
-                        "timestamp": {
-                          "type": "integer",
-                          "format": "timestamp",
-                          "example": 1503424923
-                        },
-                        "sequenceNumber": {
-                          "type": "integer",
-                          "example": 3
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-
+        }
+ 
 + Response 201 (application/json)
 
     Created
@@ -611,14 +608,26 @@ __Warning__ Request sender needs to have "create_asset" permission
     + Body
 
             {
-                "assetId": "0xc5cfd04.....30755ed65",
-                "content": {
-                    "signature": "0x30755ed65396facf86c53e6...65c5cfd04be400",
-                    "idData": {
-                        "createdBy": "0x162a44701727a31f457a53801cd181cd38eb5bbd",
-                        "timestamp": 1503424923,
-                        "sequenceNumber": 3
-                    }
+             "data":
+              {
+               "_id":"5e786b1777c81e2942d9165a",
+               "assetId":"0x3450e3c846338bc2486fd6a3dc1738db8943d0bf4bc5426f571863b1b814a018",
+               "metadata": {
+                "bundleId":null,
+                "bundleUploadTimestamp":1584950039
+               },
+               "content":{
+                "idData":{
+                 "createdBy":"0x2D2a0BE476559200D87EdD128Bd31c100be74e0f",
+                 "timestamp":1582616736,
+                 "sequenceNumber":0
+                },
+               "signature":"0x669f6a33dafaa9c35953bbab201eba63ad4b6960252af398d7cea230c17ec5323dae8c637e8995a799da8c13aeb5101163876e3411e43852a1cb4c7669bc9cc21c"
+               }
+              },
+               "meta":
+                {
+                 "code":200
                 }
             }
 
