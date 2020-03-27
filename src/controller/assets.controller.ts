@@ -12,7 +12,6 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Request } from 'express';
 import { inject } from 'inversify';
 import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
 
@@ -22,8 +21,6 @@ import { APIQuery, APIResponse } from '../model';
 import { AssetService } from '../service/asset.service';
 import { EventService } from '../service/event.service';
 import { BaseController } from './base.controller';
-import { validate } from '../middleware';
-import { querySchema } from '../validation';
 
 @controller(
   '/assets',
@@ -40,49 +37,12 @@ export class AssetsController extends BaseController {
   }
 
   @httpGet(
-    '/'
-  )
-  public async getAssets(req: Request): Promise<APIResponse> {
-    const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
-    return APIResponse.fromMongoPagedResult(result);
-  }
-
-  @httpGet(
-    '/:assetId'
-  )
-  public async get(
-    @requestParam('assetId') assetId: string
-  ): Promise<APIResponse> {
-    const result = await this.assetService.getAsset(assetId);
-    return APIResponse.fromSingleResult(result);
-  }
-
-  @httpGet(
     '/:assetId/events'
   )
   public async getEvents(
     @requestParam('assetId') assetId: string
   ): Promise<APIResponse> {
-    const result = await this.eventService.getEvents(new APIQuery({assetId}));
-    return APIResponse.fromSingleResult(result);
-  }
-
-  @httpGet(
-    '/exists/:assetId'
-  )
-  public async getAssetExists(
-    @requestParam('assetId') assetId: string
-  ): Promise<APIResponse> {
-    const result = await this.assetService.getAssetExists(assetId);
-    return APIResponse.fromSingleResult(result);
-  }
-
-  @httpPost(
-    '/query',
-    validate(querySchema)
-  )
-  public async query(req: Request): Promise<APIResponse> {
-    const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
-    return APIResponse.fromMongoPagedResult(result);
+    const result = await this.eventService.getEventsOld(new APIQuery( {"content.idData.assetId": assetId} ));
+    return result;
   }
 }

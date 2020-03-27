@@ -110,6 +110,23 @@ export class EventRepository extends BaseRepository<Event> {
     return this.findWithPagination(apiQuery);
   }
 
+  public queryEventsOld(
+    apiQuery: APIQuery,
+    accessLevel: number
+  ): Promise<any> {
+    apiQuery.query = {
+      ...apiQuery.query,
+      ...{
+        'content.idData.accessLevel': { $lte: accessLevel },
+      },
+    };
+    apiQuery.fields = {
+      _id: 0,
+      repository: 0,
+    };
+    return this.find(apiQuery);
+  }
+
   public searchEvents(
     apiQuery: APIQuery,
     accessLevel: number
