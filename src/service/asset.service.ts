@@ -48,6 +48,10 @@ export class AssetService {
     return this.assetRepository.findOne(apiQuery);
   }
 
+  public getAssetOld(apiQuery: APIQuery): Promise<any> {
+    return this.assetRepository.queryAssetsOld(apiQuery);
+  }
+
   public async createAsset(
     assetId: string,
     createdBy: string,
