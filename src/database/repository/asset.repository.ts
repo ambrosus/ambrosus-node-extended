@@ -15,9 +15,9 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPE } from '../../constant';
-import { Asset } from '../../model';
 import { DBClient } from '../client';
 import { BaseRepository } from './base.repository';
+import { APIQuery, Asset } from '../../model';
 
 @injectable()
 export class AssetRepository extends BaseRepository<Asset> {
@@ -110,5 +110,23 @@ export class AssetRepository extends BaseRepository<Asset> {
         },
       },
     ];
+  }
+
+  public async queryAssetsOld(
+    apiQuery: APIQuery    
+  ) {
+    apiQuery.query = {
+      ...apiQuery.query,      
+    };
+    apiQuery.fields = {
+      _id: 0,
+      repository: 0,
+    };
+    
+    const result = { results: await this.find(apiQuery), resultCount: 0 };
+
+    result.resultCount = result.results.length;
+
+    return result;
   }
 }

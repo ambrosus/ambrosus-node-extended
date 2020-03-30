@@ -47,7 +47,7 @@ export class EventService {
   }
 
   public getEventsOld(apiQuery: APIQuery): Promise<any> {
-    return this.eventRepository.queryEvents(apiQuery, (this.user && this.user.accessLevel) || 0);
+    return this.eventRepository.queryEventsOld(apiQuery, (this.user && this.user.accessLevel) || 0);
   }
 
   public searchEvents(apiQuery: APIQuery): Promise<MongoPagedResult> {

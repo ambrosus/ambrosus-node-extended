@@ -42,7 +42,7 @@ export class AssetsController extends BaseController {
   public async getAssets(
     @requestParam('assetId') assetId: string
   ): Promise<APIResponse> {
-    return await this.assetService.getAssetOld( assetId );
+    return await this.assetService.getAssetOld(new APIQuery( { assetId } ));
   }
 
   @httpGet(

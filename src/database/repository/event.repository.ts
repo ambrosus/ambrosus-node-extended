@@ -110,10 +110,10 @@ export class EventRepository extends BaseRepository<Event> {
     return this.findWithPagination(apiQuery);
   }
 
-  public queryEventsOld(
+  public async queryEventsOld(
     apiQuery: APIQuery,
     accessLevel: number
-  ): Promise<any> {
+  ) {
     apiQuery.query = {
       ...apiQuery.query,
       ...{
@@ -124,7 +124,12 @@ export class EventRepository extends BaseRepository<Event> {
       _id: 0,
       repository: 0,
     };
-    return this.find(apiQuery);
+    
+    const result = { results: await this.find(apiQuery), resultCount: 0 };
+
+    result.resultCount = result.results.length;
+
+    return result;
   }
 
   public searchEvents(
