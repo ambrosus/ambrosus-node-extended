@@ -13,7 +13,7 @@
  */
 
 import { inject } from 'inversify';
-import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
+import { controller, httpGet, requestParam } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
@@ -37,12 +37,20 @@ export class AssetsController extends BaseController {
   }
 
   @httpGet(
+    '/:assetId'
+  )
+  public async getAssets(
+    @requestParam('assetId') assetId: string
+  ): Promise<APIResponse> {
+    return await this.assetService.getAssetOld( assetId );
+  }
+
+  @httpGet(
     '/:assetId/events'
   )
   public async getEvents(
     @requestParam('assetId') assetId: string
   ): Promise<APIResponse> {
-    const result = await this.eventService.getEventsOld(new APIQuery( {"content.idData.assetId": assetId} ));
-    return result;
+    return await this.eventService.getEventsOld(new APIQuery( {"content.idData.assetId": assetId} ));
   }
 }

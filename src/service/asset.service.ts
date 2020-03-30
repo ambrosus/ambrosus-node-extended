@@ -47,6 +47,15 @@ export class AssetService {
     apiQuery.query = { assetId };
     return this.assetRepository.findOne(apiQuery);
   }
+  
+  public getAssetOld(assetId: string): Promise<any> {
+    const apiQuery = new APIQuery();
+    apiQuery.query = { assetId };
+    apiQuery.fields = {
+      _id: 0,      
+    };
+    return this.assetRepository.find(apiQuery);
+  }
 
   public async createAsset(
     assetId: string,
