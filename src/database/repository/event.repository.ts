@@ -108,29 +108,7 @@ export class EventRepository extends BaseRepository<Event> {
       repository: 0,
     };
     return this.findWithPagination(apiQuery);
-  }
-
-  public async queryEventsOld(
-    apiQuery: APIQuery,
-    accessLevel: number
-  ) {
-    apiQuery.query = {
-      ...apiQuery.query,
-      ...{
-        'content.idData.accessLevel': { $lte: accessLevel },
-      },
-    };
-    apiQuery.fields = {
-      _id: 0,
-      repository: 0,
-    };
-    
-    const result = { results: await this.find(apiQuery), resultCount: 0 };
-
-    result.resultCount = result.results.length;
-
-    return result;
-  }
+  }  
 
   public searchEvents(
     apiQuery: APIQuery,
@@ -186,5 +164,22 @@ export class EventRepository extends BaseRepository<Event> {
       repository: 0,
     };
     return super.aggregate(apiQuery);
+  }
+
+  public async queryEventsOld(apiQuery: APIQuery, accessLevel: number) {
+    apiQuery.query = {
+      ...apiQuery.query,
+      ...{
+        'content.idData.accessLevel': { $lte: accessLevel },
+      },
+    };
+    apiQuery.fields = {
+      _id: 0,
+      repository: 0,
+    };
+
+    const results = await this.find(apiQuery);
+        
+    return { results, resultCount: results.length };
   }
 }

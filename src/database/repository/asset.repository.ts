@@ -112,9 +112,7 @@ export class AssetRepository extends BaseRepository<Asset> {
     ];
   }
 
-  public async queryAssetsOld(
-    apiQuery: APIQuery    
-  ) {
+  public async queryAssetsOld(apiQuery: APIQuery) {
     apiQuery.query = {
       ...apiQuery.query,      
     };
@@ -122,11 +120,7 @@ export class AssetRepository extends BaseRepository<Asset> {
       _id: 0,
       repository: 0,
     };
-    
-    const result = { results: await this.find(apiQuery), resultCount: 0 };
-
-    result.resultCount = result.results.length;
-
-    return result;
+            
+    return await this.findOne(apiQuery);
   }
 }
