@@ -47,8 +47,8 @@ export class AssetService {
     apiQuery.query = { assetId };
     return this.assetRepository.findOne(apiQuery);
   }
-  
-  public getAssetOld(apiQuery: APIQuery): Promise<any> {    
+
+  public getAssetOld(apiQuery: APIQuery): Promise<any> {
     return this.assetRepository.queryAssetsOld(apiQuery);
   }
 

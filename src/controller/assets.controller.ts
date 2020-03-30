@@ -51,6 +51,6 @@ export class AssetsController extends BaseController {
   public async getEvents(
     @requestParam('assetId') assetId: string
   ): Promise<APIResponse> {
-    return await this.eventService.getEventsOld(new APIQuery( {"content.idData.assetId": assetId} ));
+    return await this.eventService.getEventsOld(new APIQuery( {'content.idData.assetId': assetId} ));
   }
 }

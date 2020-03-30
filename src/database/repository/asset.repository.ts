@@ -114,13 +114,13 @@ export class AssetRepository extends BaseRepository<Asset> {
 
   public async queryAssetsOld(apiQuery: APIQuery) {
     apiQuery.query = {
-      ...apiQuery.query,      
+      ...apiQuery.query,
     };
     apiQuery.fields = {
       _id: 0,
       repository: 0,
     };
-            
+
     return await this.findOne(apiQuery);
   }
 }

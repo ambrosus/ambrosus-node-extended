@@ -108,7 +108,7 @@ export class EventRepository extends BaseRepository<Event> {
       repository: 0,
     };
     return this.findWithPagination(apiQuery);
-  }  
+  }
 
   public searchEvents(
     apiQuery: APIQuery,
@@ -179,7 +179,7 @@ export class EventRepository extends BaseRepository<Event> {
     };
 
     const results = await this.find(apiQuery);
-        
+
     return { results, resultCount: results.length };
   }
 }
