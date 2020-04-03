@@ -19,12 +19,22 @@ import { controller, httpGet, httpPost, requestParam } from 'inversify-express-u
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
-import { APIQuery, APIResponse, APIResponseMeta, OrganizationRequest } from '../model';
+import {
+  APIQuery,
+  APIResponse,
+  APIResponseMeta,
+  OrganizationRequest,
+  UserPrincipal
+} from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
 import { validate } from '../middleware';
 import { organizationSchema, utilSchema } from '../validation';
+import { AccountService } from '../service/account.service';
+import { BuiltInService } from '../service/builtin.service';
+
+import { config } from '../config';
 
 @controller(
   '/organization/request',
@@ -33,8 +43,11 @@ import { organizationSchema, utilSchema } from '../validation';
 export class OrganizationRequestController extends BaseController {
 
   constructor(
+    @inject(TYPE.LoggerService) protected logger: ILogger,
+    @inject(TYPE.AccountService) private accountService: AccountService,
+    @inject(TYPE.BuiltInService) private builtInService: BuiltInService,
     @inject(TYPE.OrganizationService) private organizationService: OrganizationService,
-    @inject(TYPE.LoggerService) protected logger: ILogger
+    @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal    
   ) {
     super(logger);
   }
@@ -81,7 +94,7 @@ export class OrganizationRequestController extends BaseController {
   public async organizationRequestApprove(
     @requestParam('address') address: string
   ): Promise<APIResponse> {
-    await this.organizationService.organizationRequestApprove(address);
+    await this.organizationService.organizationRequestApprove(address,);
     const meta = new APIResponseMeta(
       HttpStatus.ACCEPTED,
       'Organization request approval complete'
@@ -109,11 +122,33 @@ export class OrganizationRequestController extends BaseController {
     '/',
     validate(organizationSchema.organizationRequest)
   )
-  public async createOrganizationReguest(req: Request): Promise<APIResponse> {
+  public async createOrganizationReguest(req: Request): Promise<APIResponse> {    
     await this.organizationService.createOrganizationRequest(
       OrganizationRequest.fromRequest(req)
     );
-    const meta = new APIResponseMeta(HttpStatus.CREATED, 'Organization request created');
+    
+    let meta: APIResponseMeta;
+
+    if (config.test.mode == 1) {
+      const address = req.body['address']
+
+      const builtIn = await this.builtInService.getBuiltInAddress();
+      
+      this.user.account = await this.accountService.getAccountForAuth(builtIn);
+      
+      await this.organizationService.organizationRequestApprove(address);
+
+      meta = new APIResponseMeta(
+        HttpStatus.ACCEPTED,
+        'Organization request approval complete'
+      );
+    } else {
+      meta = new APIResponseMeta(
+        HttpStatus.CREATED, 
+        'Organization request created'
+      );
+    }
+
     return APIResponse.withMeta(meta);
   }
 }

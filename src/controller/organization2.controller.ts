@@ -13,20 +13,18 @@
  */
 
 import { Request } from 'express';
-import * as HttpStatus from 'http-status-codes';
 import { inject } from 'inversify';
 import {
   controller,
   httpGet,
   httpPost,
-  httpPut,
   requestParam
 } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { Authorization } from '../constant/enum';
 import { ILogger } from '../interface/logger.inferface';
-import { APIQuery, APIResponse, APIResponseMeta, Organization } from '../model';
+import { APIResponse, Organization } from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
 import { authorize, authorizeByType } from '../middleware/authorize.middleware';
