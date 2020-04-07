@@ -44,7 +44,7 @@ export class AccountController extends BaseController {
   constructor(
     @inject(TYPE.AccountService) private accountService: AccountService,
     @inject(TYPE.Web3Service) private web3Service: Web3Service,
-    @inject(TYPE.LoggerService) protected logger: ILogger,
+    @inject(TYPE.LoggerService) protected logger: ILogger
   ) {
     super(logger);
   }

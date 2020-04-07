@@ -53,5 +53,9 @@ export const config: any = {
   },
   test: {
     mode: process.env.TEST_MODE || 0,
+    intervals: {
+      account: process.env.TEST_ACCOUNT_INTERVAL || 600,
+      organization: process.env.TEST_ORGANIZATION_INTERVAL || 86400,
+    },
   },
 };

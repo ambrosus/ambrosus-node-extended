@@ -47,12 +47,14 @@ import {
   OrganizationRequestRepository,
   OrganizationInviteRepository,
   WorkerLogsRepository,
+  ThrottlingRepository,
 } from './database/repository';
 import { GraphQLSchema, IGraphQLResolver, IGraphQLSchema, IGraphQLType } from './graphql';
 import { AccountResolver, AssetResolver, BundleResolver, EventResolver } from './graphql/resolver';
 import { AccountType, AssetType, BundleType, EventType, QueryType } from './graphql/type';
 import { UserPrincipal } from './model';
 import { AccountService } from './service/account.service';
+import { ThrottlingService } from './service/throttling.service';
 import { AnalyticsService } from './service/analytics.service';
 import { AssetService } from './service/asset.service';
 import { AuthService } from './service/auth.service';
@@ -88,6 +90,10 @@ iocContainer
 iocContainer
   .bind<AssetRepository>(TYPE.AssetRepository)
   .to(AssetRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<ThrottlingRepository>(TYPE.ThrottlingRepository)
+  .to(ThrottlingRepository)
   .inSingletonScope();
 iocContainer
   .bind<EventRepository>(TYPE.EventRepository)
@@ -150,6 +156,7 @@ iocContainer.bind<AuthService>(TYPE.AuthService).to(AuthService);
 iocContainer.bind<Web3Service>(TYPE.Web3Service).to(Web3Service);
 iocContainer.bind<LoggerService>(TYPE.LoggerService).to(LoggerService);
 iocContainer.bind<AccountService>(TYPE.AccountService).to(AccountService);
+iocContainer.bind<ThrottlingService>(TYPE.ThrottlingService).to(ThrottlingService);
 iocContainer.bind<StateService>(TYPE.StateService).to(StateService);
 iocContainer.bind<BuiltInService>(TYPE.BuiltInService).to(BuiltInService);
 

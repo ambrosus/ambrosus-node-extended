@@ -12,13 +12,21 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { config } from '../config';
+
 import { Request } from 'express';
 import * as HttpStatus from 'http-status-codes';
 import { inject } from 'inversify';
-import { controller, httpGet, httpPost, requestParam } from 'inversify-express-utils';
+import {
+  controller,
+  httpGet,
+  httpPost,
+  requestParam,
+} from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
+
 import {
   APIQuery,
   APIResponse,
@@ -26,6 +34,7 @@ import {
   OrganizationRequest,
   UserPrincipal
 } from '../model';
+
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
@@ -33,8 +42,9 @@ import { validate } from '../middleware';
 import { organizationSchema, utilSchema } from '../validation';
 import { AccountService } from '../service/account.service';
 import { BuiltInService } from '../service/builtin.service';
+import { ThrottlingService } from '../service/throttling.service';
 
-import { config } from '../config';
+import { AuthenticationError } from '../errors';
 
 @controller(
   '/organization/request',
@@ -47,7 +57,8 @@ export class OrganizationRequestController extends BaseController {
     @inject(TYPE.AccountService) private accountService: AccountService,
     @inject(TYPE.BuiltInService) private builtInService: BuiltInService,
     @inject(TYPE.OrganizationService) private organizationService: OrganizationService,
-    @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal    
+    @inject(TYPE.ThrottlingService) private throttlingService: ThrottlingService,
+    @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal
   ) {
     super(logger);
   }
@@ -94,11 +105,13 @@ export class OrganizationRequestController extends BaseController {
   public async organizationRequestApprove(
     @requestParam('address') address: string
   ): Promise<APIResponse> {
-    await this.organizationService.organizationRequestApprove(address,);
+    await this.organizationService.organizationRequestApprove(address);
+
     const meta = new APIResponseMeta(
       HttpStatus.ACCEPTED,
       'Organization request approval complete'
     );
+
     return APIResponse.withMeta(meta);
   }
 
@@ -122,30 +135,40 @@ export class OrganizationRequestController extends BaseController {
     '/',
     validate(organizationSchema.organizationRequest)
   )
-  public async createOrganizationReguest(req: Request): Promise<APIResponse> {    
+  public async createOrganizationReguest(req: Request): Promise<APIResponse> {
+    if (Number.parseInt(config.test.mode, 10) === 1) {
+      const throttling = await this.throttlingService.check(req.connection.remoteAddress, 'organization');
+
+      if (throttling > 0) {
+        throw new AuthenticationError({reason: `too fast, must wait ${throttling} seconds`});
+      }
+    }
+
     await this.organizationService.createOrganizationRequest(
       OrganizationRequest.fromRequest(req)
     );
-    
+
     let meta: APIResponseMeta;
 
-    if (config.test.mode == 1) {
-      const address = req.body['address']
+    if (Number.parseInt(config.test.mode, 10) === 1) {
+      const address = req.body['address'];
 
       const builtIn = await this.builtInService.getBuiltInAddress();
-      
+
       this.user.account = await this.accountService.getAccountForAuth(builtIn);
-      
+
       await this.organizationService.organizationRequestApprove(address);
+
+      await this.throttlingService.update(req.connection.remoteAddress, 'organization');
 
       meta = new APIResponseMeta(
         HttpStatus.ACCEPTED,
-        'Organization request approval complete'
+        'Organization: request approval complete'
       );
     } else {
       meta = new APIResponseMeta(
-        HttpStatus.CREATED, 
-        'Organization request created'
+        HttpStatus.CREATED,
+        'Organization: request created'
       );
     }
 

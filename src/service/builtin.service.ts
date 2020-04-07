@@ -120,5 +120,5 @@ export class BuiltInService {
   public checkBuiltIn = async () => {
     await this.checkBuiltInAccount();
     await this.checkBuiltInOrganization();
-  }  
+  }
 }
