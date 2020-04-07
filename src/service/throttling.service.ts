@@ -44,7 +44,7 @@ export class ThrottlingService {
     if (throttling === undefined) {
       throttling = new Throttling;
 
-      throttling.address = address;      
+      throttling.address = address;
 
       this.throttlingRepository.create(throttling);
     }
@@ -59,13 +59,13 @@ export class ThrottlingService {
     this.throttlingRepository.update(new APIQuery( { address: throttling.address } ), throttling);
   }
 
-  public check = async (address: string, item: string) => {    
+  public check = async (address: string, item: string) => {
     const throttling = await this.get(address);
-    
+
     if ((throttling === undefined) || (throttling[item] === undefined)) {
       return 0;
     }
-    
+
     const diff = (getTimestamp() - throttling[item].last);
 
     const interval = config.test.intervals[item] + (config.test.intervals[item] * (throttling[item].count - 1) * 0.25);
