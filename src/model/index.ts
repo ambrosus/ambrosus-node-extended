@@ -21,3 +21,4 @@ export * from './bundle/bundle.model';
 export * from './auth';
 export * from './organization';
 export * from './workerLog';
+export * from './test';

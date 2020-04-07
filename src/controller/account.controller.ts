@@ -21,7 +21,6 @@ import {
   httpPut,
   requestBody,
   requestParam,
-  requestHeaders,
 } from 'inversify-express-utils';
 
 import { Permission } from '../constant/';
@@ -35,7 +34,6 @@ import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
 import { validate } from '../middleware';
 import { querySchema, utilSchema, accountSchema } from '../validation/schemas';
-import { AuthService } from '../service/auth.service';
 
 @controller(
   '/account',
@@ -46,8 +44,7 @@ export class AccountController extends BaseController {
   constructor(
     @inject(TYPE.AccountService) private accountService: AccountService,
     @inject(TYPE.Web3Service) private web3Service: Web3Service,
-    @inject(TYPE.LoggerService) protected logger: ILogger,
-    @inject(TYPE.AuthService) private authService: AuthService
+    @inject(TYPE.LoggerService) protected logger: ILogger
   ) {
     super(logger);
   }

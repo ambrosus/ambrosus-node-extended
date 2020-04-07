@@ -44,13 +44,13 @@ export class AMBAccountProvider implements interfaces.AuthProvider {
     next: NextFunction
   ): Promise<interfaces.Principal> {
     const authorization = req.header('authorization');
+    const user = new UserPrincipal();
     if (!authorization) {
       this.logger.debug('No authorization header found');
-      return undefined;
+      return user;
     }
     this.logger.debug(`begin auth`);
 
-    const user = new UserPrincipal();
     try {
       const userScope = {};
       user.authToken = this.authService.getAuthToken(authorization);

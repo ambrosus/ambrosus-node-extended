@@ -48,9 +48,7 @@ export class BuiltInService {
   ) {
   }
 
-  public checkBuiltInAccount = async () => {
-    this.logger.info('checkBuiltInAccount: ...');
-
+  public async getBuiltInAddress(): Promise<string> {
     let privateKey = '';
 
     try {
@@ -60,10 +58,16 @@ export class BuiltInService {
 
       await this.stateService.write(builtInPrivateKey, privateKey);
 
-      this.logger.debug('checkBuiltInAccount: generated privateKey.');
+      this.logger.debug('getBuilInAddress: generated privateKey.');
     }
 
-    const address = this.web3Service.addressFromSecret(privateKey);
+    return this.web3Service.addressFromSecret(privateKey);
+  }
+
+  public checkBuiltInAccount = async () => {
+    this.logger.info('checkBuiltInAccount: ...');
+
+    const address = await this.getBuiltInAddress();
 
     const accountProbe = await this.accountRepository.getAccount(new APIQuery({ address }), 0, 1000, true);
 

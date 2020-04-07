@@ -45,6 +45,7 @@ export const TYPE: any = {
   LoggerService: Symbol.for('LoggerService'),
 
   AccountService: Symbol.for('AccountService'),
+  ThrottlingService: Symbol.for('ThrottlingService'),
   StateService: Symbol.for('StateService'),
   BuiltInService: Symbol.for('BuiltInService'),
   AssetService: Symbol.for('AssetService'),
@@ -65,6 +66,7 @@ export const TYPE: any = {
   OrganizationRequestRepository: Symbol.for('OrganizationRequestRepository'),
   OrganizationInviteRepository: Symbol.for('OrganizationInviteRepository'),
   WorkerLogsRepository: Symbol.for('WorkerLogsRepository'),
+  ThrottlingRepository: Symbol.for('ThrottlingRepository'),
 
   GraphQLSchema: Symbol.for('GraphQLSchema'),
   GraphQLType: Symbol.for('GraphQLType'),

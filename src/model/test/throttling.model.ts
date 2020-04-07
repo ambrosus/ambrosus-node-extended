@@ -12,14 +12,14 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export * from './account.repository';
-export * from './account-detail.repository';
-export * from './asset.repository';
-export * from './event.repository';
-export * from './bundle.repository';
-export * from './grid.repository';
-export * from './organization.repository';
-export * from './organization-request.repository';
-export * from './organization-invite.repository';
-export * from './workerLogs.repository';
-export * from './throttling.repository';
+export interface IThrottlingByType {
+  count: number;
+  last: number;
+}
+
+export class Throttling {
+  public _id: string;
+  public address: string;
+  public account: IThrottlingByType;
+  public organization: IThrottlingByType;
+}

@@ -12,6 +12,8 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { config } from '../config';
+
 import { Request } from 'express';
 import * as HttpStatus from 'http-status-codes';
 import { inject } from 'inversify';
@@ -31,6 +33,9 @@ import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
 import { validate } from '../middleware';
 import { utilSchema, organizationSchema } from '../validation';
+import { ThrottlingService } from '../service/throttling.service';
+
+import { AuthenticationError } from '../errors';
 
 @controller(
   '/organization/invite',
@@ -40,6 +45,7 @@ export class OrganizationInviteController extends BaseController {
 
   constructor(
     @inject(TYPE.OrganizationService) private organizationService: OrganizationService,
+    @inject(TYPE.ThrottlingService) private throttlingService: ThrottlingService,
     @inject(TYPE.LoggerService) protected logger: ILogger
   ) {
     super(logger);
@@ -104,10 +110,19 @@ export class OrganizationInviteController extends BaseController {
     authorize('manage_accounts'),
     validate(organizationSchema.organizationInvites)
   )
-  public async createOrganizationInvite(
-    @requestBody() reqBody: any
-  ): Promise<APIResponse> {
-    const result = await this.organizationService.createOrganizationInvites(reqBody.email);
+  public async createOrganizationInvite(req: Request): Promise<APIResponse> {
+    if (Number.parseInt(config.test.mode, 10) === 1) {
+      const throttling = await this.throttlingService.check(req.connection.remoteAddress, 'account');
+
+      if (throttling > 0) {
+        throw new AuthenticationError({reason: `too fast, must wait ${throttling} seconds`});
+      }
+    }
+
+    await this.throttlingService.update(req.connection.remoteAddress, 'account');
+
+    const result = await this.organizationService.createOrganizationInvites(req.body['email']);
+
     return APIResponse.fromSingleResult(result);
   }
 

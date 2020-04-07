@@ -12,14 +12,21 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export * from './account.repository';
-export * from './account-detail.repository';
-export * from './asset.repository';
-export * from './event.repository';
-export * from './bundle.repository';
-export * from './grid.repository';
-export * from './organization.repository';
-export * from './organization-request.repository';
-export * from './organization-invite.repository';
-export * from './workerLogs.repository';
-export * from './throttling.repository';
+import { inject, injectable } from 'inversify';
+
+import { TYPE } from '../../constant';
+import { Throttling } from '../../model';
+import { DBClient } from '../client';
+import { BaseRepository } from './base.repository';
+
+@injectable()
+export class ThrottlingRepository extends BaseRepository<Throttling> {
+
+  constructor(@inject(TYPE.DBClient) protected client: DBClient) {
+    super(client, 'throttling');
+
+    client.events.on('dbConnected', () => {
+      client.db.collection('throttling').createIndex({ address: 1 }, { unique: true });
+    });
+  }
+}

@@ -142,6 +142,10 @@ process.on('uncaughtException', error => {
   Sentry.captureException(error);
 });
 
+if (Number.parseInt(config.test.mode, 10) === 1) {
+  logger.info('testMode: ENABLED');
+}
+
 export const app_server = server.build();
 
 app_server.listen(config.port);
