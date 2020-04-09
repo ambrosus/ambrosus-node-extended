@@ -21,6 +21,7 @@ export const config: any = {
   encryptionKey: process.env.ENCRYPTION_KEY,
   gitCommit: process.env.GIT_COMMIT,
   statePath: process.env.STATE_PATH || '/opt/hermes/state.json',
+  useStatic: Number.parseInt(process.env.USE_STATIC, 10) || 0,
   db: {
     hosts: process.env.MONGO_HOSTS || 'localhost:27017',
     dbName: process.env.MONGO_DB_NAME || 'hermes',
@@ -52,7 +53,7 @@ export const config: any = {
     number: process.env.TWILIO_NUMBER,
   },
   test: {
-    mode: process.env.TEST_MODE || 0,
+    mode: Number.parseInt(process.env.TEST_MODE, 10) || 0,
     intervals: {
       account: process.env.TEST_ACCOUNT_INTERVAL || 600,
       organization: process.env.TEST_ORGANIZATION_INTERVAL || 86400,

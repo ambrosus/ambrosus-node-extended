@@ -73,7 +73,11 @@ emailService.paramsCheck();
 server.setConfig(app => {
   logger.info(`version: ${pack.version}`);
 
-  app.use('/dashboard', express.static(dashboardStatic));
+  if (config.useStatic === 1) {
+    logger.info('staticDashboard: ENABLED');
+
+    app.use('/dashboard', express.static(dashboardStatic));
+  }
 
   app.use(Sentry.Handlers.requestHandler());
   app.use(Sentry.Handlers.errorHandler());
@@ -127,7 +131,9 @@ function handler404(request, response) {
 server.setErrorConfig(app => {
   app.use(errorHandler);
 
-  app.get('*', handler404);
+  if (config.useStatic === 1) {
+    app.get('*', handler404);
+  }
 });
 
 // Server errors
@@ -142,7 +148,7 @@ process.on('uncaughtException', error => {
   Sentry.captureException(error);
 });
 
-if (Number.parseInt(config.test.mode, 10) === 1) {
+if (config.test.mode === 1) {
   logger.info('testMode: ENABLED');
 }
 
