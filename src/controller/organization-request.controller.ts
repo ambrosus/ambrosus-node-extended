@@ -136,7 +136,7 @@ export class OrganizationRequestController extends BaseController {
     validate(organizationSchema.organizationRequest)
   )
   public async createOrganizationReguest(req: Request): Promise<APIResponse> {
-    if (Number.parseInt(config.test.mode, 10) === 1) {
+    if (config.test.mode === 1) {
       const throttling = await this.throttlingService.check(req.connection.remoteAddress, 'organization');
 
       if (throttling > 0) {
@@ -150,7 +150,7 @@ export class OrganizationRequestController extends BaseController {
 
     let meta: APIResponseMeta;
 
-    if (Number.parseInt(config.test.mode, 10) === 1) {
+    if (config.test.mode === 1) {
       const address = req.body['address'];
 
       const builtIn = await this.builtInService.getBuiltInAddress();
