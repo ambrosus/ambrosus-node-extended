@@ -61,14 +61,14 @@ export class ThrottlingService {
 
   public check = async (address: string, item: string) => {
     const throttling = await this.get(address);
-
+    
     if ((throttling === undefined) || (throttling[item] === undefined)) {
       return 0;
     }
 
     const diff = (getTimestamp() - throttling[item].last);
 
-    const interval = config.test.intervals[item] + (config.test.intervals[item] * (throttling[item].count - 1) * 0.25);
+    const interval = config.test.intervals[item] + config.test.intervals[item] * (throttling[item].count - 1) * 0.25;
 
     return (interval - diff);
   }

@@ -55,8 +55,8 @@ export const config: any = {
   test: {
     mode: Number.parseInt(process.env.TEST_MODE, 10) || 0,
     intervals: {
-      account: process.env.TEST_ACCOUNT_INTERVAL || 600,
-      organization: process.env.TEST_ORGANIZATION_INTERVAL || 86400,
+      account: Number.parseInt(process.env.TEST_ACCOUNT_INTERVAL, 10) || 600,
+      organization: Number.parseInt(process.env.TEST_ORGANIZATION_INTERVAL, 10) || 86400,
     },
   },
 };
