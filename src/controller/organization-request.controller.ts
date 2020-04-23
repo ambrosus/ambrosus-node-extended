@@ -136,6 +136,7 @@ export class OrganizationRequestController extends BaseController {
     validate(organizationSchema.organizationRequest)
   )
   public async createOrganizationReguest(req: Request): Promise<APIResponse> {
+    console.log(`test: ${JSON.stringify(req.headers)}`);    
     console.log(`test: ${req.headers['CF-Connecting-IP']}`);
 
     if (config.test.mode === 1) {
