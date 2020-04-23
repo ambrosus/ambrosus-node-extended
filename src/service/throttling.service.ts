@@ -31,6 +31,7 @@ import {
 
 import { ThrottlingRepository } from '../database/repository';
 import { getTimestamp } from '../util';
+import { StringWriteStream } from '../database/string_write_stream';
 
 @injectable()
 export class ThrottlingService {
@@ -76,10 +77,10 @@ export class ThrottlingService {
   }
 
   public addressFromRequest = (req: Request): string => {
-    let result = req.headers['cf-connecting-ip'][0];
+    let result = req.headers['cf-connecting-ip'];
 
     if (result !== undefined) {
-      return result;
+      return String(result);
     }
 
     result = req.connection.remoteAddress;
