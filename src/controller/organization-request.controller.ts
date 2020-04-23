@@ -137,7 +137,7 @@ export class OrganizationRequestController extends BaseController {
   )
   public async createOrganizationReguest(req: Request): Promise<APIResponse> {
     console.log(`test: ${JSON.stringify(req.headers)}`);    
-    console.log(`test: ${req.headers['CF-Connecting-IP']}`);
+    console.log(`test: ${req.headers['cf-connecting-ip']}`);
 
     if (config.test.mode === 1) {
       const throttling = await this.throttlingService.check(req.connection.remoteAddress, 'organization');
