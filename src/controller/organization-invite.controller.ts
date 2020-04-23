@@ -112,7 +112,7 @@ export class OrganizationInviteController extends BaseController {
   )
   public async createOrganizationInvite(req: Request): Promise<APIResponse> {
     if (config.test.mode === 1) {
-      const throttling = await this.throttlingService.check(req.connection.remoteAddress, 'account');
+      const throttling = await this.throttlingService.check(this.throttlingService.addressFromRequest(req), 'account');
 
       if (throttling > 0) {
         throw new AuthenticationError({reason: `too fast, must wait ${throttling} seconds`});

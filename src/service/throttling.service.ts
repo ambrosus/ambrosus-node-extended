@@ -75,8 +75,8 @@ export class ThrottlingService {
     return (interval - diff);
   }
 
-  public addressFromRequest = (req: Request) => {
-    let result = req.headers['cf-connecting-ip'];
+  public addressFromRequest = (req: Request): string => {
+    let result = req.headers['cf-connecting-ip'][0];
 
     if (result !== undefined) {
       return result;
