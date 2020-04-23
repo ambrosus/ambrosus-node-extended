@@ -79,12 +79,12 @@ export class ThrottlingService {
     let result = req.headers['cf-connecting-ip'];
 
     if (result !== undefined) {
-      return result
+      return result;
     }
 
-    result = req.connection.remoteAddress
+    result = req.connection.remoteAddress;
 
-    return result
+    return result;
   }
 
   private get = async (address: string): Promise<Throttling> => {
