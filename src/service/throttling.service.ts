@@ -15,6 +15,8 @@
 import { config } from '../config';
 import { TYPE } from '../constant/types';
 
+import { Request } from 'express';
+
 import {
   injectable,
   inject
@@ -71,6 +73,18 @@ export class ThrottlingService {
     const interval = config.test.intervals[item] + config.test.intervals[item] * (throttling[item].count - 1) * 0.25;
 
     return (interval - diff);
+  }
+
+  public addressFromRequest = (req: Request) => {
+    let result = req.headers['cf-connecting-ip'];
+
+    if (result !== undefined) {
+      return result
+    }
+
+    result = req.connection.remoteAddress
+
+    return result
   }
 
   private get = async (address: string): Promise<Throttling> => {
