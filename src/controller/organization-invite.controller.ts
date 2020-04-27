@@ -111,7 +111,7 @@ export class OrganizationInviteController extends BaseController {
     validate(organizationSchema.organizationInvites)
   )
   public async createOrganizationInvite(req: Request): Promise<APIResponse> {
-    const connectAddress = this.throttlingService.addressFromRequest(req)
+    const connectAddress = this.throttlingService.addressFromRequest(req);
 
     if (config.test.mode === 1) {
       const throttling = await this.throttlingService.check(connectAddress, 'account');
