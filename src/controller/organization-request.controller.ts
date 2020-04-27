@@ -137,7 +137,7 @@ export class OrganizationRequestController extends BaseController {
   )
   public async createOrganizationReguest(req: Request): Promise<APIResponse> {
     if (config.test.mode === 1) {
-      const throttling = await this.throttlingService.check(req.connection.remoteAddress, 'organization');
+      const throttling = await this.throttlingService.check(this.throttlingService.addressFromRequest(req), 'organization');
 
       if (throttling > 0) {
         throw new AuthenticationError({reason: `too fast, must wait ${throttling} seconds`});

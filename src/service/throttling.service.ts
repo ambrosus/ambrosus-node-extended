@@ -15,6 +15,8 @@
 import { config } from '../config';
 import { TYPE } from '../constant/types';
 
+import { Request } from 'express';
+
 import {
   injectable,
   inject
@@ -29,6 +31,7 @@ import {
 
 import { ThrottlingRepository } from '../database/repository';
 import { getTimestamp } from '../util';
+import { StringWriteStream } from '../database/string_write_stream';
 
 @injectable()
 export class ThrottlingService {
@@ -61,7 +64,7 @@ export class ThrottlingService {
 
   public check = async (address: string, item: string) => {
     const throttling = await this.get(address);
-    
+
     if ((throttling === undefined) || (throttling[item] === undefined)) {
       return 0;
     }
@@ -71,6 +74,18 @@ export class ThrottlingService {
     const interval = config.test.intervals[item] + config.test.intervals[item] * (throttling[item].count - 1) * 0.25;
 
     return (interval - diff);
+  }
+
+  public addressFromRequest = (req: Request): string => {
+    let result = req.headers['cf-connecting-ip'];
+
+    if (result !== undefined) {
+      return String(result);
+    }
+
+    result = req.connection.remoteAddress;
+
+    return result;
   }
 
   private get = async (address: string): Promise<Throttling> => {
