@@ -135,7 +135,7 @@ export class OrganizationRequestController extends BaseController {
     '/',
     validate(organizationSchema.organizationRequest)
   )
-  public async createOrganizationReguest(req: Request): Promise<APIResponse> {    
+  public async createOrganizationReguest(req: Request): Promise<APIResponse> {
     if (config.test.mode === 1) {
       const throttling = await this.throttlingService.check(this.throttlingService.addressFromRequest(req), 'organization');
 

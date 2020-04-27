@@ -64,7 +64,7 @@ export class ThrottlingService {
 
   public check = async (address: string, item: string) => {
     const throttling = await this.get(address);
-    
+
     if ((throttling === undefined) || (throttling[item] === undefined)) {
       return 0;
     }
