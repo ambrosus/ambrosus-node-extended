@@ -111,15 +111,17 @@ export class OrganizationInviteController extends BaseController {
     validate(organizationSchema.organizationInvites)
   )
   public async createOrganizationInvite(req: Request): Promise<APIResponse> {
+    const connectAddress = this.throttlingService.addressFromRequest(req)
+
     if (config.test.mode === 1) {
-      const throttling = await this.throttlingService.check(this.throttlingService.addressFromRequest(req), 'account');
+      const throttling = await this.throttlingService.check(connectAddress, 'account');
 
       if (throttling > 0) {
         throw new AuthenticationError({reason: `too fast, must wait ${throttling} seconds`});
       }
     }
 
-    await this.throttlingService.update(req.connection.remoteAddress, 'account');
+    await this.throttlingService.update(connectAddress, 'account');
 
     const result = await this.organizationService.createOrganizationInvites(req.body['email']);
 
