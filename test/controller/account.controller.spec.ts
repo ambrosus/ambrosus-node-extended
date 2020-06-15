@@ -237,15 +237,14 @@ describe('(Controller) Account /account', () => {
         });
     });
 
-    it('fail, no authorization, email doesnt exists, token doesnt exists', done => {
+    it('fail, no authorization, email doesnt exists, doesnt exists', done => {
       chai.request(app_server)
         .post(`/account/secret`)
         .send({
           email: 'asd@test.com',
         })
         .end((err, res) => {
-          res.should.have.status(200);
-          expect(res.body.data.token).to.not.exist;
+          res.should.have.status(404);
           done();
         });
     });
