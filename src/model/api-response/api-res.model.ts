@@ -53,8 +53,8 @@ export class APIResponse extends HttpResponseMessage {
     } else {
       throw new NotFoundError({reason: `not found`});
 
-      //meta.message = 'No results found';
-      //data = {};
+      // meta.message = 'No results found';
+      // data = {};
     }
     if (extraMeta) {
       meta = { ...meta, ...extraMeta };
