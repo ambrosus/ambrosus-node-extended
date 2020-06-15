@@ -20,6 +20,8 @@ import { APIResponsePagination } from './api-res-pagination.model';
 import { HttpResponseMessage, JsonContent } from 'inversify-express-utils';
 import * as HttpStatus from 'http-status-codes';
 
+import { NotFoundError } from '../../errors';
+
 export interface IAPIResponse {
   meta: APIResponseMeta;
   pagination: APIResponsePagination;
@@ -49,8 +51,10 @@ export class APIResponse extends HttpResponseMessage {
     if (result) {
       data = result;
     } else {
-      meta.message = 'No results found';
-      data = {};
+      throw new NotFoundError({reason: `not found`});
+
+      //meta.message = 'No results found';
+      //data = {};
     }
     if (extraMeta) {
       meta = { ...meta, ...extraMeta };
