@@ -36,13 +36,19 @@ function ensureAccountIsActive(modifier :Account) {
   }
 }
 
-function ensureAccessLevelLessOrEqual(modifier: Account, accessLevel) {
+function ensureAccessLevelLess(modifier: Account, accessLevel: number, whos :string) {
   if (!accessLevel) {
     return;
   }
   
-  if (modifier.accessLevel < accessLevel) {
-    throw new PermissionError({ reason: 'target acessLevel must less or equal' });
+  if (modifier.accessLevel <= accessLevel) {
+    throw new PermissionError({ reason: `${whos} acessLevel (${accessLevel}) must be less or equal to modifiers (${modifier.accessLevel})` });
+  }
+}
+
+function ensureNotSame(modifier : Account, target: Account) {  
+  if (modifier.address === target.address) {
+    throw new PermissionError({ reason: 'can not modify own accesss level' });
   }
 }
 
@@ -86,7 +92,7 @@ export const ensureCanCreateAccount = async (
   newAccount: Account
   ) => {  
   ensureAccountIsActive(creator);
-  ensureAccessLevelLessOrEqual(creator, newAccount.accessLevel);
+  ensureAccessLevelLess(creator, newAccount.accessLevel, 'new');
   
   ensureCorrectPermissions(newAccount);
 
@@ -103,16 +109,18 @@ export const ensureCanModifyAccount = async (
   organizationRepository: OrganizationRepository, 
   modifier: Account, 
   target: Account,
-  newAccessLevel,
+  newAccessLevel: number,
   newPermissions
   ) => {
   ensureAccountIsActive(modifier);
 
-  ensureAccessLevelLessOrEqual(modifier, target.accessLevel);
-  ensureAccessLevelLessOrEqual(modifier, newAccessLevel);
+  if (newAccessLevel !== undefined) {
+    ensureAccessLevelLess(modifier, target.accessLevel, 'target');
+    ensureAccessLevelLess(modifier, newAccessLevel, 'new');
 
-  console.log(modifier.organization+' '+target.organization);
-
+    ensureNotSame(modifier, target);
+  }
+  
   ensureSameOrganization(modifier, target);
 
   await ensureOrganizationIsActive(organizationRepository, modifier);

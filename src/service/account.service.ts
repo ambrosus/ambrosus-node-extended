@@ -112,15 +112,15 @@ export class AccountService {
 
     await ensureCanModifyAccount(this.organizationRepository, modifier, target, accessLevel, permissions);
 
-    if (active) {
+    if (active !== undefined) {
       target.active = active;
     }
 
-    if (accessLevel) {
+    if (accessLevel !== undefined) {
       target.accessLevel = accessLevel;
     }
 
-    if (permissions) {
+    if (permissions !== undefined) {
       target.permissions = permissions;
     }
 
