@@ -120,7 +120,7 @@ export class Account2Controller extends BaseController {
   @httpPost(
     '/modify/:address',
     authorize('manage_accounts'),
-    validate(accountSchema.accountCreate)
+    validate(accountSchema.accountModify)
   )
   public async modifyAccount(
     @requestParam('address') address: string,
