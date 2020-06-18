@@ -111,7 +111,7 @@ export class AccountService {
     const target = await this.accountRepository.getAccount(new APIQuery({address}), 0, 1000, true);
 
     await ensureCanModifyAccount(this.organizationRepository, modifier, target, accessLevel, permissions);
- 
+
     if (active !== undefined) {
       target.active = active;
     }
