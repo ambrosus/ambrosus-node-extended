@@ -54,17 +54,17 @@ export class APIQuery implements IAPIQuery {
   }
 
   public static fromRequest2(req: Request): APIQuery {
-    const apiQuery = new APIQuery();    
+    const apiQuery = new APIQuery();
     const query = getParamValue(req, 'query');
     if (query) {
       const errors = validateOperators(query);
       if (errors.length) {
         throw new ValidationError({ reason: 'bad operators found in query' });
-      }      
+      }
       apiQuery.query = getMongoFilter(query);
     }
 
-    Object.keys(req.query).forEach(function(key) {      
+    Object.keys(req.query).forEach(key => {
       req.query[`content.idData.${key}`] = req.query[key];
 
       delete req.query[key];
