@@ -42,7 +42,7 @@ export class EventService {
     return this.eventRepository.existsOR({ eventId }, 'eventId');
   }
 
-  public getEvents(apiQuery: APIQuery): Promise<MongoPagedResult> {
+  public getEvents(apiQuery: APIQuery): Promise<MongoPagedResult> {    
     return this.eventRepository.queryEvents(apiQuery, (this.user && this.user.accessLevel) || 0);
   }
 

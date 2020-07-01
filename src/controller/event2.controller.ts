@@ -56,8 +56,8 @@ export class Event2Controller extends BaseController {
   @httpGet(
     '/list'
   )
-  public async getEvents(req: Request): Promise<APIResponse> {
-    const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
+  public async getEvents(req: Request): Promise<APIResponse> {    
+    const result = await this.eventService.getEvents(APIQuery.fromRequest2(req));
     return APIResponse.fromMongoPagedResult(result);
   }
 
