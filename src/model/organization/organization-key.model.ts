@@ -12,7 +12,17 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export * from './organization.model';
-export * from './organization-key.model';
-export * from './organization-request.model';
-export * from './organization-invite.model';
+import { injectable } from 'inversify';
+
+export interface IOrganizationKey {
+  _id: string;
+  organizationId: number;
+  Key: string;
+}
+
+@injectable()
+export class OrganizationKey implements IOrganizationKey {
+  public _id: string;
+  public organizationId: number;
+  public Key: string;
+}

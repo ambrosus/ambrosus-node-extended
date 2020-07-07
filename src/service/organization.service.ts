@@ -20,6 +20,7 @@ import { Permission, TYPE } from '../constant/';
 import {
   OrganizationInviteRepository,
   OrganizationRepository,
+  OrganizationKeysRepository,
   OrganizationRequestRepository,
   AccountRepository,
   AccountDetailRepository,
@@ -46,16 +47,12 @@ export class OrganizationService {
   //#region Constructor
   constructor(
     @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
-    @inject(TYPE.OrganizationRepository)
-    private readonly organizationRepository: OrganizationRepository,
-    @inject(TYPE.OrganizationRequestRepository)
-    private readonly organizationRequestRepository: OrganizationRequestRepository,
-    @inject(TYPE.OrganizationInviteRepository)
-    private readonly organizationInviteRepository: OrganizationInviteRepository,
-    @inject(TYPE.AccountRepository)
-    private readonly accountRepository: AccountRepository,
-    @inject(TYPE.AccountDetailRepository)
-    private readonly accountDetailRepository: AccountDetailRepository,
+    @inject(TYPE.OrganizationRepository) private readonly organizationRepository: OrganizationRepository,
+    @inject(TYPE.OrganizationKeysRepository) private readonly organizationKeysRepository: OrganizationKeysRepository,
+    @inject(TYPE.OrganizationRequestRepository) private readonly organizationRequestRepository: OrganizationRequestRepository,
+    @inject(TYPE.OrganizationInviteRepository) private readonly organizationInviteRepository: OrganizationInviteRepository,
+    @inject(TYPE.AccountRepository) private readonly accountRepository: AccountRepository,
+    @inject(TYPE.AccountDetailRepository) private readonly accountDetailRepository: AccountDetailRepository,
     @inject(TYPE.AccountService) private readonly accountService: AccountService,
     @inject(TYPE.EmailService) private readonly emailService: EmailService,
     @inject(TYPE.LoggerService) private readonly logger: ILogger
@@ -112,7 +109,7 @@ export class OrganizationService {
     organization.setCreationTimestamp(this.user.address);
     organization.organizationId = await this.organizationRepository.getNewOrganizationIdentifier();
 
-    return this.organizationRepository.create(organization);
+    return this.organizationRepository.createOrganization(organization);
   }
 
   public async updateOrganization(
@@ -238,7 +235,6 @@ export class OrganizationService {
     const newOrganization = new Organization();
     newOrganization.owner = organizationRequest.address;
     newOrganization.title = organizationRequest.title || `${organizationRequest.email}'s organization`;
-    newOrganization.active = true;
 
     const result: InsertOneWriteOpResult<any> = await this.createOrganization(newOrganization);
     if (!result.ops[0]) {

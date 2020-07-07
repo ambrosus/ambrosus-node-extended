@@ -15,16 +15,30 @@
 import { inject, injectable } from 'inversify';
 
 import { TYPE } from '../../constant';
-import { Organization, APIQuery } from '../../model';
+
+import {
+  Organization,
+  OrganizationKey,
+  APIQuery
+} from '../../model';
+
 import { DBClient } from '../client';
+
 import { BaseRepository } from './base.repository';
+import { OrganizationKeysRepository } from '.';
+
+import { Web3Service } from '../../service/web3.service';
 
 import { config } from '../../config';
 import { getTimestamp } from '../../util';
 
 @injectable()
 export class OrganizationRepository extends BaseRepository<Organization> {
-  constructor(@inject(TYPE.DBClient) protected client: DBClient) {
+  constructor(
+    @inject(TYPE.Web3Service) private web3Service: Web3Service,
+    @inject(TYPE.DBClient) protected client: DBClient,
+    @inject(TYPE.OrganizationKeysRepository) private readonly organizationKeysRepository: OrganizationKeysRepository
+    ) {
     super(client, 'organization');
 
     client.events.on('dbConnected', () => {
@@ -56,6 +70,25 @@ export class OrganizationRepository extends BaseRepository<Organization> {
 
   get paginatedAscending(): boolean {
     return false;
+  }
+
+  public createOrganization(organization: Organization) {
+    organization.active = true;
+
+    if (organization.createdOn === undefined) {
+      organization.createdOn = getTimestamp();
+    }
+
+    const keyPair = this.web3Service.createKeyPair();
+
+    const organizationKey = new OrganizationKey;
+
+    organizationKey.organizationId = organization.organizationId;
+    organizationKey.Key = keyPair.privateKey;
+
+    this.organizationKeysRepository.create(organizationKey);
+
+    return this.create(organization);
   }
 
   public getOrganizationForAuthorization(apiQuery: APIQuery): Promise<Organization> {

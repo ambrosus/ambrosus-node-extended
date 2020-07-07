@@ -104,12 +104,10 @@ export class BuiltInService {
       const organization = new Organization;
       organization.owner = config.builtinAddress;
       organization.title = 'built-in';
-      organization.active = true;
       organization.createdBy = config.builtinAddress;
       organization.organizationId = 0;
-      organization.createdOn = getTimestamp();
 
-      await this.organizationRepository.create(organization);
+      await this.organizationRepository.createOrganization(organization);
 
       this.logger.debug('checkBuiltInOrganization: organization created.');
     } else {
