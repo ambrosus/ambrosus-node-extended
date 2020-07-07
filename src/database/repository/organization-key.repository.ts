@@ -12,7 +12,30 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export * from './organization.model';
-export * from './organization-key.model';
-export * from './organization-request.model';
-export * from './organization-invite.model';
+import { inject, injectable } from 'inversify';
+
+import { TYPE } from '../../constant';
+import { OrganizationKey } from '../../model';
+import { DBClient } from '../client';
+import { BaseRepository } from './base.repository';
+
+@injectable()
+export class OrganizationKeysRepository extends BaseRepository<OrganizationKey> {
+  constructor(
+    @inject(TYPE.DBClient) protected client: DBClient
+    ) {
+    super(client, 'organizationKeys');
+
+    client.events.on('dbConnected', () => {
+      client.db.collection('organizationKeys').createIndex({ organizationId: 1 }, { unique: true });
+    });
+  }
+
+  get paginatedField(): string {
+    return 'createdOn';
+  }
+
+  get paginatedAscending(): boolean {
+    return false;
+  }
+}

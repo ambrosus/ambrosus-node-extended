@@ -44,6 +44,7 @@ import {
   GridRepository,
   EventRepository,
   OrganizationRepository,
+  OrganizationKeysRepository,
   OrganizationRequestRepository,
   OrganizationInviteRepository,
   WorkerLogsRepository,
@@ -110,6 +111,10 @@ iocContainer
 iocContainer
   .bind<OrganizationRepository>(TYPE.OrganizationRepository)
   .to(OrganizationRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<OrganizationKeysRepository>(TYPE.OrganizationKeysRepository)
+  .to(OrganizationKeysRepository)
   .inSingletonScope();
 iocContainer
   .bind<OrganizationRequestRepository>(TYPE.OrganizationRequestRepository)

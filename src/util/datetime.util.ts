@@ -94,3 +94,7 @@ export const parseAnalytics = (array: any[], start, end, group: string) => {
 
   return results;
 };
+
+export const sleep = async (timeout) => new Promise((resolve) => {
+  setTimeout(resolve, timeout * 1000);
+});

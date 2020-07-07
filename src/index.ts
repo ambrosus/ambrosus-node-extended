@@ -31,6 +31,8 @@ import { errorHandler } from './middleware';
 import { BuiltInService } from './service/builtin.service';
 import { EmailService } from './service/email.service';
 
+import Migrator from './migrations/Migrator';
+
 import * as express from 'express';
 
 import * as pack from '../package.json';
@@ -61,8 +63,18 @@ const server = new InversifyExpressServer(
 
 const logger = iocContainer.get<LoggerService>(TYPE.LoggerService);
 
-const db: DBClient = iocContainer.get<DBClient>(TYPE.DBClient);
-db.getConnection().then();
+const client: DBClient = iocContainer.get<DBClient>(TYPE.DBClient);
+client.getConnection().then();
+
+client.events.on('dbConnected', async () => {
+  try {
+    const migrator = new Migrator(client.db, config);
+
+    await migrator.migrate(logger);
+  } catch (e) {
+    logger.error(`ERROR(Migration) ${e}`);
+  }
+});
 
 const builtInService = iocContainer.get<BuiltInService>(TYPE.BuiltInService);
 builtInService.checkBuiltIn().then();

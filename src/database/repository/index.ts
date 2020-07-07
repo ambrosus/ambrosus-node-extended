@@ -19,6 +19,7 @@ export * from './event.repository';
 export * from './bundle.repository';
 export * from './grid.repository';
 export * from './organization.repository';
+export * from './organization-key.repository';
 export * from './organization-request.repository';
 export * from './organization-invite.repository';
 export * from './workerLogs.repository';
