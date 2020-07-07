@@ -19,12 +19,14 @@ class Migrator {
   private readonly config: any;
   private readonly sleepFunction: any;
   private readonly directory: string;
+  private readonly collection: string;
 
-  public constructor(db, config, sleepFunction = sleep, directory = path.dirname(__filename)) {
+  public constructor(db, config, collection, sleepFunction = sleep, directory = path.dirname(__filename)) {
     this.db = db;
     this.config = config;
     this.sleepFunction = sleepFunction;
     this.directory = directory;
+    this.collection = collection;
   }
 
   public async up(fullPath, logger) {
@@ -34,7 +36,7 @@ class Migrator {
       logger.info(`Migrating: ${path.basename(fullPath)}`);
       const imported = await import(fullPath);
       await imported.up(this.db, this.config, logger);
-      await this.db.collection('migrations').findOneAndReplace({}, {version});
+      await this.db.collection(this.collection).findOneAndReplace({}, {version});
     } else {
       logger.info(`Ignoring migration: ${path.basename(fullPath)}`);
     }
@@ -88,7 +90,7 @@ class Migrator {
   }
 
   private async getCurrentVersion() {
-    const result = await this.db.collection('migrations').findOne({});
+    const result = await this.db.collection(this.collection).findOne({});
     return result ? result.version : 0;
   }
 
@@ -103,7 +105,7 @@ class Migrator {
   private async waitForOtherMigrationsAndMarkAsStarted(logger) {
     // eslint-disable-next-line no-constant-condition
     while (true) {
-      const {modifiedCount} = await this.db.collection('migrations')
+      const {modifiedCount} = await this.db.collection(this.collection)
         .updateOne({$or: [{migrationRunning: false}, {migrationRunning: {$exists: false}}]},
           {$set: {migrationRunning: true}});
 
@@ -117,7 +119,7 @@ class Migrator {
   }
 
   private async initMigrationsCollection() {
-    await this.db.collection('migrations').findOneAndUpdate({}, {
+    await this.db.collection(this.collection).findOneAndUpdate({}, {
       $setOnInsert: {
         version: 0,
         migrationRunning: false,
@@ -131,7 +133,7 @@ class Migrator {
   }
 
   private async markMigrationAsDone() {
-    await this.db.collection('migrations').updateOne({}, {$set: {migrationRunning: false}});
+    await this.db.collection(this.collection).updateOne({}, {$set: {migrationRunning: false}});
   }
 
   private async migrationFiles() {
