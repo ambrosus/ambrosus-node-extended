@@ -61,15 +61,15 @@ class Migrator {
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
     while (await this.isMigrationNecessary()) {
-      if (retries > 10) {
-        break;
-      }
-
       logger.info('Migration did not complete yet. Retrying in 5 seconds');
 
       await delay(5000);
 
       retries = retries + 1;
+
+      if (retries > 10) {
+        break;
+      }
     }
 
     if (await this.isMigrationNecessary()) {
