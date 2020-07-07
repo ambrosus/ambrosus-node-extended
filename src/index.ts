@@ -68,7 +68,7 @@ client.getConnection().then();
 
 client.events.on('dbConnected', async () => {
   try {
-    const migrator = new Migrator(client.db, config);
+    const migrator = new Migrator(client.db, config, 'migration.server');
 
     await migrator.migrate(logger);
   } catch (e) {
