@@ -20,6 +20,7 @@ import { AssetRepository } from './asset-repository.model';
 export interface IAsset {
   _id: string;
   assetId: string;
+  organizationId: number;
   content: AssetContent;
   metadata: AssetMetaData;
   repository: AssetRepository;
@@ -29,6 +30,7 @@ export interface IAsset {
 export class Asset implements IAsset {
   public _id: string;
   public assetId: string;
+  public organizationId: number;
   public content: AssetContent;
   public metadata: AssetMetaData;
   public repository: AssetRepository;

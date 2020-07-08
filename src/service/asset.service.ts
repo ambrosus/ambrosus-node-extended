@@ -23,14 +23,24 @@ import {
 } from '../model';
 import { ensureCanCreateAsset } from '../security/access.check';
 import { getTimestamp } from '../util';
-import { ValidationError } from '../errors';
+
+import {
+  ValidationError,
+  PermissionError
+} from '../errors';
+
 import { AssetMetaData } from '../model/asset/asset-metadata.model';
 import { AssetContent } from '../model/asset/asset-content.model';
 import { AssetIdData } from '../model/asset/asset-iddata.model';
 
+import { AccountService } from '../service/account.service';
+
 @injectable()
 export class AssetService {
-  constructor(@inject(TYPE.AssetRepository) private readonly assetRepository: AssetRepository) {}
+  constructor(
+    @inject(TYPE.AssetRepository) private readonly assetRepository: AssetRepository,
+    @inject(TYPE.AccountService) private readonly accountService: AccountService
+  ) {}
 
   public getAssetExists(assetId: string) {
     return this.assetRepository.existsOR({ assetId }, 'assetId');
@@ -67,8 +77,15 @@ export class AssetService {
       throw new ValidationError( {reason: `Asset with assetId=${assetId} already exists` } );
     }
 
+    const creator = await this.accountService.getAccount(createdBy);
+    if (!creator) {
+      throw new PermissionError({ reason: 'Unauthorized' });
+    }
+
     const asset = new Asset();
     asset.assetId = assetId;
+
+    asset.organizationId = creator.organization;
 
     asset.metadata = new AssetMetaData();
 

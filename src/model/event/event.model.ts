@@ -20,6 +20,7 @@ import { EventMetaData } from './event-metadata.model';
 export interface IEvent {
   _id: string;
   eventId: string;
+  organizationId: number;
   content: EventContent;
   metadata: EventMetaData;
   repository: EventRepository;
@@ -29,6 +30,7 @@ export interface IEvent {
 export class Event implements IEvent {
   public _id: string;
   public eventId: string;
+  public organizationId: number;
   public content: EventContent;
   public metadata: EventMetaData;
   public repository: EventRepository;
