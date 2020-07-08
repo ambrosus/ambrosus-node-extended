@@ -7,8 +7,8 @@ This Source Code Form is subject to the terms of the Mozilla Public License, v. 
 This Source Code Form is “Incompatible With Secondary Licenses”, as defined by the Mozilla Public License, v. 2.0.
 */
 
-const OrganizationKey = require('../model');
-const Web3 = require('web3');
+// tslint:disable-next-line:no-var-requires
+const web3 = require('web3');
 
 // eslint-disable-next-line import/prefer-default-export
 const up = async (db, config, logger) => {
@@ -16,21 +16,21 @@ const up = async (db, config, logger) => {
 
   let createCount = 0;
 
-  const createOrganizationKey = async (organization) => {      
+  const createOrganizationKey = async (organization) => {
       const currentItem = await db.collection('organizationKeys').findOne({ organizationId: organization.organizationId });
 
-      const web3 = new Web3();
+      const Web3 = new web3();
 
       if (!currentItem) {
-        let keyItem = {
+        const keyItem = {
           organizationId: organization.organizationId,
-          Key: web3.eth.accounts.create(web3.utils.randomHex(32)).privateKey
-        }        
-        
+          Key: Web3.eth.accounts.create(Web3.utils.randomHex(32)).privateKey,
+        };
+
         db.collection('organizationKeys').insertOne(keyItem);
 
-        createCount++;
-      }      
+        createCount = createCount + 1;
+      }
   };
 
   while (await organizations.hasNext()) {
@@ -40,4 +40,4 @@ const up = async (db, config, logger) => {
   logger.info(`Created keys for ${createCount} organizations`);
 };
 
-module.exports = { up }
+module.exports = { up };
