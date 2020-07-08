@@ -86,7 +86,7 @@ class Migrator {
   }
 
   private isMigrationPath(file) {
-    return path.basename(file).match(/^\d{14}_.*\.js$/);
+    return path.basename(file).match(/^\d{14}_.*\.(js|ts)$/);
   }
 
   private async getCurrentVersion() {
