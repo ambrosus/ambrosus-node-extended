@@ -24,18 +24,26 @@ import {
 } from '../model';
 import { getTimestamp } from '../util';
 import { ensureCanCreateEvent } from '../security/access.check';
-import { ValidationError } from '../errors';
+
+import {
+  ValidationError,
+  PermissionError
+} from '../errors';
+
 import { AssetService } from '../service/asset.service';
 import { EventContent } from '../model/event/event-content.model';
 import { EventIdData } from '../model/event/event-iddata.model';
 import { EventMetaData } from '../model/event/event-metadata.model';
+
+import { AccountService } from '../service/account.service';
 
 @injectable()
 export class EventService {
   constructor(
     @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
     @inject(TYPE.EventRepository) private readonly eventRepository: EventRepository,
-    @inject(TYPE.AssetService) private assetService: AssetService
+    @inject(TYPE.AssetService) private assetService: AssetService,
+    @inject(TYPE.AccountService) private accountService: AccountService
   ) { }
 
   public getEventExists(eventId: string) {
@@ -116,8 +124,15 @@ export class EventService {
       throw new ValidationError( {reason: `Event with eventId=${eventId} already exists` } );
     }
 
+    const creator = await this.accountService.getAccount(createdBy);
+    if (!creator) {
+      throw new PermissionError({ reason: 'Unauthorized' });
+    }
+
     const event = new Event();
     event.eventId = eventId;
+
+    event.organizationId = creator.organization;
 
     event.metadata = new EventMetaData();
 
