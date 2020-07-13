@@ -18,10 +18,12 @@ export interface IEventContent {
   signature: string;
   idData: EventIdData;
   data: object[];
+  encryption: string;
 }
 
 export class EventContent implements IEventContent {
   public signature: string;
   public idData: EventIdData;
   public data: object[];
+  public encryption: string;
 }

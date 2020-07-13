@@ -40,6 +40,8 @@ import { EmailService } from '../service/email.service';
 import { ExistsError, ValidationError, NotFoundError, PermissionError, CreateError } from '../errors';
 import { config } from '../config';
 
+import { encrypt, decrypt } from '../util/crypto.util';
+
 //#endregion
 
 @injectable()
@@ -408,4 +410,45 @@ export class OrganizationService {
     return address;
   }
   //#endregion
+
+  public hexdec(hexString) {
+    const hexFormatted = (hexString).replace(/[^a-f0-9]/gi, '');
+    return parseInt(hexFormatted, 16);
+  }
+
+  public hex2bin(hexSource: string) {
+    let hexNormalized: string;
+
+    if (hexSource.indexOf('0x') === 0) {
+      hexNormalized = hexSource.substring(2);
+    } else {
+      hexNormalized = hexSource;
+    }
+
+    let bin = '';
+    for (let i = 0; i < hexNormalized.length; i = i + 2) {
+        bin += String.fromCharCode(this.hexdec(hexNormalized.substr(i, 2)));
+    }
+    return bin;
+  }
+
+  public async encrypt(data: string, organizationId: number): Promise<string> {
+    const organizationKey = await this.organizationKeysRepository.findOne(new APIQuery({organizationId}));
+
+    if (organizationKey !== undefined) {
+      return encrypt(data, organizationKey.Key);
+    }
+
+    return `encrypt.ERROR: organization(${organizationId}) key not found`;
+  }
+
+  public async decrypt(data: string, organizationId: number): Promise<string> {
+    const organizationKey = await this.organizationKeysRepository.findOne(new APIQuery({organizationId}));
+
+    if (organizationKey !== undefined) {
+      return decrypt(data, organizationKey.Key);
+    }
+
+    return `decrypt.ERROR: organization(${organizationId}) key not found`;
+  }
 }

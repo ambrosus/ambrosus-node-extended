@@ -99,7 +99,7 @@ server.setConfig(app => {
       extended: true,
     })
   );
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({ limit: '16mb' }));
   if (process.env.NODE_ENV !== 'test') {
     app.use(morgan('combined'));
   }
