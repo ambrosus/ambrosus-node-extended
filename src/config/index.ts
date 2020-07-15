@@ -18,7 +18,6 @@ export const config: any = {
   paginationDefault: process.env.PAGINATION_DEFAULT || 10,
   sentryDsn: process.env.SENTRY_DSN,
   dashboardUrl: process.env.DASHBOARD_URL,
-  encryptionKey: process.env.ENCRYPTION_KEY,
   gitCommit: process.env.GIT_COMMIT,
   statePath: process.env.STATE_PATH || '/opt/hermes/state.json',
   useStatic: Number.parseInt(process.env.USE_STATIC, 10) || 0,

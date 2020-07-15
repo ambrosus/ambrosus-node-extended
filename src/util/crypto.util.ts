@@ -13,25 +13,42 @@
  */
 
 import * as crypto from 'crypto';
-import { config } from '../config';
 
 const IV_LENGTH = 16;
-const ENCRYPTION_KEY = config.encryptionKey;
+const ALGORITHM = 'aes-256-cbc';
+const ENCODING = 'base64'; // can be hex or base64
 
-export const encrypt = text => {
+export const encrypt = (data, keyHex: string) => {
+  let keyFormatted: string;
+
+  if (keyHex.indexOf('0x') === 0) {
+    keyFormatted = keyHex.substring(2);
+  } else {
+    keyFormatted = keyHex;
+  }
+
   const iv = crypto.randomBytes(IV_LENGTH);
-  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
-  let encrypted = cipher.update(text);
+  const cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(keyFormatted, 'hex'), iv);
 
+  let encrypted = cipher.update(data);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
-  return `${iv.toString('hex')}:${encrypted.toString('hex')}`;
+
+  return `${iv.toString(ENCODING)}:${encrypted.toString(ENCODING)}`;
 };
 
-export const decrypt = text => {
-  const textParts = text.split(':');
-  const iv = Buffer.from(textParts.shift(), 'hex');
-  const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
+export const decrypt = (data, keyHex: string) => {
+  let keyFormatted: string;
+
+  if (keyHex.indexOf('0x') === 0) {
+    keyFormatted = keyHex.substring(2);
+  } else {
+    keyFormatted = keyHex;
+  }
+
+  const textParts = data.split(':');
+  const iv = Buffer.from(textParts.shift(), ENCODING);
+  const encryptedText = Buffer.from(textParts.join(':'), ENCODING);
+  const decipher = crypto.createDecipheriv(ALGORITHM, Buffer.from(keyFormatted, 'hex'), iv);
   let decrypted = decipher.update(encryptedText);
 
   decrypted = Buffer.concat([decrypted, decipher.final()]);
