@@ -36,6 +36,7 @@ import { EventIdData } from '../model/event/event-iddata.model';
 import { EventMetaData } from '../model/event/event-metadata.model';
 
 import { AccountService } from '../service/account.service';
+import { OrganizationService } from '../service/organization.service';
 
 @injectable()
 export class EventService {
@@ -43,7 +44,8 @@ export class EventService {
     @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
     @inject(TYPE.EventRepository) private readonly eventRepository: EventRepository,
     @inject(TYPE.AssetService) private assetService: AssetService,
-    @inject(TYPE.AccountService) private accountService: AccountService
+    @inject(TYPE.AccountService) private accountService: AccountService,
+    @inject(TYPE.OrganizationService) private organizationService: OrganizationService
   ) { }
 
   public getEventExists(eventId: string) {
@@ -69,6 +71,40 @@ export class EventService {
   public getEvent(eventId: string): Promise<Event> {
     const apiQuery = new APIQuery({ eventId });
     return this.eventRepository.queryEvent(apiQuery, (this.user && this.user.accessLevel) || 0);
+  }
+
+  public async checkEventDecryption(event: Event): Promise<Event> {
+    const result = event;
+
+    if (result.content.data[0] !== undefined) {
+      const data = result.content.data[0];
+
+      if (data['encrypted'] !== undefined) {
+        const decrypted = await this.organizationService.decrypt(data['encrypted'], result.organizationId);
+
+        result.content.data = JSON.parse(decrypted);
+      }
+    }
+
+    return result;
+  }
+
+  public async checkEventsDecryption(data: MongoPagedResult): Promise<MongoPagedResult> {
+    const eventList = data['results'];
+
+    if (eventList === undefined) {
+      return data;
+    }
+
+    for (let i = 0; i < eventList.length; i = i + 1) {
+      eventList[i] = await this.checkEventDecryption(eventList[i]);
+    }
+
+    const result = data;
+
+    result['results'] = eventList;
+
+    return result;
   }
 
   public async getLatestAssetEventsOfType(
@@ -151,7 +187,15 @@ export class EventService {
 
     event.content.signature = signature;
 
-    event.content.data = data;
+    if (accessLevel === 0) {
+      event.content.data = data;
+    } else {
+      const encryptedData = await this.organizationService.encrypt(JSON.stringify(data), creator.organization);
+
+      event.content.data = [{
+        encrypted: encryptedData,
+      }];
+    }
 
     await this.eventRepository.create(event);
   }

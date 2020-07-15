@@ -32,9 +32,10 @@ import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
 import { validate } from '../middleware';
 import { querySchema, eventSchema } from '../validation/schemas';
-import { AuthService } from '../service/auth.service';
 
+import { AuthService } from '../service/auth.service';
 import { Web3Service } from '../service/web3.service';
+import { OrganizationService } from '../service/organization.service';
 
 import { validateTimestamp } from '../validation/validate.utils';
 
@@ -48,7 +49,8 @@ export class Event2Controller extends BaseController {
     @inject(TYPE.EventService) private eventService: EventService,
     @inject(TYPE.LoggerService) protected logger: ILogger,
     @inject(TYPE.AuthService) private authService: AuthService,
-    @inject(TYPE.Web3Service) private web3Service: Web3Service
+    @inject(TYPE.Web3Service) private web3Service: Web3Service,
+    @inject(TYPE.OrganizationService) private organizationService: OrganizationService
   ) {
     super(logger);
   }
@@ -57,8 +59,9 @@ export class Event2Controller extends BaseController {
     '/list'
   )
   public async getEvents(req: Request): Promise<APIResponse> {
-    const result = await this.eventService.getEvents(APIQuery.fromRequest2(req));
-    return APIResponse.fromMongoPagedResult(result);
+    const events = await this.eventService.getEvents(APIQuery.fromRequest2(req));
+
+    return APIResponse.fromMongoPagedResult(await this.eventService.checkEventsDecryption(events));
   }
 
   @httpGet(
@@ -67,8 +70,9 @@ export class Event2Controller extends BaseController {
   public async getEvent(
     @requestParam('eventId') eventId: string
   ): Promise<APIResponse> {
-    const result = await this.eventService.getEvent(eventId);
-    return APIResponse.fromSingleResult(result);
+    const event = await this.eventService.getEvent(eventId);
+
+    return APIResponse.fromSingleResult(await this.eventService.checkEventDecryption(event));
   }
 
   @httpGet(
@@ -86,16 +90,16 @@ export class Event2Controller extends BaseController {
     validate(querySchema)
   )
   public async queryEvents(req: Request): Promise<APIResponse> {
-    const result = await this.eventService.getEvents(APIQuery.fromRequest(req));
-    return APIResponse.fromMongoPagedResult(result);
+    const events = await this.eventService.getEvents(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(await this.eventService.checkEventsDecryption(events));
   }
 
   @httpPost(
     '/search'
   )
   public async search(req: Request): Promise<APIResponse> {
-    const result = await this.eventService.searchEvents(APIQuery.fromRequest(req));
-    return APIResponse.fromMongoPagedResult(result);
+    const events = await this.eventService.searchEvents(APIQuery.fromRequest(req));
+    return APIResponse.fromMongoPagedResult(await this.eventService.checkEventsDecryption(events));
   }
 
   @httpGet(
@@ -126,7 +130,7 @@ export class Event2Controller extends BaseController {
     authorize('create_event'),
     validate(eventSchema.eventCreate)
   )
-  public async createAsset(
+  public async createEvent(
     @requestParam('eventId') eventId: string,
     @requestHeaders('authorization') authorization: string,
     @requestBody() payload: {
