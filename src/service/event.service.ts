@@ -82,7 +82,7 @@ export class EventService {
 
         result.content.data[i] = JSON.parse(decryptedData);
       }
-    }    
+    }
 
     return result;
   }
