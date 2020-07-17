@@ -76,15 +76,13 @@ export class EventService {
   public async checkEventDecryption(event: Event): Promise<Event> {
     const result = event;
 
-    if (result.content.data[0] !== undefined) {
-      const data = result.content.data[0];
+    for (let i = 0; i < event.content.data.length; i = i + 1) {
+      if (event.content.data[i]['encrypted'] !== undefined) {
+        const decryptedData = await this.organizationService.decrypt(event.content.data[i]['encrypted'], result.organizationId);
 
-      if (data['encrypted'] !== undefined) {
-        const decrypted = await this.organizationService.decrypt(data['encrypted'], result.organizationId);
-
-        result.content.data = JSON.parse(decrypted);
+        result.content.data[i] = JSON.parse(decryptedData);
       }
-    }
+    }    
 
     return result;
   }
@@ -187,15 +185,20 @@ export class EventService {
 
     event.content.signature = signature;
 
-    if (accessLevel === 0) {
-      event.content.data = data;
-    } else {
-      const encryptedData = await this.organizationService.encrypt(JSON.stringify(data), creator.organization);
+    if (accessLevel > 0) {
+      for (let i = 0; i < data.length; i = i + 1) {
+        const encryptedData = await this.organizationService.encrypt(JSON.stringify(data[i]), creator.organization);
 
-      event.content.data = [{
-        encrypted: encryptedData,
-      }];
+        const dataType = data[i]['type'];
+
+        data[i] = {
+         type: dataType,
+         encrypted: encryptedData,
+        };
+      }
     }
+
+    event.content.data = data;
 
     await this.eventRepository.create(event);
   }

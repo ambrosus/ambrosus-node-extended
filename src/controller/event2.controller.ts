@@ -72,7 +72,7 @@ export class Event2Controller extends BaseController {
   ): Promise<APIResponse> {
     const event = await this.eventService.getEvent(eventId);
 
-    return APIResponse.fromSingleResult(await this.eventService.checkEventDecryption(event));
+    return APIResponse.fromSingleResult(await this.eventService.checkEventDecryption(event));    
   }
 
   @httpGet(
