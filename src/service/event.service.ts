@@ -87,7 +87,7 @@ export class EventService {
     return result;
   }
 
-  public async checkEventsDecryption(data: MongoPagedResult): Promise<MongoPagedResult> {
+  public async checkEventsDecryptionPaged(data: MongoPagedResult): Promise<MongoPagedResult> {
     const eventList = data['results'];
 
     if (eventList === undefined) {
@@ -103,6 +103,20 @@ export class EventService {
     result['results'] = eventList;
 
     return result;
+  }
+
+  public async checkEventsDecryptionList(data: any[]): Promise<any[]> {
+    const eventList = data;
+
+    if (eventList === undefined) {
+      return data;
+    }
+
+    for (let i = 0; i < eventList.length; i = i + 1) {
+      eventList[i] = await this.checkEventDecryption(eventList[i]);
+    }
+
+    return eventList;
   }
 
   public async getLatestAssetEventsOfType(
