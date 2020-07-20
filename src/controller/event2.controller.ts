@@ -61,7 +61,7 @@ export class Event2Controller extends BaseController {
   public async getEvents(req: Request): Promise<APIResponse> {
     const events = await this.eventService.getEvents(APIQuery.fromRequest2(req));
 
-    return APIResponse.fromMongoPagedResult(await this.eventService.checkEventsDecryption(events));
+    return APIResponse.fromMongoPagedResult(await this.eventService.checkEventsDecryptionPaged(events));
   }
 
   @httpGet(
@@ -91,7 +91,7 @@ export class Event2Controller extends BaseController {
   )
   public async queryEvents(req: Request): Promise<APIResponse> {
     const events = await this.eventService.getEvents(APIQuery.fromRequest(req));
-    return APIResponse.fromMongoPagedResult(await this.eventService.checkEventsDecryption(events));
+    return APIResponse.fromMongoPagedResult(await this.eventService.checkEventsDecryptionPaged(events));
   }
 
   @httpPost(
@@ -99,7 +99,7 @@ export class Event2Controller extends BaseController {
   )
   public async search(req: Request): Promise<APIResponse> {
     const events = await this.eventService.searchEvents(APIQuery.fromRequest(req));
-    return APIResponse.fromMongoPagedResult(await this.eventService.checkEventsDecryption(events));
+    return APIResponse.fromMongoPagedResult(await this.eventService.checkEventsDecryptionPaged(events));
   }
 
   @httpGet(
@@ -116,13 +116,13 @@ export class Event2Controller extends BaseController {
   public async latestType(req: Request): Promise<APIResponse> {
     const assets = getParamValue(req, 'assets');
     const type = getParamValue(req, 'type');
-    const result = await this.eventService.getLatestAssetEventsOfType(
+    const events = await this.eventService.getLatestAssetEventsOfType(
       assets,
       type,
       APIQuery.fromRequest(req)
     );
 
-    return APIResponse.fromSingleResult(result);
+    return APIResponse.fromSingleResult(await this.eventService.checkEventsDecryptionList(events));
   }
 
   @httpPost(
