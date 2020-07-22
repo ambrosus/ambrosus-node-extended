@@ -56,7 +56,7 @@ export class Asset2Controller extends BaseController {
     '/list'
   )
   public async getAssets(req: Request): Promise<APIResponse> {
-    const result = await this.assetService.getAssets(APIQuery.fromRequest(req));
+    const result = await this.assetService.getAssets(APIQuery.fromRequest2(req));
     return APIResponse.fromMongoPagedResult(result);
   }
 
