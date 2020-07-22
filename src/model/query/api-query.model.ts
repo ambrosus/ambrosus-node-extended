@@ -33,6 +33,16 @@ export interface IAPIQuery {
   fields: object;
 }
 
+interface IQueryPrefixInfo {
+  Id: string;
+  prefix: string;
+  type: string;
+}
+
+const queryPrefixes: IQueryPrefixInfo[] = [
+  {Id: 'organizationId', prefix: '', type: 'number'},
+];
+
 @injectable()
 export class APIQuery implements IAPIQuery {
   public static fromRequest(req: Request): APIQuery {
@@ -65,9 +75,16 @@ export class APIQuery implements IAPIQuery {
     }
 
     Object.keys(req.query).forEach(key => {
-      req.query[`content.idData.${key}`] = req.query[key];
+      const prefixInfo = this.getPrefix(key);
+      const queryKey = req.query[key];
 
       delete req.query[key];
+
+      if (prefixInfo.type === 'number') {
+        req.query[`${prefixInfo.prefix}${key}`] = +queryKey;
+      } else {
+        req.query[`${prefixInfo.prefix}${key}`] = queryKey;
+      }
     });
 
     apiQuery.query = req.query;
@@ -78,6 +95,24 @@ export class APIQuery implements IAPIQuery {
     apiQuery.previous = getParamValue(req, 'previous');
 
     return apiQuery;
+  }
+
+  private static getPrefix(fieldName: string): IQueryPrefixInfo {
+    let result = {
+      Id: fieldName,
+      prefix: 'content.idData.',
+      type: 'string',
+    };
+
+    queryPrefixes.forEach(item => {
+      if (item.Id === fieldName) {
+        result = item;
+
+        return;
+      }
+    });
+
+    return result;
   }
 
   public query;
