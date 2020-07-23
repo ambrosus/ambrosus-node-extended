@@ -11,7 +11,7 @@ This Source Code Form is “Incompatible With Secondary Licenses”, as defined 
 const web3 = require('web3');
 
 // eslint-disable-next-line import/prefer-default-export
-const up = async (db, config, logger) => {
+export const up = async (db, config, logger) => {
   const organizations = await db.collection('organization').find();
 
   let createCount = 0;
@@ -39,5 +39,3 @@ const up = async (db, config, logger) => {
 
   logger.info(`Created keys for ${createCount} organizations`);
 };
-
-module.exports = { up };
