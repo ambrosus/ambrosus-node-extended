@@ -21,11 +21,11 @@ const up = async (db, config, logger) => {
     if (account !== null) {
      await db.collection('events').updateOne(
       {eventId: event.eventId},
-      {$set : {organizationId: account.organization}},
+      {$set : {organizationId: account.organization}}
      );
 
      fillCount = fillCount + 1;
-    }    
+    }
   };
 
   while (await events.hasNext()) {
