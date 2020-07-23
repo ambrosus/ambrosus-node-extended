@@ -83,6 +83,8 @@ export class EventService {
         result.content.data[i] = JSON.parse(decryptedData);
 
         result.content.data[i]['encryption'] = 'on';
+      } else {
+        result.content.data[i]['encryption'] = 'off';
       }
     }
 
