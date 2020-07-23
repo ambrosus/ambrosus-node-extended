@@ -81,6 +81,10 @@ export class EventService {
         const decryptedData = await this.organizationService.decrypt(event.content.data[i]['encrypted'], result.organizationId);
 
         result.content.data[i] = JSON.parse(decryptedData);
+
+        result.content.data[i]['encryption'] = 'on';
+      } else {
+        result.content.data[i]['encryption'] = 'off';
       }
     }
 
