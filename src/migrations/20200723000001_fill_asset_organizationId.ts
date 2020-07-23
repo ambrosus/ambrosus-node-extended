@@ -8,7 +8,7 @@ This Source Code Form is “Incompatible With Secondary Licenses”, as defined 
 */
 
 // eslint-disable-next-line import/prefer-default-export
-const up = async (db, config, logger) => {
+export const up = async (db, config, logger) => {
   const assets = await db.collection('assets').find({organizationId: {$exists: false}});
 
   let fillCount = 0;
@@ -34,5 +34,3 @@ const up = async (db, config, logger) => {
 
   logger.info(`Filled organizationIds for ${fillCount} assets`);
 };
-
-module.exports = { up };
