@@ -12,14 +12,17 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export * from './api-response';
-export * from './query';
-export * from './account';
-export * from './asset/asset.model';
-export * from './event/event.model';
-export * from './bundle/bundle.model';
-export * from './auth';
-export * from './organization';
-export * from './workerLog';
-export * from './workerInterval';
-export * from './test';
+import { injectable } from 'inversify';
+
+export interface IWorkerInterval {
+  _id: string;
+  name: string;
+  when: number;
+}
+
+@injectable()
+export class WorkerInterval implements IWorkerInterval {
+  public _id: string;
+  public name: string;
+  public when: number;
+}

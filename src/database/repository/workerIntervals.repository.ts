@@ -12,14 +12,26 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export * from './api-response';
-export * from './query';
-export * from './account';
-export * from './asset/asset.model';
-export * from './event/event.model';
-export * from './bundle/bundle.model';
-export * from './auth';
-export * from './organization';
-export * from './workerLog';
-export * from './workerInterval';
-export * from './test';
+import { inject, injectable } from 'inversify';
+
+import { TYPE } from '../../constant';
+import { WorkerInterval } from '../../model';
+import { DBClient } from '../client';
+import { BaseRepository } from './base.repository';
+
+@injectable()
+export class WorkerIntervalsRepository extends BaseRepository<WorkerInterval> {
+  constructor(
+    @inject(TYPE.DBClient) protected client: DBClient
+  ) {
+    super(client, 'worker_intervals');
+  }
+
+  get paginatedField(): string {
+    return '_id';
+  }
+
+  get paginatedAscending(): boolean {
+    return false;
+  }
+}

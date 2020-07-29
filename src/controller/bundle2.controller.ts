@@ -25,7 +25,7 @@ import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
 import { validate } from '../middleware';
 import { authorize } from '../middleware/authorize.middleware';
-import { APIQuery, APIResponse } from '../model';
+import { APIQuery, APIResponse, MongoPagedResult } from '../model';
 import { BundleService } from '../service/bundle.service';
 import { querySchema } from '../validation';
 import { BaseController } from './base.controller';
@@ -73,6 +73,19 @@ export class Bundle2Controller extends BaseController {
     const result = await this.bundleService.getBundles(
       APIQuery.fromRequest(req)
     );
+    return APIResponse.fromMongoPagedResult(result);
+  }
+
+  @httpPost(
+    '/push',
+    authorize('super_account'),
+    validate(querySchema)
+  )
+  public async pushBundles(req: Request): Promise<APIResponse> {
+    await this.bundleService.pushBundle();
+
+    const result = new MongoPagedResult;
+
     return APIResponse.fromMongoPagedResult(result);
   }
 }

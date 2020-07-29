@@ -67,6 +67,7 @@ export const TYPE: any = {
   OrganizationRequestRepository: Symbol.for('OrganizationRequestRepository'),
   OrganizationInviteRepository: Symbol.for('OrganizationInviteRepository'),
   WorkerLogsRepository: Symbol.for('WorkerLogsRepository'),
+  WorkerIntervalsRepository: Symbol.for('WorkerIntervalsRepository'),
   ThrottlingRepository: Symbol.for('ThrottlingRepository'),
 
   GraphQLSchema: Symbol.for('GraphQLSchema'),

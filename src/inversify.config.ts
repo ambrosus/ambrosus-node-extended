@@ -48,6 +48,7 @@ import {
   OrganizationRequestRepository,
   OrganizationInviteRepository,
   WorkerLogsRepository,
+  WorkerIntervalsRepository,
   ThrottlingRepository,
 } from './database/repository';
 import { GraphQLSchema, IGraphQLResolver, IGraphQLSchema, IGraphQLType } from './graphql';
@@ -127,6 +128,10 @@ iocContainer
 iocContainer
   .bind<WorkerLogsRepository>(TYPE.WorkerLogsRepository)
   .to(WorkerLogsRepository)
+  .inSingletonScope();
+iocContainer
+  .bind<WorkerIntervalsRepository>(TYPE.WorkerIntervalsRepository)
+  .to(WorkerIntervalsRepository)
   .inSingletonScope();
 
 // controllers
