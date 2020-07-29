@@ -25,6 +25,7 @@ import {
   PermissionError,
   ValidationError
 } from '../errors';
+import { AccountInstance } from 'twilio/lib/rest/api/v2010/account';
 
 function hasPermission(permissions: string[], permission: string): boolean {
   return permissions ? permissions.indexOf(permission) > -1 : false;
@@ -90,7 +91,7 @@ export const ensureCanCreateAccount = async (
   organizationRepository: OrganizationRepository, 
   creator: Account, 
   newAccount: Account
-  ) => {  
+) => {  
   ensureAccountIsActive(creator);
   ensureAccessLevelLess(creator, newAccount.accessLevel, 'new');
   
@@ -106,12 +107,12 @@ export const ensureCanCreateAccount = async (
 };
 
 export const ensureCanModifyAccount = async (
-  organizationRepository: OrganizationRepository, 
-  modifier: Account, 
+  organizationRepository: OrganizationRepository,
+  modifier: Account,
   target: Account,
   newAccessLevel: number,
   newPermissions
-  ) => {
+) => {
   ensureAccountIsActive(modifier);
 
   if (newAccessLevel !== undefined) {
@@ -133,11 +134,25 @@ export const ensureCanModifyAccount = async (
 };
 
 export const ensureCanCreateAsset = async ( // TODO
-  ) => {
-    return
+) => {
+  return
 };
 
 export const ensureCanCreateEvent = async ( // TODO
-  ) => {
-    return
+) => {
+  return
 };
+
+export const ensureCanPushBundle = async (executor: Account) => {
+  if (executor === undefined) {
+    throw new PermissionError({ reason: 'executor authorization failed' });
+  }
+
+  if (!hasPermission(executor.permissions, Permission.super_account)) {
+    throw new PermissionError({ reason: 'executor must have super_account permission to push bundles' });
+  }
+
+  return
+};
+
+    

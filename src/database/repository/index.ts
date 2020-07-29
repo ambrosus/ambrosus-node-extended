@@ -23,4 +23,5 @@ export * from './organization-key.repository';
 export * from './organization-request.repository';
 export * from './organization-invite.repository';
 export * from './workerLogs.repository';
+export * from './workerIntervals.repository';
 export * from './throttling.repository';

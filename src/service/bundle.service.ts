@@ -17,19 +17,30 @@ import { inject, injectable } from 'inversify';
 import { TYPE } from '../constant/types';
 import {
   BundleRepository,
-  GridRepository
+  GridRepository,
+  AccountRepository,
+  WorkerIntervalsRepository,
 } from '../database/repository';
 
 import {
   APIQuery,
   Bundle,
-  MongoPagedResult
+  WorkerInterval,
+  MongoPagedResult,
+  UserPrincipal
 } from '../model';
+
+import {
+  ensureCanPushBundle
+} from '../security/access.check';
 
 @injectable()
 export class BundleService {
   constructor(
+    @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
     @inject(TYPE.BundleRepository) private readonly bundleRepository: BundleRepository,
+    @inject(TYPE.AccountRepository) private readonly accountRepository: AccountRepository,
+    @inject(TYPE.WorkerIntervalsRepository) private readonly workerIntervalsRepository: WorkerIntervalsRepository,
     @inject(TYPE.GridRepository) private readonly gridRepository: GridRepository
   ) {
   }
@@ -58,5 +69,25 @@ export class BundleService {
 
   public async getBundleStream(bundleId: string) {
     return await this.gridRepository.getBundleStream(bundleId);
+  }
+
+  public async pushBundle() {
+    const executor = await this.accountRepository.getAccount(
+      new APIQuery(
+        {
+          address: this.user.authToken.createdBy,
+        }
+      ), 0, 1000, true);
+
+    await ensureCanPushBundle( executor );
+
+    const workerInterval = new WorkerInterval;
+
+    workerInterval.name = 'bundlesWorker';
+    workerInterval.when = 0;
+
+    this.workerIntervalsRepository.create(workerInterval);
+
+    return;
   }
 }
