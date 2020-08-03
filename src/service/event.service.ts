@@ -78,9 +78,13 @@ export class EventService {
 
     for (let i = 0; i < event.content.data.length; i = i + 1) {
       if (event.content.data[i]['encrypted'] !== undefined) {
-        const decryptedData = await this.organizationService.decrypt(event.content.data[i]['encrypted'], result.organizationId);
+        if (this.user.accessLevel >= event.content.idData.accessLevel) {
+          const decryptedData = await this.organizationService.decrypt(event.content.data[i]['encrypted'], result.organizationId);
 
-        result.content.data[i] = JSON.parse(decryptedData);
+          result.content.data[i] = JSON.parse(decryptedData);
+        } else {
+          event.content.data[i]['encrypted'] = `accessLevel.${event.content.idData.accessLevel}.required`;
+        }
 
         result.content.data[i]['encryption'] = 'on';
       } else {
