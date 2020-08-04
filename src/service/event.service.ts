@@ -38,6 +38,8 @@ import { EventMetaData } from '../model/event/event-metadata.model';
 import { AccountService } from '../service/account.service';
 import { OrganizationService } from '../service/organization.service';
 
+const maxAccessLevel = 1000;
+
 @injectable()
 export class EventService {
   constructor(
@@ -55,15 +57,15 @@ export class EventService {
   // (this.user && this.user.accessLevel) || 0
 
   public getEvents(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    return this.eventRepository.queryEvents(apiQuery, 1000);
+    return this.eventRepository.queryEvents(apiQuery, maxAccessLevel);
   }
 
   public getEventsOld(apiQuery: APIQuery): Promise<any> {
-    return this.eventRepository.queryEventsOld(apiQuery, 1000);
+    return this.eventRepository.queryEventsOld(apiQuery, maxAccessLevel);
   }
 
   public searchEvents(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    return this.eventRepository.searchEvents(apiQuery, 1000);
+    return this.eventRepository.searchEvents(apiQuery, maxAccessLevel);
   }
 
   public getEventDistinctField(field: string): Promise<any> {
@@ -72,7 +74,7 @@ export class EventService {
 
   public getEvent(eventId: string): Promise<Event> {
     const apiQuery = new APIQuery({ eventId });
-    return this.eventRepository.queryEvent(apiQuery, 1000);
+    return this.eventRepository.queryEvent(apiQuery, maxAccessLevel);
   }
 
   public async checkEventDecryption(event: Event): Promise<Event> {
