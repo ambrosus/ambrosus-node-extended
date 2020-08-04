@@ -52,16 +52,18 @@ export class EventService {
     return this.eventRepository.existsOR({ eventId }, 'eventId');
   }
 
+  // (this.user && this.user.accessLevel) || 0
+
   public getEvents(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    return this.eventRepository.queryEvents(apiQuery, (this.user && this.user.accessLevel) || 0);
+    return this.eventRepository.queryEvents(apiQuery, 1000);
   }
 
   public getEventsOld(apiQuery: APIQuery): Promise<any> {
-    return this.eventRepository.queryEventsOld(apiQuery, (this.user && this.user.accessLevel) || 0);
+    return this.eventRepository.queryEventsOld(apiQuery, 1000);
   }
 
   public searchEvents(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    return this.eventRepository.searchEvents(apiQuery, (this.user && this.user.accessLevel) || 0);
+    return this.eventRepository.searchEvents(apiQuery, 1000);
   }
 
   public getEventDistinctField(field: string): Promise<any> {
@@ -70,7 +72,7 @@ export class EventService {
 
   public getEvent(eventId: string): Promise<Event> {
     const apiQuery = new APIQuery({ eventId });
-    return this.eventRepository.queryEvent(apiQuery, (this.user && this.user.accessLevel) || 0);
+    return this.eventRepository.queryEvent(apiQuery, 1000);
   }
 
   public async checkEventDecryption(event: Event): Promise<Event> {
