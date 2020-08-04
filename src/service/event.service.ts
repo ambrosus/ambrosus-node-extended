@@ -38,6 +38,8 @@ import { EventMetaData } from '../model/event/event-metadata.model';
 import { AccountService } from '../service/account.service';
 import { OrganizationService } from '../service/organization.service';
 
+const maxAccessLevel = 1000;
+
 @injectable()
 export class EventService {
   constructor(
@@ -52,16 +54,18 @@ export class EventService {
     return this.eventRepository.existsOR({ eventId }, 'eventId');
   }
 
+  // (this.user && this.user.accessLevel) || 0
+
   public getEvents(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    return this.eventRepository.queryEvents(apiQuery, (this.user && this.user.accessLevel) || 0);
+    return this.eventRepository.queryEvents(apiQuery, maxAccessLevel);
   }
 
   public getEventsOld(apiQuery: APIQuery): Promise<any> {
-    return this.eventRepository.queryEventsOld(apiQuery, (this.user && this.user.accessLevel) || 0);
+    return this.eventRepository.queryEventsOld(apiQuery, maxAccessLevel);
   }
 
   public searchEvents(apiQuery: APIQuery): Promise<MongoPagedResult> {
-    return this.eventRepository.searchEvents(apiQuery, (this.user && this.user.accessLevel) || 0);
+    return this.eventRepository.searchEvents(apiQuery, maxAccessLevel);
   }
 
   public getEventDistinctField(field: string): Promise<any> {
@@ -70,7 +74,7 @@ export class EventService {
 
   public getEvent(eventId: string): Promise<Event> {
     const apiQuery = new APIQuery({ eventId });
-    return this.eventRepository.queryEvent(apiQuery, (this.user && this.user.accessLevel) || 0);
+    return this.eventRepository.queryEvent(apiQuery, maxAccessLevel);
   }
 
   public async checkEventDecryption(event: Event): Promise<Event> {
@@ -78,9 +82,13 @@ export class EventService {
 
     for (let i = 0; i < event.content.data.length; i = i + 1) {
       if (event.content.data[i]['encrypted'] !== undefined) {
-        const decryptedData = await this.organizationService.decrypt(event.content.data[i]['encrypted'], result.organizationId);
+        if (this.user.accessLevel >= event.content.idData.accessLevel) {
+          const decryptedData = await this.organizationService.decrypt(event.content.data[i]['encrypted'], result.organizationId);
 
-        result.content.data[i] = JSON.parse(decryptedData);
+          result.content.data[i] = JSON.parse(decryptedData);
+        } else {
+          event.content.data[i]['encrypted'] = `accessLevel.${event.content.idData.accessLevel}.required`;
+        }
 
         result.content.data[i]['encryption'] = 'on';
       } else {
