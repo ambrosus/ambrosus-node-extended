@@ -9,5 +9,5 @@ This Source Code Form is “Incompatible With Secondary Licenses”, as defined 
 
 // eslint-disable-next-line import/prefer-default-export
 export const up = async (db, config, logger) => {
-  await db.collection('events').ensureIndex({ "content.idData.timestamp": -1, _id: -1 });
+  await db.collection('events').createIndex({ 'content.idData.timestamp': -1, '_id': -1 });
 };
