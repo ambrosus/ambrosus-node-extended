@@ -139,9 +139,9 @@ export class EventService {
       return data;
     }
 
-    for (let i = 0; i < eventData.length; i = i + 1) {
-      if (eventData[i]['raws'] !== undefined) {
-        delete eventData[i]['raws'];
+    for (let dataItem of eventData) {
+      if (dataItem['raws'] !== undefined) {
+        delete dataItem['raws'];
       }
     }
 
