@@ -155,7 +155,7 @@ export class EventService {
       return data;
     }
 
-    if (eventList.length >= 1) {
+    if (eventList.length > 1) {
       for (let i = 0; i < eventList.length; i = i + 1) {
         if (eventList[i]['content']['data'] !== undefined) {
           eventList[i]['content']['data'] = this.stripRaw(eventList[i]['content']['data']);
