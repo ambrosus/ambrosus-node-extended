@@ -131,6 +131,38 @@ export class EventService {
     return eventList;
   }
 
+  public stripRaw(data: any[]):any[] {
+    const eventData = data;
+
+    if (eventData === undefined) {
+      return data;
+    }
+
+    for (let i = 0; i < eventData.length; i = i + 1) {
+      if (eventData[i]['raws'] !== undefined) {        
+        eventData[i]['raws'] = {};
+      }
+    }
+
+    return eventData;
+  }
+
+  public stripRaws(data: any[]):any[] {
+    const eventList = data;
+
+    if (eventList === undefined) {
+      return data;
+    }
+
+    for (let i = 0; i < eventList.length; i = i + 1) {
+      if (eventList[i]['content']['data'] !== undefined) {
+        eventList[i]['content']['data'] = this.stripRaw(eventList[i]['content']['data']);
+      }
+    }
+
+    return eventList;
+  }
+
   public async getLatestAssetEventsOfType(
     assets: string[],
     type: string,
