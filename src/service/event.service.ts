@@ -132,7 +132,7 @@ export class EventService {
     return eventList;
   }
 
-  public stripRaw(data: any[]):any[] {
+  public stripRaw(data: any[]): any[] {
     const eventData = data;
 
     if (eventData === undefined) {
@@ -140,7 +140,7 @@ export class EventService {
     }
 
     for (let i = 0; i < eventData.length; i = i + 1) {
-      if (eventData[i]['raws'] !== undefined) {        
+      if (eventData[i]['raws'] !== undefined) {
         delete eventData[i]['raws'];
       }
     }
@@ -148,7 +148,7 @@ export class EventService {
     return eventData;
   }
 
-  public stripRaws(data: any[]):any[] {
+  public stripRaws(data: any[]): any[] {
     const eventList = data;
 
     if (eventList === undefined) {
@@ -156,9 +156,9 @@ export class EventService {
     }
 
     if (eventList.length > 1) {
-      for (let i = 0; i < eventList.length; i = i + 1) {
-        if (eventList[i]['content']['data'] !== undefined) {
-          eventList[i]['content']['data'] = this.stripRaw(eventList[i]['content']['data']);
+      for (let eventItem of eventList) {
+        if (eventItem['content']['data'] !== undefined) {
+          eventItem['content']['data'] = this.stripRaw(eventItem['content']['data']);
         }
       }
     }
