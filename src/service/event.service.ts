@@ -139,7 +139,7 @@ export class EventService {
       return data;
     }
 
-    for (let dataItem of eventData) {
+    for (const dataItem of eventData) {
       if (dataItem['raws'] !== undefined) {
         delete dataItem['raws'];
       }
@@ -156,7 +156,7 @@ export class EventService {
     }
 
     if (eventList.length > 1) {
-      for (let eventItem of eventList) {
+      for (const eventItem of eventList) {
         if (eventItem['content']['data'] !== undefined) {
           eventItem['content']['data'] = this.stripRaw(eventItem['content']['data']);
         }
