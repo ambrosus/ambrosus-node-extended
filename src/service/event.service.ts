@@ -37,6 +37,7 @@ import { EventMetaData } from '../model/event/event-metadata.model';
 
 import { AccountService } from '../service/account.service';
 import { OrganizationService } from '../service/organization.service';
+import { CompositionSettingsList } from 'twilio/lib/rest/video/v1/compositionSettings';
 
 const maxAccessLevel = 1000;
 
@@ -140,7 +141,7 @@ export class EventService {
 
     for (let i = 0; i < eventData.length; i = i + 1) {
       if (eventData[i]['raws'] !== undefined) {        
-        eventData[i]['raws'] = {};
+        delete eventData[i]['raws'];
       }
     }
 
@@ -154,9 +155,11 @@ export class EventService {
       return data;
     }
 
-    for (let i = 0; i < eventList.length; i = i + 1) {
-      if (eventList[i]['content']['data'] !== undefined) {
-        eventList[i]['content']['data'] = this.stripRaw(eventList[i]['content']['data']);
+    if (eventList.length >= 1) {
+      for (let i = 0; i < eventList.length; i = i + 1) {
+        if (eventList[i]['content']['data'] !== undefined) {
+          eventList[i]['content']['data'] = this.stripRaw(eventList[i]['content']['data']);
+        }
       }
     }
 
