@@ -122,7 +122,11 @@ export class Event2Controller extends BaseController {
       APIQuery.fromRequest(req)
     );
 
-    return APIResponse.fromSingleResult(await this.eventService.checkEventsDecryptionList(events));
+    const resultRaw = await this.eventService.checkEventsDecryptionList(events);
+
+    const result = this.eventService.stripRaws(resultRaw);
+
+    return APIResponse.fromSingleResult(result);
   }
 
   @httpPost(
