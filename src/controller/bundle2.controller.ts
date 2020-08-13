@@ -86,6 +86,6 @@ export class Bundle2Controller extends BaseController {
 
     const result = new MongoPagedResult;
 
-    return APIResponse.fromMongoPagedResult(result);
+    return APIResponse.fromSingleResult(result);
   }
 }
