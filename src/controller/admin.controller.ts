@@ -24,56 +24,21 @@ import {
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { Authorization } from '../constant/enum';
 import { ILogger } from '../interface/logger.inferface';
-import { APIResponse, Organization } from '../model';
 import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
 import { authorize, authorizeByType } from '../middleware/authorize.middleware';
-import { validate } from '../middleware';
-import { utilSchema, organizationSchema } from '../validation';
-
-import {
-  ValidationError
-} from '../errors';
 
 @controller(
-  '/organization2',
+  '/admin',
   MIDDLEWARE.Context,
-  authorize()
+  authorize('super_account')
 )
-export class Organization2Controller extends BaseController {
+export class AdminController extends BaseController {
 
   constructor(
     @inject(TYPE.OrganizationService) private organizationService: OrganizationService,
     @inject(TYPE.LoggerService) protected logger: ILogger
   ) {
     super(logger);
-  }
-
-  @httpGet(
-    '/info/:organizationId',
-    authorize('super_account'),
-    validate(utilSchema.organizationId, { paramsOnly: true })
-  )
-  public async getOrganization(
-    @requestParam('organizationId') organizationId: number
-  ): Promise<APIResponse> {
-    const result = await this.organizationService.getOrganization(organizationId);
-    return APIResponse.fromSingleResult(result);
-  }
-
-  @httpPost(
-    '/update/:organizationId',
-    authorizeByType(Authorization.organization_owner),
-    validate(organizationSchema.organizationUpdate, { params: true })
-  )
-  public async updateOrganization(
-    @requestParam('organizationId') organizationId: number,
-    req: Request
-  ): Promise<APIResponse> {
-    const result = await this.organizationService.updateOrganization(
-      organizationId,
-      Organization.fromRequestForUpdate(req)
-    );
-    return APIResponse.fromSingleResult(result);
-  }
+  }  
 }

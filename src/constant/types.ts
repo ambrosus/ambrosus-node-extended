@@ -35,6 +35,7 @@ export const TYPE: any = {
   OrganizationRequestController: Symbol.for('OrganizationRequestController'),
   OrganizationInviteController: Symbol.for('OrganizationInviteController'),
   MobileController: Symbol.for('MobileController'),
+  AdminController: Symbol.for('AdminController'),
 
   MetricController: Symbol.for('MetricController'),
   HealthController: Symbol.for('HealthController'),

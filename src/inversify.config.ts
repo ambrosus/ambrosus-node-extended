@@ -35,6 +35,7 @@ import { RootController } from './controller/root.controller';
 import { MetricController } from './controller/metric.controller';
 import { HealthController } from './controller/health.controller';
 import { NodeinfoController } from './controller/nodeinfo.controller';
+import { AdminController } from './controller/admin.controller';
 import { DBClient } from './database/client';
 import {
   AccountRepository,
@@ -150,6 +151,7 @@ iocContainer.bind<Bundle2Controller>(TYPE.Bundle2Controller).to(Bundle2Controlle
 iocContainer.bind<AnalyticsController>(TYPE.AnalyticsController).to(AnalyticsController);
 iocContainer.bind<OrganizationController>(TYPE.OrganizationController).to(OrganizationController);
 iocContainer.bind<Organization2Controller>(TYPE.Organization2Controller).to(Organization2Controller);
+iocContainer.bind<AdminController>(TYPE.AdminController).to(AdminController);
 iocContainer
   .bind<OrganizationRequestController>(TYPE.OrganizationRequestController)
   .to(OrganizationRequestController);
