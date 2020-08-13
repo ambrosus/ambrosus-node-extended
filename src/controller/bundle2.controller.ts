@@ -78,14 +78,11 @@ export class Bundle2Controller extends BaseController {
 
   @httpPost(
     '/push',
-    authorize('super_account'),
-    validate(querySchema)
+    authorize('super_account')
   )
   public async pushBundles(req: Request): Promise<APIResponse> {
     await this.bundleService.pushBundle();
 
-    const result = new MongoPagedResult;
-
-    return APIResponse.fromSingleResult(result);
+    return APIResponse.fromSingleResult('OK');
   }
 }
