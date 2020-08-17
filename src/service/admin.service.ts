@@ -40,7 +40,7 @@ export class AdminService {
     @inject(TYPE.AccountRepository) private readonly accountRepository: AccountRepository,
     @inject(TYPE.OrganizationRepository) private readonly organizationRepository: OrganizationRepository,
     @inject(TYPE.OrganizationKeysRepository) private readonly organizationKeysRepository: OrganizationKeysRepository,
-    @inject(TYPE.WorkerIntervalsRepository) private readonly workerIntervalsRepository: WorkerIntervalsRepository,
+    @inject(TYPE.WorkerIntervalsRepository) private readonly workerIntervalsRepository: WorkerIntervalsRepository
   ) {
   }
 
@@ -67,7 +67,7 @@ export class AdminService {
   public async getConfig(): Promise<ConfigData> {
     const organizations = await this.organizationRepository.getAllOrganizations();
 
-    for (const organization of organizations) {      
+    for (const organization of organizations) {
       const organizationKey = await this.organizationKeysRepository.findOne(new APIQuery({organizationId: organization.organizationId}));
 
       organization.key = organizationKey.Key;
@@ -76,7 +76,7 @@ export class AdminService {
     const result = new ConfigData;
 
     result.organizations = organizations;
-    
+
     result.accounts = await this.accountRepository.getAllAccounts();
 
     return result;

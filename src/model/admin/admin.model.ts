@@ -22,7 +22,7 @@ export interface IConfigData {
 
 @injectable()
 export class ConfigData implements IConfigData {
-  public _id: string;  
+  public _id: string;
   public organizations: object;
   public accounts: object;
 }

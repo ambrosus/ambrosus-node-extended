@@ -40,7 +40,7 @@ export class AdminController extends BaseController {
   }
 
   @httpGet(
-    '/pushbundle',
+    '/pushbundle'
   )
   public async pushBundles(): Promise<APIResponse> {
     await this.adminService.pushBundle();
@@ -49,7 +49,7 @@ export class AdminController extends BaseController {
   }
 
   @httpGet(
-    '/getconfig',
+    '/getconfig'
   )
   public async getConfig(): Promise<APIResponse> {
     const configData = await this.adminService.getConfig();

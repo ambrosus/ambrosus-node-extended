@@ -116,7 +116,7 @@ export class OrganizationRepository extends BaseRepository<Organization> {
     const apiQuery = new APIQuery();
 
     apiQuery.fields = {
-      _id: 0,      
+      _id: 0,
     };
 
     return await this.find(apiQuery);

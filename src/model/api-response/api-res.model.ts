@@ -62,25 +62,6 @@ export class APIResponse extends HttpResponseMessage {
     return new APIResponse(data, meta);
   }
 
-  public static fromFile(result: any, extraMeta?: object): APIResponse {
-    let meta = new APIResponseMeta(HttpStatus.OK);
-    let data = undefined;
-
-    if (result) {
-      data = result;
-    } else {
-      throw new NotFoundError({reason: `not found`});
-    }
-
-    if (extraMeta) {
-      meta = { ...meta, ...extraMeta };
-    }
-
-    //this.name
-
-    return new APIResponse(data, meta);
-  }
-
   public static withMeta(meta: APIResponseMeta): APIResponse {
     return new APIResponse(undefined, meta);
   }

@@ -124,6 +124,19 @@ export class AccountRepository extends BaseRepository<Account> {
     return await this.db.collection('accounts').findOne({address}, {projection: {_id: 0}});
   }
 
+  /*
+    Admin function: gets all accounts
+  */
+ public async getAllAccounts() {
+  const apiQuery = new APIQuery();
+
+  apiQuery.fields = {
+    _id: 0,
+  };
+
+  return this.find(apiQuery);
+ }
+
   private getJoinPipeline(
     match: object,
     organizationId: number,
@@ -171,18 +184,5 @@ export class AccountRepository extends BaseRepository<Account> {
     });
 
     return pipeline;
-  }
-
-  /*
-    Admin function: gets all accounts
-  */
-  public async getAllAccounts() {
-    const apiQuery = new APIQuery();
-
-    apiQuery.fields = {
-      _id: 0,      
-    };
-
-    return this.find(apiQuery);
   }
 }
