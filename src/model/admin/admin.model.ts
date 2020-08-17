@@ -12,15 +12,17 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export * from './api-response';
-export * from './query';
-export * from './account';
-export * from './asset/asset.model';
-export * from './event/event.model';
-export * from './bundle/bundle.model';
-export * from './auth';
-export * from './organization';
-export * from './workerLog';
-export * from './workerInterval';
-export * from './admin';
-export * from './test';
+import { injectable } from 'inversify';
+
+export interface IConfigData {
+  _id: string;
+  organizations: object;
+  accounts: object;
+}
+
+@injectable()
+export class ConfigData implements IConfigData {
+  public _id: string;  
+  public organizations: object;
+  public accounts: object;
+}

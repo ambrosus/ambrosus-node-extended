@@ -12,21 +12,18 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Request } from 'express';
 import { inject } from 'inversify';
 import {
   controller,
   httpGet,
-  httpPost,
-  requestParam
 } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { Authorization } from '../constant/enum';
+import { APIResponse } from '../model';
 import { ILogger } from '../interface/logger.inferface';
-import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
-import { authorize, authorizeByType } from '../middleware/authorize.middleware';
+import { AdminService } from '../service/admin.service';
+import { authorize } from '../middleware/authorize.middleware';
 
 @controller(
   '/admin',
@@ -36,9 +33,27 @@ import { authorize, authorizeByType } from '../middleware/authorize.middleware';
 export class AdminController extends BaseController {
 
   constructor(
-    @inject(TYPE.OrganizationService) private organizationService: OrganizationService,
+    @inject(TYPE.AdminService) private adminService: AdminService,
     @inject(TYPE.LoggerService) protected logger: ILogger
   ) {
     super(logger);
-  }  
+  }
+
+  @httpGet(
+    '/pushbundle',
+  )
+  public async pushBundles(): Promise<APIResponse> {
+    await this.adminService.pushBundle();
+
+    return APIResponse.fromSingleResult('OK');
+  }
+
+  @httpGet(
+    '/getconfig',
+  )
+  public async getConfig(): Promise<APIResponse> {
+    const configData = await this.adminService.getConfig();
+
+    return APIResponse.fromSingleResult(configData);
+  }
 }
