@@ -17,6 +17,7 @@ import { inject, injectable } from 'inversify';
 import { TYPE } from '../constant/types';
 import {
   AccountRepository,
+  AccountDetailRepository,
   OrganizationRepository,
   OrganizationKeysRepository,
   WorkerIntervalsRepository,
@@ -38,6 +39,7 @@ export class AdminService {
   constructor(
     @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
     @inject(TYPE.AccountRepository) private readonly accountRepository: AccountRepository,
+    @inject(TYPE.AccountDetailRepository) private readonly accountDetailRepository: AccountDetailRepository,
     @inject(TYPE.OrganizationRepository) private readonly organizationRepository: OrganizationRepository,
     @inject(TYPE.OrganizationKeysRepository) private readonly organizationKeysRepository: OrganizationKeysRepository,
     @inject(TYPE.WorkerIntervalsRepository) private readonly workerIntervalsRepository: WorkerIntervalsRepository
@@ -67,6 +69,7 @@ export class AdminService {
   public async getConfig(): Promise<ConfigData> {
     const organizations = await this.organizationRepository.getAllOrganizations();
 
+    // organizations
     for (const organization of organizations) {
       const organizationKey = await this.organizationKeysRepository.findOne(new APIQuery({organizationId: organization.organizationId}));
 
@@ -77,7 +80,23 @@ export class AdminService {
 
     result.organizations = organizations;
 
-    result.accounts = await this.accountRepository.getAllAccounts();
+
+    // accounts
+    const accounts = await this.accountRepository.getAllAccounts();
+
+    for (const account of accounts) {
+      const apiQuery = new APIQuery({address: account.address});
+
+      apiQuery.fields = {
+        _id: 0,
+      };
+
+      const accountDetails = await this.accountDetailRepository.findOne(apiQuery);
+
+      account.details = accountDetails;
+    }
+
+    result.accounts = accounts;
 
     return result;
   }

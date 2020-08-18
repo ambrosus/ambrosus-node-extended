@@ -23,6 +23,7 @@ export interface IAccount {
   permissions: string[];
   registeredOn: number;
   registeredBy: string;
+  details?: object;
 }
 
 @injectable()
@@ -35,4 +36,5 @@ export class Account implements IAccount {
   public permissions: string[];
   public registeredOn: number;
   public registeredBy: string;
+  public details?: object;
 }
