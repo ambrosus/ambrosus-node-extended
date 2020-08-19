@@ -14,6 +14,8 @@
 
 import { inject, injectable } from 'inversify';
 
+import { config } from '../config';
+
 import { TYPE } from '../constant/types';
 import {
   AccountRepository,
@@ -27,17 +29,25 @@ import {
   ConfigData,
   APIQuery,
   WorkerInterval,
-  UserPrincipal
+  UserPrincipal,
+  OrganizationKey
 } from '../model';
 
 import {
   ensureCanPushBundle
 } from '../security/access.check';
 
+import {
+  InternalError
+} from '../errors';
+
+import { Web3Service } from '../service/web3.service';
+
 @injectable()
 export class AdminService {
   constructor(
     @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
+    @inject(TYPE.Web3Service) private web3Service: Web3Service,
     @inject(TYPE.AccountRepository) private readonly accountRepository: AccountRepository,
     @inject(TYPE.AccountDetailRepository) private readonly accountDetailRepository: AccountDetailRepository,
     @inject(TYPE.OrganizationRepository) private readonly organizationRepository: OrganizationRepository,
@@ -67,37 +77,52 @@ export class AdminService {
   }
 
   public async getConfig(): Promise<ConfigData> {
-    const organizations = await this.organizationRepository.getAllOrganizations();
-
-    // organizations
-    for (const organization of organizations) {
-      const organizationKey = await this.organizationKeysRepository.findOne(new APIQuery({organizationId: organization.organizationId}));
-
-      organization.key = organizationKey.Key;
-    }
-
     const result = new ConfigData;
 
-    result.organizations = organizations;
+    result.address = this.web3Service.addressFromSecret(config.web3.privateKey);
 
+    result.organizations = await this.organizationRepository.getAll();
+    result.organizationKeys = await this.organizationKeysRepository.getAll();
 
-    // accounts
-    const accounts = await this.accountRepository.getAllAccounts();
-
-    for (const account of accounts) {
-      const apiQuery = new APIQuery({address: account.address});
-
-      apiQuery.fields = {
-        _id: 0,
-      };
-
-      const accountDetails = await this.accountDetailRepository.findOne(apiQuery);
-
-      account.details = accountDetails;
-    }
-
-    result.accounts = accounts;
+    result.accounts = await this.accountRepository.getAll();
+    result.accountDetails = await this.accountDetailRepository.getAll();
 
     return result;
+  }
+
+  public async restoreConfig(conf: ConfigData) {
+    await this.ensureCanRestoreConfig(conf.address);
+
+    await this.organizationRepository.deleteAll();
+    await this.organizationKeysRepository.deleteAll();
+
+    await this.accountRepository.deleteAll();
+    await this.accountDetailRepository.deleteAll();
+
+    await this.accountRepository.createBulk(conf.accounts);
+    await this.accountDetailRepository.createBulk(conf.accountDetails);
+
+    await this.organizationRepository.createBulk(conf.organizations);
+    await this.organizationKeysRepository.createBulk(conf.organizationKeys);
+  }
+
+  private async ensureCanRestoreConfig(address: string) {
+    const nodeAddress = this.web3Service.addressFromSecret(config.web3.privateKey);
+
+    if (address !== nodeAddress) {
+      throw new InternalError( {reason: 'node address mismatch'} );
+    }
+
+    const organizationCount = await this.organizationRepository.count(new APIQuery());
+
+    if (organizationCount > 1) {
+      throw new InternalError( {reason: 'more than one organization found'} );
+    }
+
+    const accountCount = await this.accountRepository.count(new APIQuery());
+
+    if (accountCount > 1) {
+      throw new InternalError( {reason: 'more than one account found'} );
+    }
   }
 }

@@ -12,13 +12,11 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export * from './authentication.error';
-export * from './connection.error';
-export * from './notfound.error';
-export * from './permission.error';
-export * from './repository.error';
-export * from './ambrosus.error';
-export * from './validation.error';
-export * from './exists.error';
-export * from './create.error';
-export * from './internal.error';
+import { AmbrosusError } from './ambrosus.error';
+
+export class InternalError extends AmbrosusError {
+  constructor(error, message = '') {
+    super(error, `Internal error:`);
+    this.name = 'InternalError';
+  }
+}

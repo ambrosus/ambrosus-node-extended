@@ -14,15 +14,28 @@
 
 import { injectable } from 'inversify';
 
+import {
+  Account,
+  AccountDetail,
+  Organization,
+  OrganizationKey,
+} from '..';
+
 export interface IConfigData {
   _id: string;
-  organizations: object;
-  accounts: object;
+  address: string;
+  organizations: Organization[];
+  organizationKeys: OrganizationKey[];
+  accounts: Account[];
+  accountDetails: AccountDetail[];
 }
 
 @injectable()
 export class ConfigData implements IConfigData {
   public _id: string;
-  public organizations: object;
-  public accounts: object;
+  public address: string;
+  public organizations: Organization[];
+  public organizationKeys: OrganizationKey[];
+  public accounts: Account[];
+  public accountDetails: AccountDetail[];
 }

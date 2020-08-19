@@ -33,7 +33,6 @@ export interface IOrganization {
   modifiedOn?: number;
   inviteEmail?: string;
   inviteTemplateId?: string;
-  key?: string;
 }
 
 @injectable()
@@ -96,7 +95,6 @@ export class Organization implements IOrganization {
   public modifiedOn?: number;
   public inviteEmail?: string;
   public inviteTemplateId?: string;
-  public key?: string;
 
   public setCreationTimestamp(address: string) {
     this.createdOn = getTimestamp();

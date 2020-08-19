@@ -28,6 +28,7 @@ import {
   MongoPagedResult,
   UserPrincipal
 } from '../model';
+
 import { getTimestamp } from '../util';
 
 import { ExistsError, PermissionError, NotFoundError } from '../errors';

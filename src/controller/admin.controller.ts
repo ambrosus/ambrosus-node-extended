@@ -16,10 +16,12 @@ import { inject } from 'inversify';
 import {
   controller,
   httpGet,
+  httpPost,
+  requestBody,
 } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { APIResponse } from '../model';
+import { APIResponse, ConfigData } from '../model';
 import { ILogger } from '../interface/logger.inferface';
 import { BaseController } from './base.controller';
 import { AdminService } from '../service/admin.service';
@@ -55,5 +57,16 @@ export class AdminController extends BaseController {
     const configData = await this.adminService.getConfig();
 
     return APIResponse.fromSingleResult(configData);
+  }
+
+  @httpPost(
+    '/restoreconfig'
+  )
+  public async restoreConfig(
+    @requestBody() payload: ConfigData
+  ): Promise<APIResponse> {
+    await this.adminService.restoreConfig(payload);
+
+    return APIResponse.fromSingleResult('OK');
   }
 }

@@ -113,6 +113,9 @@ export const errorHandler = (err, req, res, next) => {
     case 'ConnectionError':
       status = 500;
       break;
+    case 'InternalError':
+      status = 500;
+      break;
     case 'DeveloperError':
       status = 500;
       message = `Error occured`;
