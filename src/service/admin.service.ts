@@ -81,11 +81,12 @@ export class AdminService {
 
     result.address = this.web3Service.addressFromSecret(config.web3.privateKey);
 
-    result.organizations = await this.organizationRepository.getAll();
-    result.organizationKeys = await this.organizationKeysRepository.getAll();
-
-    result.accounts = await this.accountRepository.getAll();
-    result.accountDetails = await this.accountDetailRepository.getAll();
+    result.content= {
+      organizations: await this.organizationRepository.getAll(),
+      organizationKeys: await this.organizationKeysRepository.getAll(),
+      accounts: await this.accountRepository.getAll(),
+      accountDetails: await this.accountDetailRepository.getAll()
+    }
 
     return result;
   }
@@ -99,11 +100,11 @@ export class AdminService {
     await this.accountRepository.deleteAll();
     await this.accountDetailRepository.deleteAll();
 
-    await this.accountRepository.createBulk(conf.accounts);
-    await this.accountDetailRepository.createBulk(conf.accountDetails);
+    await this.accountRepository.createBulk(conf.content.accounts);
+    await this.accountDetailRepository.createBulk(conf.content.accountDetails);
 
-    await this.organizationRepository.createBulk(conf.organizations);
-    await this.organizationKeysRepository.createBulk(conf.organizationKeys);
+    await this.organizationRepository.createBulk(conf.content.organizations);
+    await this.organizationKeysRepository.createBulk(conf.content.organizationKeys);
   }
 
   private async ensureCanRestoreConfig(address: string) {

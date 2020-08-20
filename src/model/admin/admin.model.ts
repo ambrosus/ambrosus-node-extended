@@ -24,18 +24,22 @@ import {
 export interface IConfigData {
   _id: string;
   address: string;
-  organizations: Organization[];
-  organizationKeys: OrganizationKey[];
-  accounts: Account[];
-  accountDetails: AccountDetail[];
+  content: {
+    organizations: Organization[];
+    organizationKeys: OrganizationKey[];
+    accounts: Account[];
+    accountDetails: AccountDetail[];
+  }
 }
 
 @injectable()
 export class ConfigData implements IConfigData {
   public _id: string;
   public address: string;
-  public organizations: Organization[];
-  public organizationKeys: OrganizationKey[];
-  public accounts: Account[];
-  public accountDetails: AccountDetail[];
+  public content: {
+    organizations: Organization[];
+    organizationKeys: OrganizationKey[];
+    accounts: Account[];
+    accountDetails: AccountDetail[];
+  }
 }
