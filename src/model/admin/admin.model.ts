@@ -29,7 +29,7 @@ export interface IConfigData {
     organizationKeys: OrganizationKey[];
     accounts: Account[];
     accountDetails: AccountDetail[];
-  }
+  };
 }
 
 @injectable()
@@ -41,5 +41,5 @@ export class ConfigData implements IConfigData {
     organizationKeys: OrganizationKey[];
     accounts: Account[];
     accountDetails: AccountDetail[];
-  }
+  };
 }

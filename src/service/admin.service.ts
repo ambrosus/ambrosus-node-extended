@@ -81,12 +81,12 @@ export class AdminService {
 
     result.address = this.web3Service.addressFromSecret(config.web3.privateKey);
 
-    result.content= {
+    result.content = {
       organizations: await this.organizationRepository.getAll(),
       organizationKeys: await this.organizationKeysRepository.getAll(),
       accounts: await this.accountRepository.getAll(),
-      accountDetails: await this.accountDetailRepository.getAll()
-    }
+      accountDetails: await this.accountDetailRepository.getAll(),
+    };
 
     return result;
   }
