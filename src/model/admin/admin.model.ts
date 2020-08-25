@@ -12,13 +12,34 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-export * from './authentication.error';
-export * from './connection.error';
-export * from './notfound.error';
-export * from './permission.error';
-export * from './repository.error';
-export * from './ambrosus.error';
-export * from './validation.error';
-export * from './exists.error';
-export * from './create.error';
-export * from './internal.error';
+import { injectable } from 'inversify';
+
+import {
+  Account,
+  AccountDetail,
+  Organization,
+  OrganizationKey,
+} from '..';
+
+export interface IConfigData {
+  _id: string;
+  address: string;
+  content: {
+    organizations: Organization[];
+    organizationKeys: OrganizationKey[];
+    accounts: Account[];
+    accountDetails: AccountDetail[];
+  };
+}
+
+@injectable()
+export class ConfigData implements IConfigData {
+  public _id: string;
+  public address: string;
+  public content: {
+    organizations: Organization[];
+    organizationKeys: OrganizationKey[];
+    accounts: Account[];
+    accountDetails: AccountDetail[];
+  };
+}

@@ -12,68 +12,61 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { Request } from 'express';
 import { inject } from 'inversify';
 import {
   controller,
   httpGet,
   httpPost,
-  requestParam
+  requestBody,
 } from 'inversify-express-utils';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
-import { Authorization } from '../constant/enum';
+import { APIResponse, ConfigData } from '../model';
 import { ILogger } from '../interface/logger.inferface';
-import { APIResponse, Organization } from '../model';
-import { OrganizationService } from '../service/organization.service';
 import { BaseController } from './base.controller';
-import { authorize, authorizeByType } from '../middleware/authorize.middleware';
-import { validate } from '../middleware';
-import { utilSchema, organizationSchema } from '../validation';
-
-import {
-  ValidationError
-} from '../errors';
+import { AdminService } from '../service/admin.service';
+import { authorize } from '../middleware/authorize.middleware';
 
 @controller(
-  '/organization2',
+  '/admin',
   MIDDLEWARE.Context,
-  authorize()
+  authorize('super_account')
 )
-export class Organization2Controller extends BaseController {
+export class AdminController extends BaseController {
 
   constructor(
-    @inject(TYPE.OrganizationService) private organizationService: OrganizationService,
+    @inject(TYPE.AdminService) private adminService: AdminService,
     @inject(TYPE.LoggerService) protected logger: ILogger
   ) {
     super(logger);
   }
 
   @httpGet(
-    '/info/:organizationId',
-    authorize('super_account'),
-    validate(utilSchema.organizationId, { paramsOnly: true })
+    '/pushbundle'
   )
-  public async getOrganization(
-    @requestParam('organizationId') organizationId: number
-  ): Promise<APIResponse> {
-    const result = await this.organizationService.getOrganization(organizationId);
-    return APIResponse.fromSingleResult(result);
+  public async pushBundles(): Promise<APIResponse> {
+    await this.adminService.pushBundle();
+
+    return APIResponse.fromSingleResult('OK');
+  }
+
+  @httpGet(
+    '/getconfig'
+  )
+  public async getConfig(): Promise<APIResponse> {
+    const configData = await this.adminService.getConfig();
+
+    return APIResponse.fromSingleResult(configData);
   }
 
   @httpPost(
-    '/update/:organizationId',
-    authorizeByType(Authorization.organization_owner),
-    validate(organizationSchema.organizationUpdate, { params: true })
+    '/restoreconfig'
   )
-  public async updateOrganization(
-    @requestParam('organizationId') organizationId: number,
-    req: Request
+  public async restoreConfig(
+    @requestBody() payload: ConfigData
   ): Promise<APIResponse> {
-    const result = await this.organizationService.updateOrganization(
-      organizationId,
-      Organization.fromRequestForUpdate(req)
-    );
-    return APIResponse.fromSingleResult(result);
+    await this.adminService.restoreConfig(payload);
+
+    return APIResponse.fromSingleResult('OK');
   }
 }

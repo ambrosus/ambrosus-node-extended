@@ -22,4 +22,5 @@ export * from './auth';
 export * from './organization';
 export * from './workerLog';
 export * from './workerInterval';
+export * from './admin';
 export * from './test';

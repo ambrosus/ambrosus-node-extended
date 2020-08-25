@@ -168,6 +168,29 @@ export class BaseRepository<T> {
     }
   }
 
+  public async deleteAll(): Promise<DeleteWriteOpResultObject> {
+    const collection = await this.getCollection();
+
+    try {
+      const result: DeleteWriteOpResultObject = await collection.deleteMany({});
+
+      return result;
+    } catch (err) {
+      this.logger.captureError(err);
+      throw new RepositoryError(err);
+    }
+  }
+
+  public async getAll() {
+    const apiQuery = new APIQuery();
+
+    apiQuery.fields = {
+      _id: 0,
+    };
+
+    return await this.find(apiQuery);
+  }
+
   public async count(apiQuery: APIQuery): Promise<number> {
     const collection = await this.getCollection();
 

@@ -35,6 +35,7 @@ import { RootController } from './controller/root.controller';
 import { MetricController } from './controller/metric.controller';
 import { HealthController } from './controller/health.controller';
 import { NodeinfoController } from './controller/nodeinfo.controller';
+import { AdminController } from './controller/admin.controller';
 import { DBClient } from './database/client';
 import {
   AccountRepository,
@@ -61,6 +62,7 @@ import { AnalyticsService } from './service/analytics.service';
 import { AssetService } from './service/asset.service';
 import { AuthService } from './service/auth.service';
 import { BundleService } from './service/bundle.service';
+import { AdminService } from './service/admin.service';
 import { EventService } from './service/event.service';
 import { LoggerService } from './service/logger.service';
 import { EmailService } from './service/email.service';
@@ -150,6 +152,7 @@ iocContainer.bind<Bundle2Controller>(TYPE.Bundle2Controller).to(Bundle2Controlle
 iocContainer.bind<AnalyticsController>(TYPE.AnalyticsController).to(AnalyticsController);
 iocContainer.bind<OrganizationController>(TYPE.OrganizationController).to(OrganizationController);
 iocContainer.bind<Organization2Controller>(TYPE.Organization2Controller).to(Organization2Controller);
+iocContainer.bind<AdminController>(TYPE.AdminController).to(AdminController);
 iocContainer
   .bind<OrganizationRequestController>(TYPE.OrganizationRequestController)
   .to(OrganizationRequestController);
@@ -173,6 +176,7 @@ iocContainer.bind<BuiltInService>(TYPE.BuiltInService).to(BuiltInService);
 iocContainer.bind<AssetService>(TYPE.AssetService).to(AssetService);
 iocContainer.bind<EventService>(TYPE.EventService).to(EventService);
 iocContainer.bind<BundleService>(TYPE.BundleService).to(BundleService);
+iocContainer.bind<AdminService>(TYPE.AdminService).to(AdminService);
 iocContainer.bind<AnalyticsService>(TYPE.AnalyticsService).to(AnalyticsService);
 iocContainer.bind<OrganizationService>(TYPE.OrganizationService).to(OrganizationService);
 iocContainer.bind<EmailService>(TYPE.EmailService).to(EmailService);
