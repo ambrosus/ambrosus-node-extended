@@ -364,7 +364,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"title\": \"Conor wants an org, org.\",\n\t\"address\": \"0x203C394e59915f85B9c222f6E15ce1FFF699559E\",\n\t\"email\": \"conor.seabrook+testOrgRequest1@ambrosus.com\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
+							"raw": "{\n\t\"title\": \"Conor wants an org, org.\",\n\t\"address\": \"0x203C394e59915f85B9c222f6E15ce1FFF699559E\",\n\t\"email\": \"test+testOrgRequest1@ambrosus.io\",\n\t\"message\": \"GIVE TO ME ALL OF YOUR ORGS\"\n}"
 						},
 						"url": {
 							"raw": "{{url}}/organization/request?",
@@ -662,7 +662,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook+test1@ambrosus.com\",\n\t\t\"conor.seabrook+test2@ambrosus.com\",\n\t\t\"conor.seabrook+test3@ambrosus.com\",\n\t\t\"conor.seabrook+test4@ambrosus.com\",\n\t\t\"conor.seabrook+test5@ambrosus.com\"\n\t\t]\n}\n"
+							"raw": "{\n\t\"email\": [\n\t\t\"test+test1@ambrosus.io\",\n\t\t\"test+test2@ambrosus.io\",\n\t\t\"test+test3@ambrosus.io\",\n\t\t\"test+test4@ambrosus.io\",\n\t\t\"test+test5@ambrosus.io\"\n\t\t]\n}\n"
 						},
 						"url": {
 							"raw": "{{url}}/organization/invite?",
@@ -703,7 +703,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": [\n\t\t\"conor.seabrook+test1@ambrosus.com\"\n\t\t]\n}\n"
+							"raw": "{\n\t\"email\": [\n\t\t\"test+test1@ambrosus.io\"\n\t\t]\n}\n"
 						},
 						"url": {
 							"raw": "{{url}}/organization/invite/resend?",
@@ -969,7 +969,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"conor.seabrook@ambrosus.com\",\n\t\"fullName\" : \"Conor Seabrook\"\n}"
+							"raw": "{\n\t\"email\": \"test@ambrosus.io\",\n\t\"fullName\" : \"Conor Seabrook\"\n}"
 						},
 						"url": {
 							"raw": "{{url}}/account/0x2A52139de123c9fa265C206772d1606e326CC044?",
