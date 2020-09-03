@@ -1,6 +1,6 @@
 /*
  * Copyright: Ambrosus Inc.
- * Email: tech@ambrosus.com
+ * Email: tech@ambrosus.io
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
  * (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish,
@@ -39,7 +39,7 @@ export const config: any = {
   },
   email: {
     api: process.env.EMAIL_API_KEY,
-    defaultFrom: process.env.EMAIL_DEFAULT_FROM || 'no-reply@ambrosus.com',
+    defaultFrom: process.env.EMAIL_DEFAULT_FROM || 'no-reply@ambrosus.io',
     orgReqTo: process.env.EMAIL_ORGREQ_TO,
     templateIdInvite: process.env.EMAIL_TMPL_ID_INVITE,
     templateIdOrgReq: process.env.EMAIL_TMPL_ID_ORGREQ,

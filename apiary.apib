@@ -1,5 +1,5 @@
 FORMAT: 1A
-HOST: https://hermes.ambrosus-test.com
+HOST: https://test.ambrosus.io
 
 # Ambrosus Node API
 
@@ -417,7 +417,7 @@ Finds assets satisfying provided criteria.
                 + metadata (object) - Asset service data.
                     + bundleId (string) - If the asset has already been added to a bundle, Id of the bundle holding the event
                     + bundleTransactionHash (string) - If the asset has already been added to a bundle, identifier of the transaction on which the proof of bundle has been uploaded.
-                      More info on the transaction can be found under `http://explorer-test.ambrosus.com/#/tx/{bundleTransactionHash}`
+                      More info on the transaction can be found under `http://explorer-test.ambrosus.io/#/tx/{bundleTransactionHash}`
                     + bundleProofBlock (number) - If the asset has already been added to a bundle, block number in which the proof of the bundle has been included
                     + bundleUploadTimestamp (number) - If the asset has already been added to a bundle, timestamp of bundle proof upload
 
@@ -485,7 +485,7 @@ Fetches asset with provided assetId in the system.
         + metadata (object) - Asset service data.
             + bundleId (string) - If the asset has already been added to a bundle, Id of the bundle holding the event
             + bundleTransactionHash (string) - If the asset has already been added to a bundle, identifier of the transaction on which the proof of bundle has been uploaded.
-              More info on the transaction can be found under `http://explorer-test.ambrosus.com/#/tx/{bundleTransactionHash}`
+              More info on the transaction can be found under `http://explorer-test.ambrosus.io/#/tx/{bundleTransactionHash}`
             + bundleProofBlock (number) - If the asset has already been added to a bundle, block number in which the proof of the bundle has been included
             + bundleUploadTimestamp (number) - If the asset has already been added to a bundle, timestamp of bundle proof upload
 
@@ -753,7 +753,7 @@ Fetches an event by identifier
         + metadata (object) - Event service data.
             + bundleId (string) - If the event has already been added to a bundle, Id of the bundle holding the event
             + bundleTransactionHash (string) - If the event has already been added to a bundle, identifier of the transaction on which the proof of bundle has been uploaded.
-              More info on the transaction can be found under `http://explorer-test.ambrosus.com/#/tx/{bundleTransactionHash}`
+              More info on the transaction can be found under `http://explorer-test.ambrosus.io/#/tx/{bundleTransactionHash}`
             + bundleProofBlock (number) - If the event has already been added to a bundle, block number in which the proof of the bundle has been included
             + bundleUploadTimestamp (number) - If the event has already been added to a bundle, timestamp of bundle proof upload
 
@@ -952,7 +952,7 @@ Fetches a bundle metadata by identifier
     + Attributes (object)
         + bundleId (string) - Content-addressable identifier of the bundle.
         + bundleTransactionHash (string) - Identifier of the transaction on which the proof of bundle has been uploaded.
-          More info on the transaction can be found under `http://explorer-test.ambrosus.com/#/tx/{bundleTransactionHash}`
+          More info on the transaction can be found under `http://explorer-test.ambrosus.io/#/tx/{bundleTransactionHash}`
         + bundleProofBlock (number) - Block number in which the proof of the bundle has been included
         + bundleUploadTimestamp (number) - Timestamp of bundle proof upload
         + version (number) - Version of the bundle
