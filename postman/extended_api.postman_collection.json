@@ -969,7 +969,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"conor.seabrook@ambrosus.io\",\n\t\"fullName\" : \"Conor Seabrook\"\n}"
+							"raw": "{\n\t\"email\": \"test@ambrosus.io\",\n\t\"fullName\" : \"Conor Seabrook\"\n}"
 						},
 						"url": {
 							"raw": "{{url}}/account/0x2A52139de123c9fa265C206772d1606e326CC044?",
