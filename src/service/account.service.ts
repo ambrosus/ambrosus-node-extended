@@ -31,7 +31,13 @@ import {
 
 import { getTimestamp } from '../util';
 
-import { ExistsError, PermissionError, NotFoundError } from '../errors';
+import {
+  ExistsError,
+  PermissionError,
+  NotFoundError,
+  ValidationError
+} from '../errors';
+
 import * as _ from 'lodash';
 
 import {
@@ -168,6 +174,10 @@ export class AccountService {
   }
 
   public async getAccount2(address: string): Promise<any> {
+    if ( address === '') {
+      throw new ValidationError({reason: 'address must not be empty'});
+    }
+
     if (
       !this.user.hasAnyPermission(Permission.manage_accounts) &&
       !(this.user.address === address)
