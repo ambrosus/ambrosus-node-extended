@@ -30,8 +30,7 @@ import { ILogger } from '../interface/logger.inferface';
 import { AccountDetail, APIQuery, APIResponse } from '../model';
 import { Web3Service } from '../service/web3.service';
 import { BaseController } from './base.controller';
-import { authorize } from '../middleware/authorize.middleware';
-import { validate } from '../middleware';
+import { authorize, validate } from '../middleware';
 import { querySchema, utilSchema, accountSchema } from '../validation/schemas';
 import { AccountService } from '../service/account.service';
 import { AuthService } from '../service/auth.service';
@@ -65,6 +64,15 @@ export class Account2Controller extends BaseController {
   }
 
   @httpGet(
+    '/info/',
+    authorize()    
+  )
+  public async getAccountEmpty(    
+  ): Promise<APIResponse> {    
+    throw new ValidationError({ reason: 'address must be specified' });
+  }
+
+  @httpGet(
     '/info/:address',
     authorize(),
     validate(utilSchema.address, { paramsOnly: true })
@@ -72,6 +80,8 @@ export class Account2Controller extends BaseController {
   public async getAccount(
     @requestParam('address') address: string
   ): Promise<APIResponse> {
+    console.log('getAccount 1');
+
     const result = await this.accountService.getAccount2(address);
     return APIResponse.fromSingleResult(result);
   }
