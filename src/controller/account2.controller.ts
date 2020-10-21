@@ -27,7 +27,7 @@ import { Permission } from '../constant/';
 
 import { MIDDLEWARE, TYPE } from '../constant/types';
 import { ILogger } from '../interface/logger.inferface';
-import { APIQuery, APIResponse } from '../model';
+import { AccountDetail, APIQuery, APIResponse } from '../model';
 import { Web3Service } from '../service/web3.service';
 import { BaseController } from './base.controller';
 import { authorize } from '../middleware/authorize.middleware';
@@ -124,7 +124,8 @@ export class Account2Controller extends BaseController {
   )
   public async modifyAccount(
     @requestParam('address') address: string,
-    @requestBody() payload: {active: boolean, accessLevel: number, permissions: string[]}
+    @requestBody() payload: {active: boolean, accessLevel: number, permissions: string[]},
+    request: Request
     ): Promise<APIResponse> {
 
     if (!(await this.web3Service.isAddress(address))) {
@@ -136,6 +137,11 @@ export class Account2Controller extends BaseController {
       payload.active,
       payload.accessLevel,
       payload.permissions
+    );
+
+    await this.accountService.updateAccountDetail(
+      address,
+      AccountDetail.fromRequestForUpdate(request)
     );
 
     const result = await this.accountService.getAccount(address);
