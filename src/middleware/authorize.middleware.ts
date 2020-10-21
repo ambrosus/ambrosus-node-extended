@@ -45,7 +45,7 @@ export const authorize = (...args) => {
 
 export const authorizeByType = (authType: Authorization) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    try {      
+    try {
       const user = iocContainer.get<UserPrincipal>(TYPE.UserPrincipal);
 
       if (!user || !user.isAuthorized()) {

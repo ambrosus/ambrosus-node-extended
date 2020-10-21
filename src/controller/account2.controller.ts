@@ -65,10 +65,10 @@ export class Account2Controller extends BaseController {
 
   @httpGet(
     '/info/',
-    authorize()    
+    authorize()
   )
-  public async getAccountEmpty(    
-  ): Promise<APIResponse> {    
+  public async getAccountEmpty(
+  ): Promise<APIResponse> {
     throw new ValidationError({ reason: 'address must be specified' });
   }
 
