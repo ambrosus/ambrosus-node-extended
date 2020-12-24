@@ -91,7 +91,7 @@ export class BundleController extends BaseController {
     let result;
 
     bundleStream.on('data', (chunk) => {
-      result = chunk;
+      result += chunk;
     });
 
     await streamFinished(bundleStream);
