@@ -21,7 +21,8 @@ import { inject } from 'inversify';
 import {
   controller,
   httpGet,
-  httpPost, HttpResponseMessage, StringContent,
+  httpPost,
+  response,
   requestParam
 } from 'inversify-express-utils';
 
@@ -84,7 +85,8 @@ export class BundleController extends BaseController {
 
   @httpGet('/:bundleId')
   public async getBundle(
-    @requestParam('bundleId') bundleId: string
+    @requestParam('bundleId') bundleId: string,
+    @response() res: Response
   ) {
     const bundleStream = await this.bundleService.getBundleStream(bundleId);
 
@@ -96,10 +98,7 @@ export class BundleController extends BaseController {
 
     await streamFinished(bundleStream);
 
-    const response = new HttpResponseMessage(200);
-    response.content = new StringContent(result);
-    response.content.headers['content-type'] = 'application/json';
-    return response;
+    res.status(200).json(result);
   }
 
   @httpGet('/:bundleId/info')
