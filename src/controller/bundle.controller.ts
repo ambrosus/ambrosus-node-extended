@@ -21,7 +21,7 @@ import { inject } from 'inversify';
 import {
   controller,
   httpGet,
-  httpPost,
+  httpPost, HttpResponseMessage, StringContent,
   requestParam
 } from 'inversify-express-utils';
 
@@ -96,7 +96,10 @@ export class BundleController extends BaseController {
 
     await streamFinished(bundleStream);
 
-    return result;
+    const response = new HttpResponseMessage(200);
+    response.content = new StringContent(result);
+    response.content.headers['content-type'] = 'application/json';
+    return response;
   }
 
   @httpGet('/:bundleId/info')
