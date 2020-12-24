@@ -88,7 +88,7 @@ export class BundleController extends BaseController {
   ) {
     const bundleStream = await this.bundleService.getBundleStream(bundleId);
 
-    let result;
+    let result = '';
 
     bundleStream.on('data', (chunk) => {
       result += chunk;
