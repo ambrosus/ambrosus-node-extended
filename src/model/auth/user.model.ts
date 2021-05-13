@@ -23,7 +23,9 @@ export interface IUser {
   account: AccountDetail;
   authToken: AuthToken;
   organization: Organization;
+  isActive(): boolean;
   isAuthorized(): boolean;
+  isOrganizationActive(): boolean;
   isOrganizationOwner(): boolean;
   hasRole(role: string): boolean;
   hasPermission(permission: string): boolean;
@@ -53,8 +55,16 @@ export class User implements IUser {
     return _.intersection(this.account.permissions, permission).length > 0;
   }
 
+  public isActive(): boolean {
+    return this.account && this.account.active;
+  }
+
   public isAuthorized(): boolean {
     return this.account && this.authToken && this.authToken.isValid();
+  }
+
+  public isOrganizationActive(): boolean {
+    return this.organization && this.organization.active;
   }
 
   public isOrganizationOwner(): boolean {
