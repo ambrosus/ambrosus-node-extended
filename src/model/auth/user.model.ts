@@ -64,7 +64,7 @@ export class User implements IUser {
   }
 
   public isOrganizationActive(): boolean {
-    return this.organization && this.organization.active;
+    return this.account && ((this.account.organization === 0) || (this.organization && this.organization.active));
   }
 
   public isOrganizationOwner(): boolean {
