@@ -32,6 +32,14 @@ export const authorize = (...args) => {
         throw new PermissionError({ reason: 'Unauthorized' });
       }
 
+      if (!user.isActive()) {
+        throw new PermissionError({ reason: 'User not active' });
+      }
+
+      if (!user.isOrganizationActive()) {
+        throw new PermissionError({ reason: 'User organization not active' });
+      }
+
       if (args && args.length && !user.hasPermissions(args)) {
         throw new PermissionError({ reason: 'No permission' });
       }
