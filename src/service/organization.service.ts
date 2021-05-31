@@ -15,6 +15,7 @@
 //#region Imports
 import { inject, injectable } from 'inversify';
 import { DeleteWriteOpResultObject, InsertOneWriteOpResult } from 'mongodb';
+import { Request } from 'express';
 
 import { Permission, TYPE } from '../constant/';
 import {
@@ -41,6 +42,7 @@ import { ExistsError, ValidationError, NotFoundError, PermissionError, CreateErr
 import { config } from '../config';
 
 import { encrypt, decrypt } from '../util/crypto.util';
+import { getTimestamp } from '../util';
 
 //#endregion
 
@@ -80,6 +82,98 @@ export class OrganizationService {
 
     const apiQuery = new APIQuery({ organizationId });
     return this.organizationRepository.findOne(apiQuery);
+  }
+
+  public async backupOrganization(organizationId: number): Promise<any> {
+    this.logger.info(`INFO(backupOrganization) ${organizationId}`);
+
+    if (
+      !this.user.hasPermission(Permission.super_account) &&
+      organizationId !== this.user.organizationId
+    ) {
+      throw new PermissionError({ reason: 'Unauthorized' });
+    }
+
+    const apiQuery = new APIQuery({ organizationId });
+    const organization = await this.organizationRepository.findOne(apiQuery);
+    if (!organization) {
+      throw new NotFoundError({ reason: 'Oorganization ID:(${organizationId}) not found' });
+    }
+    delete organization._id;
+
+    const organizationKey = await this.organizationKeysRepository.findOne(apiQuery);
+    if (!organizationKey) {
+      throw new NotFoundError({ reason: 'encrypt.ERROR: organization(${organizationId}) key not found' });
+    }
+    delete organizationKey._id;
+
+    const members = (await this.getOrganizationAccounts(organizationId)).results;
+    for (const member of members) {
+        delete member._id;
+    }
+
+    const data = JSON.stringify({organization, organizationKey, members});
+
+    return { data: encrypt(data, config.web3.privateKey) };
+  }
+
+  public async restoreOrganization(
+    req: Request
+  ): Promise<Organization> {
+    if (
+      !this.user.hasPermission(Permission.super_account)
+    ) {
+      throw new PermissionError({ reason: 'Restore: Unauthorized' });
+    }
+
+    if (!req.body.data) {
+      throw new ValidationError({ reason: 'Restore: empty data' });
+    }
+
+    const data = decrypt(req.body.data, config.web3.privateKey);
+    this.logger.info(`INFO(restore data) ${data}`);
+    const backup = JSON.parse(data);
+    if (
+      !backup ||
+      !backup.organization ||
+      !backup.organizationKey ||
+      !backup.members
+    ) {
+      throw new ValidationError({ reason: 'Restore: wrong data' });
+    }
+
+    const organizationId: number = backup.organization.organizationId;
+
+    const apiQuery = new APIQuery({ organizationId });
+
+    if ((await this.organizationKeysRepository.count(apiQuery)) > 0) {
+      throw new ExistsError({ reason: 'An organization already exists with that ID.' });
+    }
+
+    const organizationKey = await this.organizationKeysRepository.update(apiQuery, backup.organizationKey, true);
+
+    const organization = await this.organizationRepository.update(apiQuery, backup.organization, true);
+
+    for (const member of backup.members) {
+      try {
+        await this.accountService.createAccount(
+          member.address,
+          member.accessLevel,
+          member.organizationId,
+          member.permissions,
+          member.email,
+          member.fullName,
+          member.createdBy
+        );
+      } catch (e) {
+        this.logger.warn(`WARNING(Restore) ${e}`);
+      }
+    }
+
+    organization.modifiedOn = getTimestamp();
+    organization.modifiedBy = this.user.address;
+
+    return this.organizationRepository.update(apiQuery, organization);
   }
 
   public getOrganizationForAuth(organizationId: number): Promise<Organization> {

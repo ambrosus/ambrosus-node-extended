@@ -61,6 +61,29 @@ export class Organization2Controller extends BaseController {
     return APIResponse.fromSingleResult(result);
   }
 
+  @httpGet(
+    '/backup/:organizationId',
+    authorize('super_account'),
+    validate(utilSchema.organizationId, { paramsOnly: true })
+  )
+  public async backupOrganization(
+    @requestParam('organizationId') organizationId: number
+  ): Promise<APIResponse> {
+    const result = await this.organizationService.backupOrganization(organizationId);
+    return APIResponse.fromSingleResult(result);
+  }
+
+  @httpPost(
+    '/restore',
+    authorize('super_account')
+  )
+  public async restoreOrganization(
+    req: Request
+  ): Promise<APIResponse> {
+    const result = await this.organizationService.restoreOrganization(req);
+    return APIResponse.fromSingleResult(result);
+  }
+
   @httpPost(
     '/update/:organizationId',
     authorizeByType(Authorization.organization_owner),

@@ -15,14 +15,14 @@
 import { injectable } from 'inversify';
 
 export interface IOrganizationKey {
-  _id: string;
+  _id?: string;
   organizationId: number;
   Key: string;
 }
 
 @injectable()
 export class OrganizationKey implements IOrganizationKey {
-  public _id: string;
+  public _id?: string;
   public organizationId: number;
   public Key: string;
 }
