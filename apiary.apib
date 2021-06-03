@@ -60,6 +60,7 @@ $SIGNATURE is an elliptic-curve signature of the idData field. Should be signed 
 #### Create token [POST]
 
 __Warning__ This call can be used for development purposes only. Never provide your secret address to anyone.
+ⓘ Note: the call can be applied to both Atlas and Hermes nodes.
 
 + Request
     + Headers
@@ -90,7 +91,8 @@ __Warning__ This call can be used for development purposes only. Never provide y
 
 ## Group Account
 Used for compatibility with an old Dashboard.
-
+ⓘ Note: the call can only be applied to Hermes nodes.  
+ 
 ## Group Account2
 
 An account represents an actor in the supply chain. This can be a person, a company, a location, etc.
@@ -106,6 +108,7 @@ Account can hold any number of following permissions:
 * register_accounts - allows account to add new accounts
 * manage_accounts - allows account to view and manage existing accounts
 
+ⓘ Note: the call can only be applied to Hermes nodes.  
 
 ### /account2/list{?perPage,page}
 
@@ -378,6 +381,8 @@ Assets are primary elements moving through a supply chain. The are the nouns of 
 An Asset on its own function only as a handle for a Event stream. Because of this, they only contain an `idData` structure holding minimal information about their creation.
 
 Assets are identified by an `assetId` field which is a sha3 hash calculated from the `content` field.
+
+
 
 ### /assets/{assetId}
 
@@ -799,6 +804,8 @@ An Asset on its own function only as a handle for a Event stream. Because of thi
 
 Assets are identified by an `assetId` field which is a sha3 hash calculated from the `content` field.
 
+ⓘ Note: the call can only be applied to Hermes nodes.  
+
 ### /asset2/list{?perPage,page,createdBy,fromTimestamp,toTimestamp,identifier}
 
 #### Find assets [GET]
@@ -1037,6 +1044,8 @@ Events describe all registered changes of state that occurred with the asset. E.
 * Data – Protected information about an event. To get access to the private data, a user needs to have an access level not smaller than the returned event.
 * Metadata – Information generated and used by AMB-NET, for example id of a bundle handling an event.
 
+ⓘ Note: the call can be applied to both Atlas and Hermes nodes.
+
 ##### Events Data field
 
 Every event has a `data` array, located at `content` with information what actually happened.
@@ -1205,6 +1214,8 @@ Events describe all registered changes of state that occurred with the asset. E.
 * idData – Public information about an event. Contains the ID of the asset, address of the user who has registered the event, minimal access level required to view private data of the event and the timestamp of the event. Additionally idData holds the hash of the Data field.
 * Data – Protected information about an event. To get access to the private data, a user needs to have an access level not smaller than the returned event.
 * Metadata – Information generated and used by AMB-NET, for example id of a bundle handling an event.
+
+ⓘ Note: the call can only be applied to Hermes nodes.  
 
 ##### Events Data field
 
@@ -1467,6 +1478,8 @@ __Warning__ Message sender needs to have "create_event" permission
 Bundles are packages of data that are being published by ambrosus node users. Single bundle contains assets, public events and stubs of private events, that user created since last bundle publication.
 
 Bundles are used to exchange data between the users of ambrosus network. Every bundle's Id is stored on the blockchain.
+
+ⓘ Note: the call can be applied to both Atlas and Hermes nodes.
 
 ## /bundle/{bundleId}
 
