@@ -81,6 +81,7 @@ export class APIQuery implements IAPIQuery {
       delete req.query[key];
 
       if (prefixInfo.type === 'number') {
+        // @ts-ignore
         req.query[`${prefixInfo.prefix}${key}`] = +queryKey;
       } else {
         req.query[`${prefixInfo.prefix}${key}`] = queryKey;

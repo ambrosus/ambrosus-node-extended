@@ -21,7 +21,7 @@ export const bundles = (collections: any) => {
                 },
             ]
         );
-        resolve();
+        resolve(void(0));
     });
 };
 

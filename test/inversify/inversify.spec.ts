@@ -1,12 +1,11 @@
-/* tslint:disable */
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
+import chai = require('chai');
+import chaiAsPromised = require('chai-as-promised');
+chai.use(chaiAsPromised);
 
 import 'reflect-metadata';
 import { TYPE, MIDDLEWARE } from '../../src/constant/types';
 import { iocContainer } from '../../src/inversify.config';
 
-chai.use(chaiAsPromised);
 const { expect, assert } = chai;
 
 describe('(Inversify)', () => {

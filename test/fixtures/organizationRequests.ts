@@ -26,7 +26,7 @@ export const organizationRequests = (collections: any) => {
         }
       ]
     );
-    resolve();
+    resolve(void(0));
   });
 };
 

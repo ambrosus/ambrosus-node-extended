@@ -28,6 +28,6 @@ export const insertOrganizations = (collections: any) => {
             ]
         );
 
-        resolve();
+        resolve(void(0));
     });
 };

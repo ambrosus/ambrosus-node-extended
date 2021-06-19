@@ -35,7 +35,7 @@ export const organizationInvites = (collections: any) => {
                 }
             ]
         );
-        resolve();
+        resolve(void(0));
     });
 };
 

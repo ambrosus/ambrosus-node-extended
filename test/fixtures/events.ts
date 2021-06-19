@@ -99,7 +99,7 @@ export const events = (collections: any) => {
         }
       ]
     );
-    resolve();
+    resolve(void(0));
   });
 };
 

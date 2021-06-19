@@ -1,9 +1,9 @@
-/* tslint:disable */
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
+import chai = require('chai');
+import chaiAsPromised = require('chai-as-promised');
+import chaiHttp = require('chai-http');
 
+chai.use(chaiHttp);
 chai.use(chaiAsPromised);
-chai.use(require('chai-http'));
 const { expect } = chai;
 const should = chai.should();
 
@@ -52,9 +52,9 @@ describe('(Controller) Analytics /analytics', () => {
         console.log('Error: ', error);
       }
 
-      resolve();
+      resolve(void(0));
     });
-  }
+  };
 
   before(done => {
     setup().then(resp => done()).catch(error => done(error));

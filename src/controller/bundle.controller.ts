@@ -22,6 +22,7 @@ import {
   controller,
   httpGet,
   httpPost,
+  response,
   requestParam
 } from 'inversify-express-utils';
 
@@ -42,7 +43,7 @@ import { NotFoundError } from '../errors';
 
 function streamFinished(stream: NodeJS.ReadableStream) {
   return new Promise((resolve, reject) => {
-    stream.on('end', () => resolve());
+    stream.on('end', () => resolve(void(0)));
     stream.on('error', () => reject());
   });
 }
@@ -84,7 +85,8 @@ export class BundleController extends BaseController {
 
   @httpGet('/:bundleId')
   public async getBundle(
-    @requestParam('bundleId') bundleId: string
+    @requestParam('bundleId') bundleId: string,
+    @response() res: Response
   ) {
     const bundleStream = await this.bundleService.getBundleStream(bundleId);
 
@@ -95,8 +97,7 @@ export class BundleController extends BaseController {
     });
 
     await streamFinished(bundleStream);
-
-    return result;
+    res.status(200).json(result).end();
   }
 
   @httpGet('/:bundleId/info')

@@ -1,9 +1,9 @@
-/* tslint:disable */
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
+import chai = require('chai');
+import chaiAsPromised = require('chai-as-promised');
+import chaiHttp = require('chai-http');
 
+chai.use(chaiHttp);
 chai.use(chaiAsPromised);
-chai.use(require('chai-http'));
 const { expect } = chai;
 const should = chai.should();
 
@@ -25,33 +25,25 @@ describe('(Controller) Account /account', () => {
   let collections: any = {};
   let tokens: any = {};
 
-  const setup: any = () => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        _DBClient = iocContainer.get(TYPE.DBClient);
-        _Web3Service = iocContainer.get(TYPE.Web3Service);
-        db = await _DBClient.getConnection();
-        collections.accounts = db.collection('accounts');
-        collections.accountDetail = db.collection('accountDetail');
-        collections.organization = db.collection('organization');
+  const setup = async (): Promise<void> => {
+      _DBClient = iocContainer.get(TYPE.DBClient);
+      _Web3Service = iocContainer.get(TYPE.Web3Service);
+      db = await _DBClient.getConnection();
+      collections.accounts = db.collection('accounts');
+      collections.accountDetail = db.collection('accountDetail');
+      collections.organization = db.collection('organization');
 
-        // Insert fixtures
-        await all_accounts(collections);
-        await insertOrganizations(collections);
+      // Insert fixtures
+      await all_accounts(collections);
+      await insertOrganizations(collections);
 
-        tokens.super_account = _Web3Service.getToken('0xce75741e246852f1bf8e4f86ccf7d56f77942c37ea7b683d3a3735f1635de7c9');
-        tokens.admin_account = _Web3Service.getToken('0xa06c37def3a202c94508d3cb45c0009b91b85861f90284f4ce98f1ec6ce9913a');
-        tokens.regular_account = _Web3Service.getToken('0x0926f9a238aae2cdee9a687615f52052630b23f5511638204cd7d3fe4e0f53de');
-      } catch (error) {
-        console.log(error);
-      }
+      tokens.super_account = _Web3Service.getToken('0xce75741e246852f1bf8e4f86ccf7d56f77942c37ea7b683d3a3735f1635de7c9');
+      tokens.admin_account = _Web3Service.getToken('0xa06c37def3a202c94508d3cb45c0009b91b85861f90284f4ce98f1ec6ce9913a');
+      tokens.regular_account = _Web3Service.getToken('0x0926f9a238aae2cdee9a687615f52052630b23f5511638204cd7d3fe4e0f53de');
+  };
 
-      resolve();
-    });
-  }
-
-  before(done => {
-    setup().then(resp => done()).catch(error => done(error));
+  before((done) => {
+    setup().then(() => done()).catch(error => done(error));
   });
 
   it('should succeed if DB is connected', () => {
@@ -76,19 +68,19 @@ describe('(Controller) Account /account', () => {
 
   describe('(GET) /:address', () => {
 
-    it('succeess, get own account', done => {
+    it('succeeds, get own account', done => {
       const address = '0x1403F4C7059206291E101F2932d73Ed013B2FF71';
       chai.request(app_server)
         .get(`/account/${address}`)
         .set('Authorization', `AMB_TOKEN ${tokens.regular_account}`)
         .end((err, res) => {
-          res.should.have.status(200);
+          expect(res).to.have.status(200);
           expect(res.body.data.address).to.equal(address);
           done();
         });
     });
 
-    it('succeess, as a super_account', done => {
+    it('succeeds, as a super_account', done => {
       const address = '0x1403F4C7059206291E101F2932d73Ed013B2FF71';
       chai.request(app_server)
         .get(`/account/${address}`)
@@ -100,7 +92,7 @@ describe('(Controller) Account /account', () => {
         });
     });
 
-    it('fail, as not super_account nor own account', done => {
+    it('fails, as not super_account nor own account', done => {
       const address = '0xce75741e246852f1bf8e4f86ccf7d56f77942c37ea7b683d3a3735f1635de7c9';
       chai.request(app_server)
         .get(`/account/${address}`)
@@ -115,7 +107,7 @@ describe('(Controller) Account /account', () => {
 
   describe('(GET) /:address/details', () => {
 
-    it('succeess, gets account with no authorization', done => {
+    it('succeeds, gets account with no authorization', done => {
       chai.request(app_server)
         .get(`/account/0x2C81A356c33D95574a2D502874196d21a2507daD/details`)
         .end((err, res) => {
@@ -125,7 +117,7 @@ describe('(Controller) Account /account', () => {
         });
     });
 
-    it('fail, with no accunt with such address', done => {
+    it('fails, with no account with such address', done => {
       chai.request(app_server)
         .get(`/account/0x2C81A356c33D95574a2D502874196d21a25asdaD/details`)
         .end((err, res) => {
@@ -138,7 +130,7 @@ describe('(Controller) Account /account', () => {
 
   describe('(PUT) /:address', () => {
 
-    it('succeess, edit own account', done => {
+    it('succeeds, edit own account', done => {
       const address = '0x1403F4C7059206291E101F2932d73Ed013B2FF71';
       chai.request(app_server)
         .put(`/account/${address}`)
@@ -153,7 +145,7 @@ describe('(Controller) Account /account', () => {
         });
     });
 
-    it('succeess, as super_account', done => {
+    it('succeeds, as super_account', done => {
       const address = '0x1403F4C7059206291E101F2932d73Ed013B2FF71';
       chai.request(app_server)
         .put(`/account/${address}`)
@@ -168,7 +160,7 @@ describe('(Controller) Account /account', () => {
         });
     });
 
-    it('fail, edit another account w/o super_account permission', done => {
+    it('fails, edit another account w/o super_account permission', done => {
       const address = '0xcD156e06318801B441Df42d7064538baEE3747E3';
       chai.request(app_server)
         .put(`/account/${address}`)
@@ -237,7 +229,7 @@ describe('(Controller) Account /account', () => {
         });
     });
 
-    it('fail, no authorization, email doesnt exists, doesnt exists', done => {
+    it('fails, no authorization, email doesnt exists, doesnt exists', done => {
       chai.request(app_server)
         .post(`/account/secret`)
         .send({
@@ -253,11 +245,11 @@ describe('(Controller) Account /account', () => {
 
   describe('(POST) /create', () => {
 
-    it('success, as admin', done => {
+    it('succeeds, as admin', done => {
       chai.request(app_server)
         .post(`/account2/create/0xC769C64a70ECA2606A927DC28DD947A5Dbec237B`)
         .send({
-          email: 'test7b@domain.com'
+          email: 'test7b@domain.com',
         })
         .set('Authorization', `AMB_TOKEN ${tokens.admin_account}`)
         .end((err, res) => {
@@ -266,11 +258,11 @@ describe('(Controller) Account /account', () => {
         });
     });
 
-    it('fail, w/o register_account permission', done => {
+    it('fails, w/o register_account permission', done => {
       chai.request(app_server)
         .post(`/account2/create/0xC769C64a70ECA2606A927DC28DD947A5Dbec237B`)
         .send({
-          email: 'test7b@domain.com'
+          email: 'test7b@domain.com',
         })
         .set('Authorization', `AMB_TOKEN ${tokens.regular_account}`)
         .end((err, res) => {
@@ -284,9 +276,7 @@ describe('(Controller) Account /account', () => {
   after(done => {
     if (db.databaseName === 'hermes-test') {
       db.dropDatabase()
-        .then(result => {
-          done();
-        })
+        .then(() => done())
         .catch(error => done(error));
     }
   });

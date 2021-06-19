@@ -13,7 +13,7 @@
  */
 
 import { injectable } from 'inversify';
-import * as uuidv4 from 'uuid/v4';
+import {v4} from 'uuid';
 
 import { config } from '../../config';
 import { getTimestamp, getTimestampAddDays } from '../../util';
@@ -42,7 +42,7 @@ export class OrganizationInvite implements IOrganizationInvite {
     organizationInvite.validUntil = getTimestampAddDays(2);
     organizationInvite.createdBy = user.address;
     organizationInvite.createdOn = getTimestamp();
-    organizationInvite.inviteId = uuidv4().replace(/-/g, '');
+    organizationInvite.inviteId = v4().replace(/-/g, '');
     organizationInvite.invitationLink = `${config.dashboardUrl}/signup?inviteId=${
       organizationInvite.inviteId
     }`;

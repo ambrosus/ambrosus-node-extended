@@ -14,8 +14,7 @@
 
 import { ObjectId } from 'mongodb';
 import * as checkBase64 from 'is-base64';
-// tslint:disable-next-line:no-var-requires
-const web3 = require('web3');
+import web3 from 'web3';
 
 export const isObjectId = (schema, data) => {
   return new Promise((resolve, reject) => {
@@ -32,7 +31,7 @@ export const isObjectId = (schema, data) => {
 export const isBase64 = (schema, data) => {
   return new Promise((resolve, reject) => {
     try {
-      resolve(checkBase64(data));
+      resolve(checkBase64.isBase64(data));
     } catch (e) {
       resolve(false);
     }

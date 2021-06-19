@@ -1,9 +1,9 @@
-/* tslint:disable */
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
+import chai = require('chai');
+import chaiAsPromised = require('chai-as-promised');
+import chaiHttp = require('chai-http');
 
+chai.use(chaiHttp);
 chai.use(chaiAsPromised);
-chai.use(require('chai-http'));
 const { expect } = chai;
 const should = chai.should();
 
@@ -41,12 +41,12 @@ describe('(Service) Account', () => {
         console.log(error);
       }
 
-      resolve();
+      resolve(void(0));
     });
-  }
+  };
 
   before(done => {
-    setup().then(resp => done()).catch(error => done(error));
+    setup().then(() => done()).catch(error => done(error));
   });
 
   it('should succeed if DB is connected', () => {
@@ -58,15 +58,6 @@ describe('(Service) Account', () => {
     expect(_AccountService).to.exist;
     expect(_AccountService instanceof AccountService).to.be.true;
   });
-
-  // it('should succeed if valid address is passed', done => {
-  //   _AccountService.getAccountExists('0x1403F4C7059206291E101F2932d73Ed013B2FF71')
-  //     .then(result => {
-  //       console.log(result);
-  //       done();
-  //     })
-  //     .catch(error => done(error));
-  // });
 
   after(done => {
     if (db.databaseName === 'hermes-test') {

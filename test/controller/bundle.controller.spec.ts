@@ -1,9 +1,9 @@
-/* tslint:disable */
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
+import chai = require('chai');
+import chaiAsPromised = require('chai-as-promised');
+import chaiHttp = require('chai-http');
 
+chai.use(chaiHttp);
 chai.use(chaiAsPromised);
-chai.use(require('chai-http'));
 const { expect } = chai;
 const should = chai.should();
 
@@ -48,9 +48,9 @@ describe('(Controller) Bundle /bundle', () => {
         console.log('Error: ', error);
       }
 
-      resolve();
+      resolve(void(0));
     });
-  }
+  };
 
   before(done => {
     setup().then(resp => done()).catch(error => done(error));
@@ -75,22 +75,6 @@ describe('(Controller) Bundle /bundle', () => {
     });
 
   });
-
-  /* describe('(GET) /:bundleId', () => {
-
-    it('success as authorized', done => {
-      const bundleId = '0x0419a305e34825a2c4ba91f4a7202e9aa6ba698761e3f3484402d221acf4cf22';
-      chai.request(app_server)
-        .get(`/bundle/${bundleId}`)
-        .set('Authorization', `AMB_TOKEN ${tokens.regular_account}`)
-        .end((err, res) => {
-          res.should.have.status(200);
-          expect(res.body.data.bundleId).to.eq(bundleId);
-          done();
-        });
-    });
-
-  }); */
 
   describe('(GET) /exists/:bundleId', () => {
 

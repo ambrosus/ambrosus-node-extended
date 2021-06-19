@@ -1,9 +1,4 @@
-/* tslint:disable */
-import * as chai from 'chai';
-
-const { expect } = chai;
-const should = chai.should();
-
+import { expect } from 'chai';
 import { config } from '../../src/config';
 config.db.dbName = 'hermes-test';
 
