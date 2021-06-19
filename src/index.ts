@@ -15,9 +15,9 @@
 import 'reflect-metadata';
 
 import * as bodyParser from 'body-parser';
-import * as cors from 'cors';
+import cors from 'cors';
 import { InversifyExpressServer } from 'inversify-express-utils';
-import * as morgan from 'morgan';
+import morgan from 'morgan';
 
 import { config } from './config';
 import { TYPE } from './constant/types';
@@ -25,20 +25,17 @@ import { iocContainer } from './inversify.config';
 import { LoggerService } from './service/logger.service';
 import { AMBAccountProvider } from './middleware/amb-account.provider';
 import * as Sentry from '@sentry/node';
-import * as sgMail from '@sendgrid/mail';
+// tslint:disable-next-line
+import sgMail from '@sendgrid/mail';
 import { DBClient } from './database/client';
 import { errorHandler } from './middleware';
 import { BuiltInService } from './service/builtin.service';
 import { EmailService } from './service/email.service';
 
 import Migrator from './migrations/Migrator';
-
 import * as express from 'express';
-
 import * as pack from '../package.json';
-
-// tslint:disable-next-line:no-var-requires
-const fs = require('fs');
+import fs from 'fs';
 
 const dashboardStatic = '/var/www/dashboard';
 

@@ -168,7 +168,7 @@ export const assets = (collections: any) => {
         }
       ]
     );
-    resolve();
+    resolve(void(0));
   });
 };
 

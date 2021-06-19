@@ -12,10 +12,8 @@
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// tslint:disable-next-line:no-var-requires
-const fs = require('fs');
-// tslint:disable-next-line:no-var-requires
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 export const writeFile = (filepath, data, opts = {}) =>
   new Promise((resolve, reject) => {
@@ -51,7 +49,7 @@ export const removeFile = (filepath) =>
       if (err) {
         reject(err);
       } else {
-        resolve();
+        resolve(void(0));
       }
     });
   });
@@ -80,7 +78,7 @@ export const removeDirectory = (filepath) =>
       if (err) {
         reject(err);
       } else {
-        resolve();
+        resolve(void(0));
       }
     });
   });
@@ -91,7 +89,7 @@ export const makeDirectory = (filepath) =>
       if (err) {
         reject(err);
       } else {
-        resolve();
+        resolve(void(0));
       }
     });
   });

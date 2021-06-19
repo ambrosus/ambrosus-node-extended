@@ -1,7 +1,7 @@
 /* tslint:disable */
-import * as Ajv from 'ajv';
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
+import Ajv from 'ajv';
+import chai = require('chai');
+import chaiAsPromised = require('chai-as-promised');
 
 import { accountSchema, isAddress, isBase64, isObjectId } from '../../src/validation';
 
@@ -58,6 +58,7 @@ describe('(Schema) Accounts', () => {
         it('should fail with fullName and timeZone requiring min 2 and 3 characters', async () => {
             try {
                 await test({
+                    address: '0x92C4e1E93820cab92718F30C4dDE3d7D8743B5E6',
                     fullName: 'a',
                     timeZone: 'aa',
                 });
@@ -154,17 +155,13 @@ describe('(Schema) Accounts', () => {
         });
 
         it('should succeed with token being valid base64', async () => {
-            try {
-                const validate = await test({
-                    address: '0x92C4e1E93820cab92718F30C4dDE3d7D8743B5E6',
-                    token: 'eyJ2ZXJzaW9uIjozLCJpZCI6IjA1MGU4MmNiLWQwOTctNDMxYS1iZTUzLTk1MGZkNjk0N2Q1YiIsImFkZHJlc3MiOiIyZmRiMjYyZjA3MTY2NjZlYjBjZTMyNTA5ZGIxOWJlMzhlNThjZDI4IiwiY3J5cHRvIjp7ImNpcGhlcnRleHQiOiI0MDVmMzZmYWQ2MjIyNTg1NjgzNzhkZDA4ZDFiNGJmMzhmNjBmMWEyZWZlOTIyN2Q3OTgzMTA4ZmUyYTY2NWRkIiwiY2lwaGVycGFyYW1zIjp7Iml2IjoiOTdlNzcyZmQ2ZjQ2YTc3NGRiNGZmMDFiZjFjNjVjYTAifSwiY2lwaGVyIjoiYWVzLTEyOC1jdHIiLCJrZGYiOiJzY3J5cHQiLCJrZGZwYXJhbXMiOnsiZGtsZW4iOjMyLCJzYWx0IjoiMTg1NGIwZDFkYjE1MzdjYjc1NDQ4MTZiMDY3NjliZTliMTU4M2I3MTU1MmUwOWE5ZjIyY2ZjYTU4MDY1MGJjZCIsIm4iOjgxOTIsInIiOjgsInAiOjF9LCJtYWMiOiI4Zjk5MjU0M2JlYjMxNzJiMDU3OTM0YjAwNDNlNDVhYmUyOGNmNWQ0Y2FmZTQ2NjVmYzRjMzFlNDhkOTE1MDM4In19'
-                });
+            const validate = await test({
+               address: '0x92C4e1E93820cab92718F30C4dDE3d7D8743B5E6',
+               token: 'eyJ2ZXJzaW9uIjozLCJpZCI6IjA1MGU4MmNiLWQwOTctNDMxYS1iZTUzLTk1MGZkNjk0N2Q1YiIsImFkZHJlc3MiOiIyZmRiMjYyZjA3MTY2NjZlYjBjZTMyNTA5ZGIxOWJlMzhlNThjZDI4IiwiY3J5cHRvIjp7ImNpcGhlcnRleHQiOiI0MDVmMzZmYWQ2MjIyNTg1NjgzNzhkZDA4ZDFiNGJmMzhmNjBmMWEyZWZlOTIyN2Q3OTgzMTA4ZmUyYTY2NWRkIiwiY2lwaGVycGFyYW1zIjp7Iml2IjoiOTdlNzcyZmQ2ZjQ2YTc3NGRiNGZmMDFiZjFjNjVjYTAifSwiY2lwaGVyIjoiYWVzLTEyOC1jdHIiLCJrZGYiOiJzY3J5cHQiLCJrZGZwYXJhbXMiOnsiZGtsZW4iOjMyLCJzYWx0IjoiMTg1NGIwZDFkYjE1MzdjYjc1NDQ4MTZiMDY3NjliZTliMTU4M2I3MTU1MmUwOWE5ZjIyY2ZjYTU4MDY1MGJjZCIsIm4iOjgxOTIsInIiOjgsInAiOjF9LCJtYWMiOiI4Zjk5MjU0M2JlYjMxNzJiMDU3OTM0YjAwNDNlNDVhYmUyOGNmNWQ0Y2FmZTQ2NjVmYzRjMzFlNDhkOTE1MDM4In19'
+            });
 
-                expect(validate).to.haveOwnProperty('address');
-                expect(validate).to.haveOwnProperty('token');
-            } catch (error) {
-                expect(error).to.not.haveOwnProperty('errors');
-            }
+            expect(validate).to.haveOwnProperty('address');
+            expect(validate).to.haveOwnProperty('token');
         });
 
     });

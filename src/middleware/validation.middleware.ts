@@ -13,10 +13,10 @@
  */
 
 /* tslint:disable */
-import * as Ajv from 'ajv';
 import { Request, Response, NextFunction } from 'express';
 import { ValidationError } from '../errors';
 import { isBase64, isObjectId, isAddress } from '../validation';
+import Ajv from "ajv";
 
 const convertToNumber = data => {
   return (!!Number(data) && data == String(Number(data))) ? Number(data) : undefined;
