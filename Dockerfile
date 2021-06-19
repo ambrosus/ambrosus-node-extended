@@ -8,6 +8,7 @@ COPY ./package.json /app
 COPY ./yarn.lock /app
 
 RUN yarn install
+RUN yarn cache clean
 
 COPY . ./
 
