@@ -1,9 +1,9 @@
-/* tslint:disable */
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
+import chai = require('chai');
+import chaiAsPromised = require('chai-as-promised');
+import chaiHttp = require('chai-http');
 
+chai.use(chaiHttp);
 chai.use(chaiAsPromised);
-chai.use(require('chai-http'));
 const { expect } = chai;
 const should = chai.should();
 
@@ -14,9 +14,7 @@ config.db.dbName = 'hermes-test';
 import { app_server } from '../../src';
 
 describe('(Controller) Health /health', () => {
-
   describe('(GET) /', () => {
-
     it('success', done => {
       chai.request(app_server)
         .get(`/health`)
@@ -25,7 +23,5 @@ describe('(Controller) Health /health', () => {
           done();
         });
     });
-
   });
-
 });

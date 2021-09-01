@@ -13,9 +13,8 @@
  */
 
 import { inject, injectable } from 'inversify';
-// tslint:disable-next-line:no-var-requires
-const web3 = require('web3');
-import * as moment from 'moment';
+import web3 from 'web3';
+import moment from 'moment';
 import base64url from 'base64url';
 
 import { config } from '../config';

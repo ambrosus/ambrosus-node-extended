@@ -20,7 +20,7 @@ export const super_account = (collections: any) => {
             address: '0x2C81A356c33D95574a2D502874196d21a2507daD',
             email: 'super@test.com',
         });
-        resolve();
+        resolve(void(0));
     });
 };
 
@@ -46,7 +46,7 @@ export const admin_account = (collections: any) => {
             registeredBy: '0x2C81A356c33D95574a2D502874196d21a2507daD',
             token: 'eyJ2ZXJzaW9uIjozLCJpZCI6IjA1MGU4MmNiLWQwOTctNDMxYS1iZTUzLTk1MGZkNjk0N2Q1YiIsImFkZHJlc3MiOiIyZmRiMjYyZjA3MTY2NjZlYjBjZTMyNTA5ZGIxOWJlMzhlNThjZDI4IiwiY3J5cHRvIjp7ImNpcGhlcnRleHQiOiI0MDVmMzZmYWQ2MjIyNTg1NjgzNzhkZDA4ZDFiNGJmMzhmNjBmMWEyZWZlOTIyN2Q3OTgzMTA4ZmUyYTY2NWRkIiwiY2lwaGVycGFyYW1zIjp7Iml2IjoiOTdlNzcyZmQ2ZjQ2YTc3NGRiNGZmMDFiZjFjNjVjYTAifSwiY2lwaGVyIjoiYWVzLTEyOC1jdHIiLCJrZGYiOiJzY3J5cHQiLCJrZGZwYXJhbXMiOnsiZGtsZW4iOjMyLCJzYWx0IjoiMTg1NGIwZDFkYjE1MzdjYjc1NDQ4MTZiMDY3NjliZTliMTU4M2I3MTU1MmUwOWE5ZjIyY2ZjYTU4MDY1MGJjZCIsIm4iOjgxOTIsInIiOjgsInAiOjF9LCJtYWMiOiI4Zjk5MjU0M2JlYjMxNzJiMDU3OTM0YjAwNDNlNDVhYmUyOGNmNWQ0Y2FmZTQ2NjVmYzRjMzFlNDhkOTE1MDM4In19',
         });
-        resolve();
+        resolve(void(0));
     });
 };
 
@@ -67,7 +67,7 @@ export const regular_account = (collections: any) => {
             address: '0x1403F4C7059206291E101F2932d73Ed013B2FF71',
             email: 'regular@test.com',
         });
-        resolve();
+        resolve(void(0));
     });
 };
 
@@ -76,6 +76,6 @@ export const all_accounts = (collections: any) => {
         await super_account(collections);
         await admin_account(collections);
         await regular_account(collections);
-        resolve();
+        resolve(void(0));
     });
 };

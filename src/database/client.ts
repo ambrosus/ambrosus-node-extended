@@ -58,7 +58,7 @@ export class DBClient {
   }
 
   public asyncPipe = async (readStream, writeStream) => new Promise((resolve, reject) => {
-    writeStream.on('finish', () => resolve());
+    writeStream.on('finish', () => resolve(void(0)));
     writeStream.on('error', (err) => reject(err));
 
     readStream.pipe(writeStream);

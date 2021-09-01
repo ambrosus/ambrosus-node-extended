@@ -1,0 +1,11 @@
+{
+  "require": [
+    "ts-node/register",
+    "reflect-metadata/Reflect",
+    "test/mocha_env.ts"
+  ],
+  "recursive": true,
+  "timeout": 5000,
+  "exit": true,
+  "extension": ["ts"]
+}

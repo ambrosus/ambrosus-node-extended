@@ -1,9 +1,9 @@
-/* tslint:disable */
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
+import chai = require('chai');
+import chaiAsPromised = require('chai-as-promised');
+import chaiHttp = require('chai-http');
 
+chai.use(chaiHttp);
 chai.use(chaiAsPromised);
-chai.use(require('chai-http'));
 const { expect } = chai;
 const should = chai.should();
 
@@ -44,9 +44,9 @@ describe('(Controller) Metrics /metrics', () => {
         console.log('Error: ', error);
       }
 
-      resolve();
+      resolve(void(0));
     });
-  }
+  };
 
   before(done => {
     setup().then(resp => done()).catch(error => done(error));
@@ -64,51 +64,6 @@ describe('(Controller) Metrics /metrics', () => {
     });
 
   });
-
-  // describe('(GET) /amb', () => {
-
-  //   it('success as super_account', done => {
-  //     chai.request(app_server)
-  //       .get(`/metrics/amb`)
-  //       .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
-  //       .end((err, res) => {
-  //         res.should.have.status(200);
-  //         expect(res.body.id).to.eq('amber');
-  //         done();
-  //       });
-  //   });
-
-  // });
-
-  // describe('(GET) /bundle', () => {
-
-  //   it('success as super_account', done => {
-  //     chai.request(app_server)
-  //       .get(`/metrics/bundle`)
-  //       .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
-  //       .end((err, res) => {
-  //         res.should.have.status(200);
-  //         expect(res.body.price).to.exist;
-  //         done();
-  //       });
-  //   });
-
-  // });
-
-  // describe('(GET) /balance', () => {
-
-  //   it('success as super_account', done => {
-  //     chai.request(app_server)
-  //       .get(`/metrics/balance`)
-  //       .set('Authorization', `AMB_TOKEN ${tokens.super_account}`)
-  //       .end((err, res) => {
-  //         res.should.have.status(200);
-  //         expect(res.body.balance).to.exist;
-  //         done();
-  //       });
-  //   });
-
-  // });
 
   after(done => {
     if (db.databaseName === 'hermes-test') {
