@@ -24,9 +24,9 @@ import { ILogger } from '../interface/logger.inferface';
 import { APIResponse } from '../model';
 import { Web3Service } from '../service/web3.service';
 import { BaseController } from './base.controller';
-import { WorkerLogsRepository } from '../database/repository';
 
 import * as pack from '../../package.json';
+import { PrivateKeyService } from '../service/privatekey.service';
 
 @controller(
   '/nodeinfo',
@@ -45,7 +45,7 @@ export class NodeinfoController extends BaseController {
     '/'
   )
   public async getNodeinfo(): Promise<APIResponse> {
-    const nodeAddress = this.web3Service.addressFromSecret(config.web3.privateKey);
+    const nodeAddress = this.web3Service.addressFromSecret(PrivateKeyService.getRetrieved());
     // const workerLogs = this.workerlogsRepository.getLogs(5);
 
     const result = {

@@ -23,12 +23,13 @@ import { ILogger } from '../interface/logger.inferface';
 import { matchHexOfLength } from '../util';
 
 import { ValidationError, AuthenticationError } from '../errors';
+import { PrivateKeyService } from './privatekey.service';
 
 @injectable()
 export class Web3Service {
   private web3;
   private w3Account;
-  private privateKey = config.web3.privateKey;
+  private privateKey = PrivateKeyService.getRetrieved();
 
   constructor(@inject(TYPE.LoggerService) public logger: ILogger) {
     if (!matchHexOfLength(this.privateKey, 64)) {

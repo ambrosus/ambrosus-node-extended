@@ -14,8 +14,6 @@
 
 import { inject, injectable } from 'inversify';
 
-import { config } from '../config';
-
 import { TYPE } from '../constant/types';
 import {
   AccountRepository,
@@ -42,6 +40,7 @@ import {
 } from '../errors';
 
 import { Web3Service } from '../service/web3.service';
+import { PrivateKeyService } from './privatekey.service';
 
 @injectable()
 export class AdminService {
@@ -79,7 +78,7 @@ export class AdminService {
   public async getConfig(): Promise<ConfigData> {
     const result = new ConfigData;
 
-    result.address = this.web3Service.addressFromSecret(config.web3.privateKey);
+    result.address = this.web3Service.addressFromSecret(PrivateKeyService.getRetrieved());
 
     result.content = {
       organizations: await this.organizationRepository.getAll(),
@@ -108,7 +107,7 @@ export class AdminService {
   }
 
   private async ensureCanRestoreConfig(address: string) {
-    const nodeAddress = this.web3Service.addressFromSecret(config.web3.privateKey);
+    const nodeAddress = this.web3Service.addressFromSecret(PrivateKeyService.getRetrieved());
 
     if (address !== nodeAddress) {
       throw new InternalError( {reason: 'node address mismatch'} );
