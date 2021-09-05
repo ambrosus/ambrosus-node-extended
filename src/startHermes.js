@@ -15,5 +15,5 @@
 import { PrivateKeyService } from './service/privatekey.service';
 
 PrivateKeyService.retrieveTrial().then(async () => {
-    await import('./main');
+    await import('./index');
 });
