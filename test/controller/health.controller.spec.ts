@@ -11,7 +11,7 @@ import 'reflect-metadata';
 import { config } from '../../src/config';
 config.db.dbName = 'hermes-test';
 
-import { app_server } from '../../src';
+import { app_server } from '../../src/main';
 
 describe('(Controller) Health /health', () => {
   describe('(GET) /', () => {

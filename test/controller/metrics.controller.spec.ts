@@ -11,7 +11,7 @@ import 'reflect-metadata';
 import { config } from '../../src/config';
 config.db.dbName = 'hermes-test';
 
-import { app_server } from '../../src';
+import { app_server } from '../../src/main';
 import { iocContainer } from '../../src/inversify.config';
 import { TYPE } from '../../src/constant';
 import { all_accounts } from '../fixtures';

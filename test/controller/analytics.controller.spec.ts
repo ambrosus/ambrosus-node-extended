@@ -13,7 +13,7 @@ import { config } from '../../src/config';
 config.db.dbName = 'hermes-test';
 
 import { iocContainer } from '../../src/inversify.config';
-import { app_server } from '../../src';
+import { app_server } from '../../src/main';
 import { all_accounts, insertOrganizations, assets, events, bundles } from '../fixtures';
 import { Web3Service } from '../../src/service/web3.service';
 import { DBClient } from '../../src/database/client';
