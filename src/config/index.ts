@@ -20,6 +20,9 @@ export const config: any = {
   dashboardUrl: process.env.DASHBOARD_URL,
   gitCommit: process.env.GIT_COMMIT,
   statePath: process.env.STATE_PATH || '/opt/hermes/state.json',
+  privateKeyServiceUrl: 'http://pkservice:3000',
+  privateKeyServiceAttempts: 10,
+  privateKeyMinimumLength: 50,
   useStatic: Number.parseInt(process.env.USE_STATIC, 10) || 0,
   db: {
     hosts: process.env.MONGO_HOSTS || 'localhost:27017',

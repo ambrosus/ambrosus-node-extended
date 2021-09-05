@@ -43,6 +43,7 @@ import { config } from '../config';
 
 import { encrypt, decrypt } from '../util/crypto.util';
 import { getTimestamp } from '../util';
+import { PrivateKeyService } from './privatekey.service';
 
 //#endregion
 
@@ -114,7 +115,7 @@ export class OrganizationService {
 
     const data = JSON.stringify({organization, organizationKey, members});
 
-    return { data: encrypt(data, config.web3.privateKey) };
+    return { data: encrypt(data, PrivateKeyService.getRetrieved()) };
   }
 
   public async restoreOrganization(
@@ -130,7 +131,7 @@ export class OrganizationService {
       throw new ValidationError({ reason: 'Restore: empty data' });
     }
 
-    const data = decrypt(req.body.data, config.web3.privateKey);
+    const data = decrypt(req.body.data, PrivateKeyService.getRetrieved());
     this.logger.info(`INFO(restore data) ${data}`);
     const backup = JSON.parse(data);
     if (
