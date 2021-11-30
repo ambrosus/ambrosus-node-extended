@@ -56,11 +56,11 @@ Some requests like account management or accessing to restricted data fields req
 where $ADDRESS is your public address and $TIMESTAMP is a UNIX-styled integer specifying token's expiration date.
 $SIGNATURE is an elliptic-curve signature of the idData field. Should be signed with the creator's private address. We recommend to create the token locally and use it across Ambrosus API without sending your private key anywhere.
 ### /token
-
+__ⓘ Note:__  Available only for Atals node.
 #### Create token [POST]
 
 __Warning__ This call can be used for development purposes only. Never provide your secret address to anyone.
-ⓘ Note: the call can be applied to both Atlas and Hermes nodes.
+
 
 + Request
     + Headers
@@ -90,10 +90,9 @@ __Warning__ This call can be used for development purposes only. Never provide y
             }
 
 ## Group Account
-Used for compatibility with an old Dashboard.
-ⓘ Note: the call can only be applied to Hermes nodes.
+__ⓘ Note:__ Used for compatibility with an old Dashboard.
+__ⓘ Note:__  Available only for Hermes node.
 
-## Group Account2
 
 An account represents an actor in the supply chain. This can be a person, a company, a location, etc.
 
@@ -108,7 +107,21 @@ Account can hold any number of following permissions:
 * register_accounts - allows account to add new accounts
 * manage_accounts - allows account to view and manage existing accounts
 
-ⓘ Note: the call can only be applied to Hermes nodes.
+## Group Account2
+__ⓘ Note:__  Available only for Hermes node.
+
+An account represents an actor in the supply chain. This can be a person, a company, a location, etc.
+
+It consists of a pair - a public identifer `address` (compatible with ethereum address) and a `secret` (compatible with ethereum private key). Additionally an account has a list of permissions, which specify what actions user can perform and an access levels, which specifies what data is user able to view.
+
+Account can hold any number of following permissions:
+
+* super_account - Almighty administrator account. Is able to perform all kinds of calls.
+* protected_account - account protected from modification. Protected accounts can be created only by super accounts or other protected accounts. Only super accounts can modify the protected accounts.
+* create_asset - allows account to create assets
+* create_event - allows account to create events
+* register_accounts - allows account to add new accounts
+* manage_accounts - allows account to view and manage existing accounts
 
 ### /account2/list{?perPage,page}
 
@@ -380,12 +393,12 @@ Assets are primary elements moving through a supply chain. The are the nouns of 
 
 An Asset on its own function only as a handle for a Event stream. Because of this, they only contain an `idData` structure holding minimal information about their creation.
 
-Assets are identified by an `assetId` field which is a sha3 hash calculated from the `content` field.
+Assets are identified by an `assetId` field which is a sha3 hash calculated from the `content` field. \
 
 
 
 ### /assets/{assetId}
-
+__ⓘ Note:__  Available for both Hermes and Atlas nodes.
 #### Fetch an asset by Id [GET]
 
 Fetches asset with provided assetId in the system.
@@ -457,7 +470,7 @@ Fetches asset with provided assetId in the system.
     + Body
 
 ### /assets{?perPage,page,createdBy,fromTimestamp,toTimestamp,identifier}
-
+__ⓘ Note:__  Available only for Atlas node.
 #### Find assets [GET]
 
 Finds assets satisfying provided criteria.
@@ -534,10 +547,8 @@ Finds assets satisfying provided criteria.
                }
             }
 
-### /assets
-
 #### Create an asset [POST]
-
+__ⓘ Note:__  Available only for Atals node.
 Places (after intensive validations) the provided asset object into the system.
 
 __Warning__ Request sender needs to have "create_asset" permission
@@ -614,8 +625,8 @@ __Warning__ Request sender needs to have "create_asset" permission
 
     + Body
 
-### /assets/{assetId}/events?{fromTimestamp,toTimestamp,perPage,page,createdBy,data}
-
+### /assets/{assetId}/events{?fromTimestamp,toTimestamp,perPage,page,createdBy,data}
+__ⓘ Note:__ Available for both Hermes and Atlas node.
 #### Find events [GET]
 
 Finds event satisfying provided criteria.
@@ -702,10 +713,8 @@ Finds event satisfying provided criteria.
 
     + Body
 
-### /assets/{assetId}/events
-
 #### Create an event [POST]
-
+__ⓘ Note:__  Available only for Atlas node.
 Places (after intensive validations) the provided event object into the system.
 
 __Warning__ Message sender needs to have "create_event" permission
@@ -797,12 +806,8 @@ __Warning__ Message sender needs to have "create_event" permission
     + Body
 
 ## Group Asset
-
-Used for compatibility with old dashboard.
-ⓘ Note: You should not use it.
-
-
-## Group Asset2
+__ⓘ Note:__ Used for compatibility with old dashboard.  \
+__ⓘ Note:__  Available only for Hermes node.
 
 Assets are primary elements moving through a supply chain. The are the nouns of the system. They can represent an ingredient, product, package of products or any other type of container.
 
@@ -810,7 +815,15 @@ An Asset on its own function only as a handle for a Event stream. Because of thi
 
 Assets are identified by an `assetId` field which is a sha3 hash calculated from the `content` field.
 
-ⓘ Note: the call can only be applied to Hermes nodes.
+
+## Group Asset2
+__ⓘ Note:__  Available only for Hermes node.
+
+Assets are primary elements moving through a supply chain. The are the nouns of the system. They can represent an ingredient, product, package of products or any other type of container.
+
+An Asset on its own function only as a handle for a Event stream. Because of this, they only contain an `idData` structure holding minimal information about their creation.
+
+Assets are identified by an `assetId` field which is a sha3 hash calculated from the `content` field.
 
 ### /asset2/list{?perPage,page,createdBy,fromTimestamp,toTimestamp,identifier}
 
@@ -990,13 +1003,13 @@ __Warning__ Request sender needs to have "create_asset" permission
     + Body
 
             {
-             "content": {
-             "idData": {
-             "createdBy": "0x2D2a0BE476559200D87EdD128Bd31c100be74e0f",
-             "timestamp": 1582616736,
-             "sequenceNumber" : 0
-             },
-             "signature": "0x669f6a33dafaa9c35953bbab201eba63ad4b6960252af398d7cea230c17ec5323dae8c637e8995a799da8c13aeb5101163876e3411e43852a1cb4c7669bc9cc21c"
+                "content": {
+                    "idData": {
+                        "timestamp": 1582616736,
+                        "sequenceNumber" : 0
+                    },
+                    "signature": "0x669f6a33dafaa9c35953bbab201eba63ad4b6960252af398d7cea230c17ec5323dae8c637e8995a799da8c13aeb5101163876e3411e43852a1cb4c7669bc9cc21c"
+                }
             }
 
 
@@ -1043,14 +1056,13 @@ __Warning__ Request sender needs to have "create_asset" permission
     + Body
 
 ## Group Events
-
+__ⓘ Note:__ Available for both Hermes and Atlas nodes. \
 Events describe all registered changes of state that occurred with the asset. E.g. measured temperature, noted big acceleration or changing pallets. An event consists of the 3 major parts:
 
 * idData – Public information about an event. Contains the ID of the asset, address of the user who has registered the event, minimal access level required to view private data of the event and the timestamp of the event. Additionally idData holds the hash of the Data field.
 * Data – Protected information about an event. To get access to the private data, a user needs to have an access level not smaller than the returned event.
 * Metadata – Information generated and used by AMB-NET, for example id of a bundle handling an event.
 
-ⓘ Note: the call can be applied to both Atlas and Hermes nodes.
 
 ##### Events Data field
 
@@ -1215,14 +1227,12 @@ Fetches an event by identifier
 
 
 ## Group Events2
-
+__ⓘ Note:__ Available only for Hermes node.
 Events describe all registered changes of state that occurred with the asset. E.g. measured temperature, noted big acceleration or changing pallets. An event consists of the 3 major parts:
 
 * idData – Public information about an event. Contains the ID of the asset, address of the user who has registered the event, minimal access level required to view private data of the event and the timestamp of the event. Additionally idData holds the hash of the Data field.
 * Data – Protected information about an event. To get access to the private data, a user needs to have an access level not smaller than the returned event.
 * Metadata – Information generated and used by AMB-NET, for example id of a bundle handling an event.
-
-ⓘ Note: the call can only be applied to Hermes nodes.
 
 ##### Events Data field
 
@@ -1485,11 +1495,10 @@ Bundles are packages of data that are being published by ambrosus node users. Si
 
 Bundles are used to exchange data between the users of ambrosus network. Every bundle's Id is stored on the blockchain.
 
-ⓘ Note: the call can be applied to both Atlas and Hermes nodes. \
-__Warning__ Lagacy api. Shouldn't be used in a new applications.
+__ⓘ Note:__ This a lagecy API and should be used only with Atlas.
 
 ## /bundle/
-
+__ⓘ Note:__  Available only for Hermes nodes.
 #### Get list of bundles [GET]
 Fetches a list of all bundles of current user
 
@@ -1520,7 +1529,7 @@ Fetches a list of all bundles of current user
             }
 
 ## /bundle/{bundleId}
-
+__ⓘ Note:__  Available for both Hermes and Atlas nodes.
 #### Fetch bundle [GET]
 
 Fetches a bundle by identifier
@@ -1568,7 +1577,7 @@ Fetches a bundle by identifier
     + Body
 
 ## /bundle/{bundleId}/info
-
+__ⓘ Note:__  Availabel for both Hermes and Atlas nodes.
 #### Fetch bundle metadata [GET]
 
 Fetches a bundle metadata by identifier
@@ -1609,9 +1618,10 @@ Fetches a bundle metadata by identifier
 
 
 ## /bundle/exists/{bundleId}
+__ⓘ Note:__  Available only for Hermes nodes.
 #### Check if bundle exists [GET]
 
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
@@ -1623,8 +1633,13 @@ Fetches a bundle metadata by identifier
             }
 
 ## /bundle/query
+__ⓘ Note:__  Available onlt for Hermes nodes.
 #### Query underlying mongoDB [POST]
-+ Request
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/json
 
     + Body
 
@@ -1636,7 +1651,7 @@ Fetches a bundle metadata by identifier
                 }]
             }
 
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
@@ -1662,19 +1677,25 @@ Fetches a bundle metadata by identifier
                 }
             }
 
+## /{bundleId}/restore
+__ⓘ Note:__  Available onlyfor Atals nodes.
+#### Resotore bundle from backup [GET]
++ Response
+
+    + Body
+
 
 ## Group Bundles2
-
+__ⓘ Note:__ Available only for Hermes nodes.
 Bundles are packages of data that are being published by ambrosus node users. Single bundle contains assets, public events and stubs of private events, that user created since last bundle publication.
 
 Bundles are used to exchange data between the users of ambrosus network. Every bundle's Id is stored on the blockchain.
 
 ⓘ Note: the call can be applied only to Hermes node.
-Newer version of bundle endpoint and should be used in new applications
 
 ## /bundle2/list
 #### Get list of bundles [GET]
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
@@ -1706,7 +1727,7 @@ Newer version of bundle endpoint and should be used in new applications
 
     + bundleId (string, required) - the id of a bundle
 
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
@@ -1723,10 +1744,19 @@ Newer version of bundle endpoint and should be used in new applications
                 }
             }
 
++ Response 404 (application/json)
+
+    Bundle doesn't exist or the metadata for it is missing
+
+    + Body
 
 ## /bundle2/query
 #### Query underlying mongoDB [POST]
-+ Request
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/json
 
     + Body
 
@@ -1738,7 +1768,7 @@ Newer version of bundle endpoint and should be used in new applications
                 }]
             }
 
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
@@ -1767,18 +1797,28 @@ Newer version of bundle endpoint and should be used in new applications
 ## /bundle2/push
 __Warning__ super_account permision is required
 #### Push bundles from hermes to network [GET]
-+ Response 200
++ Response 200 (applicaiton/json)
+
+    Bundles are pushed.
+
+    + Body
+
++ Response 403 (application/json)
+
+    The user is not registered or has no "create_event" permission
+
+    + Body
 
 
 ## Group Nodeinfo
-
+__ⓘ Note:__ Available for both Hermes and Atlas nodes.
 Information on the Gateway node.
 
 ## /nodeinfo
 
 #### Get node info [GET]
 
-+ Response 200
++ Response 200 (application/json)
 
     + Attributes (object)
         + commit (string) - Hash of the latest git commit on the node
@@ -1796,17 +1836,17 @@ Information on the Gateway node.
             }
 
 ## Group Analytics
+__ⓘ Note:__  Available only for Hermes node.
 Analytical information about collections and organizations
 
 ## /analytics/{organizationId}/{collection}/count
-__Warning__ available for Hermes nodes only
 #### Get number of events or assets in organization [GET]
 + Parameters
 
     + organizationId (string, required) - ID of a organization
     + collection (string, required) - Collection type (event or asset)
 
-+ Response 200
++ Response 200 (application/json)
 
     + Attributes (object)
         + data (object) - contains requested data
@@ -1827,7 +1867,6 @@ __Warning__ available for Hermes nodes only
             }
 
 ## /analytics/{organizationId}/{collection}/count/{start}/{end}/total
-__Warning__ available for Hermes nodes only
 #### Get number of events or assets in organization in given period of time [GET]
 + Parameters
 
@@ -1836,7 +1875,7 @@ __Warning__ available for Hermes nodes only
     + start (number, required) - The start date (Unix timestamp)
     + end (number, required) - The end date (Unix timestamp)
 
-+ Response 200
++ Response 200 (application/json)
 
     + Attributes (object)
         + data (object) - contains requested data
@@ -1858,7 +1897,6 @@ __Warning__ available for Hermes nodes only
 
 ## /analytics/{organizationId}/{collection}/count/{start}/{end}/aggregate/{group}
 #### Get number of assets of events in organization in given period of time grouped by some parameter [GET]
-__Warning__ available for Hermes nodes only
 + Parameters
 
     + organizationId (string, required) - ID of a organization
@@ -1867,7 +1905,7 @@ __Warning__ available for Hermes nodes only
     + end (number, required) - The end date (Unix timestamp)
     + group (string, required) - The grouping parameter
 
-+ Response 200
++ Response 200 (application/json)
 
     + Attributes (object)
         + data (object) - contains requested data
@@ -1905,14 +1943,13 @@ __Warning__ available for Hermes nodes only
             }
 
 ## /analytics/{collection}/count
-#### Get number of assets or events in whole node [GET]
 __Warning__ super_account permissions required
-__Warning__ available for Hermes nodes only
+#### Get number of assets or events in whole node [GET]
 + Parameters
 
     + collection (string, required) - Collection type (event or asset)
 
-+ Response 200
++ Response 200 (application/json)
 
     + Attributes (object)
         + data (object) - contains requested data
@@ -1933,16 +1970,15 @@ __Warning__ available for Hermes nodes only
 
 
 ## /analytics/{collection}/count/{start}/{end}/total
-#### Get numbre of assets or events in whole node [GET]
 __Warning__ super_account permissions required
-__Warning__ available for Hermes nodes only
+#### Get numbre of assets or events in whole node [GET]
 + Parameters
 
     + collection (string, required) - Collection type (event or asset)
     + start (number, required) - The start date (Unix timestamp)
     + end (number, required) - The end date (Unix timestamp)
 
-+ Response 200
++ Response 200 (application/json)
 
     + Attributes (object)
         + data (object) - contains requested data
@@ -1964,9 +2000,8 @@ __Warning__ available for Hermes nodes only
 
 
 ## /analytics/{collection}/count/{start}/{end}/aggregate/{group}
-#### Get number of assets ot events in whole node grouped by parameter [GET]
 __Warning__ super_account permissions required
-__Warning__ available for Hermes nodes only
+#### Get number of assets ot events in whole node grouped by parameter [GET]
 + Parameters
 
     + collection (string, required) - Collection type (event or asset)
@@ -1974,11 +2009,14 @@ __Warning__ available for Hermes nodes only
     + end (number, required) - The end date (Unix timestamp)
     + group (string, required) - The grouping parameter
 
-+ Response 200
++ Response 200 (application/json)
 
     + Attributes (object)
         + data (object) - contains requested data
-            + count (number) - Count of selected collection type
+            + count (array) - Count of selected collection type
+                + (object) - the grouped collection
+                    + {group} - grouping characteristic
+                    + count (number) - the count
         + meta (object) - some additional information
             + code (number) - Response code
 
@@ -1989,19 +2027,19 @@ __Warning__ available for Hermes nodes only
                 "data": {
                     "count": [
                         {
-                            "timestamp": 1638092099,
+                            "{group}": 1638092099,
                             "count": 0
                         },
                         {
-                            "timestamp": 1638171299,
+                            "{group}": 1638171299,
                             "count": 0
                         },
                         {
-                            "timestamp": 1638174899,
+                            "{group}": 1638174899,
                             "count": 0
                         },
                         {
-                            "timestamp": 1638178499,
+                            "{group}": 1638178499,
                             "count": 0
                         }
                             ]
@@ -2013,65 +2051,105 @@ __Warning__ available for Hermes nodes only
 
 
 ## Group Admin
+__ⓘ Note:__  Available only for Hermes node.
 Administrator actions
 
 ## /admin/pushbundle
 __Warning__ super_account permissions required
-__Warning__ available for Hermes nodes only
 #### Push bundles from hermes to network [GET]
 + Response 200
 
 ## /admin/getconfig
 __Warning__ super_account permissions required
-__Warning__ available for Hermes nodes only
 #### get verbose info [GET]
-+ Response 200
++ Response 200 (application/json)
+
+    + Attributes
+        + data (object) - contains requested data
+            + address (string) - address of this node
+            + content (object) - response contents
+                + organizaitons (array) - the array of organizations saved on this node
+                    + (object) - the organization
+                        + owner (string) - the account address of organizations owner
+                        + title (string) - the name of this organization
+                        + createdBy (string) - the account address of user who created this organization
+                        + organizationId (number) - the unique id of this organization
+                        + active (boolean) - the status of organization
+                        + createdOn (number) - the time of organizatin creation
+                + organizationKeys (array) - the public keys of organizations
+                    + (object)
+                        + organizatinId (number) - the unique id of this organization
+                        + key (string) - the public key of this organization
+                + accounts (array) - the list of account stored on this node
+                    + (object) - the account
+                        + address (string) - account address
+                        + accessLevel (number) - the level of data access of this user
+                        + organization (number) - the id of organization to which user are belong
+                        + permissions (array) - the permission of a user
+                            + (string) - the permission
+                        + registeredBy (string) - account address of the account creator
+                        + registeredOn (number) - the unix timestamp of time went the account was registered
+                        + active (boolean) - the status of the account
+                + accountDetails (array) - the ditails about account
+                    + (object)
+                        + address (string) - the account address
+                        + email (string) - the email
+                        + fullName (string) - the fullName of the user
+                        + createdBy (string) - the account address of the account creator
+                        + createdOn (number) - the unix timestamp of time when account was created
+        + meta (object) - the metadata
+            + code (number) - the status code
+
 
     + Body
 
             {
                 "data": {
-                "address": "0xe51fC0f13ab6CE533CC344F6754895F3E712EC05",
-                "content": {
-                    "organizations": [
-                        {
-                            "owner": null,
-                            "title": "built-in",
-                            "createdBy": null,
-                            "organizationId": 0,
-                            "active": true,
-                            "createdOn": 1633421614
-                        },
-                    ],
-                    "organizationKeys": [
-                        {
-                            "organizationId": 0,
-                            "Key": "org key"
-                        },
-                    ],
-                    "accounts": [
-                        {
-                            "address": "some address",
-                            "accessLevel": 1000,
-                            "organization": 0,
-                            "permissions": [
-                                "super_account",
-                                "manage_accounts",
-                                "register_accounts"
-                    ],
-                    "registeredBy": "some address",
-                    "registeredOn": 1633421614,
-                    "active": true
-                },
-                "accountDetails": [
-                    {
-                        "address": "some address",
-                        "email": "test@example.com",
-                        "fullName": null,
-                        "createdBy": "some address",
-                        "createdOn": 1633594494
+                    "address": "0xe51fC0f13ab6CE533CC344F6754895F3E712EC05",
+                    "content": {
+                        "organizations": [
+                            {
+                                "owner": null,
+                                "title": "built-in",
+                                "createdBy": null,
+                                "organizationId": 0,
+                                "active": true,
+                                "createdOn": 1633421614
+                            },
+                        ],
+                        "organizationKeys": [
+                            {
+                                "organizationId": 0,
+                                "Key": "org key"
+                            },
+                        ],
+                        "accounts": [
+                            {
+                                "address": "some address",
+                                "accessLevel": 1000,
+                                "organization": 0,
+                                "permissions": [
+                                    "super_account",
+                                    "manage_accounts",
+                                    "register_accounts"
+                                ],
+                                "registeredBy": "some address",
+                                "registeredOn": 1633421614,
+                                "active": true
+                            },
+                        ],
+                        "accountDetails": [
+                            {
+                                "address": "some address",
+                                "email": "test@example.com",
+                                "fullName": null,
+                                "createdBy": "some address",
+                                "createdOn": 1633594494
+                            },
+                        ],
                     },
-                ],
+                },
+
                 "meta": {
                     "code": 200
                 }
@@ -2080,12 +2158,47 @@ __Warning__ available for Hermes nodes only
 
 ## /restoreconfig
 __Warning__ super_account is required
-__Warning__ available for Hermes nodes only
 #### Push new config to the Herems node [POST]
 + Request
 
-    + Body
+    + Attributes
+        + data (object) - contains requested data
+            + address (string) - address of this node
+            + content (object) - response contents
+                + organizaitons (array) - the array of organizations saved on this node
+                    + (object) - the organization
+                        + owner (string) - the account address of organizations owner
+                        + title (string) - the name of this organization
+                        + createdBy (string) - the account address of user who created this organization
+                        + organizationId (number) - the unique id of this organization
+                        + active (boolean) - the status of organization
+                        + createdOn (number) - the time of organizatin creation
+                + organizationKeys (array) - the public keys of organizations
+                    + (object)
+                        + organizatinId (number) - the unique id of this organization
+                        + key (string) - the public key of this organization
+                + accounts (array) - the list of account stored on this node
+                    + (object) - the account
+                        + address (string) - account address
+                        + accessLevel (number) - the level of data access of this user
+                        + organizationId (number) - the id of organization to which user are belong
+                        + permissions (array) - the permission of a user
+                            + (string) - the permission
+                        + registeredBy (string) - account address of the account creator
+                        + registeredOn (number) - the unix timestamp of time went the account was registered
+                        + active (boolean) - the status of the account
+                + accountDetails (array) - the ditails about account
+                    + (object)
+                        + address (string) - the account address
+                        + email (string) - the email
+                        + fullName (string) - the fullName of the user
+                        + createdBy (string) - the account address of the account creator
+                        + createdOn (number) - the unix timestamp of time when account was created
+        + meta (object) - the metadata
+            + code (number) - the status code
 
+
+    + Body
 
             {
                 "data": {
@@ -2135,26 +2248,50 @@ __Warning__ available for Hermes nodes only
                 }
             }
 
-+ Response 200
++ Response 200 (application/json)
+
+    Restored.
 
     + Body
 
 ## Group Metrics
 Some basic metrics
-ⓘ Note: the call can be applied to both Atlas and Hermes nodes.
+ⓘ Note: he call can be applied to both Atlas and Hermes nodes.
 
 ## /metrics/
+__ⓘ Note:__  Available only for Hermes and Atlas nodes.
 #### Get all metrics info [GET]
-+ Response 200
++ Response 200 (text)
     Returns plain text. For example:
     # HELP process_cpu_user_seconds_total Total user CPU time spent in seconds.
     #TYPE process_cpu_user_seconds_total counter
     process_cpu_user_seconds_total 0.000509 1638189507657
 
 ## /metrics/amb
+__ⓘ Note:__  Available only for Hermes node.
 __Warning__ super_account permission is required
 #### Get info from super user's token [GET]
-+ Response 2000
++ Response 200 (application/json)
+
+    + Attributes
+
+        + _id (string) - internal id of the token
+        + id (number) - id of the token
+        + name (string) - the name of the token
+        + symbol (string) - the symbolic name of the token
+        + circulating_supply (number) - the total number of tokens circulated in the system
+        + max_supply (number) - the maximum number of tokens
+        + total_supply (number) - the total number of tokens
+        + timestamp (string) - the time when request was made
+        + rank (number) - the rank of the token
+        + percent_change_1h (string) - the change of the price of the token in one hour time interval
+        + percent_change_24h (string) - the change of the price of the token in 24 hour time interval
+        + percent_change_7d (string) - the change of teh price of the token in 7 days time interval
+        + price_usd (number) - the price of the token in USD
+        + 24_volume_usd (number) - the volume of token exhange in 24 hour time interval messuared in USD
+        + market_cap_usd (number) - the capitalization of the token market
+        + createdAt (number) - the unix timestamp of the request time
+
     + Body
 
             {
@@ -2177,9 +2314,15 @@ __Warning__ super_account permission is required
             }
 
 ## /metrics/bundle
+__ⓘ Note:__  Available only for Hermes node.
 __Warning__ super_account permission is required
 ##### Get bundle price
-+ Response 200
++ Response 200 (application/json)
+
+    + Attributes
+
+        + price (number) - the current price of the bundle in
+
     + Body
 
             {
@@ -2187,8 +2330,14 @@ __Warning__ super_account permission is required
             }
 
 ## /metrics/balance
+__ⓘ Note:__  Available only for Hermes node.
 #### Get user balance [GET]
-+ Response 200
++ Response 200 (application/json)
+
+    + Attributes
+
+        + balance (string) - balance of the node's wallet
+
     + Body
 
         {
@@ -2197,12 +2346,55 @@ __Warning__ super_account permission is required
 
 
 ## Group Organization
-Legacy endpoint to access organization relation data
+__ⓘ Note:__ Available only for Hermes node.
+Organization represents a company that produce goods to be delivered in supply chain.
+This is an object that consist of the next fields:
+* organizationId - nunmber, required - represent id of organization in the system
+* owner - string, required - account address of the organization's owner
+* active - boolean, required - shows if organization is active in the system
+* title - string, optional - name of the organization
+* timeZone - string, oprtional - time zone of organization
+* legalAddres - string, optional - legal address of the organization
+* logo - string, optional - the url to the organization's logo
+* colorPrimary - string, optional - used in organization's page styling
+* colorSecondary - string, optional - used in organization's page styling
+* createdBy - string, optional - account address of the organization's creator
+* createdOn - number, optional - unix timestamp of organization's creations time
+* modifiedBy - string, optional - account address of last person who modified organization data
+* modifiedOn - number, optional - unix timestamp of last person who modified organizaiton data
+* inviteEmail - string, optional - email addres from which invites would be send
+* inviteTemplate - string, optional - invitation template
 
-## /organization/
+## /organization/{?perPage,page,createdBy,data}
 __Warning__ super_account permission in required
 ##### Get information about all known organizations [GET]
-+ Response 200
++ Parameters
+    + perPage (integer, optional) - number of organizations to return per page (limited to 100)
+    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
+    + createdBy (string, optional) - address of account that created targeting organizations
+    + data : data[type]=ambrosus.event.custom (object, optional) - This syntax allows to query for events by any fields in data array. Query for nested fields is possible, e.g. data[acceleration.x]=10. By default the type of the value is string. To provide a number, use data[acceleration.x]=number(10). To provide geo coordinates use data[geoJson]=geo(longitude, latitude, radius). It is possible to match data values by the pattern using the pattern decorator like so `data[type]=pattern(ambrosus.event.*)`. It support 2 kinds of special characters:
+       - __*__ matches any string, including the null string.
+       - __?__ matches any single character
+       Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
+
++ Response 200 (application/json)
+
+    + Attributes
+
+        + data (array) - the response's data
+            + (object) - the organization
+                + owner (string) - the account address of the organization owner
+                + title (string) - the name of the organization
+                + createdBy (string) - the account address of the organization creator
+                + organizationId (number) - the id of the organization
+                + active (boolean) - the status of teh organization
+                + createdOn (number) - the unix timestamp of the time when organization was created
+        + meta (object) - the metadata of the object
+            + code (number) - the status code of the response
+            + count (number) - the count of the organizations returned
+        + pagination (object) - the data to help handle paggination
+            + hasNext (boolean) - shows if there is next page
+            + hasPrevious (boolean) - shows if there is previous page
 
     + Body
 
@@ -2219,7 +2411,7 @@ __Warning__ super_account permission in required
                 ],
                 "meta": {
                     "code": 200,
-                    "count": 0
+                    "count": 1
                 },
                 "pagination": {
                     "hasNext": false,
@@ -2232,6 +2424,14 @@ __Warning__ super_account is required
 #### Create new organization [POST]
 + Request
 
+    + Attributes
+
+        + owner (string) - the account address of the owner of the organization
+        + title (string) - the name of the organization
+        + timeZone (string) - the time zone in which organization is working
+        + legalAddress (string) - the address of the organization in real world
+        + active (boolean) - the status of the organization
+
     + Body
 
             {
@@ -2242,7 +2442,7 @@ __Warning__ super_account is required
                 "active": true
             }
 
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
@@ -2252,7 +2452,7 @@ __Warning__ super_account is required
 
     + organizationId (number, required) - the organizaiton Id
 
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
@@ -2271,14 +2471,43 @@ __Warning__ super_account is required
                 }
             }
 
++ Response 404 (application/json)
 
-## /organization/{organizationId}/accounts
+    Organization doesn't exist or the metadata for it is missing
+
+    + Body
+
+## /organization/{organizationId}/accounts{?perPage,page,createdBy,data}
 ##### Get accounts associated with this organization [GET]
 + Parameters
 
-    + organizationId (number, required) - the organization Id
+    + organizationId (number, required) - the organization Id+ Parameters
+    + perPage (integer, optional) - number of organizations to return per page (limited to 100)
+    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
+    + createdBy (string, optional) - address of account that created targeting organizations
+    + data : data[type]=ambrosus.event.custom (object, optional) - This syntax allows to query for events by any fields in data array. Query for nested fields is possible, e.g. data[acceleration.x]=10. By default the type of the value is string. To provide a number, use data[acceleration.x]=number(10). To provide geo coordinates use data[geoJson]=geo(longitude, latitude, radius). It is possible to match data values by the pattern using the pattern decorator like so `data[type]=pattern(ambrosus.event.*)`. It support 2 kinds of special characters:
+       - __*__ matches any string, including the null string.
+       - __?__ matches any single character
+       Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
 
-+ Response 200
++ Response 200 (application/json)
+
+    + Attributes
+
+        + data (array) - the requested data
+            + (object) - the account
+                + _id (string) - the internal id of the account
+                + address (string) - the account address
+                + email (string) - the email address
+                + fullName (string) - the full name of the user
+                + createdBy (string) - the address of the one who created this user
+                + createdOn (number) - the unix timestamp of the account's creation time
+                + accessLevel (number) - the account's level of data access
+                + organization (number) - the id of the organization for which account belog
+                + remissions (array) - all accounts permissions
+                + registerdBy (string) - the account address of the one who registered this account
+                + registeredOn (number) - the unix timestamp when account was created
+                + active (boolean) - the status of the account
 
     + Body
 
@@ -2316,10 +2545,10 @@ __Warning__ super_account is required
                 }
             }
 
-## /organizatio/update/{organizationId}
+## /organization/update/{organizationId}
 __Warning__ super_account permission is required
 #### Update an organization [PUT]
-+ Parameters
++ Parameters (application/json)
 
     + organizationId (number, required) - the organization Id
 
@@ -2335,12 +2564,38 @@ __Warning__ super_account permission is required
                 "active": true
             }
 
-+ Response 200
++ Response 200 (application/json)
+
+    Updated.
 
     + Body
 
++ Response 404 (application/json)
+
+    Organization doesn't exist or the metadata for it is missing
+
+    + Body
 
 ## Group Orgazation2
+__ⓘ Note:__ Available only for Hermes node.
+Organization represents a company that produce goods to be delivered in supply chain.
+This is an object that consist of the next fields:
+* organizationId - nunmber, required - represent id of organization in the system
+* owner - string, required - account address of the organization's owner
+* active - boolean, required - shows if organization is active in the system
+* title - string, optional - name of the organization
+* timeZone - string, oprtional - time zone of organization
+* legalAddres - string, optional - legal address of the organization
+* logo - string, optional - the url to the organization's logo
+* colorPrimary - string, optional - used in organization's page styling
+* colorSecondary - string, optional - used in organization's page styling
+* createdBy - string, optional - account address of the organization's creator
+* createdOn - number, optional - unix timestamp of organization's creations time
+* modifiedBy - string, optional - account address of last person who modified organization data
+* modifiedOn - number, optional - unix timestamp of last person who modified organizaiton data
+* inviteEmail - string, optional - email addres from which invites would be send
+* inviteTemplate - string, optional - invitation template
+
 
 ## /organization2/info/{organizationId}
 __Warning__ super_account is required
@@ -2349,7 +2604,7 @@ __Warning__ super_account is required
 
     + organizationId (number, required) - the organizaiton Id
 
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
@@ -2368,6 +2623,12 @@ __Warning__ super_account is required
                 }
             }
 
++ Response 404 (application/json)
+
+    Organization doesn't exist or the metadata for it is missing
+
+    + Body
+
 ## /organization2/backup/{organizationId}
 __Warning__ super_account is required
 #### Create organization backup [POST]
@@ -2375,7 +2636,7 @@ __Warning__ super_account is required
 
     + organizationId (number, required) - the organizaiton Id
 
-+ Response 200
++ Response 200 (application/json)
 
     + Body
             {
@@ -2387,10 +2648,17 @@ __Warning__ super_account is required
                 }
             }
 
++ Response 404 (application/json)
+
+    Organization doesn't exist or the metadata for it is missing
+
+    + Body
+
+
 ## /organization2/restore
 __Warning__ super_account permission is required
 #### Restore organization database from backup [GET]
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
@@ -2409,17 +2677,37 @@ __Warning__ super_account permission is required
                 "active": true,
                 "title": "Conor's cool organization"
             }
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
 ## Group Organization Invite
-Invite - invitation to join organization
+Invite - invitation to join organization. Invitation object consist of:
+* organizationId - number, required - the id of the organization who send invite
+* email - string, required - the email to which incitation would be send
+* subject - string, required - the subejct for the email letter
+* inviteId - string, required - the id of the invitation
+* invitaionLInk - string, reuired - the url to accept invitation
+* sent - boolean, required - the status of the invitation
+* validUntil - number, required - the unix timestamp of time when invitation should expire
+* createdBy - string, required - the account address of the invitation creator
+* createdOn - number, required - the unix timestamp of time when incitation was created
 
 ## /organization/invite/
 __Warning__ super_account permission is required
 #### Get all invints on node [GET]
-+ Response 200
++ Parameters
+
+    + perPage (integer, optional) - number of organizations to return per page (limited to 100)
+    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
+    + createdBy (string, optional) - address of account that created targeting organizations
+    + data : data[type]=ambrosus.event.custom (object, optional) - This syntax allows to query for events by any fields in data array. Query for nested fields is possible, e.g. data[acceleration.x]=10. By default the type of the value is string. To provide a number, use data[acceleration.x]=number(10). To provide geo coordinates use data[geoJson]=geo(longitude, latitude, radius). It is possible to match data values by the pattern using the pattern decorator like so `data[type]=pattern(ambrosus.event.*)`. It support 2 kinds of special characters:
+       - __*__ matches any string, including the null string.
+       - __?__ matches any single character
+       Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
+
+
++ Response 200 (application/json)
 
     + Body
 
@@ -2441,7 +2729,7 @@ __Warning__ super_account permission is required
 + Parameters
 
     + inviteId (number, required) - the invitaion Id
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
@@ -2456,7 +2744,7 @@ __Warning__ super_account permission is required
 #### Accept the invitation [POST]
 * Parameters
 
-    + inviteId (number, required) - the invitation Ifd
+    + inviteId (number, required) - the invitation Id
 
 + Request
 
@@ -2466,7 +2754,15 @@ __Warning__ super_account permission is required
                 "address": "0x203C394e59915f85B9c222f6E15ce1FFF699559E"
             }
 
-+ Response 200
++ Response 200 (application/json)
+
+    Accepted.
+
+    + Body
+
++ Response 404 (application/json)
+
+    Invite doesn't exist or the metadata for it is missing
 
     + Body
 
@@ -2476,14 +2772,22 @@ __Warning__ super_account permission is required
 
     + inviteId (number, required) - the invitation Id
 
-+ Response 200
++ Response 200 (application/json)
+
+    Deleted.
+
+    + Body
+
++ Response 404 (application/json)
+
+    Invite doesn't exist or the metadata for it is missing
 
     + Body
 
 ## /organization/invite/resend
 __Warning__ super_account permission is required
 #### Resend all invitation [GET]
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
@@ -2501,17 +2805,25 @@ __Warning__ super_account permission is required
                 "message": "GIVE TO ME ALL OF YOUR ORGS"
             }
 
-+ Response 200
++ Response 201 (application/json)
+
+    Created.
 
     + Body
 
 ## Group Organization Request
-Request is the request to join organization
+Request is the request to join organization. Consists of:
+* address - string, required - the account address that requests to join.
+* title - string, required - the title of organization that is requested
+* email - string, required - the email of requet sender
+* message - string, required - the message to organization
+* createdOn - number, required - the unix timestamp of time when request was created
+* refused - boolean, required - the status of request
 
 ## /organization/request
 __Warning__ super_account permission is required
 #### Get all requests [GET]
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
@@ -2531,7 +2843,7 @@ __Warning__ super_account permission is required
 ## /organization/request/refused
 __Warning__ super_account permission is required
 #### Get all refused requests [GET]
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
@@ -2554,7 +2866,7 @@ __Warning__ super_account permission is required
 
     + requestId (string, required) - the request Id
 
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
@@ -2576,7 +2888,7 @@ __Warning__ super_account permission is required
 
     + requestId (string, required) - the request Id
 
-+ Response 200
++ Response 200 (application/json)
 
     + Body
 
@@ -2593,8 +2905,19 @@ __Warning__ super_account permission is required
                 "message": "GIVE TO ME ALL OF YOUR ORGS"
             }
 
-+ Response 200
++ Response 200 (application/json)
 
     + Body
+
+
+
+
+
+
+
+
+
+
+
 
 
