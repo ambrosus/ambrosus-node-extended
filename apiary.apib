@@ -41,56 +41,8 @@ The majority of errors along to the error code provide additional information in
 }
 ```
 
-## Group Token [Token]
-
-Some requests like account management or accessing to restricted data fields require an access token for authorization. The access token is a base64-encoded [serialized](Serialization) JSON file of following format:
-```$json
-{
-  "signature": $SIGNATURE,
-  "idData": {
-    "createdBy": $ADDRESS,
-    "validUntil": $TIMESTAMP
-  }
-}
-```
-where $ADDRESS is your public address and $TIMESTAMP is a UNIX-styled integer specifying token's expiration date.
-$SIGNATURE is an elliptic-curve signature of the idData field. Should be signed with the creator's private address. We recommend to create the token locally and use it across Ambrosus API without sending your private key anywhere.
-### /token
-__ⓘ Note:__  Available only for Atals node.
-#### Create token [POST]
-
-__Warning__ This call can be used for development purposes only. Never provide your secret address to anyone.
-
-
-+ Request
-    + Headers
-
-            Accept: application/json
-            Authorization: AMB ...
-
-    + Attributes (object)
-        + validUntil (number) - Unix timestamp in the future specifying the token expiration time.
-
-    + Body
-
-            {
-                "validUntil": 1546300800
-            }
-+ Response 201 (application/json)
-
-    Created
-
-    + Attributes (object)
-        + token (string) - Base64 encoded signed token data.
-
-    + Body
-
-            {
-                "token": "eyJpZERhdGEiOnsiY3JlYXRlZEJ5IjoiMHg3NDJFNjJDQzdBMTlFZjdEOWM0NDMwNkMwN0ZBZDU0QjViRjZkNGJFIiwidmFsaWRVbnRpbCI6NDJ9LCJzaWduYXR1cmUiOiIweDY4MWVjZjRiNzM3YzViNGY5ZjlhYTZlMDUzOWIzMzAyNzY0NDQzYWRlNWNmMWJhMTIxMGFmNzA1MTdkYTczOWY1MzBlNTEwYmI0NTc1N2YyNWZiZTE3NzczMWVhNzAxYjVmOTU5NGZlYmQ0ZDA2YjEwOGYyM2NhYjAyMmU5MzNmMWIifQ"
-            }
-
 ## Group Account
-__ⓘ Note:__ Used for compatibility with an old Dashboard.
+__ⓘ Note:__ Used for compatibility with an old Dashboard.\
 __ⓘ Note:__  Available only for Hermes node.
 
 
@@ -106,6 +58,508 @@ Account can hold any number of following permissions:
 * create_event - allows account to create events
 * register_accounts - allows account to add new accounts
 * manage_accounts - allows account to view and manage existing accounts
+
+## /account/keyPair
+#### Get keyPair for new account [GET]
++ Response 200
+
+    + Attributes
+
+        + data (object)
+            + address (string) - the publica account address
+            + privateKey (string) - the secret user's key
+        + meta (object) - the metadata
+            + code (number) - the status code
+
+    + Body
+
+            {
+                "data": {
+                    "address": "0x14eabBFc07127AEb2a92c5889663B2887cD10a9c",
+                    "privateKey": "0xb95567df8f398fe4c5f4268831e34f30e059fec2286d252068d063f2c1018d19"
+                },
+                "meta": {
+                    "code": 200
+                }
+            }
+
+## /account{?perPage,page}
+__ⓘ Note:__  super_account and manage_accounts permissions are required
+#### Get list of all accounts [GET]
++ Parameters
+
+    + perPage (integer, optional) - Number of accounts to return per page (limited to 100)
+    + page (integer, optional) - Number of page (more search results than specified in perPage parameter concludes more than one page)
+
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/json
+            Authorization: AMB_TOKEN ...
+
+
++ Response 200 (application/json)
+
+    + Attributes (object)
+        + data (array) - The latest 100 accounts matching provided criteria
+            + (object) - Account.
+              + registeredBy (string) - The address which has registered the account.
+              + registeredOn (number) - UNIX timestamp of account registration.
+              + permissions (array) - A list of permissions granted to this account
+              + accessLevel (number) - Access level of the account. Should be a non-negative integer.
+              + organization (number) - Identifier of the organization the account belongs to.
+              + address (string) - An address of the account.
+              + email (string) - An email of the account.
+              + active (boolean) - State of the account.
+        + meta (object) - the metadata
+            + code (number) - the status code
+            + count (number) - the count of result object
+        + pagination (object) - the helper to handle pagination
+            hasNext (boolean) - shows if there is next page
+            hasPrevious (boolean) - shows if there is previous page
+
+
+    + Body
+
+            {
+                "data": [
+                    {
+                      "address":"0x918eACF10eA2C47B001f761460Ed19607656f01C",
+                      "email":"email1C@domain.com",
+                      "fullName":null,
+                      "accessLevel":100,
+                      "organization":9,
+                      "permissions":["create_asset", "create_event"],
+                      "registeredBy":"0xC769C64a70ECA2606A927DC28DD947A5Dbec237B",
+                      "registeredOn":1584685139,
+                      "active":true
+                    }
+                  ],
+                "meta": {
+                    "code": 200,
+                    "count": 1
+                },
+                "pagination": {
+                    "hasNext": false,
+                    "hasPrevious": false
+                }
+            }
+
+
++ Response 400 (application/json)
+
+    Validation error
+
+    + Body
+
++ Response 401 (application/json)
+
+    Authentication error
+
+    + Body
+
++ Response 403 (application/json)
+
+    Invalid signature or missing permissions
+
+    + Body
+
++ Response 404 (application/json)
+
+    Requested account does not exist
+
+    + Body
+
+## /account/{accountAddress}
+##### Get info about account [GET]
++ Parameters
+    + accountAddress (string) - An address of the account
+
+
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/json
+            Authorization: AMB_TOKEN ...
+
++ Response 200 (application/json)
+
+    + Attributes (object)
+        + data (array)
+            + (object)
+                + registeredBy (string) - The address which has registered the account.
+                + registeredOn (number) - UNIX timestamp of account registration.
+                + permissions (array) - A list of permissions granted to this account
+                + accessLevel (number) - Access level of the account. Should be a non-negative integer.
+                + organization (number) - Identifier of the organization the account belongs to.
+                + address (string) - An address of the account.
+                + email (string) - An email of the account.
+                + active (boolean) - State of the account.
+        + meta (object)
+            + code (number) - the status code
+            + count (number) - the number of objects in data
+
+    + Body
+
+            {
+                "data":[
+                    {
+                        "address":"0x918eACF10eA2C47B001f761460Ed19607656f01C",
+                        "email":"email1C@domain.com",
+                        "fullName":null,
+                        "accessLevel":100,
+                        "organization":9,
+                        "permissions":["create_asset", "create_event"],
+                        "registeredBy":"0xC769C64a70ECA2606A927DC28DD947A5Dbec237B",
+                        "registeredOn":1584685139,
+                        "active":true
+                    }],
+                "meta": {
+                    "code": 200,
+                    "count": 1
+                }
+            }
+
++ Response 400 (application/json)
+
+    Validation error
+
+    + Body
+
++ Response 401 (application/json)
+
+    Authentication error
+
+    + Body
+
++ Response 403 (application/json)
+
+    Invalid signature or missing permission
+
+    + Body
+
+
+##### Update accout info [PUT]
++ Parameters
+    + accountAddress (string) - An address of the account
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+            Authorization: AMB_TOKEN ...
+
+    + Attributes
+        + fullName (string, optional) - the full name a user
+        + email (string, optional) - the user's email
+        + timeZone (string, optional) - the user's time zone
+
+    + Body
+
+            {
+                "fullName": "Test Name",
+                "email": "test@example.com",
+                "timeZone": "Australia/Sydney"
+            }
+
++ Response 200 (application/json)
+
+    + Attributes (object)
+        + data (array)
+            + (object)
+                + address (string) - An address of the account.
+                + registeredBy (string) - The address which has registered the account.
+                + email (string) - An email of the account.
+                + fullName (string) - a user's full name.
+                + registeredOn (number) - UNIX timestamp of account registration.
+                + permissions (array) - A list of permissions granted to this account
+                + accessLevel (number) - Access level of the account. Should be a non-negative integer.
+                + organization (number) - Identifier of the organization the account belongs to.
+                + active (boolean) - State of the account.
+        + meta (object) - the metadata
+            + code (number) - the status code
+            + count (number) - the number of objects in data
+        + pagination (object) - the halper to handle pagination
+            + hasNext (boolean) - shows if there is a next page
+            + hasPrevious (boolean) - shows if there is a previous page
+
+    + Body
+
+            {
+                "data": [
+                    {
+                      "address":"0x918eACF10eA2C47B001f761460Ed19607656f01C",
+                      "email":"email1C@domain.com",
+                      "fullName":null,
+                      "accessLevel":100,
+                      "organization":9,
+                      "permissions":["create_asset", "create_event"],
+                      "registeredBy":"0xC769C64a70ECA2606A927DC28DD947A5Dbec237B",
+                      "registeredOn":1584685139,
+                      "active":true
+                    }
+                ],
+                "meta": {
+                    "code": 200,
+                    "count": 1
+                },
+                "pagination": {
+                    "hasNext": false,
+                    "hasPrevious": false
+                }
+            }
+
++ Response 400 (application/json)
+
+    Validation error
+
+    + Body
+
++ Response 401 (application/json)
+
+    Authentication error
+
+    + Body
+
++ Response 403 (application/json)
+
+    Invalid signature or missing permission
+
+    + Body
+
+
+## /account/{accountAddress}/details
+#### Get detatiled info about account [GET]
++ Parameters
+    + accountAddress (string) - An address of the account
+
+
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/json
+            Authorization: AMB_TOKEN ...
+
++ Response 200 (application/json)
+
+    + Attributes
+        + data (object)
+            + (object) - the account
+                + address (string) - An address of the account.
+                + email (string) - An email of the account.
+                + fullName (string) - A full name of a person.
+            + (object) - the organization
+                + owner (string) - the organization's owner
+                + title (string) - the name of organizaiton
+                + timeZone (string) - the time zone where organization works
+                + legalAddress (string) - the address of organization headquarter
+                + active (boolean) - the status of organizaiton
+                + organizationId (number) - the id of organization
+        + meta (object)
+            + code (number) - the status code
+    + Body
+
+            {
+                "data": {
+                    {
+                        "address":"0x918eACF10eA2C47B001f761460Ed19607656f01C",
+                        "email":"email1C@domain.com",
+                        "fullName":null
+                    },
+                    {
+                        "owner": "0x2A52139de123c9fa265C206772d1606e326CC044",
+                        "title": "Fast eddies musical chairs",
+                        "timeZone": "Australia/Sydney",
+                        "legalAddress": "1234 Bondi Beach",
+                        "active": true,
+                        "organizationId": 9
+                    }
+                },
+                "meta": {
+                    "code": 200
+                }
+            }
+
++ Response 400 (application/json)
+
+    Validation error
+
+    + Body
+
++ Response 401 (application/json)
+
+    Authentication error
+
+    + Body
+
++ Response 403 (application/json)
+
+    Invalid signature or missing permission
+
+    + Body
+
+## /account/{accountAddress}/exists
+#### Check if account exists [GET]
++ Response 200 (application/json)
+
+    + Attributes
+
+        + data (boolean) - the result
+        + meta (object) - the metadata
+            + code (number) - the result code
+
+    + Body
+
+            {
+                "data": true,
+                "meta": {
+                    "code": 200
+                }
+            }
+
+## /account/query{?perPage,page}
+#### Make a monogoDB query [POST]
++ Parameters
+
+    + perPage (integer, optional) - Number of accounts to return per page (limited to 100)
+    + page (integer, optional) - Number of page (more search results than specified in perPage parameter concludes more than one page)
+
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/json
+            Authorization: AMB_TOKEN ...
+
+    + Attributes
+        + query (array) - the array of mongoDb operators
+            + (object) - the one mongo Operation
+                + field (string) - the name of the filed
+                + value (string) - the searched value
+                + operator (string) - the mongoOperator
+
+    + Body
+
+            {
+                "query": [{
+                    "field": "registeredBy",
+                    "value": "0x0C7401498719555B2119C01bB6af0dFA904AD69e",
+                    "operator": "equal"
+                }]
+            }
+
++ Response 200 (application/json)
+
+    + Attributes (object)
+        + data (array) - The latest 100 accounts matching provided criteria
+            + (object) - Account.
+              + registeredBy (string) - The address which has registered the account.
+              + registeredOn (number) - UNIX timestamp of account registration.
+              + permissions (array) - A list of permissions granted to this account
+              + accessLevel (number) - Access level of the account. Should be a non-negative integer.
+              + organization (number) - Identifier of the organization the account belongs to.
+              + address (string) - An address of the account.
+              + email (string) - An email of the account.
+              + active (boolean) - State of the account.
+        + meta (object) - the metadata
+            + code (number) - the status code
+            + count (number) - the count of result object
+        + pagination (object) - the helper to handle pagination
+            hasNext (boolean) - shows if there is next page
+            hasPrevious (boolean) - shows if there is previous page
+
+    + Body
+
+            {
+                "data": [
+                    {
+                      "address":"0x918eACF10eA2C47B001f761460Ed19607656f01C",
+                      "email":"email1C@domain.com",
+                      "fullName":null,
+                      "accessLevel":100,
+                      "organization":9,
+                      "permissions":["create_asset", "create_event"],
+                      "registeredBy":"0xC769C64a70ECA2606A927DC28DD947A5Dbec237B",
+                      "registeredOn":1584685139,
+                      "active":true
+                    }
+                  ],
+                "meta": {
+                    "code": 200,
+                    "count": 0
+                },
+                "pagination": {
+                    "hasNext": false,
+                    "hasPrevious": false
+                }
+            }
+
++ Response 400 (application/json)
+
+    Validation error
+
+    + Body
+
++ Response 401 (application/json)
+
+    Authentication error
+
+    + Body
+
+## /account/secret
+#### Get secret by email [Post]
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/json
+            Authorization: AMB_TOKEN ...
+
+    + Attributes
+
+        + email (string) - the email of the user
+
+    + Body
+
+            {
+                "email": "test@example.com"
+            }
+
++ Resonse 200
+
+    + Attributes
+
+        + data (object)
+            + secret (string) - the user's secret
+        + meta (object)
+            + code (number) - the status code
+
+    + Body
+
+        {
+            "data": {
+                "secret": "long hex value"
+            },
+            "meta": {
+                "code": 200
+            }
+        }
+
++ Response 400 (application/json)
+
+    Validation error
+
+    + Body
+
++ Response 401 (application/json)
+
+    Authentication error
+
+    + Body
 
 ## Group Account2
 __ⓘ Note:__  Available only for Hermes node.
@@ -146,33 +600,47 @@ Finds accounts satisfying provided criteria.
 + Response 200 (application/json)
 
     + Attributes (object)
-        + results (array) - The latest 100 accounts matching provided criteria
+        + data (array) - The latest 100 accounts matching provided criteria
             + (object) - Account.
-              + registeredBy (string) - The address which has registered the account.
-              + registeredOn (number) - UNIX timestamp of account registration.
-              + permissions (array) - A list of permissions granted to this account
-              + accessLevel (number) - Access level of the account. Should be a non-negative integer.
-              + organization (number) - Identifier of the organization the account belongs to.
-              + address (string) - An address of the account.
-              + email (string) - An email of the account.
-              + active (boolean) - State of the account.
+                + registeredBy (string) - The address which has registered the account.
+                + registeredOn (number) - UNIX timestamp of account registration.
+                + permissions (array) - A list of permissions granted to this account
+                + accessLevel (number) - Access level of the account. Should be a non-negative integer.
+                + organization (number) - Identifier of the organization the account belongs to.
+                + address (string) - An address of the account.
+                + email (string) - An email of the account.
+                + active (boolean) - State of the account.
+        + meta (object) - the metadata
+            + code (number) - the status code
+            + count (number) - the number of accounts returned
+        + pagination (object)
+            + hasNext (boolean) - shows if there is a next page
+            + hasPrevious (boolean) - shows if there is a previous page
 
     + Body
-
-                "data":
-                  [
+            {
+                "data":[
                     {
-                      "address":"0x918eACF10eA2C47B001f761460Ed19607656f01C",
-                      "email":"email1C@domain.com",
-                      "fullName":null,
-                      "accessLevel":100,
-                      "organization":9,
-                      "permissions":["create_asset", "create_event"],
-                      "registeredBy":"0xC769C64a70ECA2606A927DC28DD947A5Dbec237B",
-                      "registeredOn":1584685139,
-                      "active":true
-                    }
-                  ]
+                        "address":"0x918eACF10eA2C47B001f761460Ed19607656f01C",
+                        "email":"email1C@domain.com",
+                        "fullName":null,
+                        "accessLevel":100,
+                        "organization":9,
+                        "permissions":["create_asset", "create_event"],
+                        "registeredBy":"0xC769C64a70ECA2606A927DC28DD947A5Dbec237B",
+                        "registeredOn":1584685139,
+                        "active":true
+                    }],
+                "meta": {
+                    "code": 200,
+                    "count": 1
+                },
+                "pagination": {
+                    "hasNext": false,
+                    "hasPrevious": false
+                }
+
+            }
 
 + Response 400 (application/json)
 
@@ -188,7 +656,7 @@ Finds accounts satisfying provided criteria.
 
 + Response 403 (application/json)
 
-    Invalid signature or missing register_accounts permission
+    Invalid signature or missing manage_accouts permission
 
     + Body
 
@@ -218,30 +686,36 @@ __Warning__ Request sender needs to have "manage_accounts" permission
 + Response 200 (application/json)
 
     + Attributes (object)
-              + registeredBy (string) - The address which has registered the account.
-              + registeredOn (number) - UNIX timestamp of account registration.
-              + permissions (array) - A list of permissions granted to this account
-              + accessLevel (number) - Access level of the account. Should be a non-negative integer.
-              + organization (number) - Identifier of the organization the account belongs to.
-              + address (string) - An address of the account.
-              + email (string) - An email of the account.
-              + active (bollean) - State of the account.
+        + data (object)
+            + registeredBy (string) - The address which has registered the account.
+            + registeredOn (number) - UNIX timestamp of account registration.
+            + permissions (array) - A list of permissions granted to this account
+            + accessLevel (number) - Access level of the account. Should be a non-negative integer.
+            + organization (number) - Identifier of the organization the account belongs to.
+            + address (string) - An address of the account.
+            + email (string) - An email of the account.
+            + active (boolean) - State of the account.
+        + meta (object)
+            + code (number) - the status code
+
     + Body
 
-            "data":
-                  [
-                    {
-                      "address":"0x918eACF10eA2C47B001f761460Ed19607656f01C",
-                      "email":"email1C@domain.com",
-                      "fullName":null,
-                      "accessLevel":100,
-                      "organization":9,
-                      "permissions":["create_asset", "create_event"],
-                      "registeredBy":"0xC769C64a70ECA2606A927DC28DD947A5Dbec237B",
-                      "registeredOn":1584685139,
-                      "active":true
-                    }
-                  ]
+            {
+                "data": {
+                    "address":"0x918eACF10eA2C47B001f761460Ed19607656f01C",
+                    "email":"email1C@domain.com",
+                    "fullName":null,
+                    "accessLevel":100,
+                    "organization":9,
+                    "permissions":["create_asset", "create_event"],
+                    "registeredBy":"0xC769C64a70ECA2606A927DC28DD947A5Dbec237B",
+                    "registeredOn":1584685139,
+                    "active":true
+                },
+                "meta": {
+                    "code": 200
+                }
+            }
 
 + Response 400 (application/json)
 
@@ -815,6 +1289,275 @@ An Asset on its own function only as a handle for a Event stream. Because of thi
 
 Assets are identified by an `assetId` field which is a sha3 hash calculated from the `content` field.
 
+## /asset{?perPage,page,createdBy,fromTimestamp,toTimestamp,identifier}
+#### Get list of assets [GET]
+Finds assets satisfying provided criteria.
++ Parameters
+
+    + perPage (integer, optional) - number of assets to return per page (limited to 100)
+    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
+    + createdBy (string, optional) - address of account that created targeting assets
+    + fromTimestamp (integer, optional) - earliest timestamp for the asset
+    + toTimestamp (integer, optional) - latest timestamp for the asset
+    + identifier : identifier[{identifierType}]={identifierValue} (string, optional) - This syntax allows to query for assets that have an associated event containing data type `ambrosus.event.identifier` (see Events Data field section) with same identifier of same type. It is possible to find identifiers matching a pattern with help of the pattern decorator. You can use like this: identifier[vin]=pattern(3FRNF65N*). It supports 2 kinds of special characters:
+      - __*__ matches any string, including the null string.
+      - __?__ matches any single character
+      Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
+
++ Response 200 (application/json)
+
+    Up to 100 newest assets
+
+    + Attributes (object)
+        + data (array) - An array of assets.
+            + (object) - the Asset
+                + assetId (string) - Content-addressable identifier of the asset.
+                + content (object) - All meaningful content of the asset, base of assetId.
+                    + signature (string) - elliptic-curve signature of the idData field signed with the creator's private address.
+                    + idData (object) - General information about an asset.
+                        + createdBy (string) - Public address of the asset creator.
+                        + timestamp (number) - UNIX timestamp of asset creation.
+                        + sequenceNumber (number) - Used to assure that all assets are unique
+                + metadata (object) - Asset service data.
+                    + bundleId (string) - If the asset has already been added to a bundle, Id of the bundle holding the event
+                    + bundleTransactionHash (string) - If the asset has already been added to a bundle, identifier of the transaction on which the proof of bundle has been uploaded.
+                      More info on the transaction can be found under `http://explorer.ambrosus.io/#/tx/{bundleTransactionHash}`
+                    + bundleProofBlock (number) - If the asset has already been added to a bundle, block number in which the proof of the bundle has been included
+                    + bundleUploadTimestamp (number) - If the asset has already been added to a bundle, timestamp of bundle proof upload
+        + meta (object)
+            + code (number) - the status code
+            + cocunt (number) - the number of results in data array
+        + pagination (object)
+            + hasNext (boolean) - shows if there is a next page
+            + hasPrevious (boolean) - shows if there is a previous page
+
+    + Body
+
+            {
+                "data":[
+                    {
+                        "_id":"5e672f4a80d54c1fc22754d2",
+                        "assetId":"0x3450e3c846338bc2486fd6a3dc1738db8943d0bf4bc5426f571863b1b814a018",
+                        "metadata": {
+                            "bundleId":"0x5042e9e79fc23bb938cf377bf5379d4287c26203c259d342eb2d1f23b181f353",
+                            "bundleUploadTimestamp":1583820645,
+                            "bundleProofBlock":38,
+                            "bundleTransactionHash":"0x7757fef7f32f020fb1f23ce32a93b193fe0d14a70c2dbea9655cefa80e7348f7"
+                        },
+                        "content":{
+                            "idData":{
+                                "createdBy":"0x2D2a0BE476559200D87EdD128Bd31c100be74e0f",
+                                "timestamp":1582616736,
+                                "sequenceNumber":0
+                            },
+                            "signature":"0x669f6a33dafaa9c35953bbab201eba63ad4b6960252af398d7cea230c17ec5323dae8c637e8995a799da8c13aeb5101163876e3411e43852a1cb4c7669bc9cc21c"},
+                            "repository":{}
+                        }
+                    }
+                ],
+                "meta":{
+                    "code":200,
+                    "count":1
+                },
+                "pagination":{
+                    "hasNext": false,
+                    "hasPrevious":false
+                }
+            }
+
+
+## /asset/{assetId}
+#### Get asset [GET]
++ Parameters
+
+    + assetId (string, required) - ID of an asset
+
++ Response 200 (application/json)
+
+    Asset with provided assetId
+
+    + Attributes
+        + data (object)
+            + assetId (string) - Content-addressable identifier of the asset.
+            + organizationId (number) - the id of the organization.
+            + content (object) - All meaningful content of the asset, base of assetId.
+                + idData (object) - General information about an asset.
+                    + createdBy (string) - Public address of the asset creator.
+                    + timestamp (number) - UNIX timestamp of asset creation.
+                    + sequenceNumber (number) - Used to assure that all assets are unique
+                + signature (string) - elliptic-curve signature of the idData field signed with the creator's private address.
+            + metadata (object) - Asset service data.
+                + bundleId (string) - If the asset has already been added to a bundle, Id of the bundle holding the event
+                + bundleTransactionHash (string) - If the asset has already been added to a bundle, identifier of the transaction on which the proof of bundle has been uploaded.
+                + bundleProofBlock (number) - If the asset has already been added to a bundle, block number in which the proof of the bundle has been included
+                + bundleUploadTimestamp (number) - If the asset has already been added to a bundle, timestamp of bundle proof upload
+        + meta (object)
+            + code (number) - the status code
+
+
+    + Body
+
+            {
+                "data": {
+                    "_id": "61a6452aefff45001b2ac567",
+                    "assetId": "0xd773dd1db14ec308d48c31951ed53e2ff5fa2a9589bc604790e310f51abed119",
+                    "organizationId": 27,
+                    "metadata": {
+                        "bundleId": "0x90c3ddd686beb16501bdba719fba069bec9ed8f4eb732555d50c38a481dc543e",
+                        "bundleUploadTimestamp": 1638286815,
+                        "bundleProofBlock": 758444,
+                        "bundleTransactionHash": "0x44306c74e330b2d42b89e81a66bd54977331a8da2b9372f2d372f4b30377a143"
+                    },
+                    "content": {
+                        "idData": {
+                            "createdBy": "0x5866f683105c5B7aA99f28278853C4c2B3EFf57a",
+                            "timestamp": 1638286633,
+                            "sequenceNumber": 0
+                        },
+                        "signature": "0xd451d59bf215f3ef54426eed69a46c3eb59bb9f10d4812ec9f58c3b5d69aba007de47283df09d79d9b76af12acaafcd3a01ebe0ab2c709924f777f6bf624b81d1b"
+                    },
+                    "repository": {}
+                },
+                "meta": {
+                    "code": 200
+                }
+            }
+
++ Response 404 (application/json)
+
+    No asset with such assetId found
+
+    + Body
+
+## /exists/{assetId}
+#### Check if asset exists [GET]
++ Parameters
+
+    + assetId (string, required) - ID of an asset
+
++ Response 200
+
+    + Attributes
+
+        + data (boolean) - shows if asset exists
+        + meta (object)
+            + code (number) - the satus code
+
+    +Body
+
+            {
+                "data": false,
+                "meta": {
+                    "code": 200
+                }
+            }
+
+## /asset/query{?perPage,page,createdBy,fromTimestamp,toTimestamp,identifier}
+#### Get list of assets [GET]
+Finds assets satisfying provided criteria.
++ Parameters
+
+    + perPage (integer, optional) - number of assets to return per page (limited to 100)
+    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
+    + createdBy (string, optional) - address of account that created targeting assets
+    + fromTimestamp (integer, optional) - earliest timestamp for the asset
+    + toTimestamp (integer, optional) - latest timestamp for the asset
+    + identifier : identifier[{identifierType}]={identifierValue} (string, optional) - This syntax allows to query for assets that have an associated event containing data type `ambrosus.event.identifier` (see Events Data field section) with same identifier of same type. It is possible to find identifiers matching a pattern with help of the pattern decorator. You can use like this: identifier[vin]=pattern(3FRNF65N*). It supports 2 kinds of special characters:
+      - __*__ matches any string, including the null string.
+      - __?__ matches any single character
+      Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
+
++ Request
+
+    + Attributes
+
+        + query (array) - the array of operations
+            + (object) - the mongodb operation
+                + filed (string) - the field to be used in operation
+                + value (string) - the searched value
+                + operator (string) - the greater than
+
+    + Body
+
+            {
+                "query": [{
+                    "field": "content.idData.timestamp",
+                    "value": 1533081600,
+                    "operator": "greater-than"
+                },
+                {
+                    "field": "assetId",
+                    "value": ["0x5f6bd84a02174c87068f5675bdd947aee74507ea9774ca5d89ccd02469d77665", "0x937e903442a2dcc387a818f36a74304c6d0ace094fd350bdf033617ee817023d", "0xa7b867566e7e210ffb01354577624a6edba27d4781c2a8a268a0f7b28d143eb2"],
+                    "operator": "not-equal"
+                }]
+            }
+
++ Response 200
+
+    + Attributes
+
+        + data (array)
+            + (object)
+                + assetId (string) - the id of the asset
+                + organization (number) - the id of the organization
+                + metadata (object)
+                    + bundleId (string) - the id of the bundle
+                    + bundleUploadTimestamp (number) - the unix timestamp of bundle upload time
+                    + bundleProofBlock  (number) - the number of bundle's proog block
+                    + bundleTransactionHash (string) - the hash of the transaction that uploaded bundle
+                + content (object)
+                    + idData (object)
+                        + createdBy (string) - the address of the asset creator
+                        + timestamp (number) - the unix timestamp of the asset creation time
+                        + sequenceNumber (number) - the number of asset in sequence
+                    + signature (string)
+        + meta (object)
+            + code (number) - the status code
+            + count (number) - the number of return assets
+        + pagination (object)
+            + hasNext (boolean) - shows if there is a next page
+            + next (string) - id of the next mongo page (should be used as page value to show next page)
+            + hasPrevious (boolean) - shows if there is a previous page
+            + previous (string) - id of the previous mongo page
+
+    + Body
+
+            {
+                "data": [
+                    {
+                        "_id": "61a6452aefff45001b2ac567",
+                        "assetId": "0xd773dd1db14ec308d48c31951ed53e2ff5fa2a9589bc604790e310f51abed119",
+                        "organizationId": 27,
+                        "metadata": {
+                            "bundleId": "0x90c3ddd686beb16501bdba719fba069bec9ed8f4eb732555d50c38a481dc543e",
+                            "bundleUploadTimestamp": 1638286815,
+                            "bundleProofBlock": 758444,
+                            "bundleTransactionHash": "0x44306c74e330b2d42b89e81a66bd54977331a8da2b9372f2d372f4b30377a143"
+                        },
+                        "content": {
+                            "idData": {
+                                "createdBy": "0x5866f683105c5B7aA99f28278853C4c2B3EFf57a",
+                                "timestamp": 1638286633,
+                                "sequenceNumber": 0
+                            },
+                            "signature": "0xd451d59bf215f3ef54426eed69a46c3eb59bb9f10d4812ec9f58c3b5d69aba007de47283df09d79d9b76af12acaafcd3a01ebe0ab2c709924f777f6bf624b81d1b"
+                        },
+                        "repository": {}
+                    },
+                ],
+                "meta": {
+                    "code": 200,
+                    "count": 10
+                },
+                "pagination": {
+                    "hasNext": true,
+                    "next": "WzE2Mzc4Njc0NzMseyIkb2lkIjoiNjE5ZmRmZDM5YjdiMjgwMDFiNDRmYWM2In1d",
+                    "hasPrevious": false,
+                    "previous": "WzE2MzgyODY2MzMseyIkb2lkIjoiNjFhNjQ1MmFlZmZmNDUwMDFiMmFjNTY3In1d"
+                }
+            }
+
+
 
 ## Group Asset2
 __ⓘ Note:__  Available only for Hermes node.
@@ -863,45 +1606,48 @@ Finds assets satisfying provided criteria.
                       More info on the transaction can be found under `http://explorer.ambrosus.io/#/tx/{bundleTransactionHash}`
                     + bundleProofBlock (number) - If the asset has already been added to a bundle, block number in which the proof of the bundle has been included
                     + bundleUploadTimestamp (number) - If the asset has already been added to a bundle, timestamp of bundle proof upload
-
-        + resultCount (number) - Total number of assets.
+        + meta (object)
+            + code (number) - the status code
+            + count (number) - the number of data pieces
+        + pagination (object)
+            + hasNext (boolean) - shows if there is a next page
+            + hasPrevious (boolean) - shows if there is a previous page
 
 
     + Body
 
             {
-             "data":[
-               {
-                "_id":"5e672f4a80d54c1fc22754d2",
-                "assetId":"0x3450e3c846338bc2486fd6a3dc1738db8943d0bf4bc5426f571863b1b814a018",
-                "metadata":
-                 {
-                  "bundleId":"0x5042e9e79fc23bb938cf377bf5379d4287c26203c259d342eb2d1f23b181f353",
-                  "bundleUploadTimestamp":1583820645,
-                  "bundleProofBlock":38,
-                  "bundleTransactionHash":"0x7757fef7f32f020fb1f23ce32a93b193fe0d14a70c2dbea9655cefa80e7348f7"
-                 },
-                "content":{
-                 "idData":{
-                  "createdBy":"0x2D2a0BE476559200D87EdD128Bd31c100be74e0f",
-                  "timestamp":1582616736,
-                  "sequenceNumber":0
-                 },
-                "signature":"0x669f6a33dafaa9c35953bbab201eba63ad4b6960252af398d7cea230c17ec5323dae8c637e8995a799da8c13aeb5101163876e3411e43852a1cb4c7669bc9cc21c"},
-                "repository":{}
-               }
-              ],
-              "meta":{
-               "code":200,
-               "count":1
-               },
-              "pagination":{
-               "hasNext":false,
-               "next":"WzE1ODI2MTY3MzYseyIkb2lkIjoiNWU2NzJmNGE4MGQ1NGMxZmMyMjc1NGQyIn1d",
-               "hasPrevious":false,
-               "previous":"WzE1ODI2MTY3MzYseyIkb2lkIjoiNWU2NzJmNGE4MGQ1NGMxZmMyMjc1NGQyIn1d"
-               }
+                "data":[
+                {
+                    "_id":"5e672f4a80d54c1fc22754d2",
+                    "assetId":"0x3450e3c846338bc2486fd6a3dc1738db8943d0bf4bc5426f571863b1b814a018",
+                    "metadata":
+                    {
+                        "bundleId":"0x5042e9e79fc23bb938cf377bf5379d4287c26203c259d342eb2d1f23b181f353",
+                        "bundleUploadTimestamp":1583820645,
+                        "bundleProofBlock":38,
+                        "bundleTransactionHash":"0x7757fef7f32f020fb1f23ce32a93b193fe0d14a70c2dbea9655cefa80e7348f7"
+                    },
+                    "content":{
+                        "idData":{
+                        "createdBy":"0x2D2a0BE476559200D87EdD128Bd31c100be74e0f",
+                        "timestamp":1582616736,
+                        "sequenceNumber":0
+                    },
+                    "signature":"0x669f6a33dafaa9c35953bbab201eba63ad4b6960252af398d7cea230c17ec5323dae8c637e8995a799da8c13aeb5101163876e3411e43852a1cb4c7669bc9cc21c"},
+                    "repository":{}
+                }
+                ],
+                "meta":{
+                    "code":200,
+                    "count":1
+                },
+                "pagination":{
+                    "hasNext":false,
+                    "hasPrevious":false
+                }
             }
+
 
 ### /asset2/info/{assetId}
 
@@ -1680,7 +2426,7 @@ __ⓘ Note:__  Available onlt for Hermes nodes.
 ## /{bundleId}/restore
 __ⓘ Note:__  Available onlyfor Atals nodes.
 #### Resotore bundle from backup [GET]
-+ Response
++ Response 200
 
     + Body
 
@@ -2667,6 +3413,7 @@ __Warning__ super_account is required
             + code (number) - the response status code
 
     + Body
+
             {
                 "data": {
                     "some long hex value"
@@ -2727,7 +3474,7 @@ Invite - invitation to join organization. Invitation object consist of:
 * createdBy - string, required - the account address of the invitation creator
 * createdOn - number, required - the unix timestamp of time when incitation was created
 
-## /organization/invite/
+## /organization/invite{?perPage,page,createdBy,data}
 __Warning__ super_account permission is required
 #### Get all invints on node [GET]
 + Parameters
@@ -2805,12 +3552,12 @@ __Warning__ super_account permission is required
 
     + Body
 
-        {
-            "data": true,
-            "meta": {
-                "code": 200
+            {
+                "data": true,
+                "meta": {
+                    "code": 200
+                }
             }
-        }
 
 ## /organization/invite/{inviteId}/accept
 #### Accept the invitation [POST]
@@ -2878,6 +3625,7 @@ __Warning__ super_account permission is required
         + email (string) - the email on which invite must be sent
 
     + Body
+
             {
                 "email": "test+testOrgRequest1@ambrosus.io",
             }
@@ -3045,6 +3793,9 @@ __Warning__ super_account permission is required
 + Response 200 (application/json)
 
     + Body
+
+
+
 
 
 
