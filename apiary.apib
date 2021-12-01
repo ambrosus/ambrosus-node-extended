@@ -2554,6 +2554,14 @@ __Warning__ super_account permission is required
 
 + Request
 
+    + Attributes
+
+        + owner (string) - the account address othe organization owner
+        + title (string) - the name of the organization
+        + timeZone (string) - the time zone of the organization headquarter
+        + legalAddress (string) - the address of the organization headquarter
+        + active (boolean) - the status of the organization
+
     + Body
 
             {
@@ -2606,13 +2614,26 @@ __Warning__ super_account is required
 
 + Response 200 (application/json)
 
+    + Attributes
+
+        + data (object) - the requested data
+            + _id (string) - the internal id
+            + owner (string) - the account address of the organization owner
+            + title (string) - the name of the organization
+            + createdOn (number) - the unix timestamp of the organization creatiion time
+            + createdBy (string) - the account address of the organization creator
+            + organizationId (number) - the id of the organization
+            + active (boolean) - the status of the organization
+        + meta (object)
+            + code (number) - the response's status code
+
     + Body
 
             {
                 "data": {
                     "_id": "615eac7e366a59001bcb5ceb",
                     "owner": "0xAB373FD4EC933B0085bA10FF825cCc6B10647c75",
-                    "title": "VADYM-FRONT",
+                    "title": "Some cool org",
                     "createdOn": 1633594494,
                     "createdBy": "0x0C6C7264E509430bcFa2469bA4eB738c94e6C75A",
                     "organizationId": 9,
@@ -2637,6 +2658,13 @@ __Warning__ super_account is required
     + organizationId (number, required) - the organizaiton Id
 
 + Response 200 (application/json)
+
+    + Attributes
+
+        + data (object)
+            + (string) - the hex value creted from organization backup
+        + meta (object)
+            + code (number) - the response status code
 
     + Body
             {
@@ -2670,6 +2698,12 @@ __Warning__ super_account permission is required
     + organizationId (number, required) - the organization Id
 
 + Request
+
+    + Attributes
+
+        + active (boolean) - the status of the organization
+        + title (string) - the name of the organization
+        + something - any other organization data to be updated
 
     + Body
 
@@ -2709,13 +2743,45 @@ __Warning__ super_account permission is required
 
 + Response 200 (application/json)
 
+    + Attributes
+
+        + data (array) - the array of requested data
+            + (object) - the invitation
+                + organizationId (string) - the id of the organization that sent invite
+                + email (string) - email address on that invite would be sent
+                + subject (string) - the subject of the email
+                + iniviteId (string) - the id of the invite
+                + invitationLink (string) - the link to accept invitation
+                + sent (boolean) - the status of the invite
+                + validUnitil (number) - the unix timestamp of the time when invite become invalid
+                + createdBy (string) - the account address of the invite creator
+                + createdOn (number) - the unix timestamp of the invite creation time
+        + meta (object) - the metadata
+            + code (number) - the status code
+            + count (number) - the count of the results
+        + pagination (object) - the helper object to handle pagination
+            + hasNext (boolean) - tells if there is a next page
+            + hasPrevious (boolean) - tells if there is a previous page
+
     + Body
 
         {
-            "data": [],
+            "data": [
+                {
+                    "organizationId": 9,
+                    "email": "test@example.com",
+                    "subject": "Invitation",
+                    "inviteId": "10",
+                    "invitationLink": "inivite.example.com".
+                    "sent": true,
+                    "validUntil": 1633594494,
+                    "createdBy": "0x0C6C7264E509430bcFa2469bA4eB738c94e6C75A",
+                    "createdOn": 1633594494
+                }
+            ],
             "meta": {
                 "code": 200,
-                "count": 0
+                "count": 1
             },
             "pagination": {
                 "hasNext": false,
@@ -2730,6 +2796,12 @@ __Warning__ super_account permission is required
 
     + inviteId (number, required) - the invitaion Id
 + Response 200 (application/json)
+
+    + Attributes
+
+        + data (boolean) - shows if invite exists
+        + meta (object) - the metadata
+            + code (string) - the status code
 
     + Body
 
@@ -2747,6 +2819,10 @@ __Warning__ super_account permission is required
     + inviteId (number, required) - the invitation Id
 
 + Request
+
+    + Attributes
+
+        + address (string) - the account of the one who accepts invitation
 
     + Body
 
@@ -2797,12 +2873,13 @@ __Warning__ super_account permission is required
 #### Create invitation Buld [POST]
 + Request
 
+    + Attributes
+
+        + email (string) - the email on which invite must be sent
+
     + Body
             {
-                "title": "Conor wants an org, org.",
-                "address": "0x203C394e59915f85B9c222f6E15ce1FFF699559E",
                 "email": "test+testOrgRequest1@ambrosus.io",
-                "message": "GIVE TO ME ALL OF YOUR ORGS"
             }
 
 + Response 201 (application/json)
@@ -2825,13 +2902,39 @@ __Warning__ super_account permission is required
 #### Get all requests [GET]
 + Response 200 (application/json)
 
+    + Attributes
+
+        + data (array) - the array of requests
+            + (object) - the request
+                + address (string) - the account address of the one who requests to join organizaiton
+                + title (string) - the title of the request message
+                + email (string) - the email to sent the request
+                + message (string) - the message to write in email
+                + createdOn (number) - the unix timestamp to the creation time
+                + refused (boolean) - the status of the request
+        + meta (object) - the metadata
+            + code (number) - the status code
+            + count (number) - the count of the results
+        + pagination (object) - the helper object to handle pagination
+            + hasNext (boolean) - tells if there is a next page
+            + hasPrevious (boolean) - tells if there is a previous page
+
     + Body
 
             {
-                "data": [],
+                "data": [
+                    {
+                        "address": "0x203C394e59915f85B9c222f6E15ce1FFF699559E",
+                        "title": "Some request",
+                        "email": "test@example.com",
+                        "message": "I want to join you!",
+                        "createdOn": 1633594494,
+                        "refused": false
+                    }
+                ],
                 "meta": {
                     "code": 200,
-                    "count": 0
+                    "count": 1
                 },
                 "pagination": {
                     "hasNext": false,
@@ -2845,10 +2948,37 @@ __Warning__ super_account permission is required
 #### Get all refused requests [GET]
 + Response 200 (application/json)
 
+    + Attributes
+
+        + data (array) - the array of requesed requests
+            + (object) - the request
+                + address (string) - the account address of the one who requests to join organizaiton
+                + title (string) - the title of the request message
+                + email (string) - the email to sent the request
+                + message (string) - the message to write in email
+                + createdOn (number) - the unix timestamp to the creation time
+                + refused (boolean) - the status of the request
+        + meta (object) - the metadata
+            + code (number) - the status code
+            + count (number) - the count of the results
+        + pagination (object) - the helper object to handle pagination
+            + hasNext (boolean) - tells if there is a next page
+            + hasPrevious (boolean) - tells if there is a previous page
+
+
     + Body
 
             {
-                "data": [],
+                "data": [
+                    {
+                        "address": "0x203C394e59915f85B9c222f6E15ce1FFF699559E",
+                        "title": "Some request",
+                        "email": "test@example.com",
+                        "message": "I want to join you!",
+                        "createdOn": 1633594494,
+                        "refused": true
+                    }
+                ],
                 "meta": {
                     "code": 200,
                     "count": 0
@@ -2896,6 +3026,13 @@ __Warning__ super_account permission is required
 #### Creates join request [POST]
 + Request
 
+    + Attributes
+
+        + title (string) - the title of the request
+        + address (string) - the account address of the one who want to join
+        + email (string) - the email on which confirmation would be sent
+        + message (string) - the message of the request
+
     + Body
 
             {
@@ -2908,16 +3045,6 @@ __Warning__ super_account permission is required
 + Response 200 (application/json)
 
     + Body
-
-
-
-
-
-
-
-
-
-
 
 
 
