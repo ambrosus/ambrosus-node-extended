@@ -331,6 +331,49 @@ __ⓘ Note:__  super_account and manage_accounts permissions are required
     + Body
 
 
+
+## /account/secret
+#### Get secret by email [POST]
+
++ Request (application/json)
+
+    + Headers
+
+            Accept: application/json
+            Authorization: AMB_TOKEN ...
+
+    + Attributes
+
+        + email (string) - the email of the user
+
+    + Body
+
+            {
+                "email": "test@example.com"
+            }
+
++ Resonse 200
+
+    + Attributes
+
+        + data (object)
+            + secret (string) - the user's secret
+        + meta (object)
+            + code (number) - the status code
+
+    + Body
+
+        {
+            "data": {
+                "secret": "long hex value"
+            },
+            "meta": {
+                "code": 200
+            }
+        }
+
+
+
 ## /account/{accountAddress}/details
 #### Get detatiled info about account [GET]
 + Parameters
@@ -421,6 +464,8 @@ __ⓘ Note:__  super_account and manage_accounts permissions are required
                 }
             }
 
+
+
 ## /account/query{?perPage,page}
 #### Make a monogoDB query [POST]
 + Parameters
@@ -510,56 +555,6 @@ __ⓘ Note:__  super_account and manage_accounts permissions are required
 
     + Body
 
-## /account/secret
-#### Get secret by email [Post]
-+ Request (application/json)
-
-    + Headers
-
-            Accept: application/json
-            Authorization: AMB_TOKEN ...
-
-    + Attributes
-
-        + email (string) - the email of the user
-
-    + Body
-
-            {
-                "email": "test@example.com"
-            }
-
-+ Resonse 200
-
-    + Attributes
-
-        + data (object)
-            + secret (string) - the user's secret
-        + meta (object)
-            + code (number) - the status code
-
-    + Body
-
-        {
-            "data": {
-                "secret": "long hex value"
-            },
-            "meta": {
-                "code": 200
-            }
-        }
-
-+ Response 400 (application/json)
-
-    Validation error
-
-    + Body
-
-+ Response 401 (application/json)
-
-    Authentication error
-
-    + Body
 
 ## Group Account2
 __ⓘ Note:__  Available only for Hermes node.
@@ -1429,7 +1424,7 @@ Finds assets satisfying provided criteria.
 
     + Body
 
-## /exists/{assetId}
+## /asset/exists/{assetId}
 #### Check if asset exists [GET]
 + Parameters
 
@@ -1801,8 +1796,138 @@ __Warning__ Request sender needs to have "create_asset" permission
 
     + Body
 
+## /exists/{assetId}
+#### Check if asset exists [GET]
++ Parameters
+
+    + assetId (string, required) - ID of an asset
+
++ Response 200
+
+    + Attributes
+
+        + data (boolean) - shows if asset exists
+        + meta (object)
+            + code (number) - the satus code
+
+    +Body
+
+            {
+                "data": false,
+                "meta": {
+                    "code": 200
+                }
+            }
+
+
+## /asset2/query{?perPage,page,createdBy,fromTimestamp,toTimestamp,identifier}
+#### Get list of assets [GET]
+Finds assets satisfying provided criteria.
++ Parameters
+
+    + perPage (integer, optional) - number of assets to return per page (limited to 100)
+    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
+    + createdBy (string, optional) - address of account that created targeting assets
+    + fromTimestamp (integer, optional) - earliest timestamp for the asset
+    + toTimestamp (integer, optional) - latest timestamp for the asset
+    + identifier : identifier[{identifierType}]={identifierValue} (string, optional) - This syntax allows to query for assets that have an associated event containing data type `ambrosus.event.identifier` (see Events Data field section) with same identifier of same type. It is possible to find identifiers matching a pattern with help of the pattern decorator. You can use like this: identifier[vin]=pattern(3FRNF65N*). It supports 2 kinds of special characters:
+      - __*__ matches any string, including the null string.
+      - __?__ matches any single character
+      Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
+
++ Request
+
+    + Attributes
+
+        + query (array) - the array of operations
+            + (object) - the mongodb operation
+                + filed (string) - the field to be used in operation
+                + value (string) - the searched value
+                + operator (string) - the greater than
+
+    + Body
+
+            {
+                "query": [{
+                    "field": "content.idData.timestamp",
+                    "value": 1533081600,
+                    "operator": "greater-than"
+                },
+                {
+                    "field": "assetId",
+                    "value": ["0x5f6bd84a02174c87068f5675bdd947aee74507ea9774ca5d89ccd02469d77665", "0x937e903442a2dcc387a818f36a74304c6d0ace094fd350bdf033617ee817023d", "0xa7b867566e7e210ffb01354577624a6edba27d4781c2a8a268a0f7b28d143eb2"],
+                    "operator": "not-equal"
+                }]
+            }
+
++ Response 200
+
+    + Attributes
+
+        + data (array)
+            + (object)
+                + assetId (string) - the id of the asset
+                + organization (number) - the id of the organization
+                + metadata (object)
+                    + bundleId (string) - the id of the bundle
+                    + bundleUploadTimestamp (number) - the unix timestamp of bundle upload time
+                    + bundleProofBlock  (number) - the number of bundle's proog block
+                    + bundleTransactionHash (string) - the hash of the transaction that uploaded bundle
+                + content (object)
+                    + idData (object)
+                        + createdBy (string) - the address of the asset creator
+                        + timestamp (number) - the unix timestamp of the asset creation time
+                        + sequenceNumber (number) - the number of asset in sequence
+                    + signature (string)
+        + meta (object)
+            + code (number) - the status code
+            + count (number) - the number of return assets
+        + pagination (object)
+            + hasNext (boolean) - shows if there is a next page
+            + next (string) - id of the next mongo page (should be used as page value to show next page)
+            + hasPrevious (boolean) - shows if there is a previous page
+            + previous (string) - id of the previous mongo page
+
+    + Body
+
+            {
+                "data": [
+                    {
+                        "_id": "61a6452aefff45001b2ac567",
+                        "assetId": "0xd773dd1db14ec308d48c31951ed53e2ff5fa2a9589bc604790e310f51abed119",
+                        "organizationId": 27,
+                        "metadata": {
+                            "bundleId": "0x90c3ddd686beb16501bdba719fba069bec9ed8f4eb732555d50c38a481dc543e",
+                            "bundleUploadTimestamp": 1638286815,
+                            "bundleProofBlock": 758444,
+                            "bundleTransactionHash": "0x44306c74e330b2d42b89e81a66bd54977331a8da2b9372f2d372f4b30377a143"
+                        },
+                        "content": {
+                            "idData": {
+                                "createdBy": "0x5866f683105c5B7aA99f28278853C4c2B3EFf57a",
+                                "timestamp": 1638286633,
+                                "sequenceNumber": 0
+                            },
+                            "signature": "0xd451d59bf215f3ef54426eed69a46c3eb59bb9f10d4812ec9f58c3b5d69aba007de47283df09d79d9b76af12acaafcd3a01ebe0ab2c709924f777f6bf624b81d1b"
+                        },
+                        "repository": {}
+                    },
+                ],
+                "meta": {
+                    "code": 200,
+                    "count": 10
+                },
+                "pagination": {
+                    "hasNext": true,
+                    "next": "WzE2Mzc4Njc0NzMseyIkb2lkIjoiNjE5ZmRmZDM5YjdiMjgwMDFiNDRmYWM2In1d",
+                    "hasPrevious": false,
+                    "previous": "WzE2MzgyODY2MzMseyIkb2lkIjoiNjFhNjQ1MmFlZmZmNDUwMDFiMmFjNTY3In1d"
+                }
+            }
+
+
 ## Group Events
-__ⓘ Note:__ Available for both Hermes and Atlas nodes. \
+__ⓘ Note:__ Available only for Atlas node.\
 Events describe all registered changes of state that occurred with the asset. E.g. measured temperature, noted big acceleration or changing pallets. An event consists of the 3 major parts:
 
 * idData – Public information about an event. Contains the ID of the asset, address of the user who has registered the event, minimal access level required to view private data of the event and the timestamp of the event. Additionally idData holds the hash of the Data field.
@@ -1971,8 +2096,539 @@ Fetches an event by identifier
 
     + Body
 
+## Group Event
+__ⓘ Note:__ Available only for Hermes node. Lagacu endpoint event2 should be used.
+Events describe all registered changes of state that occurred with the asset. E.g. measured temperature, noted big acceleration or changing pallets. An event consists of the 3 major parts:
 
-## Group Events2
+* idData – Public information about an event. Contains the ID of the asset, address of the user who has registered the event, minimal access level required to view private data of the event and the timestamp of the event. Additionally idData holds the hash of the Data field.
+* Data – Protected information about an event. To get access to the private data, a user needs to have an access level not smaller than the returned event.
+* Metadata – Information generated and used by AMB-NET, for example id of a bundle handling an event.
+
+##### Events Data field
+
+Every event has a `data` array, located at `content` with information what actually happened.
+Each item in this array is an object with a required `type` field of `string` type.
+Following event types are predefined:
+* `ambrosus.asset.info` - Human readable information about an asset, such as its name, photos, description, etc.
+* `ambrosus.asset.identifiers` - Known identifiers for an asset, must have at least 1 property of type `array`
+* `ambrosus.event.identifiers` - Known identifiers for an event, must have at least 1 property of type `array`
+* `ambrosus.asset.location` - Location of an asset. Can be expressed with geographical coordinates.
+    * `geoJson`: geographical point described with geoJson formula (As described in RFC7946, The GeoJSON Format)
+* `ambrosus.event.location` - Location of an event. Can be expressed with geographical coordinates.
+    * `geoJson`: geographical point described with geoJson formula (As described in RFC7946, The GeoJSON Format)
+
+### /event{?assetId,fromTimestamp,toTimestamp,perPage,page,createdBy,data}
+
+#### Find events [GET]
+
+Finds event satisfying provided criteria.
+
++ Parameters
+
+    + assetId (string, optional) - ID of the asset the events are targeting
+    + fromTimestamp (integer, optional) - earliest timestamp for the events
+    + toTimestamp (integer, optional) - latest timestamp for the events
+    + perPage (integer, optional) - number of events to return per page (limited to 100)
+    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
+    + createdBy (string, optional) - address of account that created targeting events
+    + data : data[type]=ambrosus.event.custom (object, optional) - This syntax allows to query for events by any fields in data array. Query for nested fields is possible, e.g. data[acceleration.x]=10. By default the type of the value is string. To provide a number, use data[acceleration.x]=number(10). To provide geo coordinates use data[geoJson]=geo(longitude, latitude, radius). It is possible to match data values by the pattern using the pattern decorator like so `data[type]=pattern(ambrosus.event.*)`. It support 2 kinds of special characters:
+       - __*__ matches any string, including the null string.
+       - __?__ matches any single character
+       Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
+
++ Response 200 (application/json)
+
+    The requested event
+
+    + Attributes (object)
+        + results (array) - Events matching provided criteria on the page
+            + (object) - Event.
+                + eventId (string) - Content-addressable identifier of the event.
+                + content (object) - All meaningful content of the event, base of eventId.
+                    + signature (string) - elliptic-curve signature of the idData field signed with the creator's private address.
+                    + idData (object) - Public information about an event.
+                        + assetId (string) - Id of an asset with which the event is connected.
+                        + createdBy (string) - Public address of the event creator.
+                        + accessLevel (number) - The access level of the event. If the user's access level if lower than event's, the data field will not be returned.
+                        + timestamp (number) - UNIX timestamp of the event creation.
+                    + data (array) - Array of custom entries as objects (this field is required and have to contain at least one entry).
+
+        + resultCount (number) - Total number of events matching provided criteria.
+
+    + Body
+
+            {
+             "data":[
+             {
+              "_id":"5e78715c77c81e2942d9165b",
+              "eventId":"0x9ee1731e8696ee99602eede6a99f1c8b8834f2956b023ef3845860976d30d974",
+              "metadata":
+               {
+                "bundleId":null,
+                "bundleUploadTimestamp":1584951644
+               },"content":{
+              "idData":{
+               "assetId":"0x3450e3c846338bc2486fd6a3dc1738db8943d0bf4bc5426f571863b1b814a018",
+               "timestamp":1582616736,
+               "accessLevel":0,
+               "createdBy":"0x2D2a0BE476559200D87EdD128Bd31c100be74e0f",
+               "dataHash":"0xd1ea055e098c1e041ba2435b2f6d3e53319944c7f53328d6100dff2569463509"
+               },
+              "signature":"0xe08e336eebf568d7c7809965b8b48ed2b3ea2a0ec9caf8fa7b81d1cc1c46e6e7454203f309c1e98785873c6e42836f65969e3c4e86aa5fa23a89c5512893998c1b",
+              "data":[{
+               "type":"ambrosus.asset.info",
+               "name":"TEST1",
+               "assetType":"TEST2"
+               }]
+              }}],
+              "meta":{
+               "code":200,
+               "count":1
+              },
+             "pagination":{
+              "hasNext":false,
+              "next":"WzE1ODI2MTY3MzYseyIkb2lkIjoiNWU3ODcxNWM3N2M4MWUyOTQyZDkxNjViIn1d",
+              "hasPrevious":false,
+              "previous":"WzE1ODI2MTY3MzYseyIkb2lkIjoiNWU3ODcxNWM3N2M4MWUyOTQyZDkxNjViIn1d"
+              }
+            }
+
++ Response 400
+
+    One or more of included parameters are not supported, or parameter value is in invalid format
+
+    + Body
+
++ Response 404
+
+    Event not found
+
+    + Body
+
+### /event/{eventId}
+#### Fetch event [GET]
+
+Fetches an event by identifier
+
++ Parameters
+
+    + eventId (string, required) - ID of an event
+
++ Response 200 (application/json)
+
+    The requested event
+
+    + Attributes (object)
+        + eventId (string) - Content-addressable identifier of the event.
+        + content (object) - All meaningful content of the event, base of eventId.
+            + signature (string) - elliptic-curve signature of the idData field signed with the creator's private address.
+            + idData (object) - Public information about an event.
+                + assetId  (string) - Id of an asset with which the event is connected.
+                + createdBy (string) - Public address of the event creator.
+                + accessLevel (number) - The access level of the event. If the user's access level if lower than event's, the data field will not be returned.
+                + timestamp (number) - UNIX timestamp of the event creation.
+            + data (array) - Array of custom entries as objects (this field is required and have to contain at least one entry).
+        + metadata (object) - Event service data.
+            + bundleId (string) - If the event has already been added to a bundle, Id of the bundle holding the event
+            + bundleTransactionHash (string) - If the event has already been added to a bundle, identifier of the transaction on which the proof of bundle has been uploaded.
+              More info on the transaction can be found under `http://explorer.ambrosus.io/#/tx/{bundleTransactionHash}`
+            + bundleProofBlock (number) - If the event has already been added to a bundle, block number in which the proof of the bundle has been included
+            + bundleUploadTimestamp (number) - If the event has already been added to a bundle, timestamp of bundle proof upload
+
+    + Body
+
+            {
+                "eventId": "0xc5cfd04.....30755ed65",
+                "content": {
+                    "signature": "0x30755ed65396facf86c53e6...65c5cfd04be400",
+                    "idData": {
+                        "assetId": "0xc5cfd04.....30755ed65",
+                        "createdBy": "0x162a44701727a31f457a53801cd181cd38eb5bbd",
+                        "accessLevel": 4,
+                        "timestamp": 1503424923,
+                        "dataHash": "0x01cd181cd38eb5bbd162a44701727a31f457a538"
+                    },
+                    "data": [
+                      {
+                        "type": "ambrosus.event.customevent",
+                        "customField": "customValue"
+                      }
+                    ]
+                }
+            }
+
++ Response 404 (application/json)
+
+    Event not found
+
+    + Body
+
+### /event/exists/{eventId}
+#### Check if event exists [GET]
+
++ Parameters
+    + eventId (string, required) - ID of an event
+
++ Response 200
+
+    + Attributes
+
+        + data (boolean) - shows if event exists
+        + meta (object)
+            + code (number) - the satus code
+
+    +Body
+
+            {
+                "data": false,
+                "meta": {
+                    "code": 200
+                }
+            }
+
+## /event/query{?perPage,page,createdBy,fromTimestamp,toTimestamp}
+#### Get list of assets [POST]
+Finds assets satisfying provided criteria.
++ Parameters
+
+    + perPage (integer, optional) - number of events to return per page (limited to 100)
+    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
+    + createdBy (string, optional) - address of account that created targeting assets
+    + fromTimestamp (integer, optional) - earliest timestamp for the event
+    + toTimestamp (integer, optional) - latest timestamp for the event
+
++ Request
+
+    + Attributes
+
+        + query (array) - the array of operations
+            + (object) - the mongodb operation
+                + filed (string) - the field to be used in operation
+                + value (string) - the searched value
+                + operator (string) - the greater than
+
+    + Body
+
+            {
+                "query": [{
+                    "field": "content.data.type",
+                    "value": "ambrosus.asset.info",
+                    "operator": "equal"
+                }],
+            }
+
+
++ Response 200
+
+    + Attributes
+
+        + data (array)
+            + (object)
+                + event (string) - the id of the event
+                + organization (number) - the id of the organization
+                + metadata (object)
+                    + bundleId (string) - the id of the bundle
+                    + bundleUploadTimestamp (number) - the unix timestamp of bundle upload time
+                    + bundleProofBlock  (number) - the number of bundle's proog block
+                    + bundleTransactionHash (string) - the hash of the transaction that uploaded bundle
+                + content (object)
+                    + idData (object)
+                        + assetId (string) - the id of the related asset
+                        + createdBy (string) - the address of the event creator
+                        + timestamp (number) - the unix timestamp of the event creation time
+                        + sataHash (string) - the sch3 hash of the data section
+                    + signature (string)
+                    + data (object)
+                        + type (string) - the type of the event
+                        + name (string) - the name of the event
+                        + assetType (string) - the name of the type of the related asset
+                        + description (string) - the description of the asset
+                        + images (object) - the images related to the object
+                            + default (object)
+                                + url (string) - the url of the image
+                        + encryption (string) - shows if data should be encrypted
+        + meta (object)
+            + code (number) - the status code
+            + count (number) - the number of return assets
+        + pagination (object)
+            + hasNext (boolean) - shows if there is a next page
+            + next (string) - id of the next mongo page (should be used as page value to show next page)
+            + hasPrevious (boolean) - shows if there is a previous page
+            + previous (string) - id of the previous mongo page
+
+    + Body
+
+            {
+                "data": [
+                {
+                    "_id": "61b08394e2ac1d001b2c7b81",
+                    "eventId": "0x33a9ce32f9c7dc5483dbddf57f7cb2b1267acedd6d928836dccaaf95971f2fd1",
+                    "organizationId": 36,
+                    "metadata": {
+                        "bundleId": "0xed30ca5598d12fdfe3158556748b8fcbd8a7d43e13c1e239b97a4a5f984cbedb",
+                        "bundleUploadTimestamp": 1638958195,
+                        "bundleProofBlock": 84115,
+                        "bundleTransactionHash": "0x6d9f63c53f965796911d8094b53b2c9cf1a5e6c2b71a3d238a000d51031137ec"
+                    },
+                    "content": {
+                        "idData": {
+                            "assetId": "0xd904e220c6505a33c0d29ae97ec0f549fb58cefc49b9a193439c7900f346ddb3",
+                            "timestamp": 1638957971,
+                            "accessLevel": 0,
+                            "createdBy": "0x0175146aa084665ebcaE6A642887051220F3eBC2",
+                            "dataHash": "0x68315689a672e1d487376c619cc161f35ea72b3eb63988163a17bc260b1b7d66"
+                        },
+                        "signature": "0xffe702ceb9e545b42fce0f8422cde036c70a35c306a3c03e11108b099fea298e6edab82866e3840aa3a1fb0b91921f95993ab985edf8b281a854ec0b1517f32b1c",
+                        "data": [
+                            {
+                                "type": "ambrosus.asset.info",
+                                "name": "Картошка",
+                                "assetType": "Овощ",
+                                "description": "Карто́фель, или Паслён клубнено́сный (лат. Solánum tuberósum), — вид многолетних клубненосных травянистых растений из рода Паслён (Solanum) семейства Паслёновые (Solanaceae). Клубни картофеля являются важным пищевым продуктом. Плоды ядовиты в связи с содержанием в них соланина.",
+                                "images": {
+                                    "default": {
+                                        "url": "https://saveda.ru/wp-content/uploads/2020/08/Melkaya-molodaya-kartoshka-s-petrushkoj.jpg"
+                                    }
+                                },
+                                "encryption": "off"
+                            }
+                        ]
+                    }
+                },
+                ],
+                "meta": {
+                    "code": 200,
+                    "count": 1
+                },
+                "pagination": {
+                    "hasNext": true,
+                    "next": "WzE2Mzc4Njc0NzMseyIkb2lkIjoiNjE5ZmRmZDM5YjdiMjgwMDFiNDRmYWM2In1d",
+                    "hasPrevious": false,
+                    "previous": "WzE2MzgyODY2MzMseyIkb2lkIjoiNjFhNjQ1MmFlZmZmNDUwMDFiMmFjNTY3In1d"
+                }
+            }
+
+
+## /event/search{?perPage,page,createdBy,fromTimestamp,toTimestamp}
+#### Get list of assets [POST]
+Finds assets satisfying provided criteria.
++ Parameters
+
+    + perPage (integer, optional) - number of events to return per page (limited to 100)
+    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
+    + createdBy (string, optional) - address of account that created targeting assets
+    + fromTimestamp (integer, optional) - earliest timestamp for the event
+    + toTimestamp (integer, optional) - latest timestamp for the event
+
++ Request
+
+    + Attributes
+
+        + query (array) - the array of operations
+            + (object) - the mongodb operation
+                + filed (string) - the field to be used in operation
+                + value (string) - the searched value
+                + operator (string) - the greater than
+
+    + Body
+
+            {
+                "query": [{
+                    "field": "content.data.type",
+                    "value": "ambrosus.asset.info",
+                    "operator": "equal"
+                }],
+            }
+
+
++ Response 200
+
+    + Attributes
+
+        + data (array)
+            + (object)
+                + event (string) - the id of the event
+                + organization (number) - the id of the organization
+                + metadata (object)
+                    + bundleId (string) - the id of the bundle
+                    + bundleUploadTimestamp (number) - the unix timestamp of bundle upload time
+                    + bundleProofBlock  (number) - the number of bundle's proog block
+                    + bundleTransactionHash (string) - the hash of the transaction that uploaded bundle
+                + content (object)
+                    + idData (object)
+                        + assetId (string) - the id of the related asset
+                        + createdBy (string) - the address of the event creator
+                        + timestamp (number) - the unix timestamp of the event creation time
+                        + sataHash (string) - the sch3 hash of the data section
+                    + signature (string)
+                    + data (object)
+                        + type (string) - the type of the event
+                        + name (string) - the name of the event
+                        + assetType (string) - the name of the type of the related asset
+                        + description (string) - the description of the asset
+                        + images (object) - the images related to the object
+                            + default (object)
+                                + url (string) - the url of the image
+                        + encryption (string) - shows if data should be encrypted
+        + meta (object)
+            + code (number) - the status code
+            + count (number) - the number of return assets
+        + pagination (object)
+            + hasNext (boolean) - shows if there is a next page
+            + next (string) - id of the next mongo page (should be used as page value to show next page)
+            + hasPrevious (boolean) - shows if there is a previous page
+            + previous (string) - id of the previous mongo page
+
+    + Body
+
+            {
+                "data": [
+                {
+                    "_id": "61b08394e2ac1d001b2c7b81",
+                    "eventId": "0x33a9ce32f9c7dc5483dbddf57f7cb2b1267acedd6d928836dccaaf95971f2fd1",
+                    "organizationId": 36,
+                    "metadata": {
+                        "bundleId": "0xed30ca5598d12fdfe3158556748b8fcbd8a7d43e13c1e239b97a4a5f984cbedb",
+                        "bundleUploadTimestamp": 1638958195,
+                        "bundleProofBlock": 84115,
+                        "bundleTransactionHash": "0x6d9f63c53f965796911d8094b53b2c9cf1a5e6c2b71a3d238a000d51031137ec"
+                    },
+                    "content": {
+                        "idData": {
+                            "assetId": "0xd904e220c6505a33c0d29ae97ec0f549fb58cefc49b9a193439c7900f346ddb3",
+                            "timestamp": 1638957971,
+                            "accessLevel": 0,
+                            "createdBy": "0x0175146aa084665ebcaE6A642887051220F3eBC2",
+                            "dataHash": "0x68315689a672e1d487376c619cc161f35ea72b3eb63988163a17bc260b1b7d66"
+                        },
+                        "signature": "0xffe702ceb9e545b42fce0f8422cde036c70a35c306a3c03e11108b099fea298e6edab82866e3840aa3a1fb0b91921f95993ab985edf8b281a854ec0b1517f32b1c",
+                        "data": [
+                            {
+                                "type": "ambrosus.asset.info",
+                                "name": "Картошка",
+                                "assetType": "Овощ",
+                                "description": "Карто́фель, или Паслён клубнено́сный (лат. Solánum tuberósum), — вид многолетних клубненосных травянистых растений из рода Паслён (Solanum) семейства Паслёновые (Solanaceae). Клубни картофеля являются важным пищевым продуктом. Плоды ядовиты в связи с содержанием в них соланина.",
+                                "images": {
+                                    "default": {
+                                        "url": "https://saveda.ru/wp-content/uploads/2020/08/Melkaya-molodaya-kartoshka-s-petrushkoj.jpg"
+                                    }
+                                },
+                                "encryption": "off"
+                            }
+                        ]
+                    }
+                },
+                ],
+                "meta": {
+                    "code": 200,
+                    "count": 1
+                },
+                "pagination": {
+                    "hasNext": true,
+                    "next": "WzE2Mzc4Njc0NzMseyIkb2lkIjoiNjE5ZmRmZDM5YjdiMjgwMDFiNDRmYWM2In1d",
+                    "hasPrevious": false,
+                    "previous": "WzE2MzgyODY2MzMseyIkb2lkIjoiNjFhNjQ1MmFlZmZmNDUwMDFiMmFjNTY3In1d"
+                }
+            }
+
+## /event/lookup/types
+#### Get available event types [GET]
+Shows available event types
+
++ Response 200
+
+    + Attributes
+
+        + data (array)
+            + (string) - the type of the event
+        + meta (object)
+            + code (number) - the status code
+
+    + Body
+
+            {
+                "data": [
+                    "ambrosus.asset.identifiers",
+                    "ambrosus.asset.info",
+                    "sdfwqer",
+                    "Упаковка в ящик овощей"
+                ],
+                "meta": {
+                    "code": 200
+                }
+            }
+
+## /event/latest/type
+#### Get latest event to related assets [POST]
+Return latest events raleted to given types
+
++ Request
+
+    + Attributes
+        + assets (array) - the array of assetsId
+            + (string) - the id of the asset for which latest event is requested
+        + type (string) - the type of requested event
+
+    + Body
+
+            {
+                "assets": ["0x9d8c8bb6101751b583e64002ad8abe681aa61b6f8179ccef668fce91798e3018", "0x2be15879ad66636da6a5cccc70d75cda65809113f50355d97c93296d67486913"],
+                "type": "ambrosus.asset.info"
+            }
+
+
+
++ Reposnse 200
+
+    + Body
+
+            {
+                "data": [
+                {
+                    "_id": "61b08394e2ac1d001b2c7b81",
+                    "eventId": "0x33a9ce32f9c7dc5483dbddf57f7cb2b1267acedd6d928836dccaaf95971f2fd1",
+                    "organizationId": 36,
+                    "metadata": {
+                        "bundleId": "0xed30ca5598d12fdfe3158556748b8fcbd8a7d43e13c1e239b97a4a5f984cbedb",
+                        "bundleUploadTimestamp": 1638958195,
+                        "bundleProofBlock": 84115,
+                        "bundleTransactionHash": "0x6d9f63c53f965796911d8094b53b2c9cf1a5e6c2b71a3d238a000d51031137ec"
+                    },
+                    "content": {
+                        "idData": {
+                            "assetId": "0xd904e220c6505a33c0d29ae97ec0f549fb58cefc49b9a193439c7900f346ddb3",
+                            "timestamp": 1638957971,
+                            "accessLevel": 0,
+                            "createdBy": "0x0175146aa084665ebcaE6A642887051220F3eBC2",
+                            "dataHash": "0x68315689a672e1d487376c619cc161f35ea72b3eb63988163a17bc260b1b7d66"
+                        },
+                        "signature": "0xffe702ceb9e545b42fce0f8422cde036c70a35c306a3c03e11108b099fea298e6edab82866e3840aa3a1fb0b91921f95993ab985edf8b281a854ec0b1517f32b1c",
+                        "data": [
+                            {
+                                "type": "ambrosus.asset.info",
+                                "name": "Картошка",
+                                "assetType": "Овощ",
+                                "description": "Карто́фель, или Паслён клубнено́сный (лат. Solánum tuberósum), — вид многолетних клубненосных травянистых растений из рода Паслён (Solanum) семейства Паслёновые (Solanaceae). Клубни картофеля являются важным пищевым продуктом. Плоды ядовиты в связи с содержанием в них соланина.",
+                                "images": {
+                                    "default": {
+                                        "url": "https://saveda.ru/wp-content/uploads/2020/08/Melkaya-molodaya-kartoshka-s-petrushkoj.jpg"
+                                    }
+                                },
+                                "encryption": "off"
+                            }
+                        ]
+                    }
+                },
+                ],
+                "meta": {
+                    "code": 200,
+                    "count": 1
+                },
+            }
+
+
+
+## Group Event2
 __ⓘ Note:__ Available only for Hermes node.
 Events describe all registered changes of state that occurred with the asset. E.g. measured temperature, noted big acceleration or changing pallets. An event consists of the 3 major parts:
 
@@ -2235,7 +2891,370 @@ __Warning__ Message sender needs to have "create_event" permission
 
     + Body
 
-## Group Bundles
+## /event2/exists/{eventId}
+#### Check if event exists [GET]
++ Parameters
+
+    + eventId (string, required) - ID of an event
+
++ Response 200
+
+    + Attributes
+
+        + data (boolean) - shows if event exists
+        + meta (object)
+            + code (number) - the satus code
+
+    +Body
+
+            {
+                "data": false,
+                "meta": {
+                    "code": 200
+                }
+            }
+
+## /event2/query{?perPage,page,createdBy,fromTimestamp,toTimestamp}
+#### Get list of assets [POST]
+Finds assets satisfying provided criteria.
++ Parameters
+
+    + perPage (integer, optional) - number of events to return per page (limited to 100)
+    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
+    + createdBy (string, optional) - address of account that created targeting assets
+    + fromTimestamp (integer, optional) - earliest timestamp for the event
+    + toTimestamp (integer, optional) - latest timestamp for the event
+
++ Request
+
+    + Attributes
+
+        + query (array) - the array of operations
+            + (object) - the mongodb operation
+                + filed (string) - the field to be used in operation
+                + value (string) - the searched value
+                + operator (string) - the greater than
+
+    + Body
+
+            {
+                "query": [{
+                    "field": "content.data.type",
+                    "value": "ambrosus.asset.info",
+                    "operator": "equal"
+                }],
+            }
+
+
++ Response 200
+
+    + Attributes
+
+        + data (array)
+            + (object)
+                + event (string) - the id of the event
+                + organization (number) - the id of the organization
+                + metadata (object)
+                    + bundleId (string) - the id of the bundle
+                    + bundleUploadTimestamp (number) - the unix timestamp of bundle upload time
+                    + bundleProofBlock  (number) - the number of bundle's proog block
+                    + bundleTransactionHash (string) - the hash of the transaction that uploaded bundle
+                + content (object)
+                    + idData (object)
+                        + assetId (string) - the id of the related asset
+                        + createdBy (string) - the address of the event creator
+                        + timestamp (number) - the unix timestamp of the event creation time
+                        + sataHash (string) - the sch3 hash of the data section
+                    + signature (string)
+                    + data (object)
+                        + type (string) - the type of the event
+                        + name (string) - the name of the event
+                        + assetType (string) - the name of the type of the related asset
+                        + description (string) - the description of the asset
+                        + images (object) - the images related to the object
+                            + default (object)
+                                + url (string) - the url of the image
+                        + encryption (string) - shows if data should be encrypted
+        + meta (object)
+            + code (number) - the status code
+            + count (number) - the number of return assets
+        + pagination (object)
+            + hasNext (boolean) - shows if there is a next page
+            + next (string) - id of the next mongo page (should be used as page value to show next page)
+            + hasPrevious (boolean) - shows if there is a previous page
+            + previous (string) - id of the previous mongo page
+
+    + Body
+
+            {
+                "data": [
+                {
+                    "_id": "61b08394e2ac1d001b2c7b81",
+                    "eventId": "0x33a9ce32f9c7dc5483dbddf57f7cb2b1267acedd6d928836dccaaf95971f2fd1",
+                    "organizationId": 36,
+                    "metadata": {
+                        "bundleId": "0xed30ca5598d12fdfe3158556748b8fcbd8a7d43e13c1e239b97a4a5f984cbedb",
+                        "bundleUploadTimestamp": 1638958195,
+                        "bundleProofBlock": 84115,
+                        "bundleTransactionHash": "0x6d9f63c53f965796911d8094b53b2c9cf1a5e6c2b71a3d238a000d51031137ec"
+                    },
+                    "content": {
+                        "idData": {
+                            "assetId": "0xd904e220c6505a33c0d29ae97ec0f549fb58cefc49b9a193439c7900f346ddb3",
+                            "timestamp": 1638957971,
+                            "accessLevel": 0,
+                            "createdBy": "0x0175146aa084665ebcaE6A642887051220F3eBC2",
+                            "dataHash": "0x68315689a672e1d487376c619cc161f35ea72b3eb63988163a17bc260b1b7d66"
+                        },
+                        "signature": "0xffe702ceb9e545b42fce0f8422cde036c70a35c306a3c03e11108b099fea298e6edab82866e3840aa3a1fb0b91921f95993ab985edf8b281a854ec0b1517f32b1c",
+                        "data": [
+                            {
+                                "type": "ambrosus.asset.info",
+                                "name": "Картошка",
+                                "assetType": "Овощ",
+                                "description": "Карто́фель, или Паслён клубнено́сный (лат. Solánum tuberósum), — вид многолетних клубненосных травянистых растений из рода Паслён (Solanum) семейства Паслёновые (Solanaceae). Клубни картофеля являются важным пищевым продуктом. Плоды ядовиты в связи с содержанием в них соланина.",
+                                "images": {
+                                    "default": {
+                                        "url": "https://saveda.ru/wp-content/uploads/2020/08/Melkaya-molodaya-kartoshka-s-petrushkoj.jpg"
+                                    }
+                                },
+                                "encryption": "off"
+                            }
+                        ]
+                    }
+                },
+                ],
+                "meta": {
+                    "code": 200,
+                    "count": 1
+                },
+                "pagination": {
+                    "hasNext": true,
+                    "next": "WzE2Mzc4Njc0NzMseyIkb2lkIjoiNjE5ZmRmZDM5YjdiMjgwMDFiNDRmYWM2In1d",
+                    "hasPrevious": false,
+                    "previous": "WzE2MzgyODY2MzMseyIkb2lkIjoiNjFhNjQ1MmFlZmZmNDUwMDFiMmFjNTY3In1d"
+                }
+            }
+
+
+## /event2/search{?perPage,page,createdBy,fromTimestamp,toTimestamp}
+#### Get list of assets [POST]
+Finds assets satisfying provided criteria.
++ Parameters
+
+    + perPage (integer, optional) - number of events to return per page (limited to 100)
+    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
+    + createdBy (string, optional) - address of account that created targeting assets
+    + fromTimestamp (integer, optional) - earliest timestamp for the event
+    + toTimestamp (integer, optional) - latest timestamp for the event
+
++ Request
+
+    + Attributes
+
+        + query (array) - the array of operations
+            + (object) - the mongodb operation
+                + filed (string) - the field to be used in operation
+                + value (string) - the searched value
+                + operator (string) - the greater than
+
+    + Body
+
+            {
+                "query": [{
+                    "field": "content.data.type",
+                    "value": "ambrosus.asset.info",
+                    "operator": "equal"
+                }],
+            }
+
+
++ Response 200
+
+    + Attributes
+
+        + data (array)
+            + (object)
+                + event (string) - the id of the event
+                + organization (number) - the id of the organization
+                + metadata (object)
+                    + bundleId (string) - the id of the bundle
+                    + bundleUploadTimestamp (number) - the unix timestamp of bundle upload time
+                    + bundleProofBlock  (number) - the number of bundle's proog block
+                    + bundleTransactionHash (string) - the hash of the transaction that uploaded bundle
+                + content (object)
+                    + idData (object)
+                        + assetId (string) - the id of the related asset
+                        + createdBy (string) - the address of the event creator
+                        + timestamp (number) - the unix timestamp of the event creation time
+                        + sataHash (string) - the sch3 hash of the data section
+                    + signature (string)
+                    + data (object)
+                        + type (string) - the type of the event
+                        + name (string) - the name of the event
+                        + assetType (string) - the name of the type of the related asset
+                        + description (string) - the description of the asset
+                        + images (object) - the images related to the object
+                            + default (object)
+                                + url (string) - the url of the image
+                        + encryption (string) - shows if data should be encrypted
+        + meta (object)
+            + code (number) - the status code
+            + count (number) - the number of return assets
+        + pagination (object)
+            + hasNext (boolean) - shows if there is a next page
+            + next (string) - id of the next mongo page (should be used as page value to show next page)
+            + hasPrevious (boolean) - shows if there is a previous page
+            + previous (string) - id of the previous mongo page
+
+    + Body
+
+            {
+                "data": [
+                {
+                    "_id": "61b08394e2ac1d001b2c7b81",
+                    "eventId": "0x33a9ce32f9c7dc5483dbddf57f7cb2b1267acedd6d928836dccaaf95971f2fd1",
+                    "organizationId": 36,
+                    "metadata": {
+                        "bundleId": "0xed30ca5598d12fdfe3158556748b8fcbd8a7d43e13c1e239b97a4a5f984cbedb",
+                        "bundleUploadTimestamp": 1638958195,
+                        "bundleProofBlock": 84115,
+                        "bundleTransactionHash": "0x6d9f63c53f965796911d8094b53b2c9cf1a5e6c2b71a3d238a000d51031137ec"
+                    },
+                    "content": {
+                        "idData": {
+                            "assetId": "0xd904e220c6505a33c0d29ae97ec0f549fb58cefc49b9a193439c7900f346ddb3",
+                            "timestamp": 1638957971,
+                            "accessLevel": 0,
+                            "createdBy": "0x0175146aa084665ebcaE6A642887051220F3eBC2",
+                            "dataHash": "0x68315689a672e1d487376c619cc161f35ea72b3eb63988163a17bc260b1b7d66"
+                        },
+                        "signature": "0xffe702ceb9e545b42fce0f8422cde036c70a35c306a3c03e11108b099fea298e6edab82866e3840aa3a1fb0b91921f95993ab985edf8b281a854ec0b1517f32b1c",
+                        "data": [
+                            {
+                                "type": "ambrosus.asset.info",
+                                "name": "Картошка",
+                                "assetType": "Овощ",
+                                "description": "Карто́фель, или Паслён клубнено́сный (лат. Solánum tuberósum), — вид многолетних клубненосных травянистых растений из рода Паслён (Solanum) семейства Паслёновые (Solanaceae). Клубни картофеля являются важным пищевым продуктом. Плоды ядовиты в связи с содержанием в них соланина.",
+                                "images": {
+                                    "default": {
+                                        "url": "https://saveda.ru/wp-content/uploads/2020/08/Melkaya-molodaya-kartoshka-s-petrushkoj.jpg"
+                                    }
+                                },
+                                "encryption": "off"
+                            }
+                        ]
+                    }
+                },
+                ],
+                "meta": {
+                    "code": 200,
+                    "count": 1
+                },
+                "pagination": {
+                    "hasNext": true,
+                    "next": "WzE2Mzc4Njc0NzMseyIkb2lkIjoiNjE5ZmRmZDM5YjdiMjgwMDFiNDRmYWM2In1d",
+                    "hasPrevious": false,
+                    "previous": "WzE2MzgyODY2MzMseyIkb2lkIjoiNjFhNjQ1MmFlZmZmNDUwMDFiMmFjNTY3In1d"
+                }
+            }
+
+## /event2/lookup/types
+#### Get available event types [GET]
+Shows available event types
+
++ Response 200
+
+    + Attributes
+
+        + data (array)
+            + (string) - the type of the event
+        + meta (object)
+            + code (number) - the status code
+
+    + Body
+
+            {
+                "data": [
+                    "ambrosus.asset.identifiers",
+                    "ambrosus.asset.info",
+                    "sdfwqer",
+                    "Упаковка в ящик овощей"
+                ],
+                "meta": {
+                    "code": 200
+                }
+            }
+
+## /event2/latest/type
+#### Get latest event to related assets [POST]
+Return latest events raleted to given types
+
++ Request
+
+    + Attributes
+        + assets (array) - the array of assetsId
+            + (string) - the id of the asset for which latest event is requested
+        + type (string) - the type of requested event
+
+    + Body
+
+            {
+                "assets": ["0x9d8c8bb6101751b583e64002ad8abe681aa61b6f8179ccef668fce91798e3018", "0x2be15879ad66636da6a5cccc70d75cda65809113f50355d97c93296d67486913"],
+                "type": "ambrosus.asset.info"
+            }
+
+
+
++ Reposnse 200
+
+    + Body
+
+            {
+                "data": [
+                {
+                    "_id": "61b08394e2ac1d001b2c7b81",
+                    "eventId": "0x33a9ce32f9c7dc5483dbddf57f7cb2b1267acedd6d928836dccaaf95971f2fd1",
+                    "organizationId": 36,
+                    "metadata": {
+                        "bundleId": "0xed30ca5598d12fdfe3158556748b8fcbd8a7d43e13c1e239b97a4a5f984cbedb",
+                        "bundleUploadTimestamp": 1638958195,
+                        "bundleProofBlock": 84115,
+                        "bundleTransactionHash": "0x6d9f63c53f965796911d8094b53b2c9cf1a5e6c2b71a3d238a000d51031137ec"
+                    },
+                    "content": {
+                        "idData": {
+                            "assetId": "0xd904e220c6505a33c0d29ae97ec0f549fb58cefc49b9a193439c7900f346ddb3",
+                            "timestamp": 1638957971,
+                            "accessLevel": 0,
+                            "createdBy": "0x0175146aa084665ebcaE6A642887051220F3eBC2",
+                            "dataHash": "0x68315689a672e1d487376c619cc161f35ea72b3eb63988163a17bc260b1b7d66"
+                        },
+                        "signature": "0xffe702ceb9e545b42fce0f8422cde036c70a35c306a3c03e11108b099fea298e6edab82866e3840aa3a1fb0b91921f95993ab985edf8b281a854ec0b1517f32b1c",
+                        "data": [
+                            {
+                                "type": "ambrosus.asset.info",
+                                "name": "Картошка",
+                                "assetType": "Овощ",
+                                "description": "Карто́фель, или Паслён клубнено́сный (лат. Solánum tuberósum), — вид многолетних клубненосных травянистых растений из рода Паслён (Solanum) семейства Паслёновые (Solanaceae). Клубни картофеля являются важным пищевым продуктом. Плоды ядовиты в связи с содержанием в них соланина.",
+                                "images": {
+                                    "default": {
+                                        "url": "https://saveda.ru/wp-content/uploads/2020/08/Melkaya-molodaya-kartoshka-s-petrushkoj.jpg"
+                                    }
+                                },
+                                "encryption": "off"
+                            }
+                        ]
+                    }
+                },
+                ],
+                "meta": {
+                    "code": 200,
+                    "count": 1
+                },
+            }
+
+## Group Bundle
 
 Bundles are packages of data that are being published by ambrosus node users. Single bundle contains assets, public events and stubs of private events, that user created since last bundle publication.
 
@@ -2273,6 +3292,7 @@ Fetches a list of all bundles of current user
                     "previous": "eyIkb2lkIjoiNjFhNGE4MWNmNjE2YmEwMDNjY2IyOGMwIn0"
                 }
             }
+
 
 ## /bundle/{bundleId}
 __ⓘ Note:__  Available for both Hermes and Atlas nodes.
@@ -2431,7 +3451,7 @@ __ⓘ Note:__  Available onlyfor Atals nodes.
     + Body
 
 
-## Group Bundles2
+## Group Bundle2
 __ⓘ Note:__ Available only for Hermes nodes.
 Bundles are packages of data that are being published by ambrosus node users. Single bundle contains assets, public events and stubs of private events, that user created since last bundle publication.
 
@@ -3749,7 +4769,7 @@ __Warning__ super_account permission is required
     + Body
 
 ## /organization/request/{requestId}/approve
-__Warningn__ super_account permission is required
+__Warning__ super_account permission is required
 #### Approve join request [GET]
 + Parameters
 
@@ -3793,6 +4813,21 @@ __Warning__ super_account permission is required
 + Response 200 (application/json)
 
     + Body
+
+
+## Group Health
+__ⓘ Note:__ Available only for Hermes node.
+
+## /health
+#### Get info about database connection [GET]
+
++ Response 200
+
+    + Body
+
+            {
+                "mongo_connected": "true"
+            }
 
 
 
