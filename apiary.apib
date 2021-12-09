@@ -2805,6 +2805,7 @@ Finds assets satisfying provided criteria.
                 + filed (string) - the field to be used in operation
                 + value (string) - the searched value
                 + operator (string) - the greater than
+        + search (string) - the text to search
 
     + Body
 
@@ -2814,6 +2815,7 @@ Finds assets satisfying provided criteria.
                     "value": "ambrosus.asset.info",
                     "operator": "equal"
                 }],
+                "search": "some text"
             }
 
 
@@ -3415,8 +3417,12 @@ Bundles are used to exchange data between the users of ambrosus network. Every b
 
     + Body
 
-## /bundle2/query
+## /bundle2/query{?limit,next,previous}
 #### Query underlying mongoDB [POST]
++ Parameters
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 + Request (application/json)
 
     + Headers
@@ -3460,9 +3466,9 @@ Bundles are used to exchange data between the users of ambrosus network. Every b
             }
 
 ## /bundle2/push
-__Warning__ super_account permision is required
+__Warning__ super_account permission is required
 #### Push bundles from hermes to network [GET]
-+ Response 200 (applicaiton/json)
++ Response 200 (application/json)
 
     Bundles are pushed.
 
