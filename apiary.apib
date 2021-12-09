@@ -48,7 +48,7 @@ __ⓘ Note:__  Available only for Hermes node.
 
 An account represents an actor in the supply chain. This can be a person, a company, a location, etc.
 
-It consists of a pair - a public identifer `address` (compatible with ethereum address) and a `secret` (compatible with ethereum private key). Additionally an account has a list of permissions, which specify what actions user can perform and an access levels, which specifies what data is user able to view.
+It consists of a pair - a public identifier `address` (compatible with ethereum address) and a `secret` (compatible with ethereum private key). Additionally an account has a list of permissions, which specify what actions user can perform and an access levels, which specifies what data is user able to view.
 
 Account can hold any number of following permissions:
 
@@ -90,7 +90,7 @@ __ⓘ Note:__  super_account and manage_accounts permissions are required
 
     + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
-    + previous (string, optional) - the id of the previus page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Request (application/json)
 
@@ -244,7 +244,7 @@ __ⓘ Note:__  super_account and manage_accounts permissions are required
     + Body
 
 
-##### Update accout info [PUT]
+##### Update account info [PUT]
 + Parameters
     + accountAddress (string) - An address of the account
 
@@ -401,10 +401,10 @@ __ⓘ Note:__  super_account and manage_accounts permissions are required
                 + fullName (string) - A full name of a person.
             + (object) - the organization
                 + owner (string) - the organization's owner
-                + title (string) - the name of organizaiton
+                + title (string) - the name of organization
                 + timeZone (string) - the time zone where organization works
                 + legalAddress (string) - the address of organization headquarter
-                + active (boolean) - the status of organizaiton
+                + active (boolean) - the status of organization
                 + organizationId (number) - the id of organization
         + meta (object)
             + code (number) - the status code
@@ -471,12 +471,12 @@ __ⓘ Note:__  super_account and manage_accounts permissions are required
 
 
 ## /account/query{?limit,next,previous}
-#### Make a monogoDB query [POST]
+#### Make a mongoDB query [POST]
 + Parameters
 
     + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
-    + previous (string, optional) - the id of the previus page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Request (application/json)
 
@@ -566,7 +566,7 @@ __ⓘ Note:__  Available only for Hermes node.
 
 An account represents an actor in the supply chain. This can be a person, a company, a location, etc.
 
-It consists of a pair - a public identifer `address` (compatible with ethereum address) and a `secret` (compatible with ethereum private key). Additionally an account has a list of permissions, which specify what actions user can perform and an access levels, which specifies what data is user able to view.
+It consists of a pair - a public identifier `address` (compatible with ethereum address) and a `secret` (compatible with ethereum private key). Additionally an account has a list of permissions, which specify what actions user can perform and an access levels, which specifies what data is user able to view.
 
 Account can hold any number of following permissions:
 
@@ -658,7 +658,7 @@ Finds accounts satisfying provided criteria.
 
 + Response 403 (application/json)
 
-    Invalid signature or missing manage_accouts permission
+    Invalid signature or missing manage_accounts permission
 
     + Body
 
@@ -874,7 +874,7 @@ Assets are identified by an `assetId` field which is a sha3 hash calculated from
 
 
 ### /assets/{assetId}
-__ⓘ Note:__  Available for both Hermes and Atlas nodes.
+__ⓘ Note:__  Available only for Atlas node.
 #### Fetch an asset by Id [GET]
 
 Fetches asset with provided assetId in the system.
@@ -1207,7 +1207,7 @@ Finds assets satisfying provided criteria.
 
     + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
-    + previous (string, optional) - the id of the previus page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Response 200 (application/json)
 
@@ -1231,7 +1231,7 @@ Finds assets satisfying provided criteria.
                     + bundleUploadTimestamp (number) - If the asset has already been added to a bundle, timestamp of bundle proof upload
         + meta (object)
             + code (number) - the status code
-            + cocunt (number) - the number of results in data array
+            + count (number) - the number of results in data array
         + pagination (object)
             + hasNext (boolean) - shows if there is a next page
             + hasPrevious (boolean) - shows if there is a previous page
@@ -1346,7 +1346,7 @@ Finds assets satisfying provided criteria.
 
         + data (boolean) - shows if asset exists
         + meta (object)
-            + code (number) - the satus code
+            + code (number) - the status code
 
     + Body
 
@@ -1364,7 +1364,7 @@ Finds assets satisfying provided criteria.
 
     + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
-    + previous (string, optional) - the id of the previus page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Request
 
@@ -1402,7 +1402,7 @@ Finds assets satisfying provided criteria.
                 + metadata (object)
                     + bundleId (string) - the id of the bundle
                     + bundleUploadTimestamp (number) - the unix timestamp of bundle upload time
-                    + bundleProofBlock  (number) - the number of bundle's proog block
+                    + bundleProofBlock  (number) - the number of bundle's proof block
                     + bundleTransactionHash (string) - the hash of the transaction that uploaded bundle
                 + content (object)
                     + idData (object)
@@ -1477,7 +1477,7 @@ Finds assets satisfying provided criteria.
 
     + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
-    + previous (string, optional) - the id of the previus page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Response 200 (application/json)
 
@@ -1764,7 +1764,7 @@ Finds assets satisfying provided criteria.
                 + metadata (object)
                     + bundleId (string) - the id of the bundle
                     + bundleUploadTimestamp (number) - the unix timestamp of bundle upload time
-                    + bundleProofBlock  (number) - the number of bundle's proog block
+                    + bundleProofBlock  (number) - the number of bundle's proof block
                     + bundleTransactionHash (string) - the hash of the transaction that uploaded bundle
                 + content (object)
                     + idData (object)
@@ -3058,7 +3058,7 @@ Shows available event types
 
 ## /event2/latest/type
 #### Get latest event to related assets [POST]
-Return latest events raleted to given types
+Return latest events related to given types
 
 + Request
 
@@ -3213,7 +3213,7 @@ Fetches a bundle by identifier
     + Body
 
 ## /bundle/{bundleId}/info
-__ⓘ Note:__  Availabel for both Hermes and Atlas nodes.
+__ⓘ Note:__  Available for both Hermes and Atlas nodes.
 #### Fetch bundle metadata [GET]
 
 Fetches a bundle metadata by identifier
@@ -3344,7 +3344,7 @@ __ⓘ Note:__  Available only for Hermes nodes.
                 }
             }
 
-## /{bundleId}/restore
+## /bundle/{bundleId}/restore
 __ⓘ Note:__  Available only for Atlas nodes.
 #### Restore bundle from backup [GET]
 + Response 200
@@ -3657,7 +3657,7 @@ __Warning__ super_account permissions required
 
 ## /analytics/{collection}/count/{start}/{end}/total
 __Warning__ super_account permissions required
-#### Get numbre of assets or events in whole node [GET]
+#### Get number of assets or events in whole node [GET]
 + Parameters
 
     + collection (string, required) - Collection type (event or asset)
@@ -3754,17 +3754,17 @@ __Warning__ super_account permissions required
         + data (object) - contains requested data
             + address (string) - address of this node
             + content (object) - response contents
-                + organizaitons (array) - the array of organizations saved on this node
+                + organizations (array) - the array of organizations saved on this node
                     + (object) - the organization
                         + owner (string) - the account address of organizations owner
                         + title (string) - the name of this organization
                         + createdBy (string) - the account address of user who created this organization
                         + organizationId (number) - the unique id of this organization
                         + active (boolean) - the status of organization
-                        + createdOn (number) - the time of organizatin creation
+                        + createdOn (number) - the time of organization creation
                 + organizationKeys (array) - the public keys of organizations
                     + (object)
-                        + organizatinId (number) - the unique id of this organization
+                        + organizationId (number) - the unique id of this organization
                         + key (string) - the public key of this organization
                 + accounts (array) - the list of account stored on this node
                     + (object) - the account
@@ -3776,7 +3776,7 @@ __Warning__ super_account permissions required
                         + registeredBy (string) - account address of the account creator
                         + registeredOn (number) - the unix timestamp of time went the account was registered
                         + active (boolean) - the status of the account
-                + accountDetails (array) - the ditails about account
+                + accountDetails (array) - the details about account
                     + (object)
                         + address (string) - the account address
                         + email (string) - the email
@@ -3851,17 +3851,17 @@ __Warning__ super_account is required
         + data (object) - contains requested data
             + address (string) - address of this node
             + content (object) - response contents
-                + organizaitons (array) - the array of organizations saved on this node
+                + organizations (array) - the array of organizations saved on this node
                     + (object) - the organization
                         + owner (string) - the account address of organizations owner
                         + title (string) - the name of this organization
                         + createdBy (string) - the account address of user who created this organization
                         + organizationId (number) - the unique id of this organization
                         + active (boolean) - the status of organization
-                        + createdOn (number) - the time of organizatin creation
+                        + createdOn (number) - the time of organization creation
                 + organizationKeys (array) - the public keys of organizations
                     + (object)
-                        + organizatinId (number) - the unique id of this organization
+                        + organizationId (number) - the unique id of this organization
                         + key (string) - the public key of this organization
                 + accounts (array) - the list of account stored on this node
                     + (object) - the account
@@ -3873,7 +3873,7 @@ __Warning__ super_account is required
                         + registeredBy (string) - account address of the account creator
                         + registeredOn (number) - the unix timestamp of time went the account was registered
                         + active (boolean) - the status of the account
-                + accountDetails (array) - the ditails about account
+                + accountDetails (array) - the details about account
                     + (object)
                         + address (string) - the account address
                         + email (string) - the email
@@ -3973,7 +3973,7 @@ __Warning__ super_account permission is required
         + percent_change_24h (string) - the change of the price of the token in 24 hour time interval
         + percent_change_7d (string) - the change of teh price of the token in 7 days time interval
         + price_usd (number) - the price of the token in USD
-        + 24_volume_usd (number) - the volume of token exhange in 24 hour time interval messuared in USD
+        + 24_volume_usd (number) - the volume of token exchange in 24 hour time interval measured in USD
         + market_cap_usd (number) - the capitalization of the token market
         + createdAt (number) - the unix timestamp of the request time
 
@@ -4074,7 +4074,7 @@ __Warning__ super_account permission in required
         + meta (object) - the metadata of the object
             + code (number) - the status code of the response
             + count (number) - the count of the organizations returned
-        + pagination (object) - the data to help handle paggination
+        + pagination (object) - the data to help handle pagination
             + hasNext (boolean) - shows if there is next page
             + hasPrevious (boolean) - shows if there is previous page
 
@@ -4132,7 +4132,7 @@ __Warning__ super_account is required
 ##### Get info about organization [GET]
 + Parameters
 
-    + organizationId (number, required) - the organizaiton Id
+    + organizationId (number, required) - the organization Id
 
 + Response 200 (application/json)
 
@@ -4226,20 +4226,20 @@ __Warning__ super_account is required
 __ⓘ Note:__ Available only for Hermes node.
 Organization represents a company that produce goods to be delivered in supply chain.
 This is an object that consist of the next fields:
-* organizationId - nunmber, required - represent id of organization in the system
+* organizationId - number, required - represent id of organization in the system
 * owner - string, required - account address of the organization's owner
 * active - boolean, required - shows if organization is active in the system
 * title - string, optional - name of the organization
-* timeZone - string, oprtional - time zone of organization
-* legalAddres - string, optional - legal address of the organization
+* timeZone - string, optional - time zone of organization
+* legalAddrres - string, optional - legal address of the organization
 * logo - string, optional - the url to the organization's logo
 * colorPrimary - string, optional - used in organization's page styling
 * colorSecondary - string, optional - used in organization's page styling
 * createdBy - string, optional - account address of the organization's creator
 * createdOn - number, optional - unix timestamp of organization's creations time
 * modifiedBy - string, optional - account address of last person who modified organization data
-* modifiedOn - number, optional - unix timestamp of last person who modified organizaiton data
-* inviteEmail - string, optional - email addres from which invites would be send
+* modifiedOn - number, optional - unix timestamp of last person who modified organization data
+* inviteEmail - string, optional - email addrres from which invites would be send
 * inviteTemplate - string, optional - invitation template
 
 
@@ -4248,12 +4248,11 @@ __Warning__ super_account is required
 #### Get info about organization [GET]
 + Parameters
 
-    + organizationId (number, required) - the organizaiton Id
+    + organizationId (number, required) - the organization Id
 
 + Response 200 (application/json)
 
     + Attributes
-
         + data (object) - the requested data
             + _id (string) - the internal id
             + owner (string) - the account address of the organization owner
@@ -4293,14 +4292,14 @@ __Warning__ super_account is required
 #### Create organization backup [POST]
 + Parameters
 
-    + organizationId (number, required) - the organizaiton Id
+    + organizationId (number, required) - the organization Id
 
 + Response 200 (application/json)
 
     + Attributes
 
         + data (object)
-            + (string) - the hex value creted from organization backup
+            + (string) - the hex value created from organization backup
         + meta (object)
             + code (number) - the response status code
 
@@ -4357,18 +4356,18 @@ __Warning__ super_account permission is required
 ## Group Organization Invite
 Invite - invitation to join organization. Invitation object consist of:
 * organizationId - number, required - the id of the organization who send invite
-* email - string, required - the email to which incitation would be send
-* subject - string, required - the subejct for the email letter
+* email - string, required - the email to which invitation would be send
+* subject - string, required - the subject for the email letter
 * inviteId - string, required - the id of the invitation
-* invitaionLInk - string, reuired - the url to accept invitation
+* invitationLInk - string, required - the url to accept invitation
 * sent - boolean, required - the status of the invitation
 * validUntil - number, required - the unix timestamp of time when invitation should expire
 * createdBy - string, required - the account address of the invitation creator
-* createdOn - number, required - the unix timestamp of time when incitation was created
+* createdOn - number, required - the unix timestamp of time when invitation was created
 
 ## /organization/invite{?limit,next,previous}
 __Warning__ super_account permission is required
-#### Get all invintes on node [GET]
+#### Get all invites on node [GET]
 + Parameters
 
     + limit (integer, optional) - Number of accounts to return per page (limited to 100)
@@ -4406,7 +4405,7 @@ __Warning__ super_account permission is required
                     "email": "test@example.com",
                     "subject": "Invitation",
                     "inviteId": "10",
-                    "invitationLink": "inivite.example.com".
+                    "invitationLink": "invite.example.com".
                     "sent": true,
                     "validUntil": 1633594494,
                     "createdBy": "0x0C6C7264E509430bcFa2469bA4eB738c94e6C75A",
@@ -4541,7 +4540,7 @@ __Warning__ super_account permission is required
 
         + data (array) - the array of requests
             + (object) - the request
-                + address (string) - the account address of the one who requests to join organizaiton
+                + address (string) - the account address of the one who requests to join organization
                 + title (string) - the title of the request message
                 + email (string) - the email to sent the request
                 + message (string) - the message to write in email
@@ -4608,9 +4607,9 @@ __Warning__ super_account permission is required
 
     + Attributes
 
-        + data (array) - the array of requesed requests
+        + data (array) - the array of refused requests
             + (object) - the request
-                + address (string) - the account address of the one who requests to join organizaiton
+                + address (string) - the account address of the one who requests to join organization
                 + title (string) - the title of the request message
                 + email (string) - the email to sent the request
                 + message (string) - the message to write in email
