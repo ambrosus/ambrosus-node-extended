@@ -1,3 +1,4 @@
+FORMAT: 1A
 HOST: https://test.ambrosus.io
 
 # Ambrosus Node API
@@ -354,7 +355,8 @@ __ⓘ Note:__  super_account and manage_accounts permissions are required
                 "email": "test@example.com"
             }
 
-+ Resonse 200
+
++ Response 200 (application/json)
 
     + Attributes
 
@@ -365,14 +367,14 @@ __ⓘ Note:__  super_account and manage_accounts permissions are required
 
     + Body
 
-        {
-            "data": {
-                "secret": "long hex value"
-            },
-            "meta": {
-                "code": 200
+            {
+                "data": {
+                    "secret": "long hex value"
+                },
+                "meta": {
+                    "code": 200
+                }
             }
-        }
 
 
 
@@ -575,7 +577,7 @@ Account can hold any number of following permissions:
 * register_accounts - allows account to add new accounts
 * manage_accounts - allows account to view and manage existing accounts
 
-### /account2/list{?limit,next, previous}
+### /account2/list{?limit,next,previous}
 
 #### List accounts [GET]
 
@@ -617,6 +619,7 @@ Finds accounts satisfying provided criteria.
             + hasPrevious (boolean) - shows if there is a previous page
 
     + Body
+
             {
                 "data":[
                     {
@@ -1197,7 +1200,7 @@ An Asset on its own function only as a handle for a Event stream. Because of thi
 
 Assets are identified by an `assetId` field which is a sha3 hash calculated from the `content` field.
 
-## /asset{?linit, next, previous}
+## /asset{?limit,next,previous}
 #### Get list of assets [GET]
 Finds assets satisfying provided criteria.
 + Parameters
@@ -1345,7 +1348,7 @@ Finds assets satisfying provided criteria.
         + meta (object)
             + code (number) - the satus code
 
-    +Body
+    + Body
 
             {
                 "data": false,
@@ -1354,7 +1357,7 @@ Finds assets satisfying provided criteria.
                 }
             }
 
-## /asset/query{?limit, next, previous}
+## /asset/query{?limit,next,previous}
 #### Get list of assets [GET]
 Finds assets satisfying provided criteria.
 + Parameters
@@ -1464,7 +1467,7 @@ An Asset on its own function only as a handle for a Event stream. Because of thi
 
 Assets are identified by an `assetId` field which is a sha3 hash calculated from the `content` field.
 
-### /asset2/list{?limit, next, previous}
+### /asset2/list{?limit,next,previous}
 
 #### Find assets [GET]
 
@@ -1705,7 +1708,7 @@ __Warning__ Request sender needs to have "create_asset" permission
         + meta (object)
             + code (number) - the satus code
 
-    +Body
+    + Body
 
             {
                 "data": false,
@@ -1718,9 +1721,10 @@ __Warning__ Request sender needs to have "create_asset" permission
 ## /asset2/query{?limit,next,previous}
 #### Get list of assets [GET]
 Finds assets satisfying provided criteria.
+
 + Parameters
 
-    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
     + previous (string, optional) - the id of the previous page. Take from response.
 
@@ -2006,15 +2010,14 @@ Following event types are predefined:
 * `ambrosus.event.location` - Location of an event. Can be expressed with geographical coordinates.
     * `geoJson`: geographical point described with geoJson formula (As described in RFC7946, The GeoJSON Format)
 
-### /event{?limit, next, previous}
+### /event{?limit,next,previous}
 
 #### Find events [GET]
 
 Finds event satisfying provided criteria.
 
 + Parameters
-
-    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
     + previous (string, optional) - the id of the previous page. Take from response.
 
@@ -2159,7 +2162,7 @@ Fetches an event by identifier
         + meta (object)
             + code (number) - the satus code
 
-    +Body
+    + Body
 
             {
                 "data": false,
@@ -2172,8 +2175,7 @@ Fetches an event by identifier
 #### Get list of assets [POST]
 Finds assets satisfying provided criteria.
 + Parameters
-
-    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
     + previous (string, optional) - the id of the previous page. Take from response.
 
@@ -2293,8 +2295,7 @@ Finds assets satisfying provided criteria.
 #### Get list of assets [POST]
 Uses full text search mongodb feature.
 + Parameters
-
-    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
     + previous (string, optional) - the id of the previous page. Take from response.
 
@@ -2458,7 +2459,7 @@ Return latest events raleted to given types
 
 
 
-+ Reposnse 200
++ Response 200
 
     + Body
 
@@ -2530,15 +2531,14 @@ Following event types are predefined:
     * `geoJson`: geographical point described with geoJson formula (As described in RFC7946, The GeoJSON Format)
 
 
-### /event2/list{?assetId,limit,next,previous,}
+### /event2/list{?assetId,limit,next,previous}
 
 #### Find events [GET]
 
 Finds event satisfying provided criteria.
 
 + Parameters
-
-    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
     + previous (string, optional) - the id of the previous page. Take from response.
 
@@ -2778,7 +2778,7 @@ __Warning__ Message sender needs to have "create_event" permission
         + meta (object)
             + code (number) - the satus code
 
-    +Body
+    + Body
 
             {
                 "data": false,
@@ -2792,7 +2792,7 @@ __Warning__ Message sender needs to have "create_event" permission
 Finds assets satisfying provided criteria.
 + Parameters
 
-    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
     + previous (string, optional) - the id of the previous page. Take from response.
 
@@ -2912,8 +2912,7 @@ Finds assets satisfying provided criteria.
 #### Get list of assets [POST]
 Finds assets satisfying provided criteria.
 + Parameters
-
-    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
     + previous (string, optional) - the id of the previous page. Take from response.
 
@@ -3075,7 +3074,7 @@ Return latest events raleted to given types
 
 
 
-+ Reposnse 200
++ Response 200
 
     + Body
 
@@ -3924,7 +3923,6 @@ __Warning__ super_account permission is required
 + Response 200 (application/json)
 
     + Attributes
-
         + _id (string) - internal id of the token
         + id (number) - id of the token
         + name (string) - the name of the token
@@ -4020,7 +4018,7 @@ __Warning__ super_account permission in required
 ##### Get information about all known organizations [GET]
 + Parameters
 
-    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
     + previous (string, optional) - the id of the previous page. Take from response.
 
@@ -4128,7 +4126,7 @@ __Warning__ super_account is required
 ##### Get accounts associated with this organization [GET]
 + Parameters
 
-    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
     + previous (string, optional) - the id of the previous page. Take from response.
 
@@ -4336,7 +4334,7 @@ __Warning__ super_account permission is required
 #### Get all invintes on node [GET]
 + Parameters
 
-    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
     + previous (string, optional) - the id of the previous page. Take from response.
 
