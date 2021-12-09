@@ -1,4 +1,3 @@
-FORMAT: 1A
 HOST: https://test.ambrosus.io
 
 # Ambrosus Node API
@@ -18,7 +17,7 @@ There is a special third option where you provide a http authorization header `A
 
 ### Immutability
 
-__Note:__ All data is immutable, therefore, you will not find update or delete calls.
+__Note:__ All data is immutable, therefore, you will not find update or delete calls. The organization and account are exceptions.
 
 ## Serialization
 
@@ -83,13 +82,14 @@ Account can hold any number of following permissions:
                 }
             }
 
-## /account{?perPage,page}
+## /account{?limit,next,previous}
 __ⓘ Note:__  super_account and manage_accounts permissions are required
 #### Get list of all accounts [GET]
 + Parameters
 
-    + perPage (integer, optional) - Number of accounts to return per page (limited to 100)
-    + page (integer, optional) - Number of page (more search results than specified in perPage parameter concludes more than one page)
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previus page. Take from response.
 
 + Request (application/json)
 
@@ -116,8 +116,10 @@ __ⓘ Note:__  super_account and manage_accounts permissions are required
             + code (number) - the status code
             + count (number) - the count of result object
         + pagination (object) - the helper to handle pagination
-            hasNext (boolean) - shows if there is next page
-            hasPrevious (boolean) - shows if there is previous page
+            + hasNext (boolean) - shows if there is next page
+            + next (string) - the id of the next page
+            + hasPrevious (boolean) - shows if there is previous page
+            + previous (string) - the id of the previous page
 
 
     + Body
@@ -466,12 +468,13 @@ __ⓘ Note:__  super_account and manage_accounts permissions are required
 
 
 
-## /account/query{?perPage,page}
+## /account/query{?limit,next,previous}
 #### Make a monogoDB query [POST]
 + Parameters
 
-    + perPage (integer, optional) - Number of accounts to return per page (limited to 100)
-    + page (integer, optional) - Number of page (more search results than specified in perPage parameter concludes more than one page)
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previus page. Take from response.
 
 + Request (application/json)
 
@@ -572,7 +575,7 @@ Account can hold any number of following permissions:
 * register_accounts - allows account to add new accounts
 * manage_accounts - allows account to view and manage existing accounts
 
-### /account2/list{?perPage,page}
+### /account2/list{?limit,next, previous}
 
 #### List accounts [GET]
 
@@ -582,8 +585,9 @@ Finds accounts satisfying provided criteria.
 
 + Parameters
 
-    + perPage (integer, optional) - Number of accounts to return per page (limited to 100)
-    + page (integer, optional) - Number of page (more search results than specified in perPage parameter concludes more than one page)
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previus page. Take from response.
 
 + Request (application/json)
 
@@ -939,7 +943,7 @@ Fetches asset with provided assetId in the system.
     + Body
 
 ### /assets{?perPage,page,createdBy,fromTimestamp,toTimestamp,identifier}
-__ⓘ Note:__  Available only for Atlas node.
+__ⓘ Note:__  Available only for Atlas node. For Hermes use asset2/query.
 #### Find assets [GET]
 
 Finds assets satisfying provided criteria.
@@ -1016,24 +1020,11 @@ Finds assets satisfying provided criteria.
                }
             }
 
-### /assets/{assetId}/events{?fromTimestamp,toTimestamp,perPage,page,createdBy,data}
-__ⓘ Note:__ Available for both Hermes and Atlas node.
+### /assets/{assetId}/events
+__ⓘ Note:__ Available  only for Atlas node.
 #### Find events [GET]
 
 Finds event satisfying provided criteria.
-
-+ Parameters
-
-    + assetId (string, required) - ID of an asset
-    + fromTimestamp (integer, optional) - earliest timestamp for the events
-    + toTimestamp (integer, optional) - latest timestamp for the events
-    + perPage (integer, optional) - number of events to return per page (limited to 100)
-    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
-    + createdBy (string, optional) - address of account that created targeting events
-    + data : data[type]=ambrosus.event.custom (object, optional) - This syntax allows to query for events by any fields in data array. Query for nested fields is possible, e.g. data[acceleration.x]=10. By default the type of the value is string. To provide a number, use data[acceleration.x]=number(10). To provide geo coordinates use data[geoJson]=geo(longitude, latitude, radius). It is possible to match data values by the pattern using the pattern decorator like so `data[type]=pattern(ambrosus.event.*)`. It support 2 kinds of special characters:
-       - __*__ matches any string, including the null string.
-       - __?__ matches any single character
-       Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
 
 + Response 200 (application/json)
 
@@ -1206,20 +1197,14 @@ An Asset on its own function only as a handle for a Event stream. Because of thi
 
 Assets are identified by an `assetId` field which is a sha3 hash calculated from the `content` field.
 
-## /asset{?perPage,page,createdBy,fromTimestamp,toTimestamp,identifier}
+## /asset{?linit, next, previous}
 #### Get list of assets [GET]
 Finds assets satisfying provided criteria.
 + Parameters
 
-    + perPage (integer, optional) - number of assets to return per page (limited to 100)
-    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
-    + createdBy (string, optional) - address of account that created targeting assets
-    + fromTimestamp (integer, optional) - earliest timestamp for the asset
-    + toTimestamp (integer, optional) - latest timestamp for the asset
-    + identifier : identifier[{identifierType}]={identifierValue} (string, optional) - This syntax allows to query for assets that have an associated event containing data type `ambrosus.event.identifier` (see Events Data field section) with same identifier of same type. It is possible to find identifiers matching a pattern with help of the pattern decorator. You can use like this: identifier[vin]=pattern(3FRNF65N*). It supports 2 kinds of special characters:
-      - __*__ matches any string, including the null string.
-      - __?__ matches any single character
-      Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previus page. Take from response.
 
 + Response 200 (application/json)
 
@@ -1369,20 +1354,14 @@ Finds assets satisfying provided criteria.
                 }
             }
 
-## /asset/query{?perPage,page,createdBy,fromTimestamp,toTimestamp,identifier}
+## /asset/query{?limit, next, previous}
 #### Get list of assets [GET]
 Finds assets satisfying provided criteria.
 + Parameters
 
-    + perPage (integer, optional) - number of assets to return per page (limited to 100)
-    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
-    + createdBy (string, optional) - address of account that created targeting assets
-    + fromTimestamp (integer, optional) - earliest timestamp for the asset
-    + toTimestamp (integer, optional) - latest timestamp for the asset
-    + identifier : identifier[{identifierType}]={identifierValue} (string, optional) - This syntax allows to query for assets that have an associated event containing data type `ambrosus.event.identifier` (see Events Data field section) with same identifier of same type. It is possible to find identifiers matching a pattern with help of the pattern decorator. You can use like this: identifier[vin]=pattern(3FRNF65N*). It supports 2 kinds of special characters:
-      - __*__ matches any string, including the null string.
-      - __?__ matches any single character
-      Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previus page. Take from response.
 
 + Request
 
@@ -1485,7 +1464,7 @@ An Asset on its own function only as a handle for a Event stream. Because of thi
 
 Assets are identified by an `assetId` field which is a sha3 hash calculated from the `content` field.
 
-### /asset2/list{?perPage,page,createdBy,fromTimestamp,toTimestamp,identifier}
+### /asset2/list{?limit, next, previous}
 
 #### Find assets [GET]
 
@@ -1493,15 +1472,9 @@ Finds assets satisfying provided criteria.
 
 + Parameters
 
-    + perPage (integer, optional) - number of assets to return per page (limited to 100)
-    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
-    + createdBy (string, optional) - address of account that created targeting assets
-    + fromTimestamp (integer, optional) - earliest timestamp for the asset
-    + toTimestamp (integer, optional) - latest timestamp for the asset
-    + identifier : identifier[{identifierType}]={identifierValue} (string, optional) - This syntax allows to query for assets that have an associated event containing data type `ambrosus.event.identifier` (see Events Data field section) with same identifier of same type. It is possible to find identifiers matching a pattern with help of the pattern decorator. You can use like this: identifier[vin]=pattern(3FRNF65N*). It supports 2 kinds of special characters:
-      - __*__ matches any string, including the null string.
-      - __?__ matches any single character
-      Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previus page. Take from response.
 
 + Response 200 (application/json)
 
@@ -1742,20 +1715,14 @@ __Warning__ Request sender needs to have "create_asset" permission
             }
 
 
-## /asset2/query{?perPage,page,createdBy,fromTimestamp,toTimestamp,identifier}
+## /asset2/query{?limit,next,previous}
 #### Get list of assets [GET]
 Finds assets satisfying provided criteria.
 + Parameters
 
-    + perPage (integer, optional) - number of assets to return per page (limited to 100)
-    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
-    + createdBy (string, optional) - address of account that created targeting assets
-    + fromTimestamp (integer, optional) - earliest timestamp for the asset
-    + toTimestamp (integer, optional) - latest timestamp for the asset
-    + identifier : identifier[{identifierType}]={identifierValue} (string, optional) - This syntax allows to query for assets that have an associated event containing data type `ambrosus.event.identifier` (see Events Data field section) with same identifier of same type. It is possible to find identifiers matching a pattern with help of the pattern decorator. You can use like this: identifier[vin]=pattern(3FRNF65N*). It supports 2 kinds of special characters:
-      - __*__ matches any string, including the null string.
-      - __?__ matches any single character
-      Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
+    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Request
 
@@ -1849,7 +1816,7 @@ Finds assets satisfying provided criteria.
 
 
 ## Group Events
-__ⓘ Note:__ Available only for Atlas node.\
+__ⓘ Note:__ Available only for Atlas node. For Hermes use events2/query.
 Events describe all registered changes of state that occurred with the asset. E.g. measured temperature, noted big acceleration or changing pallets. An event consists of the 3 major parts:
 
 * idData – Public information about an event. Contains the ID of the asset, address of the user who has registered the event, minimal access level required to view private data of the event and the timestamp of the event. Additionally idData holds the hash of the Data field.
@@ -2039,7 +2006,7 @@ Following event types are predefined:
 * `ambrosus.event.location` - Location of an event. Can be expressed with geographical coordinates.
     * `geoJson`: geographical point described with geoJson formula (As described in RFC7946, The GeoJSON Format)
 
-### /event{?assetId,fromTimestamp,toTimestamp,perPage,page,createdBy,data}
+### /event{?limit, next, previous}
 
 #### Find events [GET]
 
@@ -2047,16 +2014,9 @@ Finds event satisfying provided criteria.
 
 + Parameters
 
-    + assetId (string, optional) - ID of the asset the events are targeting
-    + fromTimestamp (integer, optional) - earliest timestamp for the events
-    + toTimestamp (integer, optional) - latest timestamp for the events
-    + perPage (integer, optional) - number of events to return per page (limited to 100)
-    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
-    + createdBy (string, optional) - address of account that created targeting events
-    + data : data[type]=ambrosus.event.custom (object, optional) - This syntax allows to query for events by any fields in data array. Query for nested fields is possible, e.g. data[acceleration.x]=10. By default the type of the value is string. To provide a number, use data[acceleration.x]=number(10). To provide geo coordinates use data[geoJson]=geo(longitude, latitude, radius). It is possible to match data values by the pattern using the pattern decorator like so `data[type]=pattern(ambrosus.event.*)`. It support 2 kinds of special characters:
-       - __*__ matches any string, including the null string.
-       - __?__ matches any single character
-       Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
+    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Response 200 (application/json)
 
@@ -2208,16 +2168,14 @@ Fetches an event by identifier
                 }
             }
 
-## /event/query{?perPage,page,createdBy,fromTimestamp,toTimestamp}
+## /event/query{?limit,next,previous}
 #### Get list of assets [POST]
 Finds assets satisfying provided criteria.
 + Parameters
 
-    + perPage (integer, optional) - number of events to return per page (limited to 100)
-    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
-    + createdBy (string, optional) - address of account that created targeting assets
-    + fromTimestamp (integer, optional) - earliest timestamp for the event
-    + toTimestamp (integer, optional) - latest timestamp for the event
+    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Request
 
@@ -2331,16 +2289,14 @@ Finds assets satisfying provided criteria.
             }
 
 
-## /event/search{?perPage,page,createdBy,fromTimestamp,toTimestamp}
+## /event/search{?limit,next,previous}
 #### Get list of assets [POST]
-Finds assets satisfying provided criteria.
+Uses full text search mongodb feature.
 + Parameters
 
-    + perPage (integer, optional) - number of events to return per page (limited to 100)
-    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
-    + createdBy (string, optional) - address of account that created targeting assets
-    + fromTimestamp (integer, optional) - earliest timestamp for the event
-    + toTimestamp (integer, optional) - latest timestamp for the event
+    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Request
 
@@ -2351,6 +2307,7 @@ Finds assets satisfying provided criteria.
                 + filed (string) - the field to be used in operation
                 + value (string) - the searched value
                 + operator (string) - the greater than
+        + search (string) - runs full text search with this word
 
     + Body
 
@@ -2360,6 +2317,7 @@ Finds assets satisfying provided criteria.
                     "value": "ambrosus.asset.info",
                     "operator": "equal"
                 }],
+                "search": "cow"
             }
 
 
@@ -2572,7 +2530,7 @@ Following event types are predefined:
     * `geoJson`: geographical point described with geoJson formula (As described in RFC7946, The GeoJSON Format)
 
 
-### /event2/list{?assetId,fromTimestamp,toTimestamp,perPage,page,createdBy,data}
+### /event2/list{?assetId,limit,next,previous,}
 
 #### Find events [GET]
 
@@ -2580,16 +2538,9 @@ Finds event satisfying provided criteria.
 
 + Parameters
 
-    + assetId (string, optional) - ID of the asset the events are targeting
-    + fromTimestamp (integer, optional) - earliest timestamp for the events
-    + toTimestamp (integer, optional) - latest timestamp for the events
-    + perPage (integer, optional) - number of events to return per page (limited to 100)
-    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
-    + createdBy (string, optional) - address of account that created targeting events
-    + data : data[type]=ambrosus.event.custom (object, optional) - This syntax allows to query for events by any fields in data array. Query for nested fields is possible, e.g. data[acceleration.x]=10. By default the type of the value is string. To provide a number, use data[acceleration.x]=number(10). To provide geo coordinates use data[geoJson]=geo(longitude, latitude, radius). It is possible to match data values by the pattern using the pattern decorator like so `data[type]=pattern(ambrosus.event.*)`. It support 2 kinds of special characters:
-       - __*__ matches any string, including the null string.
-       - __?__ matches any single character
-       Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
+    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Response 200 (application/json)
 
@@ -2728,7 +2679,7 @@ __Warning__ Message sender needs to have "create_event" permission
 
 + Parameters
 
-    + eventId: "0xc5cfd04.....30755ed65" (string, required) - ID of an asset
+    + eventId (string, required) - ID of an event
 
 + Request (application/json)
 
@@ -2836,16 +2787,14 @@ __Warning__ Message sender needs to have "create_event" permission
                 }
             }
 
-## /event2/query{?perPage,page,createdBy,fromTimestamp,toTimestamp}
+## /event2/query{?limit,next,previous}
 #### Get list of assets [POST]
 Finds assets satisfying provided criteria.
 + Parameters
 
-    + perPage (integer, optional) - number of events to return per page (limited to 100)
-    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
-    + createdBy (string, optional) - address of account that created targeting assets
-    + fromTimestamp (integer, optional) - earliest timestamp for the event
-    + toTimestamp (integer, optional) - latest timestamp for the event
+    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Request
 
@@ -2959,16 +2908,14 @@ Finds assets satisfying provided criteria.
             }
 
 
-## /event2/search{?perPage,page,createdBy,fromTimestamp,toTimestamp}
+## /event2/search{?limit,next,previous}
 #### Get list of assets [POST]
 Finds assets satisfying provided criteria.
 + Parameters
 
-    + perPage (integer, optional) - number of events to return per page (limited to 100)
-    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
-    + createdBy (string, optional) - address of account that created targeting assets
-    + fromTimestamp (integer, optional) - earliest timestamp for the event
-    + toTimestamp (integer, optional) - latest timestamp for the event
+    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Request
 
@@ -3182,7 +3129,7 @@ Bundles are packages of data that are being published by ambrosus node users. Si
 
 Bundles are used to exchange data between the users of ambrosus network. Every bundle's Id is stored on the blockchain.
 
-__ⓘ Note:__ This a lagecy API and should be used only with Atlas.
+__ⓘ Note:__ This a legacy API and should be used only with Atlas.
 
 ## /bundle/
 __ⓘ Note:__  Available only for Hermes nodes.
@@ -3321,7 +3268,7 @@ __ⓘ Note:__  Available only for Hermes nodes.
             }
 
 ## /bundle/query
-__ⓘ Note:__  Available onlt for Hermes nodes.
+__ⓘ Note:__  Available only for Hermes nodes.
 #### Query underlying mongoDB [POST]
 + Request (application/json)
 
@@ -4068,17 +4015,14 @@ This is an object that consist of the next fields:
 * inviteEmail - string, optional - email addres from which invites would be send
 * inviteTemplate - string, optional - invitation template
 
-## /organization/{?perPage,page,createdBy,data}
+## /organization/{?limit,next,previous}
 __Warning__ super_account permission in required
 ##### Get information about all known organizations [GET]
 + Parameters
-    + perPage (integer, optional) - number of organizations to return per page (limited to 100)
-    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
-    + createdBy (string, optional) - address of account that created targeting organizations
-    + data : data[type]=ambrosus.event.custom (object, optional) - This syntax allows to query for events by any fields in data array. Query for nested fields is possible, e.g. data[acceleration.x]=10. By default the type of the value is string. To provide a number, use data[acceleration.x]=number(10). To provide geo coordinates use data[geoJson]=geo(longitude, latitude, radius). It is possible to match data values by the pattern using the pattern decorator like so `data[type]=pattern(ambrosus.event.*)`. It support 2 kinds of special characters:
-       - __*__ matches any string, including the null string.
-       - __?__ matches any single character
-       Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
+
+    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Response 200 (application/json)
 
@@ -4180,18 +4124,13 @@ __Warning__ super_account is required
 
     + Body
 
-## /organization/{organizationId}/accounts{?perPage,page,createdBy,data}
+## /organization/{organizationId}/accounts{?limit,next,previous}
 ##### Get accounts associated with this organization [GET]
 + Parameters
 
-    + organizationId (number, required) - the organization Id+ Parameters
-    + perPage (integer, optional) - number of organizations to return per page (limited to 100)
-    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
-    + createdBy (string, optional) - address of account that created targeting organizations
-    + data : data[type]=ambrosus.event.custom (object, optional) - This syntax allows to query for events by any fields in data array. Query for nested fields is possible, e.g. data[acceleration.x]=10. By default the type of the value is string. To provide a number, use data[acceleration.x]=number(10). To provide geo coordinates use data[geoJson]=geo(longitude, latitude, radius). It is possible to match data values by the pattern using the pattern decorator like so `data[type]=pattern(ambrosus.event.*)`. It support 2 kinds of special characters:
-       - __*__ matches any string, including the null string.
-       - __?__ matches any single character
-       Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
+    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Response 200 (application/json)
 
@@ -4392,19 +4331,14 @@ Invite - invitation to join organization. Invitation object consist of:
 * createdBy - string, required - the account address of the invitation creator
 * createdOn - number, required - the unix timestamp of time when incitation was created
 
-## /organization/invite{?perPage,page,createdBy,data}
+## /organization/invite{?limit,next,previous}
 __Warning__ super_account permission is required
-#### Get all invints on node [GET]
+#### Get all invintes on node [GET]
 + Parameters
 
-    + perPage (integer, optional) - number of organizations to return per page (limited to 100)
-    + page (integer, optional) - number of page (more search results than specified in perPage parameter concludes more than one page)
-    + createdBy (string, optional) - address of account that created targeting organizations
-    + data : data[type]=ambrosus.event.custom (object, optional) - This syntax allows to query for events by any fields in data array. Query for nested fields is possible, e.g. data[acceleration.x]=10. By default the type of the value is string. To provide a number, use data[acceleration.x]=number(10). To provide geo coordinates use data[geoJson]=geo(longitude, latitude, radius). It is possible to match data values by the pattern using the pattern decorator like so `data[type]=pattern(ambrosus.event.*)`. It support 2 kinds of special characters:
-       - __*__ matches any string, including the null string.
-       - __?__ matches any single character
-       Note that patterns cannot have a special character as the first symbol for performance reasons. It is not possible to escape special characters.
-
+    + limit integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Response 200 (application/json)
 
@@ -4459,7 +4393,7 @@ __Warning__ super_account permission is required
 #### Check if invite exists [GET]
 + Parameters
 
-    + inviteId (number, required) - the invitaion Id
+    + inviteId (number, required) - the invitation Id
 + Response 200 (application/json)
 
     + Attributes
@@ -4535,7 +4469,7 @@ __Warning__ super_account permission is required
 
 ## /organization/invite/
 __Warning__ super_account permission is required
-#### Create invitation Buld [POST]
+#### Create invitation Bulk [POST]
 + Request
 
     + Attributes
@@ -4558,7 +4492,7 @@ __Warning__ super_account permission is required
 Request is the request to join organization. Consists of:
 * address - string, required - the account address that requests to join.
 * title - string, required - the title of organization that is requested
-* email - string, required - the email of requet sender
+* email - string, required - the email of request sender
 * message - string, required - the message to organization
 * createdOn - number, required - the unix timestamp of time when request was created
 * refused - boolean, required - the status of request
