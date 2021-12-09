@@ -3266,9 +3266,14 @@ __ⓘ Note:__  Available only for Hermes nodes.
                 {
             }
 
-## /bundle/query
+## /bundle/query{?limit,next,previous}
 __ⓘ Note:__  Available only for Hermes nodes.
 #### Query underlying mongoDB [POST]
++ Parameters
+    + limit (integer, optional) - Number of accounts to return per page (limited to 100)
+    + next (string, optional) - the id of the next page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
+
 + Request (application/json)
 
     + Headers
@@ -3286,6 +3291,32 @@ __ⓘ Note:__  Available only for Hermes nodes.
             }
 
 + Response 200 (application/json)
+
+    + Attributes
+
+        + data (array)
+            + (object)
+                + assetId (string) - the id of the asset
+                + organization (number) - the id of the organization
+                + metadata (object)
+                    + bundleId (string) - the id of the bundle
+                    + bundleUploadTimestamp (number) - the unix timestamp of bundle upload time
+                    + bundleProofBlock  (number) - the number of bundle's proog block
+                    + bundleTransactionHash (string) - the hash of the transaction that uploaded bundle
+                + content (object)
+                    + idData (object)
+                        + createdBy (string) - the address of the asset creator
+                        + timestamp (number) - the unix timestamp of the asset creation time
+                        + sequenceNumber (number) - the number of asset in sequence
+                    + signature (string)
+        + meta (object)
+            + code (number) - the status code
+            + count (number) - the number of return assets
+        + pagination (object)
+            + hasNext (boolean) - shows if there is a next page
+            + next (string) - id of the next mongo page (should be used as page value to show next page)
+            + hasPrevious (boolean) - shows if there is a previous page
+
 
     + Body
 
@@ -3312,8 +3343,8 @@ __ⓘ Note:__  Available only for Hermes nodes.
             }
 
 ## /{bundleId}/restore
-__ⓘ Note:__  Available onlyfor Atals nodes.
-#### Resotore bundle from backup [GET]
+__ⓘ Note:__  Available only for Atlas nodes.
+#### Restore bundle from backup [GET]
 + Response 200
 
     + Body
@@ -4347,10 +4378,10 @@ __Warning__ super_account permission is required
                 + organizationId (string) - the id of the organization that sent invite
                 + email (string) - email address on that invite would be sent
                 + subject (string) - the subject of the email
-                + iniviteId (string) - the id of the invite
+                + inviteId (string) - the id of the invite
                 + invitationLink (string) - the link to accept invitation
                 + sent (boolean) - the status of the invite
-                + validUnitil (number) - the unix timestamp of the time when invite become invalid
+                + validUntil (number) - the unix timestamp of the time when invite become invalid
                 + createdBy (string) - the account address of the invite creator
                 + createdOn (number) - the unix timestamp of the invite creation time
         + meta (object) - the metadata
