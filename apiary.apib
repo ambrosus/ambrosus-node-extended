@@ -285,7 +285,7 @@ __ⓘ Note:__  super_account and manage_accounts permissions are required
         + meta (object) - the metadata
             + code (number) - the status code
             + count (number) - the number of objects in data
-        + pagination (object) - the halper to handle pagination
+        + pagination (object) - the helper to handle pagination
             + hasNext (boolean) - shows if there is a next page
             + hasPrevious (boolean) - shows if there is a previous page
 
@@ -379,7 +379,7 @@ __ⓘ Note:__  super_account and manage_accounts permissions are required
 
 
 ## /account/{accountAddress}/details
-#### Get detatiled info about account [GET]
+#### Get detailed info about account [GET]
 + Parameters
     + accountAddress (string) - An address of the account
 
@@ -589,7 +589,7 @@ Finds accounts satisfying provided criteria.
 
     + limit (integer, optional) - Number of accounts to return per page (limited to 100)
     + next (string, optional) - the id of the next page. Take from response.
-    + previous (string, optional) - the id of the previus page. Take from response.
+    + previous (string, optional) - the id of the previous page. Take from response.
 
 + Request (application/json)
 
@@ -823,7 +823,7 @@ It is not possible to modify protected accounts and accounts belonging to differ
 
     + Attributes (object)
         + permissions (array, optional) - A list of permissions granted to this account. It is not possible to give permissions the request sender lacks.
-        + accessLevel (number, optional) - Access level of the account. Should be a non-negative integer. Cannot be higher than senders's accessLevel.
+        + accessLevel (number, optional) - Access level of the account. Should be a non-negative integer. Cannot be higher than sender's accessLevel.
         + email (string, optional) - Email of the account.
 
     + Body
@@ -1990,7 +1990,7 @@ Fetches an event by identifier
     + Body
 
 ## Group Event
-__ⓘ Note:__ Available only for Hermes node. Lagacu endpoint event2 should be used.
+__ⓘ Note:__ Available only for Hermes node. Legacy endpoint event2 should be used.
 Events describe all registered changes of state that occurred with the asset. E.g. measured temperature, noted big acceleration or changing pallets. An event consists of the 3 major parts:
 
 * idData – Public information about an event. Contains the ID of the asset, address of the user who has registered the event, minimal access level required to view private data of the event and the timestamp of the event. Additionally idData holds the hash of the Data field.
@@ -2160,7 +2160,7 @@ Fetches an event by identifier
 
         + data (boolean) - shows if event exists
         + meta (object)
-            + code (number) - the satus code
+            + code (number) - the status code
 
     + Body
 
@@ -2950,7 +2950,7 @@ Finds assets satisfying provided criteria.
                 + metadata (object)
                     + bundleId (string) - the id of the bundle
                     + bundleUploadTimestamp (number) - the unix timestamp of bundle upload time
-                    + bundleProofBlock  (number) - the number of bundle's proog block
+                    + bundleProofBlock  (number) - the number of bundle's proof block
                     + bundleTransactionHash (string) - the hash of the transaction that uploaded bundle
                 + content (object)
                     + idData (object)
@@ -3844,7 +3844,7 @@ __Warning__ super_account permissions required
 
 ## /admin/restoreconfig
 __Warning__ super_account is required
-#### Push new config to the Herems node [POST]
+#### Push new config to the Hermes node [POST]
 + Request
 
     + Attributes
@@ -4034,20 +4034,20 @@ __ⓘ Note:__  Available only for Hermes node.
 __ⓘ Note:__ Available only for Hermes node.
 Organization represents a company that produce goods to be delivered in supply chain.
 This is an object that consist of the next fields:
-* organizationId - nunmber, required - represent id of organization in the system
+* organizationId - number, required - represent id of organization in the system
 * owner - string, required - account address of the organization's owner
 * active - boolean, required - shows if organization is active in the system
 * title - string, optional - name of the organization
-* timeZone - string, oprtional - time zone of organization
-* legalAddres - string, optional - legal address of the organization
+* timeZone - string, optional - time zone of organization
+* legalAddress - string, optional - legal address of the organization
 * logo - string, optional - the url to the organization's logo
 * colorPrimary - string, optional - used in organization's page styling
 * colorSecondary - string, optional - used in organization's page styling
 * createdBy - string, optional - account address of the organization's creator
 * createdOn - number, optional - unix timestamp of organization's creations time
 * modifiedBy - string, optional - account address of last person who modified organization data
-* modifiedOn - number, optional - unix timestamp of last person who modified organizaiton data
-* inviteEmail - string, optional - email addres from which invites would be send
+* modifiedOn - number, optional - unix timestamp of last person who modified organization data
+* inviteEmail - string, optional - email address from which invites would be send
 * inviteTemplate - string, optional - invitation template
 
 ## /organization/{?limit,next,previous}
@@ -4142,7 +4142,7 @@ __Warning__ super_account is required
                 "data": {
                     "_id": "615eac7e366a59001bcb5ceb",
                     "owner": "0xAB373FD4EC933B0085bA10FF825cCc6B10647c75",
-                    "title": "VADYM-FRONT",
+                    "title": "FRONT",
                     "createdOn": 1633594494,
                     "createdBy": "0x0C6C7264E509430bcFa2469bA4eB738c94e6C75A",
                     "organizationId": 9,
@@ -4182,7 +4182,7 @@ __Warning__ super_account is required
                 + accessLevel (number) - the account's level of data access
                 + organization (number) - the id of the organization for which account belog
                 + remissions (array) - all accounts permissions
-                + registerdBy (string) - the account address of the one who registered this account
+                + registeredBy (string) - the account address of the one who registered this account
                 + registeredOn (number) - the unix timestamp when account was created
                 + active (boolean) - the status of the account
 
@@ -4222,7 +4222,7 @@ __Warning__ super_account is required
                 }
             }
 
-## Group Orgazation2
+## Group Organization2
 __ⓘ Note:__ Available only for Hermes node.
 Organization represents a company that produce goods to be delivered in supply chain.
 This is an object that consist of the next fields:
@@ -4231,7 +4231,7 @@ This is an object that consist of the next fields:
 * active - boolean, required - shows if organization is active in the system
 * title - string, optional - name of the organization
 * timeZone - string, optional - time zone of organization
-* legalAddrres - string, optional - legal address of the organization
+* legalAddress - string, optional - legal address of the organization
 * logo - string, optional - the url to the organization's logo
 * colorPrimary - string, optional - used in organization's page styling
 * colorSecondary - string, optional - used in organization's page styling
@@ -4239,7 +4239,7 @@ This is an object that consist of the next fields:
 * createdOn - number, optional - unix timestamp of organization's creations time
 * modifiedBy - string, optional - account address of last person who modified organization data
 * modifiedOn - number, optional - unix timestamp of last person who modified organization data
-* inviteEmail - string, optional - email addrres from which invites would be send
+* inviteEmail - string, optional - email address from which invites would be send
 * inviteTemplate - string, optional - invitation template
 
 
@@ -4257,7 +4257,7 @@ __Warning__ super_account is required
             + _id (string) - the internal id
             + owner (string) - the account address of the organization owner
             + title (string) - the name of the organization
-            + createdOn (number) - the unix timestamp of the organization creatiion time
+            + createdOn (number) - the unix timestamp of the organization creation time
             + createdBy (string) - the account address of the organization creator
             + organizationId (number) - the id of the organization
             + active (boolean) - the status of the organization
