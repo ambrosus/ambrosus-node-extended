@@ -91,7 +91,7 @@ export class AdminController extends BaseController {
         return APIResponse.withMeta(meta);
     }
 
-    // split state.json and mailInfo contents
+    // merge state.json and mailInfo contents
     const contents = await this.stateService.readFile();
     const state = {...contents, ...{mailInfo}};
 
