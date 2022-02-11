@@ -16,14 +16,16 @@ import sgMail from '@sendgrid/mail';
 import { inject, injectable } from 'inversify';
 
 import { config } from '../config';
-import { TYPE } from '../constant/types';
+import { TYPE } from '../constant';
 import { ILogger } from '../interface/logger.inferface';
 import { OrganizationInvite, OrganizationRequest, UserPrincipal } from '../model';
+import { StateService } from './state.service';
 
 @injectable()
 export class EmailService {
   constructor(
     @inject(TYPE.UserPrincipal) private readonly user: UserPrincipal,
+    @inject(TYPE.StateService) private readonly state: StateService,
     @inject(TYPE.LoggerService) private readonly logger: ILogger
   ) { }
 
@@ -95,6 +97,19 @@ export class EmailService {
   }
 
   public paramsCheck() {
+    try {
+      const {mailInfo} = this.state.readFileSync();
+      config.email.api = mailInfo.apiKey;
+      config.email.defaultFrom = mailInfo.from;
+      config.email.orgReqTo = mailInfo.orgRegTo;
+      config.email.templateIdInvite = mailInfo.templateIds.invite;
+      config.email.templateIdOrgReq = mailInfo.templateIds.orgReq;
+      config.email.templateIdOrgReqApprove = mailInfo.templateIds.orgReqApprove;
+      config.email.templateIdOrgReqRefuse = mailInfo.templateIds.orgReqRefuse;
+      sgMail.setApiKey(config.email.api);
+    } catch (e) {
+      this.logger.error('unable to get mailInfo from state.json');
+    }
     this.checkVariable('config.dashboardUrl', config.dashboardUrl);
     this.checkVariable('config.email.api', config.email.api);
     this.checkVariable('config.email.defaultFrom', config.email.defaultFrom);

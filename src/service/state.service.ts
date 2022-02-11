@@ -9,7 +9,7 @@ This Source Code Form is “Incompatible With Secondary Licenses”, as defined 
 
 import { config } from '../config';
 import { injectable } from 'inversify';
-import { readFile, writeFile, checkFileExists } from '../util/file';
+import { readFile, readFileSync, writeFile, checkFileExists } from '../util/file';
 
 @injectable()
 export class StateService {
@@ -42,6 +42,10 @@ export class StateService {
     }
 
     return {};
+  }
+
+  public readFileSync() {
+    return JSON.parse(readFileSync(this.storeFilePath));
   }
 
   public async writeFile(contents) {
