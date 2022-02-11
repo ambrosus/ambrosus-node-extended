@@ -45,21 +45,12 @@ export class StateService {
   }
 
   public async writeFile(contents) {
-    while (await this.isLocked()) {
-      await this.isLocked();
+    while (this.lock) {
+      await this.lockSleep(this.lockWaitMs);
     }
     this.lock = true;
     await writeFile(this.storeFilePath, JSON.stringify(contents, null, 2), {mode: 0o660})
           .finally(() => this.lock = false);
-  }
-
-  private isLocked = async(): Promise<boolean> => {
-    if (this.lock) {
-      await this.lockSleep(this.lockWaitMs);
-      return true;
-    }
-
-    return false;
   }
 
   private lockSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
