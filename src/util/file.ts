@@ -43,6 +43,14 @@ export const readFile = async (filepath: string) =>
     });
   });
 
+export const readFileSync = (filepath: string): string => {
+    try {
+        return fs.readFileSync(filepath).toString();
+    } catch (error) {
+        return '';
+    }
+};
+
 export const removeFile = (filepath) =>
   new Promise((resolve, reject) => {
     fs.unlink(filepath, (err) => {

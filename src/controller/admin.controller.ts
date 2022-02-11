@@ -29,6 +29,7 @@ import { authorize } from '../middleware';
 import { StateService } from '../service/state.service';
 import { EmailSettings } from '../model/admin/email-settings.model';
 import * as HttpStatus from 'http-status-codes';
+import { EmailService } from '../service/email.service';
 
 @controller(
   '/admin',
@@ -40,6 +41,7 @@ export class AdminController extends BaseController {
   constructor(
     @inject(TYPE.AdminService) private adminService: AdminService,
     @inject(TYPE.StateService) private stateService: StateService,
+    @inject(TYPE.StateService) private emailService: EmailService,
     @inject(TYPE.LoggerService) protected logger: ILogger
   ) {
     super(logger);
@@ -90,7 +92,7 @@ export class AdminController extends BaseController {
       @requestBody() mailInfo: EmailSettings
   ): Promise<APIResponse> {
 
-    // check email settings
+    // Check email settings
     const emailSettings = new EmailSettings();
     if (!emailSettings.checkFieldsOK(mailInfo)) {
         const meta = new APIResponseMeta(
@@ -100,11 +102,14 @@ export class AdminController extends BaseController {
         return APIResponse.withMeta(meta);
     }
 
-    // merge state.json and mailInfo contents
+    // Merge state.json and mailInfo contents
     const contents = await this.stateService.readFile();
     const state = {...contents, ...{mailInfo}};
 
     await this.stateService.writeFile(state);
+
+    // Reload settings
+    new Promise(() => this.emailService.paramsCheck());
 
     return APIResponse.fromSingleResult('OK');
   }
