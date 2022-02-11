@@ -74,6 +74,15 @@ export class AdminController extends BaseController {
     return APIResponse.fromSingleResult('OK');
   }
 
+  @httpGet(
+      '/get-email-settings'
+  )
+  public async getEmailSettings(): Promise<APIResponse> {
+    const contents = await this.stateService.readFile();
+    const {mailInfo} = contents;
+    return APIResponse.fromSingleResult(mailInfo);
+  }
+
   @httpPost(
       '/change-email-settings'
   )
