@@ -13,11 +13,9 @@ import { readFile, writeFile, checkFileExists } from '../util/file';
 
 @injectable()
 export class StateService {
-  private storeFilePath: string;
-
-  constructor() {
-    this.storeFilePath = config.statePath;
-  }
+  private storeFilePath = config.statePath;
+  private lock = false;
+  private lockWaitMs = 50;
 
   public async write(key: string, value) {
     const contents = await this.readFile();
@@ -33,19 +31,12 @@ export class StateService {
     return contents[key];
   }
 
-  public async safeRead(key: string) {
-    if (await this.has(key)) {
-      return this.read(key);
-    }
-    return null;
-  }
-
   public async has(key: string) {
     const contents = await this.readFile();
     return contents[key] !== undefined;
   }
 
-  private async readFile() {
+  public async readFile() {
     if (await checkFileExists(this.storeFilePath)) {
       return JSON.parse(String(await readFile(this.storeFilePath)));
     }
@@ -53,7 +44,14 @@ export class StateService {
     return {};
   }
 
-  private async writeFile(contents) {
-    await writeFile(this.storeFilePath, JSON.stringify(contents, null, 2), {mode: 0o660});
+  public async writeFile(contents) {
+    while (this.lock) {
+      await this.lockSleep(this.lockWaitMs);
+    }
+    this.lock = true;
+    await writeFile(this.storeFilePath, JSON.stringify(contents, null, 2), {mode: 0o660})
+          .finally(() => this.lock = false);
   }
+
+  private lockSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 }
