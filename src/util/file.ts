@@ -46,7 +46,7 @@ export const readFile = async (filepath: string) =>
 export const readFileSync = (filepath: string): string => {
     try {
         return fs.readFileSync(filepath).toString();
-    } catch (error) {
+    } catch {
         return '';
     }
 };
