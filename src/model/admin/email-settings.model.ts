@@ -30,11 +30,9 @@ export interface IEmailSettings {
 export class EmailSettings implements IEmailSettings {
 
   private static checkVariable(variable) {
-    if (variable === undefined) {
-      return false;
-    }
-    return true;
+    return variable !== undefined;
   }
+
   public from: string;
   public orgRegTo: string;
   public apiKey: string;

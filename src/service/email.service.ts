@@ -107,8 +107,8 @@ export class EmailService {
       config.email.templateIdOrgReqApprove = mailInfo.templateIds.orgReqApprove;
       config.email.templateIdOrgReqRefuse = mailInfo.templateIds.orgReqRefuse;
       sgMail.setApiKey(config.email.api);
-    } catch (e) {
-      this.logger.error('unable to get mailInfo from state.json');
+    } catch (err) {
+      this.logger.error(`unable to get mailInfo from state.json: ${err}`);
     }
     this.checkVariable('config.dashboardUrl', config.dashboardUrl);
     this.checkVariable('config.email.api', config.email.api);

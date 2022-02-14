@@ -97,7 +97,8 @@ export class BundleController extends BaseController {
     });
 
     await streamFinished(bundleStream);
-    res.status(200).json(result).end();
+
+    res.status(200).send(result).end();
   }
 
   @httpGet('/:bundleId/info')
