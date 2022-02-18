@@ -6,13 +6,13 @@
   "private": true,
   "description": "API for the Ambrosus Hermes node",
   "license": "MPL-2.0-no-copyleft-exception",
-  "main": "./build/index.js",
+  "main": "./build/startHermes.js",
   "scripts": {
     "build": "tsc",
-    "start": "source ./.env.dev && nodemon ./build/index.js",
-    "start:server": "node build/src/index.js",
+    "start": "source ./.env.dev && nodemon ./build/startHermes.js",
+    "start:server": "node build/src/startHermes.js",
     "dev:clean": "rimraf ./build",
-    "dev:start": "source ./.env.dev && nodemon ./build/index.js",
+    "dev:start": "source ./.env.dev && nodemon ./build/startHermes.js",
     "dev:lint": "tslint -c tslint.json --project tsconfig.json 'src/**/*.ts'",
     "test": "mocha --config ./test/mocharc.json",
     "dev:docker:db": "docker-compose up -d db"
